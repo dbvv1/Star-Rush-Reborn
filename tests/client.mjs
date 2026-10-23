@@ -19,8 +19,33 @@ assert(frames.length);frames.shift()(16.67);assert(draws>100);assert.equal(error
 await window.happyDOM.close();
 const w=new Window({url:'https://race.test/',settings:{disableIframePageLoading:true,handleDisabledFileLoadingAsSuccess:true}});w.console.error=(...a)=>errors.push(a.map(String).join(' '));w.requestAnimationFrame=()=>1;w.fetch=window.fetch;w.HTMLCanvasElement.prototype.getContext=window.HTMLCanvasElement.prototype.getContext;
 Object.defineProperties(w.HTMLElement.prototype,{clientWidth:{get(){return 1280}},clientHeight:{get(){return 720}}});w.document.write(readFileSync('game-shell.html','utf8').replace('<!--GAME_SCRIPT-->','').replace(/<iframe[^>]*id="spotifyPlayer"[^>]*><\/iframe>/g,'<div id="spotifyPlayer"></div>'));
-const hooks=`\nwindow.qa={player,input,controlEdges,VehicleModel,physics,resolveContacts,beginDrift,endDrift,reset,start,finish,pauseGame,goHome,prepareRaceFeatures,updateDrivingAssists,refreshControls,road,atRoad,trackInfo,raceDistance,sceneFrame,renderRaceFeatures,frame,get state(){return state},get elapsed(){return elapsed},get bots(){return raceBots},get chunks(){return chunks},renderList(){drawList.length=0;collect(world);return drawList},get settings(){return settings},get profile(){return profile},get ghostNode(){return ghostNode},get ghostRun(){return ghostRun},get splits(){return raceSplits},get circuitSamples(){return circuitSamples},set state(v){state=v},set event(v){eventType=v},set demo(v){demoDriving=v},set assisted(v){assistedSteer=v},choose(id){activeTrackId=id;raceMode='circuit';reset(false)},get tracks(){return TRACKS},clearKeys};`;
+const hooks=`\nwindow.qa={player,input,controlEdges,VehicleModel,physics,resolveContacts,beginDrift,endDrift,reset,start,finish,pauseGame,goHome,prepareRaceFeatures,updateRaceFeatures,updateDrivingAssists,refreshControls,road,atRoad,trackInfo,raceDistance,sceneFrame,renderRaceFeatures,frame,get state(){return state},get elapsed(){return elapsed},get bots(){return raceBots},get chunks(){return chunks},renderList(){drawList.length=0;collect(world);return drawList},get settings(){return settings},get profile(){return profile},get ghostNode(){return ghostNode},get ghostRun(){return ghostRun},get splits(){return raceSplits},get circuitSamples(){return circuitSamples},set state(v){state=v},set event(v){eventType=v},set demo(v){demoDriving=v},set assisted(v){assistedSteer=v},choose(id){activeTrackId=id;raceMode='circuit';reset(false)},get tracks(){return TRACKS},clearKeys};`;
 const compiled=await build({stdin:{contents:clientSource(hooks),resolveDir:process.cwd(),loader:'js'},bundle:true,write:false,format:'iife',target:'es2022',logLevel:'silent'});w.eval(compiled.outputFiles[0].text);assert.equal(errors.length,0,errors.join('\n'));const q=w.qa;assert(q,'initialization must reach QA hooks');
+// A new countdown must not retain the previous track, sector or coaching text.
+// Seed the stale HUD via the real feature update, then start without advancing a frame.
+const hud=id=>w.document.getElementById(id);
+q.choose('academy-reborn');q.event='practice';q.start();q.state='running';
+Object.assign(q.player,{s:q.raceDistance()*2/3+1,speed:20,nitro:0,smallJets:2});
+q.updateRaceFeatures(.2);
+assert.equal(hud('eventLabel').textContent,'星跃训练场');
+assert.equal(hud('splitLabel').textContent,'SECTOR 2 / 3');
+assert.match(hud('coach').textContent,/小喷 ×2/);
+q.goHome();q.choose('coast-reborn');q.event='practice';q.start();
+assert.equal(q.state,'countdown');assert.equal(q.elapsed,0);assert.equal(q.player.s,0);
+assert.equal(hud('eventLabel').textContent,'汐见海岸','countdown must name the new track immediately');
+assert.equal(hud('localPosition').textContent,'PRACTICE');
+assert.equal(hud('splitLabel').textContent,'SECTOR 1 / 3');
+assert.equal(hud('splitDelta').textContent,'');assert.equal(hud('lapTimeLabel').textContent,'');
+assert.equal(hud('coach').hidden,false);
+assert.equal(hud('coach').textContent,'W / ↑ 加速，观察前方弯道。');
+for(const [event,label,bots] of [['race','POS 1 / 4',3],['timeTrial','TIME ATTACK',0],['practice','PRACTICE',0]]){
+ q.event=event;q.start();
+ assert.equal(q.state,'countdown');assert.equal(q.elapsed,0);assert.equal(q.splits.length,0);
+ assert.equal(hud('localPosition').textContent,label,'restart must initialize the current mode');
+ assert.equal(hud('eventLabel').textContent,'汐见海岸');assert.equal(q.bots.length,bots);
+ assert.equal(hud('coach').hidden,event!=='practice');
+}
+q.goHome();
 const zero=()=>{q.reset(false);q.state='running';q.event='timeTrial';q.prepareRaceFeatures();q.player.l=0};
 // Buffer: drift pressed just before steering still enters on a small input.
 zero();q.player.vS=22;q.player.speed=22;q.input.drift=true;q.controlEdges.drift=1;q.physics(1/120);q.input.right=true;q.physics(1/120);assert(q.player.drifting,'buffered drift');assert.equal(q.player.driftSide,1);

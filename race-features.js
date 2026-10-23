@@ -6,10 +6,12 @@ const routeArrows=Array.from({length:9},()=>new Node(routeArrowMeshes[0]));for(c
 function ghostKey(){return 'star-rush-best-reborn-'+activeTrackId}
 function getBestGhost(){try{return JSON.parse(localStorage.getItem(ghostKey())||'null')}catch(e){return null}}
 function prepareRaceFeatures(){
- raceBots=[];raceDNF=false;firstFinish=null;ghostRun=getBestGhost();ghostCursor=0;ghostPoints=[];ghostClock=0;raceSplits=[];lapTimes=[];nextSector=1;nextLap=1;
- $('resultGrid').replaceChildren();$('splitDelta').textContent='';$('lapTimeLabel').textContent='';$('coach').hidden=eventType!=='practice';
+ raceBots=[];raceDNF=false;firstFinish=null;ghostRun=getBestGhost();ghostCursor=0;ghostPoints=[];ghostClock=0;raceSplits=[];lapTimes=[];nextSector=1;nextLap=1;featureClock=0;
+ $('resultGrid').replaceChildren();$('splitLabel').textContent='SECTOR 1 / 3';$('splitDelta').textContent='';$('lapTimeLabel').textContent='';$('coach').hidden=eventType!=='practice';
  if(raceMode==='circuit'&&eventType==='race'&&!net.room){player.l=-1.8;for(let i=0;i<3;i++){const model=cloneCar(i);model.root.tint=rivalPaint[i];raceBots.push({s:-3.8*Math.floor((i+1)/2),l:(i%2?1:-1)*1.9,speed:0,yaw:0,color:rivalPaint[i],name:rivalNames[i],node:model.root,finishAt:null,index:i})}}
  if(ghostRun&&settings.ghost&&raceMode==='circuit'&&eventType==='timeTrial'&&!net.room){ghostNode=cloneCar(3).root;ghostNode.tint='#b8e9e6';ghostNode.opacity=.27}else ghostNode=null;
+ // Countdown renders before periodic running updates: initialize the new race HUD now.
+ updateLocalPosition();if(eventType==='practice'&&!net.room)updateCoach();
 }
 function updateRaceFeatures(dt){
  for(const bot of raceBots){if(bot.finishAt!==null)continue;let curve=0;for(let d=15;d<=65;d+=10)curve=Math.max(curve,Math.abs(road(bot.s+d).curv));const target=clamp(Math.sqrt(24/Math.max(.004,curve)),24,53)*(1-bot.index*.028);bot.speed=mix(bot.speed,target,1-Math.exp(-dt*(bot.speed>target?3:1.2)));const curv=road(bot.s+20).curv;let lane=Math.sign(curv)*1.6+Math.sin(bot.s*.012+bot.index)*.45;
