@@ -24,16 +24,34 @@ function updateRaceFeatures(dt){
   if(player.s>=nextLap*CIRCUIT_LENGTH){const previous=lapTimes.reduce((a,b)=>a+b,0);lapTimes.push(raceClock()-previous);$('lapTimeLabel').textContent='上一圈 '+formatTime(lapTimes.at(-1));if(nextLap<trackInfo().laps)announce('LAP '+(nextLap+1),'上一圈 '+formatTime(lapTimes.at(-1)),1.5);nextLap++}
  }
  if(firstFinish!==null&&elapsed-firstFinish>30&&player.s<raceDistance()){raceDNF=true;finish();return}
- featureClock+=dt;if(featureClock>.18){featureClock=0;updateLocalPosition();if(eventType==='practice'&&!net.room)updateCoach()}
+ featureClock+=dt;if(featureClock>.18){featureClock=0;updateLocalPosition()}
 }
 function updateLocalPosition(){
  if(net.room){$('localPosition').textContent='ONLINE';$('eventLabel').textContent='好友房间 · '+net.room.code;return}
  const pos=1+raceBots.filter(b=>b.s>player.s).length;$('localPosition').textContent=raceBots.length?'POS '+pos+' / 4':eventType==='practice'?'PRACTICE':'TIME ATTACK';$('eventLabel').textContent=firstFinish!==null?'完赛倒计时 '+Math.max(0,30-Math.floor(elapsed-firstFinish))+' s':raceMode==='endless'?'无尽巡游':trackInfo().name;
 }
-function updateCoach(){
- let text='W / ↑ 加速，观察前方弯道。';const r=road(player.s+30);
- if(player.speed>10)text=Math.abs(r.curv)>.009?(r.curv>0?'右弯：按 D + Shift 轻点起漂。':'左弯：按 A + Shift 轻点起漂。'):'直道：保持路线，把氮气留给出弯。';
- if(player.drifting)text='反按方向拉回车头；小喷亮起后即可衔接。';if(player.smallJets>0)text='小喷 ×'+player.smallJets+'：点空格 / Q，连续两次可双喷。';if(player.nitro>0&&Math.abs(r.curv)<.006&&player.speed>15&&!player.drifting)text='E / C 消耗一瓶氮气，持续喷射；仍可正常转向。';$('coach').textContent=text;
+// Keep the established 32–62 m route window and threshold in one place.
+// The current curvature only suppresses a boost suggestion while still in a bend;
+// this is coaching, not a guarantee that a full nitro burst will be safe.
+function routePreview(s){
+ const turn=wrapAngle(road(s+62).h-road(s+32).h);
+ return {turn,direction:Math.abs(turn)<.05?0:Math.sign(turn),currentCurve:road(s).curv};
+}
+function updateCoach(route=routePreview(player.s)){
+ const bend=route.direction>0?'右弯':route.direction<0?'左弯':'',jets=player.smallJets>0&&player.smallWindow>0;
+ let text='W / ↑ 加速，观察前方弯道。';
+ // One action wins: recovering a slide must not be overwritten by a boost hint.
+ if(player.drifting&&player.driftPhase==='counter')text='反打收车：稳住方向，松开 Shift 收漂。'+(jets?'小喷已就绪。':'');
+ else if(player.drifting&&player.driftPhase==='release'||player.driftPhase==='exit'&&player.exitTime>0)text='收漂中：先稳住方向。'+(jets?'小喷已就绪，车头稳定后衔接。':'');
+ else if(player.drifting)text=player.driftPhase==='entry'?'起漂中：小幅转向，准备反打收车。':'漂移中：反按方向收车，松开 Shift 收漂。';
+ else if(jets)text='小喷 ×'+player.smallJets+'：车头稳定后点空格 / Q。'+(player.smallJets>1?'连续两次可双喷。':'');
+ else if(player.nitroTime>0)text='氮气喷射中：'+(bend?'前方'+bend+'，稳住方向。':'保持路线，无需重复按 E / C。');
+ else if(player.speed>10){
+  if(bend)text='前方'+bend+'：先收油控速，平顺转向。';
+  else if(player.nitro>0&&player.speed>15&&Math.abs(route.currentCurve)<.006)text='前方直道：车身稳定后，可选 E / C 氮气。';
+  else text='前方直道：稳住方向，留意下一弯。';
+ }
+ $('coach').textContent=text;
 }
 function drawRaceResults(){
  const list=net.room?net.members.filter(m=>m.id!==net.id).map(m=>({name:m.name,time:m.snapshot?.finished?m.snapshot.time:null,s:m.snapshot?.s||0})):raceBots.map(b=>({name:b.name,time:b.finishAt,s:b.s}));

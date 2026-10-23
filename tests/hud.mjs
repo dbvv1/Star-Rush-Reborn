@@ -7,6 +7,8 @@ import test from 'node:test';
 
 const shell=readFileSync(new URL('../game-shell.html',import.meta.url),'utf8');
 const race=readFileSync(new URL('../race.js',import.meta.url),'utf8');
+const features=readFileSync(new URL('../race-features.js',import.meta.url),'utf8');
+const routeSource=features.slice(features.indexOf('function routePreview('),features.indexOf('function updateCoach('));
 const bindingSource=race.match(/^const textIds=.*$/m)?.[0];
 assert(bindingSource,'real HUD bindings must be tested');
 const shellIds=new Set([...shell.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
@@ -23,9 +25,10 @@ function makeHUD(bindings=bindingSource){
  path.attrs.d=shell.match(/id="turnArrowPath" d="([^"]+)"/)[1];
  // Fail if an update accidentally returns to replacing the SVG with font text.
  Object.defineProperty($('turnArrow'),'textContent',{set(){throw Error('SVG must not be replaced by text')}});
- const context={$,player:{s:0,score:0,coins:0,speed:0,nitro:1,nitroTime:0,energy:0,smallJets:0,driftCharge:0},document:{querySelectorAll:()=>[]},formatTime:()=> '00:00.00',raceClock:()=>0,raceMode:'circuit',trackInfo:()=>({laps:1}),CIRCUIT_LENGTH:100,raceDistance:()=>100,road:s=>({h:s===62?context.turn:0}),turn:0,wrapAngle:x=>x,districtAt:()=>({name:'汐见海岸'}),minimap(){}};
+ const context={$,player:{s:0,score:0,coins:0,speed:0,nitro:1,nitroTime:0,energy:0,smallJets:0,driftCharge:0},document:{querySelectorAll:()=>[]},formatTime:()=> '00:00.00',raceClock:()=>0,raceMode:'circuit',trackInfo:()=>({laps:1}),CIRCUIT_LENGTH:100,raceDistance:()=>100,eventType:'timeTrial',net:{room:null},road:s=>({h:s===62?context.turn:0,curv:0}),turn:0,wrapAngle:x=>x,districtAt:()=>({name:'汐见海岸'}),minimap(){}};
  vm.createContext(context);
  vm.runInContext(bindings,context);
+ vm.runInContext(routeSource,context);
  vm.runInContext(updateSource,context);
  return {context,$,path};
 }
