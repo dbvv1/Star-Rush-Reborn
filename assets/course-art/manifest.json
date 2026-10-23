@@ -1,0 +1,59 @@
+{
+  "coast-reborn": {
+    "file": "coast-v2.webp",
+    "source": "coast-v2.png",
+    "sourceSha256": "74d3771a41e3469c95e45fff2ac5d47b568d0e4136197788cbc6315f5a00b931",
+    "derivedSha256": "bd2e4837727fc35493fb6467a0c1b225ac1a8abdfeca2afcbb3c76e687659bf3",
+    "originalOutput": "exec-30692845-3b3c-4fa6-bb16-579d1ef7779c.png",
+    "styleReference": null,
+    "revises": {
+      "file": "coast-v1.webp",
+      "source": "coast-v1.png",
+      "sourceSha256": "e20f15afca742a3183bd01ca5ac8066c621f1ad75c08ebeee1b522580e1c5616",
+      "derivedSha256": "d360b9a7e819b08c59d60a66f60a8ddb72f462d0061aae935fb95e128994c16b",
+      "originalOutput": "exec-33159583-7212-4fb3-8b32-80ae56bd2e1d.png",
+      "styleReference": null,
+      "revises": null,
+      "prompt": "PROMPTS.md#coast-v1",
+      "tool": "OpenAI built-in image_gen",
+      "model": "not exposed by the tool",
+      "generatedAt": "2026-10-23 UTC",
+      "purpose": "decorative track-selection illustration, not a screenshot or route map"
+    },
+    "prompt": "PROMPTS.md#coast-v2",
+    "tool": "OpenAI built-in image_gen",
+    "model": "not exposed by the tool",
+    "generatedAt": "2026-10-23 UTC",
+    "purpose": "decorative track-selection illustration, not a screenshot or route map",
+    "editReference": "coast-v1.png",
+    "change": "Increase visible sea and wave shapes; remove dense distant buildings; preserve identity and dark route-diagram space."
+  },
+  "sakura-reborn": {
+    "file": "sakura-v1.webp",
+    "source": "sakura-v1.png",
+    "sourceSha256": "fd5cdcda4f7b6fa989ca0bf9a97689bee23ef464209fd2116311e44d1d2bb02b",
+    "derivedSha256": "3b94eedaa6d81ea41be0077678f65b20c6d8386480ba422473426e594f147ea6",
+    "originalOutput": "exec-368ef065-91bf-435d-becc-47bcf4854118.png",
+    "styleReference": "coast-v1.png",
+    "revises": null,
+    "prompt": "PROMPTS.md#sakura-v1",
+    "tool": "OpenAI built-in image_gen",
+    "model": "not exposed by the tool",
+    "generatedAt": "2026-10-23 UTC",
+    "purpose": "decorative track-selection illustration, not a screenshot or route map"
+  },
+  "academy-reborn": {
+    "file": "academy-v1.webp",
+    "source": "academy-v1.png",
+    "sourceSha256": "9f076d4c18b788f7696caba9b959a17e6a811b00910d58ecc750fea2d74a82e0",
+    "derivedSha256": "9c6071e18e14cdbd7f76db06136a869b7c2ea98cad7d50a892420cc70bc83b62",
+    "originalOutput": "exec-5cda1467-8913-44ef-b9b7-b15eec51e1bb.png",
+    "styleReference": "coast-v1.png",
+    "revises": null,
+    "prompt": "PROMPTS.md#academy-v1",
+    "tool": "OpenAI built-in image_gen",
+    "model": "not exposed by the tool",
+    "generatedAt": "2026-10-23 UTC",
+    "purpose": "decorative track-selection illustration, not a screenshot or route map"
+  }
+}

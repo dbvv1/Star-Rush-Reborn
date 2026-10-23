@@ -1,6 +1,11 @@
 export default {
  async fetch(request,env){
   const url=new URL(request.url);if(url.pathname==='/game.js')return new Response(GAME,{headers:{'content-type':'text/javascript; charset=utf-8','cache-control':'no-cache'}});if(url.pathname==='/api/rooms')return roomApi(request,env);
+  if(Object.hasOwn(COURSE_ARTWORK,url.pathname)){
+   if(request.method!=='GET'&&request.method!=='HEAD')return new Response('Method not allowed',{status:405,headers:{allow:'GET, HEAD'}});
+   const bytes=Uint8Array.from(atob(COURSE_ARTWORK[url.pathname]),char=>char.charCodeAt(0));
+   return new Response(request.method==='HEAD'?null:bytes,{headers:{'content-type':'image/webp','content-length':String(bytes.length),'cache-control':'public, max-age=31536000, immutable','x-content-type-options':'nosniff'}});
+  }
   if(url.pathname==='/api/leaderboard'){
    const reply=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
    if(!env.DB)return reply({error:'排行榜尚未就绪'},503);
