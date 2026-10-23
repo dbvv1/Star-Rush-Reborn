@@ -92,3 +92,24 @@ Node 24（本地 API 测试使用内置 SQLite），`npm ci`，`npm run build`�
 - Forza 官方车辆物理说明：https://forza.net/news/forza-motorsport-drivatars-tire-physics
 
 源码：`vehicle-core.js` 驾驶；`handling.js` 漂移/喷射状态；`circuit.js` 赛道/接触；`race.js` 循环/镜头；`race-features.js` AI/幽灵/分段/辅助；`render-three.js` 渲染；`engine.js` 数学与几何；`scenery.js` 场景；`ui.js` 设置/车库；`network.js`/`ranking.js` 联机/记录；`worker/` API。
+
+### 有限 CPU 作者参考：原几何的局部二改（P128）
+
+`tests/scene-authoring.mjs` / `.py` 是一次固定源作者试验，不是新的运行时或资产平台。输入锁定 [07e1839](https://github.com/dbvv1/Star-Rush-Reborn/tree/07e18395bff8a172f7d552ccae0f6cefe7458fce) 的六个源文件摘要；不一致或缺失时先拒绝，不执行输入。使用已有 Node 24 与 Blender 4.3.2，不下载资源。生成物留在忽略的 `outputs/scene-authoring/`，不随游戏构建或发布。
+
+```bash
+node --max-old-space-size=400 tests/scene-authoring.test.mjs --blender
+node tests/scene-authoring.mjs baseline
+node tests/scene-authoring.mjs candidate
+blender --background --factory-startup --threads 2 --python-exit-code 1 --python tests/scene-authoring.py -- create
+blender --background outputs/scene-authoring/baseline.blend --threads 2 --python-exit-code 1 --python tests/scene-authoring.py -- verify
+blender --background outputs/scene-authoring/baseline.blend --threads 2 --python-exit-code 1 --python tests/scene-authoring.py -- render
+blender --background outputs/scene-authoring/baseline.blend --threads 2 --python-exit-code 1 --python tests/scene-authoring.py -- revise
+```
+
+逐个执行，不并发 Blender。省略测试命令的 `--blender` 仅验证源文件和 JS 提取／局部映射，不声称 DCC 往返已验。作者参考使用 CPU、640×360、8 samples、seed 0、2 threads、关闭降噪；它不是游戏截图，也不是 WebGL、驾驶体验或性能验收。
+
+- 提取原 `chunkMesh` 的 0–240m 六块（60对象／17共享mesh），沿海岸原seed和原随机消费顺序；ID由固定源的 `chunk/key/s/l` 派生，只验证这次保位置的缩放，不保证以后移动 `s/l` 仍保身份。
+- 保存重开核位置、索引、顶点色、对象实际mesh绑定和变换；不声称法线保留。Blender重算法线、粗糙Principled表面仅近似色块，未复制Three toon、天空／雾、全景、车和玩法实体。源stride10末项是gloss而非alpha；所取装饰没有设置opacity，保持不透明。
+- 相机执行原 `sceneFrame` 相机块的静止／无历史状态；FOV60是reset初值，16:9是作者选定，未模拟默认FOV62的运行插值、boost或连续驾驶。
+- 唯一二改把 `coast/chunk/2/cherry0/90/-12.5` 的scale从.92改为.65；原mesh及其他59对象不变，变化可映射回原 `place` 参数。s85作者视点露出更多站台，s60差别小，树列尺度也改变。**没有足够采用证据，不采用生产scenery补丁**；这是本次作者视点的取舍，不是玩家效果的正／负结论。
