@@ -1,4 +1,5 @@
-// Dependency-free source HUD regression. Browser layout/GPU verification is separate.
+// Source HUD regression using the existing happy-dom test dependency.
+// Browser layout/GPU verification is separate.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
@@ -108,4 +109,46 @@ test('HUD text contrast stays above 4.5 against panels composited over white',()
    assert(ratio>=4.5,`${selector}: text contrast ${ratio.toFixed(2)} must be >= 4.5`);
   }
  }
+});
+
+const compactToastRule=html=>html.match(/\.driving-hud \.toast\.show\{([^}]*)\}/)?.[1]??'';
+
+// Structural checks deliberately do not claim browser layout correctness.
+// The 679×435 / 396×253 / 1188×761 fine-pointer previews are a separate gate.
+test('compact HUD keeps functional groups in independent flow regions with unique bindings',async()=>{
+ const {Window}=await import('happy-dom');
+ const window=new Window();
+ window.document.write(shell);
+ const document=window.document;
+ const ids=[...document.querySelectorAll('[id]')].map(node=>node.id);
+ assert.equal(new Set(ids).size,ids.length,'wrapping must not duplicate runtime bindings');
+ const hud=document.querySelector('.driving-hud');
+ assert(hud);
+ for(const selector of ['.top','.right-hud','.race-status','.nitro','.speed','.coach']){
+  assert.equal(hud.querySelector(selector).parentElement,hud,`${selector} needs its own flow region`);
+ }
+ const status=hud.querySelector('.race-status');
+ assert.deepEqual([...status.children].map(node=>node.className),['network-hud','race-feed','split-hud','drift']);
+ for(const id of ['turnText','turnArrow','raceTime','lapLabel','speed','energyText','energyBar','jetCount','coach','recoverBtn','pauseBtn','localPosition','eventLabel','splitLabel','splitDelta','lapTimeLabel','driftText','driftBar','minimap']){
+  assert(hud.querySelector(`#${id}`),`${id} must remain in the HUD`);
+ }
+ for(const id of ['recoverBtn','pauseBtn','garageBtn','musicBtn','roomBtn','rankBtn','settingsBtn','helpBtn','soundBtn','viewBtn']){
+  const button=document.getElementById(id);
+  assert.equal(button.closest('.actions').closest('.top').parentElement,hud);
+  assert.equal(button.hidden,false);
+  assert.equal(button.disabled,false);
+ }
+ assert.equal(document.getElementById('countdown').parentElement.id,'game','countdown retains the original central overlay');
+ assert.equal(document.getElementById('toast').parentElement,hud,'temporary toast stays in compact flow rather than covering driving controls');
+ assert.equal(document.getElementById('networkHud').parentElement,status,'network information must share status flow');
+ assert.equal(document.getElementById('networkHud').hidden,true,'existing network visibility remains runtime-controlled');
+ assert.match(compactToastRule(shell),/display:block/);
+ assert.equal(document.querySelector('.touch').parentElement.id,'game','touch placement and pointer policy stay independent');
+ assert.match(shell,/\[hidden\]\{display:none!important\}/);
+ assert.match(shell,/@media\(pointer:coarse\)\{\.touch\{display:flex\}/);
+ const compact=shell.slice(shell.indexOf('@media(max-height:500px) and (pointer:fine)'));
+ // Guard against passing a compact screen by deleting functionality.
+ const hiddenSelectors=[...compact.matchAll(/([^{}]+)\{[^{}]*(?:display:none|visibility:hidden)[^{}]*\}/g)].map(match=>match[1].trim());
+ assert.deepEqual(hiddenSelectors,['.driving-hud .brand','.driving-hud .guide','.driving-hud .toast']);
+ window.happyDOM.abort();
 });
