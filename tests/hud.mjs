@@ -155,3 +155,14 @@ test('compact HUD keeps functional groups in independent flow regions with uniqu
  assert.deepEqual(hiddenSelectors,['.driving-hud .brand','.driving-hud .guide','.driving-hud .toast']);
  window.happyDOM.abort();
 });
+
+test('driving school teaches brake keys and the low-speed reverse boundary',()=>{
+ const lesson=shell.match(/<section class="board-overlay" id="helpPanel"[\s\S]*?<\/section>/)?.[0];
+ assert.match(lesson,/前进时松开油门，按 S \/ ↓ 制动减速/);
+ assert.match(lesson,/接近停下时松开制动，避免继续按住进入倒车/);
+ assert.match(lesson,/松开油门后，低速持续按 S \/ ↓ 会倒车/);
+ assert.doesNotMatch(lesson,/W\s*\+\s*S/,'simultaneous gas/brake is not the normal lesson');
+ assert.match(shell,/<kbd>S\/↓<\/kbd> 制动/);
+ assert.match(race,/KeyS:'brake',ArrowDown:'brake'/,'both taught keys use the actual brake input');
+ assert.match(shell,/<button data-key="brake">刹车<\/button>/,'existing touch control remains intact');
+});
