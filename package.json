@@ -6,7 +6,7 @@
     "db:generate": "drizzle-kit generate",
     "build": "python3 assemble.py",
     "dev": "node dev-server.mjs",
-    "test": "node --test tests/hud.mjs tests/course-art.mjs tests/impact-audio.mjs && node tests/client.mjs && node tests/api.mjs"
+    "test": "node --test tests/hud.mjs tests/course-art.mjs tests/impact-audio.mjs tests/software-renderer.mjs && node tests/client.mjs && node tests/api.mjs"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.4",
