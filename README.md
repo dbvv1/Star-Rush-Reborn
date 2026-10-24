@@ -20,7 +20,7 @@ npm run dev
 npm test
 ```
 
-当前版本的人物、车辆、道路和日式场景由源码生成，游戏音效与内置原创配乐使用程序合成，没有额外的私有素材包。这是现有实现和可运行基线，不限制后续接入独立美术或音频资源。仓库包含完整源代码、依赖锁文件、测试和数据库迁移；在线排行榜/房间运行数据及个人本地音乐不属于源码。
+当前版本的人物、车辆、道路和日式场景由源码生成，发动机等音效与内置原创配乐使用程序合成；护栏碰撞默认保留程序音；可显式选择Kenney CC0轻／中金属短样本，缺失时保程序化回退，没有额外的私有素材包。大厅三赛道选卡已接入原创 AI 插画，真实路线和文字仍由程序绘制；源图、提示词、版本关系与处理配方见 [选卡资源记录](assets/course-art/README.md)。这是现有实现和可运行基线，不限制后续接入独立美术或音频资源。仓库包含完整源代码、依赖锁文件、测试和数据库迁移；在线排行榜/房间运行数据及个人本地音乐不属于源码。
 
 ## 本版内容
 
@@ -53,6 +53,8 @@ D1 + `/api/rooms` 实现最多 4 人邀请房间、准备、统一起跑时间�
 
 分层发动机、换挡、风噪、轮胎摩擦、漂移、短喷、大喷、组合喷、落地和碰撞音效；音乐与音效分开控制。保留原创电子器乐、经典外语歌曲平台播放器和浏览器本地多文件歌单。本地音频不上传；第三方平台的播放范围由平台/地区/账号决定，不打包商业音源，也不推荐中文歌。
 
+护栏短样本的来源、候选、处理、加载与待听验动作见 [音频资产记录](assets/impact-audio/README.md)。规格二改与代码接入已完成，最终混音试听和听后修改尚未验；不是AI生成音频。
+
 ## 美术与音频的后续制作
 
 **按游戏品质需要实际接入资源，验证从制作到运行、再到修改的整条链路。** 现有程序化场景与合成音频可保留、混用或逐步替换，不要求全面换掉，也不把“全部代码生成”作为开发约束。
@@ -62,13 +64,33 @@ D1 + `/api/rooms` 实现最多 4 人邀请房间、准备、统一起跑时间�
 
 先定风格和游戏内用途，再制作候选、处理格式与压缩、接入加载和构建、在真实浏览器观察／试听，并做一次后续修改。保留有用的源文件、生成提示与来源许可说明，记录关键返工和取舍；换资源时保住玩法、设置和性能，加载失败有可理解的反馈或合适的降级。发布所需素材应随部署正确交付，不能只留本机文件或临时生成链接。
 
-当前构建以打包代码和内嵌页面为主，尚未完成独立 AI 美术／音频资源的加载、分发与二改验证；引入资源时补足该资源实际需要的能力。先完成能改善游戏的一条小链路，再按成果扩展，不预建通用资产平台。AI 生成不是品质保证，采用结果以实际画面、声音和游玩体验为准。
+当前构建以打包代码和内嵌页面为主。已完成一条窄 UI 美术链：三张选卡插画制作 → WebP 处理 → 同源哈希资源路径／Worker 打包 → 实际大厅显示 → 海岸图片二改与同布局复验。当前运行图合计 40,588 字节，加载失败保原卡；没有因此新建通用资产平台。插画是概念性菜单美术，不是游戏截图或赛道地图；赛中三维材质、独立音频资源和发布端验收仍未完成。AI 生成不是品质保证，采用结果以实际画面、声音和游玩体验为准。
+
+## master 的候选开关与整合范围
+
+普通 `npm run build` 保留原程序化护栏音和原 Canvas 房屋绘制；未听音频／未清晰目视验收的房屋锚点不改变默认体验。候选源码与测试已合入，不需要长期保留临时分支：
+
+```sh
+# 音频：显式选择；一次只打包一对，未设置时不加载或打包样本
+STAR_RUSH_RAIL_SOURCE=kenney npm run build
+STAR_RUSH_RAIL_SOURCE=synth-v1 npm run build
+# Canvas 房屋固定锚点：只影响兼容渲染，不改变 WebGL 场景
+STAR_RUSH_CANVAS_HOUSE_ANCHORS=on npm run build
+# 恢复两个默认（也可取消 shell 中已有的变量）
+STAR_RUSH_RAIL_SOURCE=procedural STAR_RUSH_CANVAS_HOUSE_ANCHORS=off npm run build
+```
+
+以上为构建开关，需重建并刷新页面；未知值报错。显式选样本仍沿用已验证的异步加载、失败程序音回退、声部上限和暂停／静音清理；不是听验通过或默认音色推荐。
+
+整合来源：racing-quality `a2ca063`（HUD／教练提示／选卡美术／音频候选），canvas-house-anchors `874e650`，scene-authoring `e9508d6`。外部 `local/dot-b-rail-audio-001` 的 `5058ee8` 配方、manifest、两 WAV 和原说明已在 `assets/impact-audio/candidates/synth-v1/` 按来源字节接收；**没有采用该分支旧 runtime**。scene-authoring 保持固定源的离线作者工作流；撤回的单树候选没有进入默认场景。原作者归属、许可证边界及未听／未看状态见各资产说明。
 
 ## 构建与验证
 
 Node 24（本地 API 测试使用内置 SQLite），`npm ci`，`npm run build`，`npm test`。预览由 Sites 托管的监督程序运行 `npm run dev`。生产是 `dist/server/index.js` Worker ESM，绑定 D1 `DB`，数据库迁移 `drizzle/` 保持原样。
 
 构建器 esbuild 打包客户端和 Three.js，网页通过同源 `/game.js` 加载；无需运行时 CDN。Three.js MIT 版权及许可包含在客户端包中。
+
+选卡插画的选中 WebP 另由同源 `/assets/course-art/` 哈希路径提供，构建器同时写入 `dist/client/` 和现有 Worker 的精确资源表，源 PNG／提示词不进入运行包。修改源图时才需要 Pillow（已验 12.3.0），运行 `python3 prepare-course-art.py` 并更新来源哈希；普通构建直接使用已提交 WebP。
 
 本轮验证结果：
 
@@ -90,3 +112,24 @@ Node 24（本地 API 测试使用内置 SQLite），`npm ci`，`npm run build`�
 - Forza 官方车辆物理说明：https://forza.net/news/forza-motorsport-drivatars-tire-physics
 
 源码：`vehicle-core.js` 驾驶；`handling.js` 漂移/喷射状态；`circuit.js` 赛道/接触；`race.js` 循环/镜头；`race-features.js` AI/幽灵/分段/辅助；`render-three.js` 渲染；`engine.js` 数学与几何；`scenery.js` 场景；`ui.js` 设置/车库；`network.js`/`ranking.js` 联机/记录；`worker/` API。
+
+### 有限 CPU 作者参考：原几何的局部二改（P128）
+
+`tests/scene-authoring.mjs` / `.py` 是一次固定源作者试验，不是新的运行时或资产平台。输入锁定 [07e1839](https://github.com/dbvv1/Star-Rush-Reborn/tree/07e18395bff8a172f7d552ccae0f6cefe7458fce) 的六个源文件摘要；不一致或缺失时先拒绝，不执行输入。使用已有 Node 24 与 Blender 4.3.2，不下载资源。生成物留在忽略的 `outputs/scene-authoring/`，不随游戏构建或发布。
+
+```bash
+node --max-old-space-size=400 tests/scene-authoring.test.mjs --blender
+node tests/scene-authoring.mjs baseline
+node tests/scene-authoring.mjs candidate
+blender --background --factory-startup --threads 2 --python-exit-code 1 --python tests/scene-authoring.py -- create
+blender --background outputs/scene-authoring/baseline.blend --threads 2 --python-exit-code 1 --python tests/scene-authoring.py -- verify
+blender --background outputs/scene-authoring/baseline.blend --threads 2 --python-exit-code 1 --python tests/scene-authoring.py -- render
+blender --background outputs/scene-authoring/baseline.blend --threads 2 --python-exit-code 1 --python tests/scene-authoring.py -- revise
+```
+
+逐个执行，不并发 Blender。省略测试命令的 `--blender` 仅验证源文件和 JS 提取／局部映射，不声称 DCC 往返已验。作者参考使用 CPU、640×360、8 samples、seed 0、2 threads、关闭降噪；它不是游戏截图，也不是 WebGL、驾驶体验或性能验收。
+
+- 提取原 `chunkMesh` 的 0–240m 六块（60对象／17共享mesh），沿海岸原seed和原随机消费顺序；ID由固定源的 `chunk/key/s/l` 派生，只验证这次保位置的缩放，不保证以后移动 `s/l` 仍保身份。
+- 保存重开核位置、索引、顶点色、对象实际mesh绑定和变换；不声称法线保留。Blender重算法线、粗糙Principled表面仅近似色块，未复制Three toon、天空／雾、全景、车和玩法实体。源stride10末项是gloss而非alpha；所取装饰没有设置opacity，保持不透明。
+- 相机执行原 `sceneFrame` 相机块的静止／无历史状态；FOV60是reset初值，16:9是作者选定，未模拟默认FOV62的运行插值、boost或连续驾驶。
+- 唯一二改把 `coast/chunk/2/cherry0/90/-12.5` 的scale从.92改为.65；原mesh及其他59对象不变，变化可映射回原 `place` 参数。s85作者视点露出更多站台，s60差别小，树列尺度也改变。**没有足够采用证据，不采用生产scenery补丁**；这是本次作者视点的取舍，不是玩家效果的正／负结论。

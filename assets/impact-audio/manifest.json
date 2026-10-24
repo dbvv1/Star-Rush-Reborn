@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "license": "CC0-1.0",
+  "sourceUrl": "https://kenney.nl/assets/impact-sounds",
+  "clips": {
+    "light": {
+      "file": "rail-light-v2.wav",
+      "source": "impactMetal_light_000.ogg",
+      "sourceSha256": "33b5e6e37c6e9d54e07bf5a89b12c76e879f40c1ea83cdd82714df1d6f9fec6d",
+      "sha256": "e9daa5ac2bd33d03211272f74b8590a4c425aa0c24a56d3224b5dbc7949f998e",
+      "bytes": 16492,
+      "durationSeconds": 0.3729705215419501,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16
+    },
+    "medium": {
+      "file": "rail-medium-v2.wav",
+      "source": "impactMetal_medium_000.ogg",
+      "sourceSha256": "a96f879fec0864a8938e0c745b6996a6c5679c16a234ce31a01cc995e8401003",
+      "sha256": "9e322b68b6d0a1ed94a765905ff40ddc167fe18bc67dba2b0ac8eef7a9663c8a",
+      "bytes": 11902,
+      "durationSeconds": 0.2688888888888889,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16
+    }
+  }
+}

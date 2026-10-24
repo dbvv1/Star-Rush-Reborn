@@ -19,8 +19,89 @@ assert(frames.length);frames.shift()(16.67);assert(draws>100);assert.equal(error
 await window.happyDOM.close();
 const w=new Window({url:'https://race.test/',settings:{disableIframePageLoading:true,handleDisabledFileLoadingAsSuccess:true}});w.console.error=(...a)=>errors.push(a.map(String).join(' '));w.requestAnimationFrame=()=>1;w.fetch=window.fetch;w.HTMLCanvasElement.prototype.getContext=window.HTMLCanvasElement.prototype.getContext;
 Object.defineProperties(w.HTMLElement.prototype,{clientWidth:{get(){return 1280}},clientHeight:{get(){return 720}}});w.document.write(readFileSync('game-shell.html','utf8').replace('<!--GAME_SCRIPT-->','').replace(/<iframe[^>]*id="spotifyPlayer"[^>]*><\/iframe>/g,'<div id="spotifyPlayer"></div>'));
-const hooks=`\nwindow.qa={player,input,controlEdges,VehicleModel,physics,resolveContacts,beginDrift,endDrift,reset,start,finish,pauseGame,goHome,prepareRaceFeatures,updateDrivingAssists,refreshControls,road,atRoad,trackInfo,raceDistance,sceneFrame,renderRaceFeatures,frame,get state(){return state},get elapsed(){return elapsed},get bots(){return raceBots},get chunks(){return chunks},renderList(){drawList.length=0;collect(world);return drawList},get settings(){return settings},get profile(){return profile},get ghostNode(){return ghostNode},get ghostRun(){return ghostRun},get splits(){return raceSplits},get circuitSamples(){return circuitSamples},set state(v){state=v},set event(v){eventType=v},set demo(v){demoDriving=v},set assisted(v){assistedSteer=v},choose(id){activeTrackId=id;raceMode='circuit';reset(false)},get tracks(){return TRACKS},clearKeys};`;
+const hooks=`\nwindow.qa={player,input,controlEdges,VehicleModel,physics,resolveContacts,beginDrift,endDrift,reset,start,finish,pauseGame,goHome,prepareRaceFeatures,updateRaceFeatures,updateHUD,updateCoach,routePreview,updateDrivingAssists,refreshControls,road,atRoad,trackInfo,raceDistance,sceneFrame,renderRaceFeatures,frame,get state(){return state},get elapsed(){return elapsed},get bots(){return raceBots},get chunks(){return chunks},renderList(){drawList.length=0;collect(world);return drawList},get settings(){return settings},get profile(){return profile},get ghostNode(){return ghostNode},get ghostRun(){return ghostRun},get splits(){return raceSplits},get circuitSamples(){return circuitSamples},set state(v){state=v},set event(v){eventType=v},set demo(v){demoDriving=v},set assisted(v){assistedSteer=v},choose(id){activeTrackId=id;raceMode='circuit';reset(false)},get tracks(){return TRACKS},clearKeys};`;
 const compiled=await build({stdin:{contents:clientSource(hooks),resolveDir:process.cwd(),loader:'js'},bundle:true,write:false,format:'iife',target:'es2022',logLevel:'silent'});w.eval(compiled.outputFiles[0].text);assert.equal(errors.length,0,errors.join('\n'));const q=w.qa;assert(q,'initialization must reach QA hooks');
+// A new countdown must not retain the previous track, sector or coaching text.
+// Seed the stale HUD via the real feature update, then start without advancing a frame.
+const hud=id=>w.document.getElementById(id);
+q.choose('academy-reborn');q.event='practice';q.start();q.state='running';
+Object.assign(q.player,{s:q.raceDistance()*2/3+1,speed:20,nitro:0,smallJets:2,smallWindow:1.5});
+q.updateRaceFeatures(.2);q.updateHUD(.061);
+assert.equal(hud('eventLabel').textContent,'星跃训练场');
+assert.equal(hud('splitLabel').textContent,'SECTOR 2 / 3');
+assert.match(hud('coach').textContent,/小喷 ×2/);
+q.goHome();q.choose('coast-reborn');q.event='practice';q.start();
+assert.equal(q.state,'countdown');assert.equal(q.elapsed,0);assert.equal(q.player.s,0);
+assert.equal(hud('eventLabel').textContent,'汐见海岸','countdown must name the new track immediately');
+assert.equal(hud('localPosition').textContent,'PRACTICE');
+assert.equal(hud('splitLabel').textContent,'SECTOR 1 / 3');
+assert.equal(hud('splitDelta').textContent,'');assert.equal(hud('lapTimeLabel').textContent,'');
+assert.equal(hud('coach').hidden,false);
+assert.equal(hud('coach').textContent,'W / ↑ 加速，观察前方弯道。');
+for(const [event,label,bots] of [['race','POS 1 / 4',3],['timeTrial','TIME ATTACK',0],['practice','PRACTICE',0]]){
+ q.event=event;q.start();
+ assert.equal(q.state,'countdown');assert.equal(q.elapsed,0);assert.equal(q.splits.length,0);
+ assert.equal(hud('localPosition').textContent,label,'restart must initialize the current mode');
+ assert.equal(hud('eventLabel').textContent,'汐见海岸');assert.equal(q.bots.length,bots);
+ assert.equal(hud('coach').hidden,event!=='practice');
+}
+q.goHome();
+// Real academy positions from the manual same-corner run, not a mocked curve.
+// Both labels must agree in the same rendered HUD update, including the
+// previously stale coach message at 281–286 m and boost advice at 162/189 m.
+q.choose('academy-reborn');q.event='practice';q.start();q.state='running';
+for(const s of [162,189,281,283.9,286.1]){
+ Object.assign(q.player,{s,speed:40,nitro:1,nitroTime:0,smallJets:0,drifting:false,driftPhase:'grip'});
+ q.updateRaceFeatures(.2);q.updateHUD(.061);
+ assert.equal(hud('turnText').textContent,'前方左弯',`academy ${s} m route`);
+ assert.match(hud('coach').textContent,/左弯/,`academy ${s} m coach must agree with route`);
+ assert.doesNotMatch(hud('coach').textContent,/直道|消耗一瓶|E \/ C/,`academy ${s} m must not invite nitro into the bend`);
+}
+// A coach update must not wait for the slower position/sector refresh.
+Object.assign(q.player,{s:130,speed:20});q.updateHUD(.061);
+assert.equal(hud('turnText').textContent,'前方直道');
+assert.match(hud('coach').textContent,/可选 E \/ C 氮气/);
+q.player.s=162;q.updateHUD(.061);
+assert.equal(hud('turnText').textContent,'前方左弯');
+assert.match(hud('coach').textContent,/左弯/);
+assert.doesNotMatch(hud('coach').textContent,/E \/ C/);
+// Live driving actions have one priority; inventory must not replace recovery,
+// and already-running nitro must not invite spending another bottle.
+const coachBase={s:281,speed:40,nitro:1,nitroTime:0,smallJets:0,smallWindow:0,drifting:false,driftPhase:'grip',exitTime:0};
+const coachCases=[
+ [{},/左弯.*收油控速/,/Shift|E \/ C/],
+ [{drifting:true,driftPhase:'entry',smallJets:2,smallWindow:1.5,nitroTime:1},/^起漂中/,/点空格|消耗一瓶/],
+ [{drifting:true,driftPhase:'hold',smallJets:2,smallWindow:1.5},/^漂移中/,/点空格|E \/ C/],
+ [{drifting:true,driftPhase:'counter',smallJets:2,smallWindow:1.5},/^反打收车.*小喷已就绪/,/点空格|E \/ C/],
+ [{drifting:true,driftPhase:'release',nitroTime:1},/^收漂中/,/反打收车|松开 Shift|氮气喷射中/],
+ [{driftPhase:'exit',exitTime:.45,smallJets:2,smallWindow:1.5},/^收漂中.*小喷已就绪/,/点空格|E \/ C/],
+ [{smallJets:2,smallWindow:1.5,nitroTime:1},/^小喷 ×2.*双喷/,/E \/ C/],
+ [{smallJets:1,smallWindow:1.5},/^小喷 ×1/,/连续两次|双喷|E \/ C/],
+ [{smallJets:2,smallWindow:0},/左弯/,/小喷/],
+ [{nitroTime:1},/^氮气喷射中.*左弯/,/消耗一瓶|可选 E \/ C/],
+ [{s:130,nitroTime:1},/^氮气喷射中.*无需重复/,/可选|消耗一瓶/],
+ [{s:6},/^前方直道：稳住方向/,/可选 E \/ C/],
+ [{speed:0},/^W \/ ↑ 加速/,/起漂|消耗一瓶/],
+];
+for(const [state,expected,forbidden] of coachCases){
+ Object.assign(q.player,coachBase,state);q.updateHUD(.061);
+ assert.match(hud('coach').textContent,expected,JSON.stringify(state));
+ assert.doesNotMatch(hud('coach').textContent,forbidden,JSON.stringify(state));
+}
+// All shipped circuits keep the same route direction as before, including the
+// start/finish seam and wrapped headings. Every grip-mode bend uses that label.
+for(const id of Object.keys(q.tracks)){
+ q.choose(id);q.event='practice';q.state='running';
+ for(let s=-8;s<q.raceDistance()+62;s+=7){
+  const dh=q.road(s+62).h-q.road(s+32).h,turn=Math.atan2(Math.sin(dh),Math.cos(dh));
+  const direction=Math.abs(turn)<.05?0:Math.sign(turn);
+  Object.assign(q.player,coachBase,{s});q.updateHUD(.061);
+  assert.equal(q.routePreview(s).direction,direction,`${id} ${s} m`);
+  assert.equal(hud('turnText').textContent,direction>0?'前方右弯':direction<0?'前方左弯':'前方直道');
+  if(direction){assert.match(hud('coach').textContent,direction>0?/右弯/:/左弯/);assert.doesNotMatch(hud('coach').textContent,/直道|E \/ C/)}
+ }
+}
+q.choose('coast-reborn');q.goHome();
 const zero=()=>{q.reset(false);q.state='running';q.event='timeTrial';q.prepareRaceFeatures();q.player.l=0};
 // Buffer: drift pressed just before steering still enters on a small input.
 zero();q.player.vS=22;q.player.speed=22;q.input.drift=true;q.controlEdges.drift=1;q.physics(1/120);q.input.right=true;q.physics(1/120);assert(q.player.drifting,'buffered drift');assert.equal(q.player.driftSide,1);
