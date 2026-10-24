@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "title": "Star Rush Reborn rail impact candidates",
+  "generator": "assets/rail-audio/generate.py",
+  "license": "Original deterministic code synthesis for this repository; no third-party samples, recordings or hosted audio-generation service were used. Distributed with the project source under its existing terms; no separate CC0/public-domain dedication and no copyright-registration claim is made.",
+  "format": {
+    "container": "RIFF/WAVE",
+    "codec": "PCM",
+    "channels": 1,
+    "sampleRate": 44100,
+    "bitsPerSample": 16
+  },
+  "candidates": {
+    "light-scrape": {
+      "file": "rail-light-v1.wav",
+      "sha256": "6186d2d5ad2f0313269f8d278df5cf7cae905580ecf253f237bbb71f502524b4",
+      "bytes": 21212,
+      "frames": 10584,
+      "durationSeconds": 0.24,
+      "parameters": {
+        "file": "rail-light-v1.wav",
+        "seed": 23117,
+        "durationSeconds": 0.24,
+        "targetPeak": 0.78,
+        "attackSeconds": 0.0018,
+        "releaseSeconds": 0.028,
+        "dcBlockHz": 32.0,
+        "scrape": {
+          "noiseGain": 0.58,
+          "lowpassHz": 7600.0,
+          "highpassHz": 620.0,
+          "grainHz": 63.0,
+          "grainPhase": 0.4,
+          "grainPower": 2.0,
+          "grainDepth": 0.72,
+          "decaySeconds": 0.085
+        },
+        "modes": [
+          {
+            "frequencyHz": 1640.0,
+            "gain": 0.23,
+            "decaySeconds": 0.07,
+            "phase": 0.15
+          },
+          {
+            "frequencyHz": 2470.0,
+            "gain": 0.16,
+            "decaySeconds": 0.058,
+            "phase": 1.7
+          },
+          {
+            "frequencyHz": 3890.0,
+            "gain": 0.1,
+            "decaySeconds": 0.045,
+            "phase": 2.9
+          }
+        ],
+        "onset": {
+          "frequencyHz": 3180.0,
+          "gain": 0.18,
+          "decaySeconds": 0.005
+        }
+      }
+    },
+    "medium-hit": {
+      "file": "rail-hit-v1.wav",
+      "sha256": "951531290357c9b6eadae430a1f81b300916f7396db5ea44fe87b0e3c914f04a",
+      "bytes": 33560,
+      "frames": 16758,
+      "durationSeconds": 0.38,
+      "parameters": {
+        "file": "rail-hit-v1.wav",
+        "seed": 81293,
+        "durationSeconds": 0.38,
+        "targetPeak": 0.86,
+        "attackSeconds": 0.0012,
+        "releaseSeconds": 0.04,
+        "dcBlockHz": 28.0,
+        "body": {
+          "startHz": 118.0,
+          "endHz": 62.0,
+          "glideSeconds": 0.045,
+          "gain": 0.68,
+          "decaySeconds": 0.115
+        },
+        "noise": {
+          "gain": 0.54,
+          "lowpassHz": 3100.0,
+          "highpassHz": 180.0,
+          "decaySeconds": 0.078
+        },
+        "modes": [
+          {
+            "frequencyHz": 420.0,
+            "gain": 0.34,
+            "decaySeconds": 0.16,
+            "phase": 0.6
+          },
+          {
+            "frequencyHz": 930.0,
+            "gain": 0.23,
+            "decaySeconds": 0.12,
+            "phase": 2.1
+          },
+          {
+            "frequencyHz": 1710.0,
+            "gain": 0.15,
+            "decaySeconds": 0.09,
+            "phase": 4.05
+          },
+          {
+            "frequencyHz": 2570.0,
+            "gain": 0.09,
+            "decaySeconds": 0.06,
+            "phase": 5.2
+          }
+        ],
+        "onset": {
+          "frequencyHz": 3540.0,
+          "gain": 0.26,
+          "decaySeconds": 0.006
+        }
+      }
+    }
+  }
+}
