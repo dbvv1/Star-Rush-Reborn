@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import http from 'node:http';
 import {once} from 'node:events';
 import {mkdir, readFile, readdir, writeFile, rm} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
 import {DatabaseSync} from 'node:sqlite';
 import {chromium} from 'playwright';
 import {PNG} from 'pngjs';
@@ -76,9 +77,9 @@ try {
   finally { await page.keyboard.up('KeyW'); }
   const before = await page.locator('#raceTime').textContent();
   await page.waitForFunction(value => document.querySelector('#raceTime').textContent !== value, before);
-  await page.screenshot({path: new URL('race.png', output).pathname});
+  await page.screenshot({path: fileURLToPath(new URL('race.png', output))});
   // Hide siblings only for the canvas capture: HUD text cannot satisfy pixel checks.
-  const bytes = await page.locator('#scene').screenshot({path: new URL('canvas.png', output).pathname,
+  const bytes = await page.locator('#scene').screenshot({path: fileURLToPath(new URL('canvas.png', output)),
     style: '#game > :not(#scene) { visibility: hidden !important; }'});
   const png = PNG.sync.read(bytes), colors = new Map();
   for (let i = 0; i < png.data.length; i += 4) {
