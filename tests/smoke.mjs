@@ -1,15 +1,13 @@
 // Browser acceptance of the production build, not a visual-quality judgement.
 import assert from 'node:assert/strict';
-import http from 'node:http';
-import {once} from 'node:events';
-import {mkdir, readFile, readdir, writeFile, rm} from 'node:fs/promises';
+import {mkdir, writeFile, rm} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
-import {DatabaseSync} from 'node:sqlite';
 import {chromium} from 'playwright';
 import {PNG} from 'pngjs';
 import worker from '../dist/server/index.js';
 import {cleanupSmoke} from './smoke-cleanup.mjs';
 import {smokeLaunchOptions} from './smoke-launch.mjs';
+import {startSmokeServer} from './smoke-server.mjs';
 
 const output = new URL('../outputs/smoke/', import.meta.url);
 await mkdir(output, {recursive: true});
@@ -17,37 +15,10 @@ for (const name of ['race.png', 'canvas.png', 'report.json']) await rm(new URL(n
 const report = {startedAt: new Date().toISOString(), passed: false, browser: 'Chromium', sandbox: true,
   args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
   consoleErrors: [], pageErrors: [], requestFailures: [], httpErrors: [], warnings: []};
-const db = new DatabaseSync(':memory:');
-class Statement {
-  constructor(sql, args = []) { this.sql = sql; this.args = args; }
-  bind(...args) { return new Statement(this.sql, args); }
-  async first() { return db.prepare(this.sql).get(...this.args) || null; }
-  async all() { return {results: db.prepare(this.sql).all(...this.args)}; }
-  async run() { db.prepare(this.sql).run(...this.args); return {success: true}; }
-}
-const DB = {prepare: sql => new Statement(sql), batch: async statements => {
-  db.exec('BEGIN');
-  try { const result = []; for (const s of statements) result.push(await s.run()); db.exec('COMMIT'); return result; }
-  catch (error) { db.exec('ROLLBACK'); throw error; }
-}};
-const server = http.createServer(async (req, res) => {
-  try {
-    const chunks = []; for await (const chunk of req) chunks.push(chunk);
-    const body = Buffer.concat(chunks);
-    const response = await worker.fetch(new Request(`http://${req.headers.host}${req.url}`, {
-      method: req.method, headers: req.headers, ...(body.length ? {body} : {})
-    }), {DB});
-    res.writeHead(response.status, Object.fromEntries(response.headers));
-    res.end(Buffer.from(await response.arrayBuffer()));
-  } catch (error) { res.writeHead(500); res.end(String(error)); }
-});
-let browser;
+let browser, resources;
 try {
-  for (const file of (await readdir('drizzle')).filter(f => f.endsWith('.sql')).sort()) {
-    db.exec(await readFile(`drizzle/${file}`, 'utf8'));
-  }
-  server.listen(0, '127.0.0.1'); await once(server, 'listening');
-  const origin = `http://127.0.0.1:${server.address().port}`;
+  resources = await startSmokeServer(worker);
+  const {origin} = resources;
   const launchOptions = smokeLaunchOptions();
   report.sandbox = launchOptions.chromiumSandbox;
   report.executablePath = launchOptions.executablePath || 'playwright-bundled';
@@ -99,7 +70,7 @@ try {
   report.failure = error.stack || String(error);
   process.exitCode = 1;
 } finally {
-  report.cleanupErrors = await cleanupSmoke({browser, server, db});
+  report.cleanupErrors = await cleanupSmoke({browser, server:resources?.server || {listening:false}, db:resources?.db || {close(){}}});
   if (report.cleanupErrors.length) { report.passed = false; process.exitCode = 1; }
   report.finishedAt = new Date().toISOString();
   await writeFile(new URL('report.json', output), JSON.stringify(report, null, 2) + '\n');

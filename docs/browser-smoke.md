@@ -30,3 +30,9 @@ STAR_RUSH_SMOKE_CHROMIUM=/usr/bin/chromium npm run smoke
 - 将 console error、未捕获页面异常、失败请求及 HTTP 4xx/5xx 作为失败；warning 单独记录。
 
 结果写入忽略提交的 `outputs/smoke/`：`report.json`（成功或失败）、`race.png`、`canvas.png`（到达截图阶段才存在）。每次先清理上次截图；非零退出即失败。构建本身失败时浏览器脚本不会启动，也不会更新报告。截图与像素检查只证明默认场景能够渲染，不替代三赛道试玩、性能基准、画面审美、手感或听感验收；API 全流程继续由 `npm test` 覆盖。
+
+## 已存在云浏览器的同桌面预览
+
+`npm run smoke:serve` 使用与自动 smoke 相同的生产 Worker、项目迁移和内存 SQLite，只在 loopback 随机端口启动服务，不启动或重配浏览器。读取输出的 `STAR_SMOKE_LOOPBACK`，在同一已授权云桌面的现有浏览器里打开；Ctrl+C 关闭服务与内存库。命令应运行在该浏览器可访问的执行环境，不能假定不同 exec 会话共享 loopback。
+
+此入口用于真实界面检查，不自动执行断言，也不产出通过报告。必须分别记录实际渲染模式、开局／输入／计时、截图与控制台范围；页面进入 Canvas 兼容模式不算 WebGL2 smoke 通过。不得用它在另一执行环境重试被明确拒绝的浏览器启动或扩大网络监听。
