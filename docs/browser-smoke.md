@@ -8,7 +8,7 @@ npx playwright install chromium
 npm run smoke
 ```
 
-Linux 如缺系统浏览器依赖，由该环境管理员按 Playwright 官方依赖清单安装；不要为了通过测试关闭 sandbox。无 GPU 时脚本固定使用 `--use-angle=swiftshader --enable-unsafe-swiftshader`，并显式开启 Chromium sandbox；不重试其他浏览器，不自动切换 Canvas，不把缺浏览器或启动失败标成通过。
+Linux 如缺系统浏览器依赖，由该环境管理员按 Playwright 官方依赖清单安装。正常环境保留 sandbox；Dot 自有隔离云容器确实无法启动 Chromium 时，按 brief 约定处理，或沿 a1dbv local-jobs 在真实浏览器验收。浏览器包下载失败不是 sandbox 问题。无 GPU 时脚本固定使用 `--use-angle=swiftshader --enable-unsafe-swiftshader`，并显式开启 Chromium sandbox；不重试其他浏览器，不自动切换 Canvas，不把缺浏览器或启动失败标成通过。
 
 `npm run smoke` 首先运行现有生产构建，然后把 `dist/server/index.js` Worker 放到 `127.0.0.1` 随机空闲端口。SQLite 只在内存中应用项目迁移，不连接生产 D1，不创建用户账户或凭据、不上传成绩；浏览器只允许访问这个测试源。结束时关闭浏览器、服务器和数据库。
 
