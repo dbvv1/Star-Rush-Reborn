@@ -17,6 +17,7 @@
 |---|---|
 | `npm ci` / `npm run dev` | 安装依赖 / 本地预览 http://localhost:4173，含排行榜和房间 API |
 | `npm run build` | 生产构建（`assemble.py`，esbuild 打包，含 Worker 与资源表） |
+| `npm run smoke` | 构建后启动沙箱 Chromium 软件 WebGL，开局、检查画布与错误并截图；准备见 docs/browser-smoke.md |
 | `npm test` | 单元测试、自动驾驶跑完三条赛道、6000 步混合操作、渲染适配与 API 流程 |
 
 构建开关见 README。
@@ -31,7 +32,7 @@
 ## 验收
 
 1. **自动**：`npm test` 通过。改驾驶、碰撞或 AI 时，看自动驾驶圈速与稳定性检查有无退化。
-2. **浏览器**：构建产物在无头浏览器里加载、开一局，无控制台错误且画布内有非背景像素；云端没有 GPU 时，Playwright Chromium 加 `--use-angle=swiftshader --enable-unsafe-swiftshader` 走软件 WebGL。脚本尚未建立，见 brief。
+2. **浏览器**：构建产物在无头浏览器里加载、开一局，无控制台错误且画布内有非背景像素；云端没有 GPU 时，Playwright Chromium 加 `--use-angle=swiftshader --enable-unsafe-swiftshader` 走软件 WebGL。脚本见 `tests/smoke.mjs`，运行准备与范围见 [browser-smoke](docs/browser-smoke.md)。
 3. **人工**：手感、画面、声音需要人判断的，记入 a1dbv TASKS“待人工验收”，然后继续做其他工作。
 
 汇报只写实际跑过的结果；没跑的写“未验证”，一句即可。
