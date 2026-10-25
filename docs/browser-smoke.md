@@ -10,6 +10,16 @@ npm run smoke
 
 Linux 如缺系统浏览器依赖，由该环境管理员按 Playwright 官方依赖清单安装。正常环境保留 sandbox；Dot 自有隔离云容器确实无法启动 Chromium 时，按 brief 约定处理，或沿 a1dbv local-jobs 在真实浏览器验收。浏览器包下载失败不是 sandbox 问题。无 GPU 时脚本固定使用 `--use-angle=swiftshader --enable-unsafe-swiftshader`，并显式开启 Chromium sandbox；不重试其他浏览器，不自动切换 Canvas，不把缺浏览器或启动失败标成通过。
 
+## 已安装 Chromium 与隔离云容器
+
+默认使用 Playwright 对应版本的浏览器且开启 sandbox，不自动更换或重试。也可显式选择当前执行环境已安装的 Chromium（绝对路径），版本会记入报告；这不保证任意 Chromium 与 Playwright 版本兼容，仍须完整通过原断言：
+
+```sh
+STAR_RUSH_SMOKE_CHROMIUM=/usr/bin/chromium npm run smoke
+```
+
+仅在已有明确授权的 Dot 自有隔离云容器中，确认是 Chromium sandbox 启动问题时，可显式设置 `STAR_RUSH_SMOKE_CLOUD_NO_SANDBOX=1`。该选项默认关闭，不适用于用户电脑，不改变系统设置，不得用于绕过平台权限拒绝；下载失败、socket EPERM 等不能自动归因于 Chromium sandbox。报告如实记录实际 sandbox 配置及可执行文件。其他环境仍使用默认安全配置。
+
 `npm run smoke` 首先运行现有生产构建，然后把 `dist/server/index.js` Worker 放到 `127.0.0.1` 随机空闲端口。SQLite 只在内存中应用项目迁移，不连接生产 D1，不创建用户账户或凭据、不上传成绩；浏览器只允许访问这个测试源。结束时关闭浏览器、服务器和数据库。
 
 单个 1280×720 Chromium 页面使用默认赛道和默认构建开关，完成：

@@ -9,6 +9,7 @@ import {chromium} from 'playwright';
 import {PNG} from 'pngjs';
 import worker from '../dist/server/index.js';
 import {cleanupSmoke} from './smoke-cleanup.mjs';
+import {smokeLaunchOptions} from './smoke-launch.mjs';
 
 const output = new URL('../outputs/smoke/', import.meta.url);
 await mkdir(output, {recursive: true});
@@ -47,8 +48,10 @@ try {
   }
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   const origin = `http://127.0.0.1:${server.address().port}`;
-  // Keep the sandbox enabled. Never silently retry another browser or no-sandbox.
-  browser = await chromium.launch({headless: true, chromiumSandbox: true, args: report.args, timeout: 30000});
+  const launchOptions = smokeLaunchOptions();
+  report.sandbox = launchOptions.chromiumSandbox;
+  report.executablePath = launchOptions.executablePath || 'playwright-bundled';
+  browser = await chromium.launch(launchOptions);
   report.browserVersion = browser.version();
   const page = await browser.newPage({viewport: {width: 1280, height: 720}});
   page.setDefaultTimeout(30000);

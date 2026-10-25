@@ -6,7 +6,7 @@
     "db:generate": "drizzle-kit generate",
     "build": "python3 assemble.py",
     "dev": "node dev-server.mjs",
-    "test": "node --test tests/hud.mjs tests/smoke-cleanup.test.mjs tests/course-art.mjs tests/impact-audio.mjs tests/software-renderer.mjs tests/scene-authoring.test.mjs && node tests/rail-source-choice.mjs && node tests/client.mjs && node tests/api.mjs",
+    "test": "node --test tests/hud.mjs tests/smoke-cleanup.test.mjs tests/smoke-launch.test.mjs tests/course-art.mjs tests/impact-audio.mjs tests/software-renderer.mjs tests/scene-authoring.test.mjs && node tests/rail-source-choice.mjs && node tests/client.mjs && node tests/api.mjs",
     "smoke": "npm run build && node tests/smoke.mjs"
   },
   "devDependencies": {
