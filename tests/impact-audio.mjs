@@ -40,12 +40,12 @@ test('only rail uses sample, fallback retains procedural and cooldown unchanged'
 });
 test('hashed PCM files and exact Worker routes survive packaging; reject corrupt/missing source',async()=>{
  const {client,assets}=loadImpactAssets();const worker=(await import('../dist/server/index.js')).default;
- for(const url of Object.values(client))assert.equal((await worker.fetch(new Request('https://test.invalid'+url),{})).status,404,'default build does not serve unreviewed samples');
+ for(const url of Object.values(client)){const response=await worker.fetch(new Request('https://test.invalid'+url),{});assert.equal(response.status,200,'default build serves Kenney samples');assert.deepEqual(Buffer.from(await response.arrayBuffer()),Buffer.from(assets[url],'base64'));}
  for(const path of ['/assets/impact-audio/source/impactMetal_light_000.ogg','/assets/impact-audio/missing.wav'])assert.equal((await worker.fetch(new Request('https://test.invalid'+path),{})).status,404);
  const dir=mkdtempSync(join(tmpdir(),'rail-audio-test-'));try{cpSync('assets/impact-audio',dir,{recursive:true});writeFileSync(join(dir,'runtime/rail-light-v2.wav'),'broken');assert.throws(()=>loadImpactAssets(dir));rmSync(join(dir,'runtime/rail-light-v2.wav'));assert.throws(()=>loadImpactAssets(dir));}finally{rmSync(dir,{recursive:true,force:true})}
 });
 
-test('procedural default initializes original audio without constructing or loading sample player',()=>{
+test('explicit procedural selection initializes original audio without constructing or loading sample player',()=>{
  const source=readFileSync('audio.js','utf8');let players=0;
  const param=()=>({value:0});
  const node=()=>({gain:param(),frequency:param(),detune:param(),threshold:param(),ratio:param(),Q:param(),connect(){},start(){}});

@@ -23,14 +23,15 @@ try{
  rmSync(p);assert.throws(()=>loadImpactAssets(dir,'synth-v1'));
 }finally{rmSync(dir,{recursive:true,force:true})}
 execFileSync('node',['build.mjs'],{env,stdio:'inherit'});
-assert.deepEqual(readdirSync('dist/client/assets/impact-audio'),[]);
+const defaultFiles=Object.values(baseline.client).map(url=>url.split('/').at(-1)).sort();
+assert.deepEqual(readdirSync('dist/client/assets/impact-audio').sort(),defaultFiles);
 const paths=['dist/client/game.js','dist/server/index.js','worker/index.js'];const before=paths.map(p=>readFileSync(p));
 try{
  const bad=spawnSync('node',['build.mjs'],{env:{...env,STAR_RUSH_RAIL_SOURCE:'unknown'},encoding:'utf8'});assert.notEqual(bad.status,0);assert.match(bad.stderr,/Unknown rail audio source/);
- for(const [source,selected,excluded] of [['kenney',baseline,candidate],['synth-v1',candidate,baseline]]){
+ for(const [source,selected,excluded] of [['kenney',baseline,candidate],['synth-v1',candidate,baseline],['procedural',{client:{},assets:{}},{client:{...baseline.client,synthLight:candidate.client.light,synthMedium:candidate.client.medium}}]]){
  execFileSync('node',['build.mjs'],{env:{...env,STAR_RUSH_RAIL_SOURCE:source},stdio:'inherit'});
  const worker=(await import('../dist/server/index.js?rail-source='+source)).default;
- assert.equal(readdirSync('dist/client/assets/impact-audio').length,2);
+ assert.equal(readdirSync('dist/client/assets/impact-audio').length,Object.keys(selected.client).length);
  for(const url of Object.values(selected.client)){
   const response=await worker.fetch(new Request('https://test.invalid'+url),{});assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),'audio/wav');assert.match(response.headers.get('cache-control'),/immutable/);
   const bytes=Buffer.from(selected.assets[url],'base64');assert.deepEqual(Buffer.from(await response.arrayBuffer()),bytes);assert.deepEqual(readFileSync('dist/client'+url),bytes);
@@ -42,5 +43,5 @@ try{
  }
 }finally{execFileSync('node',['build.mjs'],{env,stdio:'inherit'})}
 paths.forEach((p,i)=>assert.deepEqual(readFileSync(p),before[i]));
-assert.deepEqual(readdirSync('dist/client/assets/impact-audio').sort(),[]);
-console.log('Rail source choice passed: reproducible candidate, opt-in packaging, exact default restoration (not listening)');
+assert.deepEqual(readdirSync('dist/client/assets/impact-audio').sort(),defaultFiles);
+console.log('Rail source choice passed: reproducible candidate, Kenney default, explicit procedural/synth packaging, exact default restoration (not listening)');

@@ -50,8 +50,8 @@ npm run dev
 需要重新构建并刷新页面，未知值会报错。
 
 ```sh
-# 护栏碰撞音：kenney（CC0 样本）、synth-v1（本地合成）或 procedural（默认程序音）
-STAR_RUSH_RAIL_SOURCE=kenney npm run build
+# 护栏碰撞音：kenney（默认 CC0 样本）、synth-v1（本地合成）或 procedural（程序音）
+STAR_RUSH_RAIL_SOURCE=procedural npm run build
 # Canvas 兼容画面里的房屋固定锚点（on / off，默认 off）
 STAR_RUSH_CANVAS_HOUSE_ANCHORS=on npm run build
 ```

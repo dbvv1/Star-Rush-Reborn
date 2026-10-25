@@ -39,14 +39,16 @@
 
 ## 接收动作与未验项
 
-显式运行 `STAR_RUSH_RAIL_SOURCE=kenney npm run build && npm run dev`，进入驾驶练习（首次用户手势启用音频），F2核两资源ready；在可持续输入端分别产生轻与中护栏碰撞，观察诊断档位与计数。然后在**发动机＋轮胎＋音乐最终混音**中比较两档：弱碰辨识、连续擦碰疲劳、音量与峰值、静音/暂停/重开清理，以及资源404/离线时程序化回退。按听到的问题替换候选或改明确混音参数，再做相同事件复验。
+运行默认构建 `npm run build && npm run dev`，进入驾驶练习（首次用户手势启用音频），F2核两资源ready；在可持续输入端分别产生轻与中护栏碰撞，观察诊断档位与计数。然后在**发动机＋轮胎＋音乐最终混音**中比较两档：弱碰辨识、连续擦碰疲劳、音量与峰值、静音/暂停/重开清理，以及资源404/离线时程序化回退。按听到的问题替换候选或改明确混音参数，再做相同事件复验。
 
 本次没有可消费的实际声音返回，**最终混音试听、听后二改与玩家品质未验**；数值、decode、调用计数和离线测试不充听验。AI音频生成工具未连接，AI生成欠项独立保留。未部署，不以本音频制作完成代替完整主弯驾驶、WebGL或短视口验收。
 
 ## 可修改替代：程序合成候选
 
-另接收[本项目确定性合成候选](candidates/synth-v1/README.md)，保留原配方和源字节。master默认原程序音、不加载样本；显式 `STAR_RUSH_RAIL_SOURCE=kenney npm run build` 可选Kenney，播放/混音参数不变；显式作者构建 `STAR_RUSH_RAIL_SOURCE=synth-v1 npm run build` 才使用替代两片，未知值失败。用同一运行链比较素材而非同时改变混音，听后用 `STAR_RUSH_RAIL_SOURCE=procedural npm run build` 恢复默认。该候选不是CC0或AI生成，许可边界与待听动作见该记录。
+另接收[本项目确定性合成候选](candidates/synth-v1/README.md)，保留原配方和源字节。默认 `kenney`；显式作者构建 `STAR_RUSH_RAIL_SOURCE=synth-v1 npm run build` 才使用替代两片，未知值失败。用同一运行链比较素材而非同时改变混音；`STAR_RUSH_RAIL_SOURCE=procedural npm run build` 显式选择原程序音，不打包、不请求样本。该合成候选不是CC0或AI生成，许可边界与待听动作见该记录。
 
-## master 默认保全
+## 从源重建与默认接入
 
-2026-10-24 整合时，未听过的两组样本均改为显式构建选项；普通构建不打包、不请求样本，保留旧程序化护栏音。以上浏览器记录只属于历史候选构建，不是当前默认样本加载或听验结论。
+按维护期 brief，从当前 master 已交付的 `source/impactMetal_light_000.ogg` 和 `source/impactMetal_medium_000.ogg` 运行 `python3 prepare-impact-audio.py`，不复用旧默认切换提交。源 hash 与上述 manifest 一致；ffmpeg 7.1.5 的同一配方重建后，两份运行 WAV 与 manifest 字节均不变。原始许可、固定缩放与 PCM 规格保持不变，没有生成新素材或调整 gain、物理阈值及冷却。
+
+普通构建现在打包 Kenney 两片，`STAR_RUSH_RAIL_SOURCE=kenney` 也可显式选择。加载尚未完成、HTTP/解码失败或超时仍立即使用原程序音；显式 `procedural` 则完全不创建样本播放器。上述浏览器记录仍仅属于历史候选构建，不作为此次默认构建的浏览器或听验结论。最终混音试听、听后二改与玩家品质仍待人工验收。

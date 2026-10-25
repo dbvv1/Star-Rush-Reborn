@@ -27,7 +27,7 @@ export function loadCourseArtwork(directory='assets/course-art') {
 const courseArtwork=loadCourseArtwork();
 rmSync('dist/client/assets/course-art',{recursive:true,force:true});mkdirSync('dist/client/assets/course-art',{recursive:true});
 for(const [url,base64] of Object.entries(courseArtwork.assets))writeFileSync('dist/client'+url,Buffer.from(base64,'base64'));
-const impactArtwork=loadImpactAssets('assets/impact-audio',process.env.STAR_RUSH_RAIL_SOURCE??'procedural');
+const impactArtwork=loadImpactAssets('assets/impact-audio',process.env.STAR_RUSH_RAIL_SOURCE??'kenney');
 rmSync('dist/client/assets/impact-audio',{recursive:true,force:true});mkdirSync('dist/client/assets/impact-audio',{recursive:true});
 for(const [url,base64] of Object.entries(impactArtwork.assets))writeFileSync('dist/client'+url,Buffer.from(base64,'base64'));
 const houseAnchors=process.env.STAR_RUSH_CANVAS_HOUSE_ANCHORS??'off';
