@@ -127,7 +127,25 @@ used.
 - Asset format, build isolation, lazy per-track loading and lifecycle are
   covered by `tests/coast-ambience.mjs` and
   `tests/coast-ambience-source-choice.mjs`.
-- **Not verified:** human listening of the isolated clip, comparison with the
-  ambience-off mix, loop-seam audibility, and an actual in-game mixed recording.
-  Do not treat engineering checks or numeric seam continuity as listening
-  approval.
+- Real browser (`node tests/coast-ambience-browser.mjs`; prepare with
+  `npm ci && npx playwright install chromium`, see `docs/browser-smoke.md`):
+  headless Chromium with software WebGL. A demo lap drives through the
+  380–660 m corner and past 680 m on `/road`.
+  With `coast-v1` the clip is fetched once (HTTP 200), decoded as one
+  2-channel 9.25 s buffer and started as one looping source; with `off` no
+  request or source appears. Both runs render without console, page, request or
+  HTTP errors. The script saves corner screenshots and real-time mixed WebM
+  captures under the ignored `outputs/coast-ambience/` directory. The capture
+  is the live browser master bus, not an offline replay.
+- The saved WebMs are for listening, not a settled level measurement. The
+  previous attempt read the on-screen race clock (about 19–34 s) as capture
+  time; on the WebM timeline the 380–660 m window is much later, so that
+  segment lies before the 380 m fade-in and cannot show the layer. The report
+  now records `captureMarks` in `browser-on.json` (WebM-relative seconds for
+  380/420/620/660 m, kept separate from the race clock) so the real corner can
+  be selected for a later in-band measurement. The layer gain is fixed at
+  0.05 and the captures exist; audibility is still a listening question.
+- **Not verified:** human listening of the isolated clip or the browser
+  captures, subjective comparison with the ambience-off mix, and loop-seam
+  audibility. Do not treat engineering checks, numeric seam continuity or the
+  existence of a capture as listening approval.
