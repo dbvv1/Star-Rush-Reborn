@@ -7,7 +7,11 @@ export const VehicleModel=(()=>{
  function step(p,c,dt,tune={}){
   const v=Math.hypot(p.vS,p.vL),heading=v>.05?Math.atan2(p.vL,p.vS):p.yaw;
   const steer=clamp(Number(c.steer)||0,-1,1),sensitivity=tune.sensitivity||1,reverse=(p.vS*Math.cos(p.yaw)+p.vL*Math.sin(p.yaw))<-.05;
-  p.steering=lerp(p.steering||0,steer,1-Math.exp(-dt*26));
+  // High-speed keyboard onset is gentler, but full steering authority stays
+  // available. Release and the initial reversal of existing steering remain fast.
+  const oldSteer=p.steering||0,growing=steer*oldSteer>=0&&Math.abs(steer)>Math.abs(oldSteer);
+  const steerResponse=tune.arcadeCandidate&&growing?Math.max(8,26/(1+Math.max(0,v-30)/10)):26;
+  p.steering=lerp(oldSteer,steer,1-Math.exp(-dt*steerResponse));
   const drifting=!!p.drifting,side=p.driftSide||Math.sign(steer)||1,counter=drifting&&steer*side<-.1,release=drifting&&p.driftReleasing;
   let desired=p.steering*config.normalTurn*sensitivity*clamp(v/8,0,1)*(reverse?-1:1);
   if(drifting){
@@ -27,8 +31,13 @@ export const VehicleModel=(()=>{
   p.yaw=wrap(travel-(reverse?Math.PI:0)+slip+(p.spin||0)*dt);p.spin=(p.spin||0)*Math.exp(-dt*6);
   let speed=v,drag=.70+v*.018+v*v*.00045;
   const boost=p.nitroTime>0||p.mini>0||p.pad>0,targetSpeed=p.nitroTime>0?(p.comboTimer>0?config.combo:config.nitro):p.pad>0?73:p.mini>0?config.mini:config.cruise;
-  const drive=c.gas&&!c.brake?clamp((config.cruise-speed)*2.8,0,config.driveAcceleration):0;
-  const thrust=boost&&!c.brake?clamp((targetSpeed-speed)*2.8,0,config.jetAcceleration):0;
+  // Only deliberate steering into an actually contacted rail blocks drive.
+  // Countersteer restores throttle as the filtered inward steering recedes;
+  // there is no extra hold timer. The contact marker expires
+  // every physics step, so it cannot become a timed/sticky recovery penalty.
+  const pushingRail=tune.arcadeCandidate&&p.railSide?clamp((p.steering*p.railSide-.1)/.9,0,1):0;
+  const drive=c.gas&&!c.brake?clamp((config.cruise-speed)*2.8,0,config.driveAcceleration)*(1-pushingRail):0;
+  const thrust=boost&&!c.brake?clamp((targetSpeed-speed)*2.8,0,config.jetAcceleration)*(1-pushingRail):0;
   const driftLoss=drifting?(counter?1.3:3.3)*Math.abs(slip):0;
   speed=Math.max(0,speed+(drive+thrust-drag-driftLoss)*dt);
   if(!boost&&speed>config.cruise)speed=Math.max(config.cruise,speed-Math.min(8,(speed-config.cruise)*.7)*dt);

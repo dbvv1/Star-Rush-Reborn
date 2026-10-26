@@ -4,6 +4,9 @@ import {join} from 'node:path';
 import {build} from 'esbuild';
 import {loadImpactAssets} from './impact-assets.mjs';
 import {loadSignboardStyles,selectedSignboardStyle,applySignboardStyle} from './signboard-assets.mjs';
+const handlingProfile=process.env.STAR_RUSH_HANDLING??'baseline';
+if(!['baseline','arcade-ab'].includes(handlingProfile))throw Error('Unknown handling profile: '+handlingProfile);
+const handlingCandidate=handlingProfile==='arcade-ab';
 const signboardStyle=selectedSignboardStyle(loadSignboardStyles(),process.env.STAR_RUSH_SIGNBOARD_VARIANT??'baseline');
 const read=p=>readFileSync(p,'utf8');mkdirSync('dist/server',{recursive:true});mkdirSync('dist/client',{recursive:true});mkdirSync('dist/.openai',{recursive:true});
 // Only the three decorative course cards use this narrow file route. Source
@@ -36,10 +39,11 @@ const houseAnchors=process.env.STAR_RUSH_CANVAS_HOUSE_ANCHORS??'off';
 if(!['off','on'].includes(houseAnchors))throw Error('Unknown Canvas house anchor option: '+houseAnchors);
 const engine=read('engine.js');
 const intro=`import {createRailImpactPlayer} from './impact-audio.js';\nimport {initializeRendering} from './render-init.js';\nimport {initCourseArt} from './course-art.js';\n(()=>{'use strict';let canvas=document.getElementById('scene');const error=document.getElementById('error'),loading=document.getElementById('loading');function fail(message){error.hidden=false;document.getElementById('error-text').textContent=message;loading.classList.add('done')}\n`;
-const setup=`\nconst railImpactUrls=${JSON.stringify(impactArtwork.client)};const softwareHouseAnchorsEnabled=${houseAnchors==='on'};\ntry{\nconst rendering=initializeRendering(canvas);canvas=rendering.canvas;\nlet threeBackend=rendering.threeBackend,software=rendering.software,softwareContext=rendering.softwareContext;\n`;
+const setup=`\nconst handlingCandidate=${handlingCandidate};const railImpactUrls=${JSON.stringify(impactArtwork.client)};const softwareHouseAnchorsEnabled=${houseAnchors==='on'};\ntry{\nconst rendering=initializeRendering(canvas);canvas=rendering.canvas;\nlet threeBackend=rendering.threeBackend,software=rendering.software,softwareContext=rendering.softwareContext;\n`;
 const files=['racer.js','circuit.js','scenery.js','audio.js','vehicle-core.js','handling.js','race.js','ranking.js','music.js','network.js','race-features.js','ui.js'];
 export function clientSource(tail=''){return intro+setup+read('software-renderer.js')+engine+'\n'+files.map(f=>(f==='scenery.js'?applySignboardStyle(read(f),signboardStyle):read(f)).replace('export const VehicleModel','const VehicleModel')).join('\n')+'\ninitCourseArt(document,'+JSON.stringify(courseArtwork.client)+');'+tail+"\n}catch(e){console.error(e);fail('游戏初始化异常：'+e.message)}\n})();"}
 const contents=clientSource();
 const result=await build({stdin:{contents,resolveDir:process.cwd(),loader:'js',sourcefile:'star-rush-client.js'},bundle:true,minify:true,target:'es2022',format:'iife',write:false,legalComments:'eof'});const game=result.outputFiles[0].text+'\n/*! Three.js license\n'+read('node_modules/three/LICENSE')+'*/\n';
-const page=read('game-shell.html').replace('<!--GAME_SCRIPT-->','<script src="/game.js?v=reborn-1"></script>');writeFileSync('dist/index.html',page);writeFileSync('dist/client/game.js',game);
+const shell=handlingCandidate?read('game-shell.html').replace('桜と海、走り出そう。 / REBORN 01','驾驶 A/B 候选 · 非默认 / ARCADE AB').replace('或松开再按 W。','仅使用这两个主动喷射键；重新踩油门不会触发小喷。').replace('轻擦护栏保留沿墙速度，正面碰撞损失更大。','轻擦保留沿墙运动；持续向护栏打方向会减速，反打离墙即可重新加速。'):read('game-shell.html');
+const page=shell.replace('<!--GAME_SCRIPT-->','<script src="/game.js?v=reborn-1"></script>');writeFileSync('dist/index.html',page);writeFileSync('dist/client/game.js',game);
 const worker='const PAGE='+JSON.stringify(page)+';\nconst GAME='+JSON.stringify(game)+';\nconst COURSE_ARTWORK='+JSON.stringify(courseArtwork.assets)+';\nconst IMPACT_AUDIO='+JSON.stringify(impactArtwork.assets)+';\n'+read('worker/rooms.js')+'\n'+read('worker/api.js');writeFileSync('dist/server/index.js',worker);writeFileSync('worker/index.js',worker);cpSync('.openai/hosting.json','dist/.openai/hosting.json');cpSync('drizzle','dist/drizzle',{recursive:true});console.log('Reborn built: '+Math.round(game.length/1024)+' KB client, '+Object.keys(courseArtwork.assets).length+' course illustrations');

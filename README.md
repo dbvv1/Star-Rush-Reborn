@@ -74,3 +74,5 @@ STAR_RUSH_SIGNBOARD_VARIANT=navy-v2 npm run build
 - [Forza 车辆物理说明](https://forza.net/news/forza-motorsport-drivatars-tire-physics)
 
 开发约定见 [AGENTS.md](AGENTS.md)，设计任务书见 [docs/brief.md](docs/brief.md)。
+
+可回退的完整驾驶对照见 [同弯驾驶 A/B](docs/driving-ab.md)；默认仍为 baseline。

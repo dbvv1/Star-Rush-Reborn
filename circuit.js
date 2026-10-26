@@ -47,13 +47,21 @@ function impulseContact(normal,lever,other=null){
 function collisionFeedback(impact,kind){if(impact<.7||player.contactSound>0)return;player.contactSound=.16;emit(atRoad(player.s,player.l,.45),Math.min(14,Math.ceil(impact)),[0,1,0]);impactSound(kind,impact);if(impact>5){flash=Math.min(.25,impact*.012);player.driftCharge*=.5}}
 function resolveContacts(dt){
  player.contactSound=Math.max(0,player.contactSound-dt);
+ if(handlingCandidate)player.railSide=0;
  // Integration of lightweight obstacle bodies with ground friction.
  for(const ch of chunks.values())for(const e of ch.entities)if(e.kind==='cone'||e.kind==='barrier'){e.vS=(e.vS||0)*Math.exp(-dt*2.4);e.vL=(e.vL||0)*Math.exp(-dt*2.4);e.ds=clamp((e.ds||0)+e.vS*dt,-18,18);e.dl=clamp((e.dl||0)+e.vL*dt,-7.4-e.l,7.4-e.l);e.angle=(e.angle||0)+(e.omega||0)*dt;e.omega=(e.omega||0)*Math.exp(-dt*2.0)}
  for(let iteration=0;iteration<3;iteration++){
   const axes=carAxes(),extent=Math.abs(axes[0][1])*CAR_HALF_S+Math.abs(axes[1][1])*CAR_HALF_L,limit=RAIL_INNER-extent;
-  if(Math.abs(player.l)>limit){const side=Math.sign(player.l),n=[0,-side];player.l=side*(limit-.015);const lever=[side*(Math.sign(axes[0][1])*CAR_HALF_S*axes[0][0]+Math.sign(axes[1][1])*CAR_HALF_L*axes[1][0]),side*extent];const impact=impulseContact(n,lever);collisionFeedback(impact,'rail');if(impact>4){endDrift(false);player.turnRate*=.4;wasDrift=false}}
+  if(Math.abs(player.l)>limit){const side=Math.sign(player.l),n=[0,-side];if(handlingCandidate)player.railSide=side;player.l=side*(limit-.015);const lever=[side*(Math.sign(axes[0][1])*CAR_HALF_S*axes[0][0]+Math.sign(axes[1][1])*CAR_HALF_L*axes[1][0]),side*extent];const impact=impulseContact(n,lever);collisionFeedback(impact,'rail');if(impact>4){endDrift(false);player.turnRate*=.4;wasDrift=false}}
   if(player.jump>.85)continue;
   for(const ch of chunks.values())for(const e of ch.entities){if((e.kind!=='cone'&&e.kind!=='barrier')||Math.abs(courseDelta(e.s+(e.ds||0),player.s))>4.5||Math.abs(e.l+(e.dl||0)-player.l)>4)continue;const c=contactOBB(e);if(!c)continue;const mass=e.kind==='cone'?9:85,ratio=mass/(mass+CAR_MASS),push=Math.max(0,c.pen-.008)*.82;player.s+=c.normal[0]*push*ratio;player.l+=c.normal[1]*push*ratio;e.ds=(e.ds||0)-c.normal[0]*push*(1-ratio);e.dl=(e.dl||0)-c.normal[1]*push*(1-ratio);const ax=carAxes(),toward=[courseDelta(e.s+(e.ds||0),player.s),e.l+(e.dl||0)-player.l],u=clamp(d2(toward,ax[0]),-CAR_HALF_S,CAR_HALF_S),v=clamp(d2(toward,ax[1]),-CAR_HALF_L,CAR_HALF_L),lever=[ax[0][0]*u+ax[1][0]*v,ax[0][1]*u+ax[1][1]*v];const impact=impulseContact(c.normal,lever,e);collisionFeedback(impact,e.kind)}
+ }
+ // Additional sustained scrape load, once per step (not per solver pass).
+ // Fixed arcade rail only: outward turning acceleration supplies the load.
+ // A glancing car with no outward turn is not subjected to a fixed slowdown.
+ if(handlingCandidate&&player.railSide){
+  const load=Math.max(0,player.railSide*player.turnRate*player.vS);
+  player.vS-=Math.sign(player.vS)*Math.min(Math.abs(player.vS),.65*load*dt);
  }
  player.speed=Math.hypot(player.vS,player.vL);player.velocityYaw=Math.atan2(player.vL,player.vS);player.lateralSpeed=player.vL;
 }

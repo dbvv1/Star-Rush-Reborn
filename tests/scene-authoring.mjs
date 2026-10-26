@@ -7,16 +7,16 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 const hash=x=>createHash('sha256').update(x).digest('hex');
 export const SOURCE='07e18395bff8a172f7d552ccae0f6cefe7458fce';
-// Original scene baseline; circuit's display-only formatter was amended later.
+// Original scene baseline; opt-in driving changes do not change scene extraction.
 // Exact hashes below remain authoritative; geometry/camera are unchanged.
-export const SOURCE_AMENDMENTS={'circuit.js':'formatTime centisecond carry only; no geometry or simulation changes'};
+export const SOURCE_AMENDMENTS={'circuit.js':'centisecond formatter and opt-in arcade rail response; scene geometry unchanged','race.js':'reset candidate rail contact marker; camera unchanged','handling.js':'opt-in explicit mini input and vehicle profile; scene geometry unchanged'};
 export const SOURCE_HASHES={
   "engine.js": "baa90e01c1eee30ba88ee1316a7a390a168415826208f379b2b608c4b89d505a",
   "racer.js": "2f9286e0f53cdcae9a8333b3d97212fa53ad606de2ba985954ad1786071783e5",
-  "circuit.js": "6ad3b7570e24ea546c95004233ccf3eeedb6d14fbc386190cbb7dd79c0482082",
+  "circuit.js": "264c99b80ded291a934c4bd1d437434a7ae6495273495f3ec670768b527b753f",
   "scenery.js": "18b92b39b2b6a7735bd524069d8c54ed8732ce8706cfd7e9b1916a0b9aa036da",
-  "race.js": "73f8b7ced6ce28953cf8a87bb940e3b55485dbb7500cea0a638a9d764ce9dc98",
-  "handling.js": "977f7a4f0228f26dc5402b213b6d79121bcc736f657fb9ad6766d0af0571bb4e"
+  "race.js": "96ed426260e1a060d94d67a1c562304bd8a8e2d83e83c808d2eebeb428c50d6f",
+  "handling.js": "f5f39c64d4af54600f7991229ec765c5e828de2197fd50ed13b580f9f91cf2fd"
 };
 export function validateSources(root=process.cwd()){
   for(const [file,expected] of Object.entries(SOURCE_HASHES))

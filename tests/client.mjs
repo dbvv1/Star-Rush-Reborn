@@ -188,6 +188,8 @@ for(const result of obstacleRaces){
  assert(Number.isFinite(result.minBotGap));
 }
 console.log('AI moved-obstacle driving cases',obstacleRaces.map(r=>({track:r.track,offset:r.offset,moved:r.maxShift,overlapFrames:r.overlapFrames})));
+const {checkHandlingProfile}=await import('./handling-profile.mjs');
+checkHandlingProfile(q,process.env.STAR_RUSH_HANDLING??'baseline');
 // Stress contact, drift and boost transitions at the fixed simulation step.
 zero();let seed=3,maxSpeed=0;for(let i=0;i<6000;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;if(i%45===0){q.input.left=!!(seed&1);q.input.right=!!(seed&2);q.input.drift=!!(seed&4);q.input.gas=true;q.input.brake=!!(seed&16);q.input.boost=!!(seed&32);q.input.small=!!(seed&64)}q.physics(1/120);assert([q.player.s,q.player.l,q.player.yaw,q.player.speed].every(Number.isFinite));assert(Math.abs(q.player.l)<8);maxSpeed=Math.max(maxSpeed,q.player.speed)}assert(maxSpeed<84);
 // Exercise real Three.js geometry/material/instancing APIs with a draw stub.

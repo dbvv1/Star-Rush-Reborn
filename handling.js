@@ -16,7 +16,7 @@ function useSmallJet(){
  player.smallJets--;player.jetCooldown=.18;player.mini=.72;player.smallWindow=player.smallJets?1.15:0;player.smallCount++;registerJet('W');jetSound('small');
  if(player.comboTimer<=0)announce(player.smallCount>1?'DOUBLE BOOST':'MINI BOOST',player.smallCount>1?'双喷 · 连续出弯加速':'小喷 · 及时接下一喷',.75)
 }
-function awardSmallJets(count=2,label='小喷已就绪'){player.smallJets=Math.max(player.smallJets,count);player.smallWindow=1.5;player.smallCount=0;announce(label,'点 空格 / Q，或重新按 W · 连点两次双喷',1.1);tone(760,.06)}
+function awardSmallJets(count=2,label='小喷已就绪'){player.smallJets=Math.max(player.smallJets,count);player.smallWindow=1.5;player.smallCount=0;announce(label,handlingCandidate?'点 空格 / Q 主动小喷 · 连点两次双喷':'点 空格 / Q，或重新按 W · 连点两次双喷',1.1);tone(760,.06)}
 function rewardDrift(){
  if(player.driftRewarded||player.driftCharge<.10||player.driftDuration<.11)return;
  player.driftRewarded=true;awardSmallJets(player.driftCharge>.35?2:1,player.driftCharge>.35?'双喷已就绪':'小喷已就绪');
@@ -63,10 +63,10 @@ function physics(dt){
   }
  }
  if(controlEdges.boost>0||input.boost&&!player.prevBoost)player.boostInputBuffer=.15;
- if(controlEdges.small>0||input.small&&!player.prevSmall||input.gas&&!player.prevGas)player.jetInputBuffer=.15;controlEdges.boost=0;controlEdges.small=0;
+ if(controlEdges.small>0||input.small&&!player.prevSmall||!handlingCandidate&&input.gas&&!player.prevGas)player.jetInputBuffer=.15;controlEdges.boost=0;controlEdges.small=0;
  if(player.boostInputBuffer>0&&player.nitro>0&&player.nitroTime<=0){useNitro();player.boostInputBuffer=0}
  if(player.jetInputBuffer>0&&player.smallJets>0&&player.jetCooldown<=0){useSmallJet();player.jetInputBuffer=0}
- const movement=VehicleModel.step(player,{steer:typeof assistedSteer==='number'?assistedSteer:rawSteer,gas:input.gas||settings.autoGas&&!input.brake||demoDriving&&!input.brake,brake:input.brake},dt,{sensitivity:settings.sensitivity});
+ const movement=VehicleModel.step(player,{steer:typeof assistedSteer==='number'?assistedSteer:rawSteer,gas:input.gas||settings.autoGas&&!input.brake||demoDriving&&!input.brake,brake:input.brake},dt,{sensitivity:settings.sensitivity,arcadeCandidate:handlingCandidate});
  steering=player.steering;player.boostActive=player.nitroTime>0;player.boostBlend=mix(player.boostBlend,movement.boost?1:0,1-Math.exp(-dt*7));
  const metric=clamp(1-r.curv*player.l,.45,1.55),ds=player.vS/metric*dt;player.s=Math.max(-8,player.s+ds);player.l+=player.vL*dt;
  const next=road(player.s),turn=wrapAngle(next.h-r.h),vs=player.vS,vl=player.vL;
