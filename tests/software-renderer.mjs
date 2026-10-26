@@ -41,7 +41,7 @@ test('actual drawing projects fixed house anchors and depth-sorts them with tree
  const calls=[],paint=[];let color;
  const ctx=new Proxy({createLinearGradient:()=>({addColorStop(){}}),fillRect(...args){if(color==='#f3e9dc')paint.push(args)}},{get:(o,k)=>o[k]??(()=>{}),set:(o,k,v)=>{if(k==='fillStyle')color=v;o[k]=v;return true}});
  const add=(a,b)=>a.map((v,i)=>v+b[i]),sub=(a,b)=>a.map((v,i)=>v-b[i]),mul=(a,n)=>a.map(v=>v*n),dot=(a,b)=>a.reduce((sum,v,i)=>sum+v*b[i],0),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],norm=a=>mul(a,1/Math.hypot(...a));
- const c={softwareHouseAnchorsEnabled:true,softwareContext:ctx,canvas:{width:800,height:600},cameraFov:60,player:{s:39.9,l:0,yaw:0,jump:0},raceMode:'circuit',CIRCUIT_LENGTH:903.7,add,sub,mul,dot,cross,norm,TAU:Math.PI*2,road:s=>({p:[0,0,s],R:[1,0,0],T:[0,0,1]}),atRoad(s,l,y){if(Math.abs(l)===20)calls.push(s);return [l,y,s]},skids:[],chunks:new Map(),settings:{line:false},ghostNode:null,state:'paused'};
+ const c={softwareHouseAnchorsEnabled:true,softwareContext:ctx,canvas:{width:800,height:600},cameraFov:60,player:{s:39.9,l:0,yaw:0,jump:0},raceMode:'circuit',CIRCUIT_LENGTH:903.7,add,sub,mul,dot,cross,norm,TAU:Math.PI*2,road:s=>({p:[0,0,s],R:[1,0,0],T:[0,0,1]}),atRoad(s,l,y){if(Math.abs(l)===20)calls.push(s);return [l,y,s]},skids:[],chunks:new Map(),settings:{line:false},ghostNode:null,ghostPose:null,state:'paused'};
  vm.createContext(c);vm.runInContext(source,c);
  for(const s of [39.9,40.1]){calls.length=paint.length=0;c.player.s=s;c.drawSoftware({eye:[0,2,-10],target:[0,2,10],origin:[0,0,0]});
   assert.deepEqual(calls,anchors(s).flatMap(a=>[a.s,a.s]));assert(paint.length>0);

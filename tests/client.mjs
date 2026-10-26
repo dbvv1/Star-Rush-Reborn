@@ -21,7 +21,7 @@ assert(frames.length);frames.shift()(16.67);assert(draws>100);assert.equal(error
 await window.happyDOM.close();
 const w=new Window({url:'https://race.test/',settings:{disableIframePageLoading:true,handleDisabledFileLoadingAsSuccess:true}});w.console.error=(...a)=>errors.push(a.map(String).join(' '));w.requestAnimationFrame=()=>1;w.fetch=window.fetch;w.HTMLCanvasElement.prototype.getContext=window.HTMLCanvasElement.prototype.getContext;
 Object.defineProperties(w.HTMLElement.prototype,{clientWidth:{get(){return 1280}},clientHeight:{get(){return 720}}});w.document.write(readFileSync('game-shell.html','utf8').replace('<!--GAME_SCRIPT-->','').replace(/<iframe[^>]*id="spotifyPlayer"[^>]*><\/iframe>/g,'<div id="spotifyPlayer"></div>'));
-const hooks=`\nwindow.qa={drawSoftware,player,input,controlEdges,VehicleModel,physics,resolveContacts,beginDrift,endDrift,reset,start,finish,pauseGame,goHome,prepareRaceFeatures,updateRaceFeatures,updateHUD,updateCoach,routePreview,updateDrivingAssists,refreshControls,road,atRoad,trackInfo,raceDistance,sceneFrame,renderRaceFeatures,frame,get state(){return state},get elapsed(){return elapsed},get bots(){return raceBots},get chunks(){return chunks},renderList(){drawList.length=0;collect(world);return drawList},signboardConsumers(){const result=[];for(const id of Object.keys(TRACKS)){activeTrackId=id;rebuildCircuit();routeSeed=id==='coast-reborn'?73121:95276;const directions=['left','right'];for(let k=0;k<Math.ceil(CIRCUIT_LENGTH/40);k++){const chunk=chunkMesh(k);function walk(n){for(const direction of directions)if(n.mesh===scenicProp(direction))result.push({track:id,k,direction,data:Array.from(n.mesh.sourceData),indices:Array.from(n.mesh.sourceIndices)});n.children.forEach(walk)}walk(chunk.node)}}activeTrackId='coast-reborn';reset(false);return result},get settings(){return settings},get profile(){return profile},get ghostNode(){return ghostNode},get ghostRun(){return ghostRun},get splits(){return raceSplits},get circuitSamples(){return circuitSamples},set state(v){state=v},set event(v){eventType=v},set demo(v){demoDriving=v},set assisted(v){assistedSteer=v},choose(id){activeTrackId=id;raceMode='circuit';reset(false)},get tracks(){return TRACKS},clearKeys};`;
+const hooks=`\nwindow.qa={drawSoftware,player,input,controlEdges,VehicleModel,physics,resolveContacts,beginDrift,endDrift,reset,start,finish,pauseGame,goHome,prepareRaceFeatures,updateRaceFeatures,updateHUD,updateCoach,routePreview,updateDrivingAssists,refreshControls,road,atRoad,trackInfo,raceDistance,sceneFrame,renderRaceFeatures,frame,get state(){return state},get elapsed(){return elapsed},get bots(){return raceBots},get chunks(){return chunks},renderList(){drawList.length=0;collect(world);return drawList},signboardConsumers(){const result=[];for(const id of Object.keys(TRACKS)){activeTrackId=id;rebuildCircuit();routeSeed=id==='coast-reborn'?73121:95276;const directions=['left','right'];for(let k=0;k<Math.ceil(CIRCUIT_LENGTH/40);k++){const chunk=chunkMesh(k);function walk(n){for(const direction of directions)if(n.mesh===scenicProp(direction))result.push({track:id,k,direction,data:Array.from(n.mesh.sourceData),indices:Array.from(n.mesh.sourceIndices)});n.children.forEach(walk)}walk(chunk.node)}}activeTrackId='coast-reborn';reset(false);return result},get settings(){return settings},get profile(){return profile},get ghostNode(){return ghostNode},get ghostRun(){return ghostRun},get ghostPose(){return ghostPose},get splits(){return raceSplits},get circuitSamples(){return circuitSamples},set state(v){state=v},set event(v){eventType=v},set demo(v){demoDriving=v},set assisted(v){assistedSteer=v},choose(id){activeTrackId=id;raceMode='circuit';reset(false)},get tracks(){return TRACKS},clearKeys};`;
 const compiled=await build({stdin:{contents:clientSource(hooks),resolveDir:process.cwd(),loader:'js'},bundle:true,write:false,format:'iife',target:'es2022',logLevel:'silent'});w.eval(compiled.outputFiles[0].text);assert.equal(errors.length,0,errors.join('\n'));const q=w.qa;assert(q,'initialization must reach QA hooks');
 // Compare actual assembled-client consumers with the offline authored meshes.
 execFileSync(process.execPath,['authoring/signboard/export.mjs'],{stdio:'pipe'});
@@ -145,6 +145,19 @@ for(const id of Object.keys(q.tracks)){
  q.event='timeTrial';q.prepareRaceFeatures();assert(q.ghostNode&&q.ghostRun.points.length>10,'best ghost persists and loads');
  const view=q.sceneFrame(0,1/60);q.renderRaceFeatures(view.origin,1/60);
 }
+// Replay a real completed-race recording between its 100ms samples.
+q.choose('coast-reborn');q.event='timeTrial';q.state='running';q.prepareRaceFeatures();q.demo=false;
+let interpolatedFrames=0;
+for(let i=0;i<60;i++){
+ q.physics(1/120);const view=q.sceneFrame(0,1/60);q.renderRaceFeatures(view.origin,1/60);
+ const points=q.ghostRun.points,t=q.elapsed;let cursor=0;while(cursor<points.length-2&&points[cursor+1][0]<t)cursor++;
+ const a=points[cursor],b=points[cursor+1],u=Math.max(0,Math.min(1,(t-a[0])/(b[0]-a[0]||1)));
+ assert(Math.abs(q.ghostPose.s-(a[1]+(b[1]-a[1])*u))<1e-9);
+ if(u>0&&u<1&&b[1]!==a[1])interpolatedFrames++;
+ q.drawSoftware(view);
+}
+assert(interpolatedFrames>30,'real ghost advances between recorded samples in both consumers');
+q.state='paused';q.renderRaceFeatures(q.sceneFrame(0,1/60).origin,1/60);assert.equal(q.ghostPose,null);
 // Actual local AI races: final HUD must match the sorted results, not equal endpoint s.
 const raceResults=[];
 for(const id of Object.keys(q.tracks)){

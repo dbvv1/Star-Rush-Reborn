@@ -1,12 +1,12 @@
 let raceBots=[],demoDriving=false,assistedSteer=null,renderStats={drawCalls:0,triangles:0},raceDNF=false;
-let ghostRun=null,ghostNode=null,ghostCursor=0,ghostPoints=[],ghostClock=0,raceSplits=[],lapTimes=[],nextSector=1,nextLap=1,firstFinish=null,featureClock=0;
+let ghostRun=null,ghostNode=null,ghostPose=null,ghostCursor=0,ghostPoints=[],ghostClock=0,raceSplits=[],lapTimes=[],nextSector=1,nextLap=1,firstFinish=null,featureClock=0;
 const rivalNames=['Aoi / AI','Haru / AI','Rin / AI'],rivalPaint=['#f0a7c8','#b6a7e6','#f1cd90'];
 const routeArrowMeshes=['#a5dbe6','#f0b7c3'].map(col=>{const c=new Collector();bar(c,[-.6,.03,-.38],[.1,.03,0],.055,col);bar(c,[.1,.03,0],[-.6,.03,.38],.055,col);return c.finish()});
 const routeArrows=Array.from({length:9},()=>new Node(routeArrowMeshes[0]));for(const n of routeArrows)n.shadow=false;
 function ghostKey(){return 'star-rush-best-reborn-'+activeTrackId}
 function getBestGhost(){try{return JSON.parse(localStorage.getItem(ghostKey())||'null')}catch(e){return null}}
 function prepareRaceFeatures(){
- raceBots=[];raceDNF=false;firstFinish=null;ghostRun=getBestGhost();ghostCursor=0;ghostPoints=[];ghostClock=0;raceSplits=[];lapTimes=[];nextSector=1;nextLap=1;featureClock=0;
+ raceBots=[];raceDNF=false;firstFinish=null;ghostRun=getBestGhost();ghostPose=null;ghostCursor=0;ghostPoints=[];ghostClock=0;raceSplits=[];lapTimes=[];nextSector=1;nextLap=1;featureClock=0;
  $('resultGrid').replaceChildren();$('splitLabel').textContent='SECTOR 1 / 3';$('splitDelta').textContent='';$('lapTimeLabel').textContent='';$('coach').hidden=eventType!=='practice';
  if(raceMode==='circuit'&&eventType==='race'&&!net.room){player.l=-1.8;for(let i=0;i<3;i++){const model=cloneCar(i);model.root.tint=rivalPaint[i];raceBots.push({s:-3.8*Math.floor((i+1)/2),l:(i%2?1:-1)*1.9,speed:0,yaw:0,color:rivalPaint[i],name:rivalNames[i],node:model.root,finishAt:null,index:i})}}
  if(ghostRun&&settings.ghost&&raceMode==='circuit'&&eventType==='timeTrial'&&!net.room){ghostNode=cloneCar(3).root;ghostNode.tint='#b8e9e6';ghostNode.opacity=.27}else ghostNode=null;
@@ -72,8 +72,9 @@ function completeRaceFeatures(){
  $('coach').hidden=true;
 }
 function renderRaceFeatures(origin,dt){
+ ghostPose=null;
  for(const bot of raceBots){const rr=road(bot.s);bot.node.local=trs(sub(atRoad(bot.s,bot.l,.07),origin),[.97,.97,.97],[0,-rr.h-bot.yaw,Math.atan(rr.slope)]);world.add(bot.node);for(let i=0;i<tires.length;i++){const w=tires[i];bot.node.children[2+i].local=mm(translation(w.x,.41,w.z),rz(-bot.s/.4))}}
- if(ghostNode&&ghostRun?.points?.length&&state==='running'){const points=ghostRun.points,t=raceClock();while(ghostCursor<points.length-2&&points[ghostCursor+1][0]<t)ghostCursor++;const a=points[ghostCursor],b=points[ghostCursor+1],u=clamp((t-a[0])/(b[0]-a[0]||1),0,1),s=mix(a[1],b[1],u),l=mix(a[2],b[2],u),yaw=a[3]+wrapAngle(b[3]-a[3])*u;const rr=road(s);ghostNode.local=trs(sub(atRoad(s,l,.07+mix(a[4],b[4],u)),origin),[.97,.97,.97],[0,-rr.h-yaw,0]);world.add(ghostNode)}
+ if(ghostNode&&ghostRun?.points?.length&&state==='running'){const points=ghostRun.points,t=raceClock();while(ghostCursor<points.length-2&&points[ghostCursor+1][0]<t)ghostCursor++;const a=points[ghostCursor],b=points[ghostCursor+1],u=clamp((t-a[0])/(b[0]-a[0]||1),0,1),s=mix(a[1],b[1],u),l=mix(a[2],b[2],u),yaw=a[3]+wrapAngle(b[3]-a[3])*u;const jump=mix(a[4],b[4],u);ghostPose={s,l,yaw,jump};const rr=road(s);ghostNode.local=trs(sub(atRoad(s,l,.07+jump),origin),[.97,.97,.97],[0,-rr.h-yaw,0]);world.add(ghostNode)}
  if(settings.line&&state==='running')for(let i=0;i<routeArrows.length;i++){const s=player.s+12+i*9,rr=road(s),lane=clamp(rr.curv*80,-2.1,2.1),n=routeArrows[i];n.mesh=routeArrowMeshes[Math.abs(rr.curv)*player.speed>.95?1:0];n.local=trs(sub(atRoad(s,lane,.085),origin),[1,1,1],[0,-rr.h,0]);world.add(n)}
 }
 let frameDurations=[],perfClock=0,lastPerfTime=performance.now(),gamepadPrior={},gamepadConnected=false;
