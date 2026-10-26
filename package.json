@@ -6,7 +6,7 @@
     "db:generate": "drizzle-kit generate",
     "build": "python3 assemble.py",
     "dev": "node dev-server.mjs",
-    "test": "node --test tests/software-signboard.test.mjs tests/race-position.test.mjs tests/signboard-assets.test.mjs tests/hud.mjs tests/smoke-run.test.mjs tests/smoke-cleanup.test.mjs tests/smoke-launch.test.mjs tests/smoke-server.test.mjs tests/render-fallback.test.mjs tests/render-init.test.mjs tests/render-recovery.test.mjs tests/course-art.mjs tests/impact-audio.mjs tests/software-renderer.mjs tests/scene-authoring.test.mjs && node tests/rail-source-choice.mjs && node tests/signboard-source-choice.mjs && node tests/client.mjs && node tests/api.mjs",
+    "test": "node --test tests/race-time.test.mjs tests/software-signboard.test.mjs tests/race-position.test.mjs tests/signboard-assets.test.mjs tests/hud.mjs tests/smoke-run.test.mjs tests/smoke-cleanup.test.mjs tests/smoke-launch.test.mjs tests/smoke-server.test.mjs tests/render-fallback.test.mjs tests/render-init.test.mjs tests/render-recovery.test.mjs tests/course-art.mjs tests/impact-audio.mjs tests/software-renderer.mjs tests/scene-authoring.test.mjs && node tests/rail-source-choice.mjs && node tests/signboard-source-choice.mjs && node tests/client.mjs && node tests/api.mjs",
     "smoke": "node tests/smoke-run.mjs",
     "smoke:serve": "npm run build && node tests/smoke-server.mjs"
   },

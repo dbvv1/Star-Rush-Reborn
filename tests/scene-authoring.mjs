@@ -7,10 +7,13 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 const hash=x=>createHash('sha256').update(x).digest('hex');
 export const SOURCE='07e18395bff8a172f7d552ccae0f6cefe7458fce';
+// Original scene baseline; circuit's display-only formatter was amended later.
+// Exact hashes below remain authoritative; geometry/camera are unchanged.
+export const SOURCE_AMENDMENTS={'circuit.js':'formatTime centisecond carry only; no geometry or simulation changes'};
 export const SOURCE_HASHES={
   "engine.js": "baa90e01c1eee30ba88ee1316a7a390a168415826208f379b2b608c4b89d505a",
   "racer.js": "2f9286e0f53cdcae9a8333b3d97212fa53ad606de2ba985954ad1786071783e5",
-  "circuit.js": "c49a3e85cd36c1e914ee63ed4379dac2b936f6484b4e0e8b4a9db1409092d396",
+  "circuit.js": "6ad3b7570e24ea546c95004233ccf3eeedb6d14fbc386190cbb7dd79c0482082",
   "scenery.js": "18b92b39b2b6a7735bd524069d8c54ed8732ce8706cfd7e9b1916a0b9aa036da",
   "race.js": "73f8b7ced6ce28953cf8a87bb940e3b55485dbb7500cea0a638a9d764ce9dc98",
   "handling.js": "977f7a4f0228f26dc5402b213b6d79121bcc736f657fb9ad6766d0af0571bb4e"
@@ -36,7 +39,7 @@ src+=`routeSeed=73121;const cameras=[];for(const s of [60,85,115]){const r=road(
 const context={document:{getElementById:()=>({})},localStorage:{getItem:()=>null},performance:{now:()=>0},console,result:null};
 vm.runInNewContext(src,context,{timeout:60000});
 const d=context.result,geo=hash(JSON.stringify({meshes:d.meshes,objects:d.objects.map(o=>({mesh:o.mesh,m:o.m})),cameras:d.cameras}));
-const report={source:'07e18395bff8a172f7d552ccae0f6cefe7458fce',sourceHashes:SOURCE_HASHES,mode,objects:d.objects.length,meshes:d.meshes.length,taggedObjects:d.objects.filter(o=>o.author).length,geometryHash:geo,identityHash:hash(JSON.stringify(d.objects)),triangles:d.meshes.reduce((n,m)=>n+m.indices.length/3,0),cameraSourceHash:hash(camblock),scope:'Six original chunkMesh calls k=0..5, fixed original coast seed 73121; same localRand and entity generation consume random draws before decorateChunk. Production sceneFrame camera block at rest, not full client or gameplay.'};
+const report={source:SOURCE,sourceAmendments:SOURCE_AMENDMENTS,sourceHashes:SOURCE_HASHES,mode,objects:d.objects.length,meshes:d.meshes.length,taggedObjects:d.objects.filter(o=>o.author).length,geometryHash:geo,identityHash:hash(JSON.stringify(d.objects)),triangles:d.meshes.reduce((n,m)=>n+m.indices.length/3,0),cameraSourceHash:hash(camblock),scope:'Six original chunkMesh calls k=0..5, fixed original coast seed 73121; same localRand and entity generation consume random draws before decorateChunk. Production sceneFrame camera block at rest, not full client or gameplay.'};
 assert.equal(new Set(d.objects.map(o=>o.id)).size,d.objects.length);
 write(join(output,mode+'-report.json'),JSON.stringify(report,null,2));
 if(mode!=='raw')write(join(output,(mode==='candidate'?'candidate':'baseline')+'.json'),JSON.stringify({report,...d}));

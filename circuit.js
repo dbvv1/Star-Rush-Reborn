@@ -23,7 +23,7 @@ rebuildCircuit();
 function circuitRoad(s){const u=((s%CIRCUIT_LENGTH)+CIRCUIT_LENGTH)%CIRCUIT_LENGTH;let lo=0,hi=circuitSamples.length-1;while(lo+1<hi){const m=(lo+hi)>>1;if(circuitSamples[m].s<=u)lo=m;else hi=m}const a=circuitSamples[lo],b=circuitSamples[hi],t=(u-a.s)/(b.s-a.s||1),dh=Math.atan2(Math.sin(b.h-a.h),Math.cos(b.h-a.h)),h=a.h+dh*t;return {p:a.p.map((v,i)=>mix(v,b.p[i],t)),h,T:[Math.cos(h),0,Math.sin(h)],R:[-Math.sin(h),0,Math.cos(h)],curv:dh/(b.s-a.s),slope:(b.p[1]-a.p[1])/(b.s-a.s)}}
 function courseDelta(a,b){let d=a-b;if(raceMode==='circuit')d-=Math.round(d/CIRCUIT_LENGTH)*CIRCUIT_LENGTH;return d}
 function raceClock(){return elapsed+(player.timePenalty||0)}
-function formatTime(seconds){const m=Math.floor(seconds/60),s=seconds-m*60;return String(m).padStart(2,'0')+':'+s.toFixed(2).padStart(5,'0')}
+function formatTime(seconds){const cs=Math.round(seconds*100),m=Math.floor(cs/6000),s=Math.floor(cs%6000/100),fraction=cs%100;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+String(fraction).padStart(2,'0')}
 function sceneryClear(s,l){if(raceMode!=='circuit')return true;const p=add(circuitRoad(s).p,mul(circuitRoad(s).R,l));for(let i=0;i<circuitSamples.length;i+=20){const a=circuitSamples[i];if(Math.abs(courseDelta(a.s,s))>35&&Math.hypot(a.p[0]-p[0],a.p[2]-p[2])<15)return false}return true}
 // 2D rigid-body contacts on the road plane, with height rejection for jumps.
 // Shape normals, penetration, mass, restitution, friction and angular impulses
