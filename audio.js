@@ -10,8 +10,9 @@ function audioInit(){if(audio)return;try{
  audio={ctx,master,engine1,engine2,sub,engineGain,engineFilter,noise,wind,tire,turbo,oldSpeed:0,oldBoost:false,gear:0};
  if(Object.keys(railImpactUrls).length){audio.rail=createRailImpactPlayer(ctx,master,railImpactUrls);void audio.rail.load();}
 }catch(e){}}
-function tone(freq=620,duration=.10){if(!sound||!audio)return;const {ctx,master}=audio,o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(freq,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(freq*1.28,ctx.currentTime+duration);g.gain.setValueAtTime(.07,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+duration);o.connect(g);g.connect(master);o.start();o.stop(ctx.currentTime+duration+.02)}
-// Drop one-shot collisions during audio interruption; never queue them for a later resume.
+function tone(freq=620,duration=.10){if(!sound||!audio||audio.ctx.state!=='running')return;const {ctx,master}=audio,o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(freq,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(freq*1.28,ctx.currentTime+duration);g.gain.setValueAtTime(.07,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+duration);o.connect(g);g.connect(master);o.start();o.stop(ctx.currentTime+duration+.02)}
+// One-shot game feedback is dropped while audio is interrupted, never queued for resume.
+// Persistent engine/music layers keep their separate lifecycle.
 function impactSound(kind,speed){if(!sound||!audio||audio.ctx.state!=='running')return;if(kind==='rail'&&audio.rail?.play(speed))return;const {ctx,master,noise}=audio,src=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),g=ctx.createGain(),t=ctx.currentTime;src.buffer=noise;filter.type='bandpass';filter.frequency.value=kind==='rail'?1400:kind==='cone'?450:700;filter.Q.value=kind==='rail'?1.5:.6;g.gain.setValueAtTime(Math.min(.3,.035+speed*.018),t);g.gain.exponentialRampToValueAtTime(.001,t+.16);src.connect(filter);filter.connect(g);g.connect(master);src.start();src.stop(t+.20);if(kind==='rail'){const o=ctx.createOscillator(),gain=ctx.createGain();o.type='triangle';o.frequency.setValueAtTime(330,t);o.frequency.exponentialRampToValueAtTime(140,t+.15);gain.gain.setValueAtTime(.07,t);gain.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(gain);gain.connect(master);o.start();o.stop(t+.21)}}
 function updateAudio(){if(!audio)return;const a=audio,t=a.ctx.currentTime,running=state==='running',speed=player.speed,gear=Math.min(5,Math.floor(speed/9)),rpm=48+speed*2.2+(speed%9)*5;
  if(!running||!sound||musicSettings.sfxVolume<=0)a.rail?.stop();
@@ -26,7 +27,7 @@ function updateAudio(){if(!audio)return;const a=audio,t=a.ctx.currentTime,runnin
  if(running&&player.boostActive&&!a.oldBoost)tone(340,.17);a.oldBoost=player.boostActive;a.oldSpeed=speed;
 }
 function jetSound(kind){
- if(!sound||!audio)return;const {ctx,master,noise}=audio,t=ctx.currentTime,src=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain(),long=kind==='nitro'||kind==='combo',duration=long?.48:kind==='drift'?.12:.23;
+ if(!sound||!audio||audio.ctx.state!=='running')return;const {ctx,master,noise}=audio,t=ctx.currentTime,src=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain(),long=kind==='nitro'||kind==='combo',duration=long?.48:kind==='drift'?.12:.23;
  src.buffer=noise;filter.type=kind==='land'?'lowpass':'bandpass';filter.Q.value=.75;filter.frequency.setValueAtTime(kind==='land'?300:long?650:1500,t);filter.frequency.exponentialRampToValueAtTime(long?5500:700,t+duration);gain.gain.setValueAtTime(.001,t);gain.gain.linearRampToValueAtTime(long?.19:.10,t+.025);gain.gain.exponentialRampToValueAtTime(.001,t+duration);src.connect(filter);filter.connect(gain);gain.connect(master);src.start();src.stop(t+duration+.03);
  if(kind==='combo'||kind==='small')tone(kind==='combo'?1080:820,.08);
 }

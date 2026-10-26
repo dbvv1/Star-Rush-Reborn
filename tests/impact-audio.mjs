@@ -67,6 +67,26 @@ test('hashed PCM files and exact Worker routes survive packaging; reject corrupt
  const dir=mkdtempSync(join(tmpdir(),'rail-audio-test-'));try{cpSync('assets/impact-audio',dir,{recursive:true});writeFileSync(join(dir,'runtime/rail-light-v2.wav'),'broken');assert.throws(()=>loadImpactAssets(dir));rmSync(join(dir,'runtime/rail-light-v2.wav'));assert.throws(()=>loadImpactAssets(dir));}finally{rmSync(dir,{recursive:true,force:true})}
 });
 
+test('all one-shot feedback drops unavailable events and resumes only fresh running events',()=>{
+ const source=readFileSync('audio.js','utf8');const starts=[],stops=[];let resumes=0,samples=0;
+ const param={setValueAtTime(){},exponentialRampToValueAtTime(){},linearRampToValueAtTime(){}};
+ const node=()=>({frequency:param,gain:param,Q:{},connect(){},start(){starts.push(ctx.currentTime)},stop(at){stops.push(at)}});
+ const ctx={state:'suspended',currentTime:10,createOscillator:node,createGain:node,createBufferSource:node,createBiquadFilter:node,resume(){resumes++;return Promise.resolve()}};
+ const context={context:ctx,rail:{play(){samples++;return false}}};vm.createContext(context);
+ vm.runInContext(source+';audio={ctx:context,master:{},noise:{},rail};',context);
+ // tone is shared by menu confirmation, countdown, coin, ready and finish cues.
+ const cues=()=>{context.tone(400,.12);for(const kind of ['drift','land','small','nitro','combo'])context.jetSound(kind);for(const kind of ['rail','cone','barrier'])context.impactSound(kind,2)};
+ for(const state of ['suspended','interrupted','closed']){ctx.state=state;cues()}
+ assert.equal(starts.length,0);assert.equal(samples,0);assert.equal(resumes,0);
+ ctx.state='running';ctx.currentTime=20;assert.equal(starts.length,0,'state change does not replay old cues');cues();
+ assert.equal(starts.length,12,'one tone, five jets/two companion tones, and four impact voices');
+ assert(starts.every(at=>at===20));assert.equal(stops.length,12);assert(stops.every(at=>at>20&&at<=20.51));assert.equal(samples,1);
+ vm.runInContext('sound=false',context);cues();assert.equal(starts.length,12);
+ vm.runInContext('sound=true',context);ctx.state='interrupted';cues();assert.equal(starts.length,12);
+ ctx.state='running';ctx.currentTime=30;context.jetSound('small');assert.deepEqual(starts.slice(-2),[30,30]);
+ assert.equal(resumes,0,'event helpers never force audio resume');
+});
+
 test('explicit procedural selection initializes original audio without constructing or loading sample player',()=>{
  const source=readFileSync('audio.js','utf8');let players=0;
  const param=()=>({value:0});
