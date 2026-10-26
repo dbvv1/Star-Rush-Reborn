@@ -22,9 +22,9 @@ async function environment(model,instrumented){
  Object.defineProperties(w.HTMLElement.prototype,{clientWidth:{get(){return 1280}},clientHeight:{get(){return 720}}});
  for(const [k,v]of stored)w.localStorage.setItem(k,v);
  w.document.write(readFileSync('game-shell.html','utf8').replace('<!--GAME_SCRIPT-->','').replace(/<iframe[^>]*id="spotifyPlayer"[^>]*><\/iframe>/g,'<div id="spotifyPlayer"></div>'));
- const hooks=`window.entryQA={start,finish,goHome,chooseMode,showBoard,loadBoard,roomRequest,localRuns,ghostKey,getBestGhost,get state(){return state},get mode(){return raceMode},get pending(){return pendingRun}};`;
+ const hooks=`window.entryQA={renderingOptions,start,finish,goHome,chooseMode,showBoard,loadBoard,roomRequest,localRuns,ghostKey,getBestGhost,get state(){return state},get mode(){return raceMode},get pending(){return pendingRun}};`;
  const code=instrumented?(await build({stdin:{contents:clientSource(hooks,model),resolveDir:process.cwd()},bundle:true,write:false,format:'iife',target:'es2022',logLevel:'silent'})).outputFiles[0].text:readFileSync(model==='road'?'dist/client/road/game.js':'dist/client/game.js','utf8');
- w.eval(code);assert.deepEqual(errors,[]);assert.equal(w.document.querySelector('#error').hidden,true);
+ w.eval(code);if(instrumented)assert.deepEqual(JSON.parse(JSON.stringify(w.entryQA.renderingOptions)),model==='road'?{shading:'lambert',hemisphereIntensity:.7}:{shading:'toon',hemisphereIntensity:2.2});assert.deepEqual(errors,[]);assert.equal(w.document.querySelector('#error').hidden,true);
  assert.equal(w.document.querySelector('#drivingProfileLink').getAttribute('href'),model==='road'?'/':'/road');
  return {w,q:w.entryQA,requests};
 }
