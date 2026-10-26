@@ -8,7 +8,8 @@ const window=new Window({url:'https://race.test/',settings:{disableIframePageLoa
 window.console.error=(...args)=>errors.push(args.map(String).join(' '));
 window.requestAnimationFrame=fn=>{frames.push(fn);return frames.length};window.cancelAnimationFrame=()=>{};
 window.fetch=async()=>new Response(JSON.stringify({runs:[]}),{headers:{'content-type':'application/json'}});
-const ctx=new Proxy({createLinearGradient:()=>({addColorStop(){}}),measureText:()=>({width:10})},{get:(o,k)=>k in o?o[k]:(...args)=>{assert(args.filter(x=>typeof x==='number').every(Number.isFinite),'nonfinite canvas '+String(k));draws++},set:(o,k,v)=>{o[k]=v;return true}});
+const softwarePaint=new Set();
+const ctx=new Proxy({createLinearGradient:()=>({addColorStop(){}}),measureText:()=>({width:10})},{get:(o,k)=>k in o?o[k]:(...args)=>{assert(args.filter(x=>typeof x==='number').every(Number.isFinite),'nonfinite canvas '+String(k));draws++},set:(o,k,v)=>{if(k==='fillStyle')softwarePaint.add(v);o[k]=v;return true}});
 window.HTMLCanvasElement.prototype.getContext=function(type){return type==='2d'?ctx:null};
 Object.defineProperties(window.HTMLElement.prototype,{clientWidth:{get(){return 1280}},clientHeight:{get(){return 720}}});
 window.document.write(readFileSync('game-shell.html','utf8').replace('<!--GAME_SCRIPT-->','').replace(/<iframe[^>]*id="spotifyPlayer"[^>]*><\/iframe>/g,'<div id="spotifyPlayer"></div>'));
@@ -20,7 +21,7 @@ assert(frames.length);frames.shift()(16.67);assert(draws>100);assert.equal(error
 await window.happyDOM.close();
 const w=new Window({url:'https://race.test/',settings:{disableIframePageLoading:true,handleDisabledFileLoadingAsSuccess:true}});w.console.error=(...a)=>errors.push(a.map(String).join(' '));w.requestAnimationFrame=()=>1;w.fetch=window.fetch;w.HTMLCanvasElement.prototype.getContext=window.HTMLCanvasElement.prototype.getContext;
 Object.defineProperties(w.HTMLElement.prototype,{clientWidth:{get(){return 1280}},clientHeight:{get(){return 720}}});w.document.write(readFileSync('game-shell.html','utf8').replace('<!--GAME_SCRIPT-->','').replace(/<iframe[^>]*id="spotifyPlayer"[^>]*><\/iframe>/g,'<div id="spotifyPlayer"></div>'));
-const hooks=`\nwindow.qa={player,input,controlEdges,VehicleModel,physics,resolveContacts,beginDrift,endDrift,reset,start,finish,pauseGame,goHome,prepareRaceFeatures,updateRaceFeatures,updateHUD,updateCoach,routePreview,updateDrivingAssists,refreshControls,road,atRoad,trackInfo,raceDistance,sceneFrame,renderRaceFeatures,frame,get state(){return state},get elapsed(){return elapsed},get bots(){return raceBots},get chunks(){return chunks},renderList(){drawList.length=0;collect(world);return drawList},signboardConsumers(){const result=[];for(const id of Object.keys(TRACKS)){activeTrackId=id;rebuildCircuit();routeSeed=id==='coast-reborn'?73121:95276;const directions=['left','right'];for(let k=0;k<Math.ceil(CIRCUIT_LENGTH/40);k++){const chunk=chunkMesh(k);function walk(n){for(const direction of directions)if(n.mesh===scenicProp(direction))result.push({track:id,k,direction,data:Array.from(n.mesh.sourceData),indices:Array.from(n.mesh.sourceIndices)});n.children.forEach(walk)}walk(chunk.node)}}activeTrackId='coast-reborn';reset(false);return result},get settings(){return settings},get profile(){return profile},get ghostNode(){return ghostNode},get ghostRun(){return ghostRun},get splits(){return raceSplits},get circuitSamples(){return circuitSamples},set state(v){state=v},set event(v){eventType=v},set demo(v){demoDriving=v},set assisted(v){assistedSteer=v},choose(id){activeTrackId=id;raceMode='circuit';reset(false)},get tracks(){return TRACKS},clearKeys};`;
+const hooks=`\nwindow.qa={drawSoftware,player,input,controlEdges,VehicleModel,physics,resolveContacts,beginDrift,endDrift,reset,start,finish,pauseGame,goHome,prepareRaceFeatures,updateRaceFeatures,updateHUD,updateCoach,routePreview,updateDrivingAssists,refreshControls,road,atRoad,trackInfo,raceDistance,sceneFrame,renderRaceFeatures,frame,get state(){return state},get elapsed(){return elapsed},get bots(){return raceBots},get chunks(){return chunks},renderList(){drawList.length=0;collect(world);return drawList},signboardConsumers(){const result=[];for(const id of Object.keys(TRACKS)){activeTrackId=id;rebuildCircuit();routeSeed=id==='coast-reborn'?73121:95276;const directions=['left','right'];for(let k=0;k<Math.ceil(CIRCUIT_LENGTH/40);k++){const chunk=chunkMesh(k);function walk(n){for(const direction of directions)if(n.mesh===scenicProp(direction))result.push({track:id,k,direction,data:Array.from(n.mesh.sourceData),indices:Array.from(n.mesh.sourceIndices)});n.children.forEach(walk)}walk(chunk.node)}}activeTrackId='coast-reborn';reset(false);return result},get settings(){return settings},get profile(){return profile},get ghostNode(){return ghostNode},get ghostRun(){return ghostRun},get splits(){return raceSplits},get circuitSamples(){return circuitSamples},set state(v){state=v},set event(v){eventType=v},set demo(v){demoDriving=v},set assisted(v){assistedSteer=v},choose(id){activeTrackId=id;raceMode='circuit';reset(false)},get tracks(){return TRACKS},clearKeys};`;
 const compiled=await build({stdin:{contents:clientSource(hooks),resolveDir:process.cwd(),loader:'js'},bundle:true,write:false,format:'iife',target:'es2022',logLevel:'silent'});w.eval(compiled.outputFiles[0].text);assert.equal(errors.length,0,errors.join('\n'));const q=w.qa;assert(q,'initialization must reach QA hooks');
 // Compare actual assembled-client consumers with the offline authored meshes.
 execFileSync(process.execPath,['authoring/signboard/export.mjs'],{stdio:'pipe'});
@@ -29,6 +30,15 @@ const signVariant=process.env.STAR_RUSH_SIGNBOARD_VARIANT??'baseline';
 const signs=q.signboardConsumers();assert.equal(signs.length,42);
 for(const sign of signs){const expected=authored.meshes.find(m=>m.id===signVariant+'-'+sign.direction);assert(expected);assert.deepEqual(Array.from(sign.data),Array.from(new Float32Array(expected.data)));assert.deepEqual(Array.from(sign.indices),expected.indices)}
 console.log('Signboard client consumers matched authored variant:',signVariant,signs.length);
+// Existing software renderer must consume those same signs at actual course positions.
+for(const [track,s] of [['coast-reborn',385],['coast-reborn',625],['sakura-reborn',505],['academy-reborn',225]]){
+ q.choose(track);q.state='running';q.player.s=s;q.player.prevPose=null;
+ const view=q.sceneFrame(0,1/60);q.renderList();softwarePaint.clear();q.drawSoftware(view);
+ const expected=signVariant==='baseline'?'rgb(189,143,175)':'rgb(65,88,115)';
+ assert(softwarePaint.has(expected),track+' '+s+' must draw the actual sign arrow color');
+}
+q.choose('coast-reborn');q.state='ready';
+
 // A new countdown must not retain the previous track, sector or coaching text.
 // Seed the stale HUD via the real feature update, then start without advancing a frame.
 const hud=id=>w.document.getElementById(id);

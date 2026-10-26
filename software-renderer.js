@@ -15,6 +15,36 @@ function softwareHouseAnchors(s,length,closed){
  }
  return anchors;
 }
+const softwareSignColors=new WeakMap();
+// Only existing directional sign meshes, using their actual scene transforms.
+// This is a bounded compatibility consumer, not a general mesh renderer.
+function softwareSignboards(items,meshes,project,w,h){
+ const selected=[];
+ for(const item of items){
+  if(!meshes.includes(item.mesh))continue;
+  const q=project(transform(item.m,[0,2.28,0]));
+  if(!q||q[2]>150||q[0]<-q[3]*3||q[0]>w+q[3]*3||q[1]<-q[3]*3||q[1]>h+q[3]*3)continue;
+  selected.push({item,q});
+ }
+ return selected.sort((a,b)=>a.q[2]-b.q[2]).slice(0,6).map(({item,q})=>{
+  const mesh=item.mesh,data=mesh.sourceData,indices=mesh.sourceIndices,points=[];
+  for(let i=0;i<data.length;i+=10)points.push(project(transform(item.m,[data[i],data[i+1],data[i+2]])));
+  let colors=softwareSignColors.get(mesh);
+  if(!colors){colors=[];for(let i=0;i<indices.length;i+=3){const at=indices[i]*10+6;colors.push('rgb('+[0,1,2].map(j=>Math.round(Math.pow(data[at+j],1/2.2)*255)).join(',')+')')}softwareSignColors.set(mesh,colors)}
+  const triangles=[];
+  for(let i=0;i<indices.length;i+=3){
+   const p=[points[indices[i]],points[indices[i+1]],points[indices[i+2]]];
+   // Match the existing near-plane policy: do not draw a partially invalid face.
+   if(p.some(v=>!v))continue;
+   triangles.push({p,color:colors[i/3],depth:(p[0][2]+p[1][2]+p[2][2])/3});
+  }
+  triangles.sort((a,b)=>b.depth-a.depth);
+  return {kind:'sign',q,triangles};
+ });
+}
+function drawSoftwareSign(ctx,sign){
+ for(const {p,color} of sign.triangles){ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);ctx.lineTo(p[1][0],p[1][1]);ctx.lineTo(p[2][0],p[2][1]);ctx.closePath();ctx.fill()}
+}
 function drawSoftware(view){
  const ctx=softwareContext,w=canvas.width,h=canvas.height;ctx.setTransform(1,0,0,1,0,0);
  const gradient=ctx.createLinearGradient(0,0,0,h);gradient.addColorStop(0,'#96c8ee');gradient.addColorStop(.62,'#f2e6ee');gradient.addColorStop(.63,'#cbd8c1');gradient.addColorStop(1,'#bdcdb8');ctx.fillStyle=gradient;ctx.fillRect(0,0,w,h);
@@ -24,13 +54,14 @@ function drawSoftware(view){
  const absolute=p=>sub(p,view.origin),quads=[];
  for(let ds=-40;ds<240;ds+=5){const ss=player.s+ds,r0=road(ss),r1=road(ss+5);quads.push({d:ds,a:r0,b:r1})}
  for(const q of quads.reverse()){const pt=(r,l,y)=>absolute(add(add(r.p,mul(r.R,l)),[0,y,0]));surface([pt(q.a,-10,.0),pt(q.a,10,0),pt(q.b,10,0),pt(q.b,-10,0)],'#e3dce5');surface([pt(q.a,-7,.05),pt(q.a,7,.05),pt(q.b,7,.05),pt(q.b,-7,.05)],'#7b829a');if(Math.floor(q.d/5)%2===0)for(const l of [-2.3,2.3])surface([pt(q.a,l-.04,.06),pt(q.a,l+.04,.06),pt(q.b,l+.04,.06),pt(q.b,l-.04,.06)],'#e9edf1');for(const side of [-1,1])surface([pt(q.a,side*8.1,.4),pt(q.a,side*8.1,.8),pt(q.b,side*8.1,.8),pt(q.b,side*8.1,.4)],'#c0cfe2')}
+ const signs=typeof drawList!=='undefined'&&typeof scenicCache!=='undefined'?softwareSignboards(drawList,[scenicCache.get('left'),scenicCache.get('right')],project,w,h):[];
  if(typeof softwareHouseAnchorsEnabled!=='undefined'&&softwareHouseAnchorsEnabled){
- const decorations=[];for(let ds=0;ds<210;ds+=20)for(const side of [-1,1]){const pos=atRoad(Math.floor((player.s+ds)/20)*20,side*12,0),q=project(absolute(pos));if(q)decorations.push({q,side,ds,pos,kind:'tree'})}
+ const decorations=[...signs];for(let ds=0;ds<210;ds+=20)for(const side of [-1,1]){const pos=atRoad(Math.floor((player.s+ds)/20)*20,side*12,0),q=project(absolute(pos));if(q)decorations.push({q,side,ds,pos,kind:'tree'})}
  for(const anchor of softwareHouseAnchors(player.s,CIRCUIT_LENGTH,raceMode==='circuit'))for(const side of [-1,1]){const q=project(absolute(atRoad(anchor.s,side*20,0)));if(q)decorations.push({q,kind:'house'})}
- for(const x of decorations.sort((a,b)=>b.q[2]-a.q[2])){const [px,py,,sc]=x.q;if(x.kind==='tree'){ctx.fillStyle='#a78a95';ctx.fillRect(px-sc*.12,py-sc*3.5,sc*.24,sc*3.5);for(let j=0;j<4;j++){ctx.fillStyle=j%2?'#ffdaeb':'#efbbd4';ctx.beginPath();ctx.ellipse(px+Math.sin(j*2)*sc,py-sc*(3.3+j*.3),sc*1.6,sc*1.1,0,0,TAU);ctx.fill()}}else{const p=x.q;ctx.fillStyle='#f3e9dc';ctx.fillRect(p[0]-p[3]*3,p[1]-p[3]*5,p[3]*6,p[3]*5);ctx.fillStyle='#90a1c2';ctx.beginPath();ctx.moveTo(p[0]-p[3]*3.5,p[1]-p[3]*5);ctx.lineTo(p[0],p[1]-p[3]*6.3);ctx.lineTo(p[0]+p[3]*3.5,p[1]-p[3]*5);ctx.fill();ctx.fillStyle='#b1d9e5';for(let j=0;j<3;j++)ctx.fillRect(p[0]+(j-1.2)*p[3]*1.5,p[1]-p[3]*3.9,p[3],p[3]*1.2)}}
+ for(const x of decorations.sort((a,b)=>b.q[2]-a.q[2])){if(x.kind==='sign'){drawSoftwareSign(ctx,x);continue}const [px,py,,sc]=x.q;if(x.kind==='tree'){ctx.fillStyle='#a78a95';ctx.fillRect(px-sc*.12,py-sc*3.5,sc*.24,sc*3.5);for(let j=0;j<4;j++){ctx.fillStyle=j%2?'#ffdaeb':'#efbbd4';ctx.beginPath();ctx.ellipse(px+Math.sin(j*2)*sc,py-sc*(3.3+j*.3),sc*1.6,sc*1.1,0,0,TAU);ctx.fill()}}else{const p=x.q;ctx.fillStyle='#f3e9dc';ctx.fillRect(p[0]-p[3]*3,p[1]-p[3]*5,p[3]*6,p[3]*5);ctx.fillStyle='#90a1c2';ctx.beginPath();ctx.moveTo(p[0]-p[3]*3.5,p[1]-p[3]*5);ctx.lineTo(p[0],p[1]-p[3]*6.3);ctx.lineTo(p[0]+p[3]*3.5,p[1]-p[3]*5);ctx.fill();ctx.fillStyle='#b1d9e5';for(let j=0;j<3;j++)ctx.fillRect(p[0]+(j-1.2)*p[3]*1.5,p[1]-p[3]*3.9,p[3],p[3]*1.2)}}
  }else{
- const decorations=[];for(let ds=0;ds<210;ds+=20)for(const side of [-1,1]){const pos=atRoad(Math.floor((player.s+ds)/20)*20,side*12,0),q=project(absolute(pos));if(q)decorations.push({q,side,ds,pos})}
- for(const x of decorations.sort((a,b)=>b.q[2]-a.q[2])){const [px,py,,sc]=x.q;ctx.fillStyle='#a78a95';ctx.fillRect(px-sc*.12,py-sc*3.5,sc*.24,sc*3.5);for(let j=0;j<4;j++){ctx.fillStyle=j%2?'#ffdaeb':'#efbbd4';ctx.beginPath();ctx.ellipse(px+Math.sin(j*2)*sc,py-sc*(3.3+j*.3),sc*1.6,sc*1.1,0,0,TAU);ctx.fill()}if(x.ds%40===0){const p=project(absolute(atRoad(player.s+x.ds,x.side*20,0)));if(p){ctx.fillStyle='#f3e9dc';ctx.fillRect(p[0]-p[3]*3,p[1]-p[3]*5,p[3]*6,p[3]*5);ctx.fillStyle='#90a1c2';ctx.beginPath();ctx.moveTo(p[0]-p[3]*3.5,p[1]-p[3]*5);ctx.lineTo(p[0],p[1]-p[3]*6.3);ctx.lineTo(p[0]+p[3]*3.5,p[1]-p[3]*5);ctx.fill();ctx.fillStyle='#b1d9e5';for(let j=0;j<3;j++)ctx.fillRect(p[0]+(j-1.2)*p[3]*1.5,p[1]-p[3]*3.9,p[3],p[3]*1.2)}}}
+ const decorations=[...signs];for(let ds=0;ds<210;ds+=20)for(const side of [-1,1]){const pos=atRoad(Math.floor((player.s+ds)/20)*20,side*12,0),q=project(absolute(pos));if(q)decorations.push({q,side,ds,pos})}
+ for(const x of decorations.sort((a,b)=>b.q[2]-a.q[2])){if(x.kind==='sign'){drawSoftwareSign(ctx,x);continue}const [px,py,,sc]=x.q;ctx.fillStyle='#a78a95';ctx.fillRect(px-sc*.12,py-sc*3.5,sc*.24,sc*3.5);for(let j=0;j<4;j++){ctx.fillStyle=j%2?'#ffdaeb':'#efbbd4';ctx.beginPath();ctx.ellipse(px+Math.sin(j*2)*sc,py-sc*(3.3+j*.3),sc*1.6,sc*1.1,0,0,TAU);ctx.fill()}if(x.ds%40===0){const p=project(absolute(atRoad(player.s+x.ds,x.side*20,0)));if(p){ctx.fillStyle='#f3e9dc';ctx.fillRect(p[0]-p[3]*3,p[1]-p[3]*5,p[3]*6,p[3]*5);ctx.fillStyle='#90a1c2';ctx.beginPath();ctx.moveTo(p[0]-p[3]*3.5,p[1]-p[3]*5);ctx.lineTo(p[0],p[1]-p[3]*6.3);ctx.lineTo(p[0]+p[3]*3.5,p[1]-p[3]*5);ctx.fill();ctx.fillStyle='#b1d9e5';for(let j=0;j<3;j++)ctx.fillRect(p[0]+(j-1.2)*p[3]*1.5,p[1]-p[3]*3.9,p[3],p[3]*1.2)}}}
  }
  for(const mark of skids)if(mark.life>0){const q=project(absolute(mark.p));if(q){ctx.fillStyle='#414957';ctx.fillRect(q[0],q[1],Math.max(1,q[3]*.12),Math.max(2,q[3]*mark.length))}}
  for(const ch of chunks.values())for(const e of ch.entities){if(Math.abs(courseDelta(e.s,player.s))>170)continue;const q=project(absolute(atRoad(e.s+(e.ds||0),e.l+(e.dl||0),.2)));if(!q||e.kind==='coin'&&e.hitLap===Math.max(0,Math.floor(player.s/CIRCUIT_LENGTH)))continue;const [x,y,,sc]=q;if(e.kind==='coin'){ctx.fillStyle='#ffe2a0';ctx.beginPath();ctx.ellipse(x,y-sc*.8,sc*.25,sc*.38,0,0,TAU);ctx.fill()}else if(e.kind==='pad'){const r=road(e.s),p=(ds,l)=>absolute(atRoad(e.s+ds,e.l+l,.07));surface([p(-1.2,-1.5),p(1.2,-1.5),p(1.2,1.5),p(-1.2,1.5)],'#92e3e5')}else if(e.kind==='ramp'){const p=(ds,l,y)=>absolute(atRoad(e.s+ds,e.l+l,y));surface([p(-1.4,-1.5,.08),p(1.4,-1.5,.85),p(1.4,1.5,.85),p(-1.4,1.5,.08)],'#bfa9e3')}else if(e.kind==='cone'){ctx.fillStyle='#eebd92';ctx.beginPath();ctx.moveTo(x,y-sc*.8);ctx.lineTo(x-sc*.35,y);ctx.lineTo(x+sc*.35,y);ctx.fill()}else if(e.kind==='barrier'){ctx.fillStyle='#edacbb';ctx.fillRect(x-sc,y-sc*.7,sc*2,sc*.7)}}
