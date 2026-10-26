@@ -25,7 +25,7 @@ function makeHUD(bindings=bindingSource){
  path.attrs.d=shell.match(/id="turnArrowPath" d="([^"]+)"/)[1];
  // Fail if an update accidentally returns to replacing the SVG with font text.
  Object.defineProperty($('turnArrow'),'textContent',{set(){throw Error('SVG must not be replaced by text')}});
- const context={$,player:{s:0,score:0,coins:0,speed:0,nitro:1,nitroTime:0,energy:0,smallJets:0,driftCharge:0},document:{querySelectorAll:()=>[]},formatTime:()=> '00:00.00',raceClock:()=>0,raceMode:'circuit',trackInfo:()=>({laps:1}),CIRCUIT_LENGTH:100,raceDistance:()=>100,eventType:'timeTrial',net:{room:null},road:s=>({h:s===62?context.turn:0,curv:0}),turn:0,wrapAngle:x=>x,districtAt:()=>({name:'汐见海岸'}),minimap(){}};
+ const context={roadDriving:false,$,player:{s:0,score:0,coins:0,speed:0,nitro:1,nitroTime:0,energy:0,smallJets:0,driftCharge:0},document:{querySelectorAll:()=>[]},formatTime:()=> '00:00.00',raceClock:()=>0,raceMode:'circuit',trackInfo:()=>({laps:1}),CIRCUIT_LENGTH:100,raceDistance:()=>100,eventType:'timeTrial',net:{room:null},road:s=>({h:s===62?context.turn:0,curv:0}),turn:0,wrapAngle:x=>x,districtAt:()=>({name:'汐见海岸'}),minimap(){}};
  vm.createContext(context);
  vm.runInContext(bindings,context);
  vm.runInContext(routeSource,context);

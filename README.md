@@ -74,3 +74,15 @@ STAR_RUSH_SIGNBOARD_VARIANT=navy-v2 npm run build
 - [Forza 车辆物理说明](https://forza.net/news/forza-motorsport-drivatars-tire-physics)
 
 开发约定见 [AGENTS.md](AGENTS.md)，设计任务书见 [docs/brief.md](docs/brief.md)。
+
+### 同弯加速带对照
+
+`STAR_RUSH_COAST_FLOW=candidate npm run build` 构建海岸开局加速带编排候选；`unset STAR_RUSH_COAST_FLOW; npm run build` 恢复默认。`node tests/coast-flow-preview.mjs` 同时打开两个仅本机地址，选择练习再选择汐见海岸，以正常镜头驾驶；Ctrl+C 关闭。候选同时试验高速转向渐入及 Q／空格主动小喷，最大转弯能力与碰撞不变，尚未选为默认。
+
+### 驾驶声音对照
+
+`STAR_RUSH_DRIVING_AUDIO=sample-v1 npm run build` 使用录制引擎／轮胎循环，失败时各层独立回退；`unset STAR_RUSH_DRIVING_AUDIO; npm run build` 恢复原程序声。来源、许可、二改方法见 [驾驶声音素材](assets/driving-audio/README.md)。这不改变驾驶规则，音色与完整混音仍待实听比较。
+
+### 公路驾驶候选
+
+`STAR_RUSH_DRIVING_MODEL=road npm run build` 选择轻量车体／抓地模型；`unset STAR_RUSH_DRIVING_MODEL; npm run build` 恢复旧基线。W／↑ 油门、S／↓ 制动与低速倒车、A D 转向；没有氮气、小喷、金币、加速带和跳台，随机路障只作护栏外装饰。前轮角、侧滑与碰撞恢复来自同一车体状态，对手仍为使用同一车体／抓地模型的路线控制 AI。`node tests/road-driving-preview.mjs` 同时启动两个临时本机地址，Ctrl+C 关闭。仅为地平线方向的可回退候选，不表示手感已达到参照；请勿和旧 `STAR_RUSH_COAST_FLOW=candidate` 混用。

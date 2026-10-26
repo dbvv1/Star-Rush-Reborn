@@ -18,3 +18,18 @@ function drawCourseCards(){for(const b of document.querySelectorAll('[data-track
 $('compatNotice').hidden=!software;drawCourseCards();syncSettingsUI();updateLocalPosition();
 
 for(const id of ['racerName','roomName'])$(id).addEventListener('change',()=>{$('profileName').value=$(id).value;saveProfile()});
+
+if(roadDriving){
+ for(const id of ['score','coins'])$(id).closest('.stat').hidden=true;
+ for(const id of ['resultScore','resultBest'])$(id).parentElement.hidden=true;
+ const ready=document.querySelector('.ready-controls');for(const node of [...ready.childNodes])if(node!==$('welcomeHelp'))node.remove();ready.prepend(document.createTextNode('W / ↑ 油门 · S / ↓ 制动 · A D 转向　'));$('welcomeHelp').textContent='驾驶课堂：制动 → 转向 → 恢复 ↗';
+ document.querySelector('#settingsPanel .board-note').textContent='W / ↑ 油门，S / ↓ 制动，A D 转向，退格回正。支持标准手柄；F2 打开性能与驾驶数据。';
+ document.querySelector('.nitro').hidden=true;
+ for(const el of document.querySelectorAll('[data-key=small],[data-key=boost],[data-key=drift]'))el.hidden=true;
+ document.querySelector('.guide').textContent='W / ↑ 油门 · S / ↓ 制动 · A D 转向 · 退格回正';
+ document.querySelector('#welcome .intro').textContent='公路驾驶候选：入弯前制动，稳定转向，出弯再加油。无喷射与加速带，默认基线未改变。';
+ document.querySelector('#helpPanel h2').textContent='先把一段弯道开顺。';
+ document.querySelector('#helpPanel .lesson-grid').innerHTML='<article><b>油门与制动</b><p>W / ↑ 加速，S / ↓ 制动。接近停下后继续按 S 可倒车。先在直线上减速，再平顺转向。</p></article><article><b>侧滑与恢复</b><p>A D 或左右方向键控制前轮。抓地有限，过快入弯会转向不足；轮胎侧滑时松油并适量修正，避免连续大幅反打。</p></article><article><b>碰撞与跑圈</b><p>护栏划定真实赛道边界；随机锥桶与路障只在护栏外装饰，赛道内不收集金币。退格回正增加两秒。候选无氮气、小喷、跳台与加速带；对手使用相同车体／抓地与道路积分，路径控制不同；仍为非接触对手，不冒充完整对手碰撞。</p></article>';
+ document.querySelector('#helpPanel .board-note').textContent='参考地平线的驾驶反馈目标；原创轻量模型，并非其物理实现。';
+ $('settingsStatus').textContent+=' 公路候选：无喷射连招。';
+}

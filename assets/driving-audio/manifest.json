@@ -1,0 +1,23 @@
+{
+  "profile": "sample-v1",
+  "clips": {
+    "engine": {
+      "file": "engine-v1.wav",
+      "sourceSha256": "69d74b106509037ce547429e4c3f9ae906b0fffe88d0bb8b3b5a8b0cfc239048",
+      "sha256": "0d03f729ff81158769b44a6393b1c3d8bd99017331ae58a714cd95545fc9a711",
+      "bytes": 81076,
+      "duration": 0.8440833333333333,
+      "rmsTarget": 0.45,
+      "peakSafetyScale": 1.0
+    },
+    "tire": {
+      "file": "tire-v1.wav",
+      "sourceSha256": "2b341cfa20987388fcca9fd91d8be5056cb6c6c54abc2a97846c2be5e5a4f604",
+      "sha256": "f50b83e0b83a31e56111ff07291cfbaedf4dc29c9ee4b30bcacc03b37f5e245a",
+      "bytes": 286124,
+      "duration": 2.98,
+      "rmsTarget": 0.3,
+      "peakSafetyScale": 0.8314665475785397
+    }
+  }
+}
