@@ -33,10 +33,32 @@ test('dispose during decode cannot resurrect buffers or create a late voice',asy
 });
 test('only rail uses sample, fallback retains procedural and cooldown unchanged',()=>{
  const source=readFileSync('audio.js','utf8'),feedback=readFileSync('circuit.js','utf8');let sample=0,procedural=0;
- const ctx={currentTime:0,createBufferSource(){procedural++;return {connect(){},start(){},stop(){}}},createBiquadFilter(){return {frequency:{},Q:{},connect(){}}},createGain(){return {gain:{setValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){}}},createOscillator(){return {frequency:{setValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){},start(){},stop(){}}}};
+ const ctx={state:'running',currentTime:0,createBufferSource(){procedural++;return {connect(){},start(){},stop(){}}},createBiquadFilter(){return {frequency:{},Q:{},connect(){}}},createGain(){return {gain:{setValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){}}},createOscillator(){return {frequency:{setValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){},start(){},stop(){}}}};
  const scope={sound:true,audio:{ctx,master:{},noise:{},rail:{play(){sample++;return true}}}};vm.createContext(scope);vm.runInContext(source.slice(source.indexOf('function impactSound'),source.indexOf('function updateAudio')),scope);
  scope.impactSound('rail',2);assert.equal(sample,1);assert.equal(procedural,0);scope.impactSound('cone',2);assert.equal(procedural,1);scope.audio.rail.play=()=>false;scope.impactSound('rail',2);assert.equal(procedural,2);scope.sound=false;scope.impactSound('rail',2);assert.equal(procedural,2);
  assert.match(feedback,/if\(impact<\.7\|\|player.contactSound>0\)return;player.contactSound=\.16/);
+});
+test('collision entry drops interrupted audio events and only plays fresh events after resume',()=>{
+ const source=readFileSync('audio.js','utf8');let starts=0,samples=0;
+ const param={setValueAtTime(){},exponentialRampToValueAtTime(){}};
+ const ctx={state:'suspended',currentTime:0,
+  createBufferSource:()=>({connect(){},start(){starts++},stop(){}}),
+  createBiquadFilter:()=>({frequency:{},Q:{},connect(){}}),
+  createGain:()=>({gain:param,connect(){}}),
+  createOscillator:()=>({frequency:param,connect(){},start(){starts++},stop(){}}),
+  resume(){throw Error('collision must not force an audio resume')}
+ };
+ let ready=false;
+ const scope={sound:true,audio:{ctx,master:{},noise:{},rail:{play(){samples++;return ready}}}};
+ vm.createContext(scope);vm.runInContext(source.slice(source.indexOf('function impactSound'),source.indexOf('function updateAudio')),scope);
+ for(const state of ['suspended','interrupted','closed']){
+  ctx.state=state;for(const kind of ['rail','cone','barrier'])scope.impactSound(kind,7);
+ }
+ assert.equal(samples,0);assert.equal(starts,0);
+ ctx.state='running';assert.equal(starts,0,'resuming does not replay old impacts');
+ scope.impactSound('rail',2);assert.equal(samples,1);assert.equal(starts,2,'fresh missing clip still uses original procedural fallback');
+ ready=true;scope.impactSound('rail',7);assert.equal(samples,2);assert.equal(starts,2,'fresh ready clip does not double-play');
+ scope.impactSound('cone',2);assert.equal(starts,3,'non-rail fresh impacts remain procedural');
 });
 test('hashed PCM files and exact Worker routes survive packaging; reject corrupt/missing source',async()=>{
  const {client,assets}=loadImpactAssets();const worker=(await import('../dist/server/index.js')).default;
