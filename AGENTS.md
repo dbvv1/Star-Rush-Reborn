@@ -32,7 +32,7 @@
 ## 验收
 
 1. **自动**：`npm test` 通过。改驾驶、碰撞或 AI 时，看自动驾驶圈速与稳定性检查有无退化。
-2. **浏览器**：构建产物在无头浏览器里加载、开一局，无控制台错误且画布内有非背景像素；云端没有 GPU 时，Playwright Chromium 加 `--use-angle=swiftshader --enable-unsafe-swiftshader` 走软件 WebGL。脚本见 `tests/smoke.mjs`，运行准备与范围见 [browser-smoke](docs/browser-smoke.md)。
+2. **浏览器**：构建产物在无头浏览器里加载、开一局，无控制台错误且画布内有非背景像素；云端没有 GPU 时，Playwright Chromium 加 `--use-angle=swiftshader` 走软件 WebGL。脚本见 `tests/smoke.mjs`，运行准备与范围见 [browser-smoke](docs/browser-smoke.md)。
 3. **人工**：手感、画面、声音需要人判断的，记入 a1dbv TASKS“待人工验收”，然后继续做其他工作。
 
 汇报只写实际跑过的结果；没跑的写“未验证”，一句即可。

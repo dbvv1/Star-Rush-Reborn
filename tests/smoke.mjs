@@ -13,7 +13,7 @@ const output = new URL('../outputs/smoke/', import.meta.url);
 await mkdir(output, {recursive: true});
 for (const name of ['race.png', 'canvas.png']) await rm(new URL(name, output), {force: true});
 const report = {startedAt: new Date().toISOString(), passed: false, browser: 'Chromium', sandbox: true,
-  args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
+  args: ['--use-angle=swiftshader'],
   consoleErrors: [], pageErrors: [], requestFailures: [], httpErrors: [], warnings: []};
 await writeFile(new URL('report.json', output), JSON.stringify(report, null, 2) + '\n');
 let browser, resources;
@@ -22,6 +22,7 @@ try {
   const {origin} = resources;
   const launchOptions = smokeLaunchOptions();
   report.sandbox = launchOptions.chromiumSandbox;
+  report.args = [...launchOptions.args];
   report.executablePath = launchOptions.executablePath || 'playwright-bundled';
   browser = await chromium.launch(launchOptions);
   report.browserVersion = browser.version();

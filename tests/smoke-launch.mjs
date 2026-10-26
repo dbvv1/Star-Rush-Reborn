@@ -7,6 +7,6 @@ export function smokeLaunchOptions(env = process.env) {
   const noSandbox = env.STAR_RUSH_SMOKE_CLOUD_NO_SANDBOX;
   if (noSandbox !== undefined && noSandbox !== '1') throw Error('STAR_RUSH_SMOKE_CLOUD_NO_SANDBOX must be unset or 1');
   return {headless: true, chromiumSandbox: noSandbox !== '1',
-    args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'], timeout: 30000,
+    args: ['--use-angle=swiftshader'], timeout: 30000,
     ...(executablePath ? {executablePath} : {})};
 }
