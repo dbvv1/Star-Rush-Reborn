@@ -1,0 +1,5 @@
+{
+  "baseline": {"arrow": "#bd8faf", "radius": 0.055},
+  "navy-v1": {"arrow": "#415873", "radius": 0.055},
+  "navy-v2": {"arrow": "#415873", "radius": 0.075}
+}

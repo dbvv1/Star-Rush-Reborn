@@ -1,0 +1,15 @@
+# 原创路边转向牌
+
+本项目原创程序几何，源为 `scenery.js` 的 `signBoard` 和 `engine.js` 的杆、圆角面板生成器；未使用外部模型、商业游戏资产或旧壁画。按仓库原创源码的使用条件维护，不引入第三方许可。
+
+`styles.json` 是生产构建与离线作者图共用的可编辑参数源：
+
+- `baseline`：原粉箭条，半径 0.055，默认保持原画面。
+- `navy-v1`：只将箭条改为深蓝 `#415873`。
+- `navy-v2`：在 v1 上只把箭条半径改为 0.075，面板、立杆、拓扑不变。
+
+制作配方与 Blender 往返见 [作者说明](../../authoring/signboard/README.md)。`signboard-assets.mjs` 校验参数和原几何摘要，生产 `build.mjs` 仅替换箭条的两段配方；左右箭头共用参数，不改变放置、碰撞或驾驶。客户端仍经 `chunkMesh → decorateChunk → scenicProp` 在三条赛道消费，导出器使用同一份参数和转换函数。
+
+改颜色使用六位小写十六进制值，箭条半径范围 0.03–0.10；保留 baseline 作为原画面对照。先跑 `node --test authoring/signboard/export.test.mjs` 和 `npm test`。生产构建可选 `STAR_RUSH_SIGNBOARD_VARIANT=navy-v2 npm run build`，省略变量即 baseline。未知候选、无效值或原源漂移会拒绝构建，不静默回退。v1 只改色、v2 保留 v1 颜色的作者验证也必须通过。
+
+当前已接通实际客户端消费者，三变体工程测试不等于 GPU 画面验收。深蓝配色和厚度仍属感知候选，须在真实路段看运动、光照、遮挡及左右辨识后决定默认值；未以开局图或离线图代替实机比较。

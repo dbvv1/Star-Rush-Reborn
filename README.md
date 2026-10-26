@@ -54,12 +54,15 @@ npm run dev
 STAR_RUSH_RAIL_SOURCE=procedural npm run build
 # Canvas 兼容画面里的房屋固定锚点（on / off，默认 off）
 STAR_RUSH_CANVAS_HOUSE_ANCHORS=on npm run build
+# 转向牌：baseline（默认原粉）、navy-v1（深蓝）、navy-v2（深蓝加粗）
+STAR_RUSH_SIGNBOARD_VARIANT=navy-v2 npm run build
 ```
 
 ## 素材与来源
 
 - 选卡插画：原创 AI 插画，源图、提示词与处理配方见 [assets/course-art](assets/course-art/README.md)。
 - 护栏碰撞样本：Kenney Impact Sounds（CC0）与本地合成候选，见 [assets/impact-audio](assets/impact-audio/README.md)。
+- 路边转向牌：原创程序几何与可编辑配色／粗细，见 [assets/signboard](assets/signboard/README.md)。
 - 其余人物、车辆、道路和场景由源码生成。Three.js（MIT）随客户端打包。
 
 ## 参考

@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync, readFileSync, writeFileSync, rmSync, existsSync} from 'node:fs';
+import {mkdtempSync, readFileSync, writeFileSync, rmSync, existsSync, mkdirSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join, resolve} from 'node:path';
 import {execFileSync} from 'node:child_process';
 const script=resolve('authoring/signboard/export.mjs');
 function fixture(run) {
   const root=mkdtempSync(join(tmpdir(),'star-signboard-'));
-  try { for(const name of ['engine.js','scenery.js']) writeFileSync(join(root,name),readFileSync(name)); run(root); }
+  try { mkdirSync(join(root,'assets/signboard'),{recursive:true});for(const name of ['engine.js','scenery.js','assets/signboard/styles.json']) writeFileSync(join(root,name),readFileSync(name)); run(root); }
   finally { rmSync(root,{recursive:true,force:true}); }
 }
 test('fixed original sources reproduce candidates deterministically',()=>fixture(root=>{
