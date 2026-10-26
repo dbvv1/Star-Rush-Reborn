@@ -135,6 +135,25 @@ for(const id of Object.keys(q.tracks)){
  q.event='timeTrial';q.prepareRaceFeatures();assert(q.ghostNode&&q.ghostRun.points.length>10,'best ghost persists and loads');
  const view=q.sceneFrame(0,1/60);q.renderRaceFeatures(view.origin,1/60);
 }
+// Actual local AI races: final HUD must match the sorted results, not equal endpoint s.
+const raceResults=[];
+for(const id of Object.keys(q.tracks)){
+ q.choose(id);q.event='race';q.state='running';q.prepareRaceFeatures();q.demo=true;let steps=0;
+ for(;steps<120*240&&q.state==='running';steps++){q.updateDrivingAssists(1/120);q.physics(1/120)}
+ assert.equal(q.state,'finished');
+ const rows=[...w.document.querySelectorAll('#resultGrid .result-row')];
+ const place=rows.findIndex(row=>row.textContent.includes('（你）'))+1;
+ assert.equal(rows.length,4);assert(place>0);assert.equal(hud('localPosition').textContent,'POS '+place+' / 4');
+ assert.equal(hud('eventLabel').textContent,hud('resultDistance').textContent==='DNF'?'未完赛':'已完赛');
+ raceResults.push({track:id,place,time:+q.elapsed.toFixed(2),dnf:hud('resultDistance').textContent==='DNF'});
+}
+// A stationary player reaches the existing AI finish timeout through real simulation.
+q.choose('academy-reborn');q.event='race';q.state='running';q.prepareRaceFeatures();q.demo=false;
+for(const key in q.input)q.input[key]=false;
+for(let i=0;i<120*120&&q.state==='running';i++)q.physics(1/120);
+assert.equal(q.state,'finished');assert.equal(hud('resultDistance').textContent,'DNF');assert.equal(hud('eventLabel').textContent,'未完赛');assert.equal(hud('localPosition').textContent,'POS 4 / 4');
+q.start();assert.equal(hud('eventLabel').textContent,'星跃训练场');assert.equal(hud('localPosition').textContent,'POS 1 / 4');
+console.log('Local AI finish/readability results');console.table(raceResults);
 // Stress contact, drift and boost transitions at the fixed simulation step.
 zero();let seed=3,maxSpeed=0;for(let i=0;i<6000;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;if(i%45===0){q.input.left=!!(seed&1);q.input.right=!!(seed&2);q.input.drift=!!(seed&4);q.input.gas=true;q.input.brake=!!(seed&16);q.input.boost=!!(seed&32);q.input.small=!!(seed&64)}q.physics(1/120);assert([q.player.s,q.player.l,q.player.yaw,q.player.speed].every(Number.isFinite));assert(Math.abs(q.player.l)<8);maxSpeed=Math.max(maxSpeed,q.player.speed)}assert(maxSpeed<84);
 // Exercise real Three.js geometry/material/instancing APIs with a draw stub.

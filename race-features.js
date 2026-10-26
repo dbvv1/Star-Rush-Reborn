@@ -28,8 +28,14 @@ function updateRaceFeatures(dt){
 }
 function updateLocalPosition(){
  if(net.room){$('localPosition').textContent='ONLINE';$('eventLabel').textContent='好友房间 · '+net.room.code;return}
- const pos=1+raceBots.filter(b=>b.s>player.s).length;$('localPosition').textContent=raceBots.length?'POS '+pos+' / 4':eventType==='practice'?'PRACTICE':'TIME ATTACK';$('eventLabel').textContent=firstFinish!==null?'完赛倒计时 '+Math.max(0,30-Math.floor(elapsed-firstFinish))+' s':raceMode==='endless'?'无尽巡游':trackInfo().name;
+ const done=state==='finished',result={time:done&&!raceDNF?raceClock():null,s:player.s};
+ // Finished bots share the endpoint: progress alone would falsely show first place.
+ // Match the result list's stable tie order (bots precede the player).
+ const pos=1+raceBots.filter(b=>done?compareRaceResults({time:b.finishAt,s:b.s},result)<=0:b.finishAt!==null||b.s>player.s).length;
+ $('localPosition').textContent=raceBots.length?'POS '+pos+' / 4':eventType==='practice'?'PRACTICE':'TIME ATTACK';
+ $('eventLabel').textContent=done?(raceDNF?'未完赛':raceMode==='endless'?'巡游结束':'已完赛'):firstFinish!==null?'完赛倒计时 '+Math.max(0,30-Math.floor(elapsed-firstFinish))+' s':raceMode==='endless'?'无尽巡游':trackInfo().name;
 }
+function compareRaceResults(a,b){return a.time===null&&b.time===null?b.s-a.s:a.time===null?1:b.time===null?-1:a.time-b.time}
 // Keep the established 32–62 m route window and threshold in one place.
 // The current curvature only suppresses a boost suggestion while still in a bend;
 // this is coaching, not a guarantee that a full nitro burst will be safe.
@@ -55,11 +61,12 @@ function updateCoach(route=routePreview(player.s)){
 }
 function drawRaceResults(){
  const list=net.room?net.members.filter(m=>m.id!==net.id).map(m=>({name:m.name,time:m.snapshot?.finished?m.snapshot.time:null,s:m.snapshot?.s||0})):raceBots.map(b=>({name:b.name,time:b.finishAt,s:b.s}));
- list.push({name:profile.name+'（你）',time:raceDNF?null:raceClock(),s:player.s});list.sort((a,b)=>a.time===null&&b.time===null?b.s-a.s:a.time===null?1:b.time===null?-1:a.time-b.time);$('resultGrid').replaceChildren();
+ list.push({name:profile.name+'（你）',time:raceDNF?null:raceClock(),s:player.s});list.sort(compareRaceResults);$('resultGrid').replaceChildren();
  if(list.length>1)for(let i=0;i<list.length;i++){const row=document.createElement('div');row.className='result-row';const n=document.createElement('span'),t=document.createElement('b');n.textContent=(i+1)+'. '+list[i].name;t.textContent=list[i].time===null?(net.room?.status==='racing'?'比赛中':'未完赛'):formatTime(list[i].time);row.append(n,t);$('resultGrid').appendChild(row)}
 }
 function completeRaceFeatures(){
  demoDriving=false;drawRaceResults();
+ updateLocalPosition();
  if(raceDNF){$('resultDistance').textContent='DNF';$('resultNote').textContent='本局未能在倒计时结束前完赛，可以再挑战一次。';$('submitRun').disabled=true;pendingRun=null}
  else if(!net.room&&raceMode==='circuit'&&ghostPoints.length>10&&(!ghostRun||raceClock()<ghostRun.time)){try{localStorage.setItem(ghostKey(),JSON.stringify({time:raceClock(),points:ghostPoints,splits:raceSplits,laps:lapTimes,date:Date.now()}));$('resultNote').textContent='刷新本机最佳！已保存幽灵，可在计时挑战中追逐自己。'}catch(e){}}
  $('coach').hidden=true;

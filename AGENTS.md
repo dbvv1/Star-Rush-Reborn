@@ -1,6 +1,6 @@
 # Star-Rush-Reborn 工作约定
 
-本仓库是 [a1dbv](https://github.com/dbvv1/a1dbv) 游戏方向的作品案例：原创网页街机竞速，用来检验驾驶手感、竞速 AI 和 AI 美术／音频制作链。方向与优先级以 a1dbv 的[方向锚点](https://github.com/dbvv1/a1dbv/blob/main/AGENTS.md)、[作品案例约定](https://github.com/dbvv1/a1dbv/blob/main/docs/collaboration/game-taskbook.md#6-作品案例)和 [TASKS](https://github.com/dbvv1/a1dbv/blob/main/docs/collaboration/TASKS.md) 为准；本文件只管在本仓库怎么干活。当前处于维护期，要做什么见 [docs/brief.md](docs/brief.md)。
+本仓库是 [a1dbv](https://github.com/dbvv1/a1dbv) 游戏方向的作品案例：原创网页街机竞速，用来检验驾驶手感、竞速 AI 和 AI 美术／音频制作链。方向与优先级以 a1dbv 的[方向锚点](https://github.com/dbvv1/a1dbv/blob/main/AGENTS.md)、[作品案例约定](https://github.com/dbvv1/a1dbv/blob/main/docs/collaboration/game-taskbook.md#6-作品案例)和 [TASKS](https://github.com/dbvv1/a1dbv/blob/main/docs/collaboration/TASKS.md) 为准；本文件只管在本仓库怎么干活。持续做品质提升，要做什么见 [docs/brief.md](docs/brief.md)。
 
 ## 负责与发布
 
