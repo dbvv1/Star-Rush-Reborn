@@ -56,12 +56,15 @@
     "gpu": "NVIDIA GeForce RTX 5070 12 GB",
     "precision": "bfloat16, batch 1, 100 steps, 30 s latent (10 s output)",
     "loadSeconds": 46.0,
-    "vramAfterLoadAllocatedGB": 6.554,
-    "vramAfterLoadReservedGB": 10.518,
-    "vramPeakAllocatedGB": 9.895,
-    "vramPeakReservedGB": 12.803,
+    "vramUnit": "GiB (bytes / 2**30)",
+    "vramAfterLoadAllocatedGiB": 6.554,
+    "vramAfterLoadReservedGiB": 10.518,
+    "vramPeakAllocatedGiB": 9.895,
+    "vramPeakReservedGiB": 12.803,
+    "vramPeakScope": "process-cumulative; torch.cuda.max_memory_* was not reset between seeds, so this is not an independent per-seed peak",
     "generateSecondsSeed0": 446.54,
     "generateSecondsSeed1": 153.2,
-    "note": "No OOM. The desktop GPU was already in use, and the driver reserved more than the 12.2 GB of dedicated memory (shared-memory oversubscription). Headroom is marginal, not a clean 12 GB fit. First seed was slower than the warmed second seed."
+    "generateSecondsInclude": "device-to-host copy and WAV write",
+    "note": "No OOM. This does not establish comfortable 12 GB headroom. The first seed was slower than the second; the reason is unknown."
   }
 }

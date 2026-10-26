@@ -1,7 +1,10 @@
-// Real-browser acceptance for the opt-in /road coast bed, plus real-time mix
-// capture. Opt-in: it builds twice and demo-drives a lap, so it is not part of
-// `npm test`. Listening quality is still a human judgement; this only proves
-// the asset fetch, decode, loop start and clean runtime path in Chromium.
+// Real-browser acceptance for the opt-in /road coast bed, plus real-time
+// capture of the SFX bus. Opt-in: it builds twice and auto-drives a demo lap
+// from the normal menu, so it is not part of `npm test`. Listening quality is
+// still a human judgement; this only proves the asset fetch, decode, loop
+// start and clean runtime path in Chromium. The capture is the compressed SFX
+// bus, not the complete SFX+music mix, and it is not player keyboard driving
+// or an event replay.
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {mkdir, writeFile} from 'node:fs/promises';
@@ -34,8 +37,9 @@ const build = profile => execFileSync(process.execPath, ['build.mjs'], {
 });
 
 // Page-side instrumentation only observes the real production client: it
-// counts the coast request, decode result, looping source and master-bus
-// output. It does not replace audio nodes, add gain, or replay anything.
+// counts the coast request, decode result, looping source and the first
+// SFX-compressor connection used for capture. It does not replace audio nodes,
+// add gain, or replay anything.
 function probe() {
   const p = window.__coastProbe = {requests: [], decodes: [], coastStarts: 0, errors: [], records: []};
   const fetch0 = window.fetch;
@@ -63,8 +67,11 @@ function probe() {
     if (b && this.loop && b.numberOfChannels === 2 && b.duration > 8 && b.duration < 11) p.coastStarts++;
     return start0.apply(this, args);
   };
-  // Attach one MediaStreamDestination beside the real master output so the
-  // saved WebM is the live game mix, not a separately re-synthesised render.
+  // Attach one MediaStreamDestination to the first node the page connects to
+  // context.destination (the SFX compressor). Nodes connected later, including
+  // music outputs, are not tapped, so this is the compressed SFX bus (with the
+  // ambience layer), not the complete SFX+music mix, and not a separately
+  // re-synthesised render.
   const connect0 = AudioNode.prototype.connect;
   AudioNode.prototype.connect = function (target, ...rest) {
     const result = connect0.call(this, target, ...rest);
@@ -206,11 +213,11 @@ async function run(profile, tag) {
     assert.equal(report.probeFinal.coastStarts, 0);
   }
   assert.deepEqual(report.probeFinal.errors, [], 'no probe-side fetch/decode/record errors');
-  assert.equal(report.probeDuringCorner.recording, true, 'the live mix tap is active before the corner');
+  assert.equal(report.probeDuringCorner.recording, true, 'the SFX-bus capture tap is active before the corner');
   assert.equal(report.captureMarks.length, 4, 'capture marks cover 380/420/620/660 m');
   assert.ok(report.captureMarks.every(m => Number.isFinite(m.captureSeconds)), 'capture-time marks recorded');
   assert.ok(report.reachedS >= 660, `the demo must pass the end of the bed (reached ${report.reachedS} m)`);
-  assert.ok(report.recording && report.recording.bytes > 100000, 'a real-time mixed capture was saved');
+  assert.ok(report.recording && report.recording.bytes > 100000, 'a real-time SFX-bus capture was saved');
   for (const key of ['consoleErrors', 'pageErrors', 'requestFailures', 'httpErrors', 'cleanupErrors']) {
     assert.deepEqual(report[key], [], key);
   }
@@ -227,4 +234,4 @@ try {
 }
 await writeFile(new URL('browser-check.json', output), JSON.stringify(Object.fromEntries(results.map(r => [r.tag, r])), null, 2) + '\n');
 const on = results.find(r => r.tag === 'on'), off = results.find(r => r.tag === 'off');
-console.log(`Coast ambience browser: on 1 fetch/200, 2-channel 9.25 s decode, 1 loop source, reached ${on.reachedS} m, mix ${on.recording.bytes} B; off 0 fetches/sources, reached ${off.reachedS} m, mix ${off.recording.bytes} B. Listening not judged; captures in outputs/coast-ambience/.`);
+console.log(`Coast ambience browser: on 1 fetch/200, 2-channel 9.25 s decode, 1 loop source, reached ${on.reachedS} m, SFX capture ${on.recording.bytes} B; off 0 fetches/sources, reached ${off.reachedS} m, SFX capture ${off.recording.bytes} B. Listening not judged; captures in outputs/coast-ambience/.`);

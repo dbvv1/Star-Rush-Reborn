@@ -99,8 +99,9 @@ def main():
         "torch": torch.__version__, "cuda": torch.version.cuda, "gpu": torch.cuda.get_device_name(0),
         "torch_dynamo_disable": os.environ.get("TORCHDYNAMO_DISABLE"),
         "load_seconds": round(time.perf_counter() - t0, 2),
-        "vram_after_load_allocated_gb": round(torch.cuda.memory_allocated() / 2**30, 3),
-        "vram_after_load_reserved_gb": round(torch.cuda.memory_reserved() / 2**30, 3),
+        "vram_unit": "GiB (bytes / 2**30)",
+        "vram_after_load_allocated_gib": round(torch.cuda.memory_allocated() / 2**30, 3),
+        "vram_after_load_reserved_gib": round(torch.cuda.memory_reserved() / 2**30, 3),
     }
     for seed in [int(s) for s in args.seeds.split(",")]:
         t1 = time.perf_counter()
@@ -111,8 +112,11 @@ def main():
         path = out_dir / f"seed{seed}-{int(args.seconds)}s.wav"
         sf.write(path, audio[0].detach().cpu().float().numpy().T, pipe.sample_rate, subtype="FLOAT")
         meta = dict(common, seed=seed, generate_seconds=round(time.perf_counter() - t1, 2),
-                    vram_peak_allocated_gb=round(torch.cuda.max_memory_allocated() / 2**30, 3),
-                    vram_peak_reserved_gb=round(torch.cuda.max_memory_reserved() / 2**30, 3),
+                    generate_seconds_includes="device-to-host copy and WAV write",
+                    vram_peak_allocated_gib=round(torch.cuda.max_memory_allocated() / 2**30, 3),
+                    vram_peak_reserved_gib=round(torch.cuda.max_memory_reserved() / 2**30, 3),
+                    vram_peak_scope="process-cumulative; torch.cuda.max_memory_* was not reset "
+                                    "between seeds, so this is not an independent per-seed peak",
                     sample_rate=pipe.sample_rate, channels=int(audio.shape[1]),
                     samples=int(audio.shape[2]), duration=round(audio.shape[2] / pipe.sample_rate, 4),
                     peak_abs=float(audio.abs().max()), rms=float(audio.pow(2).mean().sqrt()),

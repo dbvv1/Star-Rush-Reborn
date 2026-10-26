@@ -18,10 +18,12 @@ Generated sound
   30 s latent cropped to 10 s, bfloat16, batch 1.
   Runtime: Python 3.12 local environment, PyTorch 2.9.0+cu128, CUDA 12.8,
   NVIDIA GeForce RTX 5070 12 GB. TORCHDYNAMO_DISABLE=1.
-  Actual load 46 s; peak allocated 9.895 GB / peak reserved 12.803 GB. No OOM, but the
-  driver used shared-memory oversubscription beyond the 12.2 GB dedicated memory while the
-  desktop GPU was also in use, so this is not evidence of comfortable 12 GB headroom.
-  Generation: seed 0 took 446.5 s (cold/contended), seed 1 took 153.2 s (warm).
+  Actual load 46 s; peak allocated 9.895 GiB / peak reserved 12.803 GiB (bytes / 2**30).
+  The torch.cuda.max_memory_* counters were not reset between seeds, so these peaks are
+  process-cumulative, not independent per-seed peaks. No OOM, but this is not evidence of
+  comfortable 12 GB headroom.
+  Generation: seed 0 took 446.54 s, seed 1 took 153.2 s, including device-to-host copy and
+  WAV writing. The first seed was slower than the second; the reason is unknown.
 
   Local inference adaptations, needed to run the pinned source with the published weights:
   - The pinned source's DAC.load() expects a numpy codec archive, but the published

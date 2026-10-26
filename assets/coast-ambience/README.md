@@ -113,10 +113,14 @@ used.
 
 - Ran on RTX 5070 12 GB: PyTorch 2.9.0+cu128, CUDA 12.8, bfloat16, batch 1,
   100 steps, 30 s latent → 10 s output. Load took 46 s; peak allocated VRAM
-  9.895 GB, peak reserved 12.803 GB. No OOM, but reservation exceeded the
-  12.2 GB of dedicated memory via shared-memory oversubscription while the
-  desktop GPU was in use, so 12 GB headroom is marginal rather than proven.
-  Seed 0 generation took 446.5 s (cold/contended), seed 1 153.2 s (warm).
+  9.895 GiB, peak reserved 12.803 GiB. These VRAM numbers are bytes / 2**30
+  (the recording script already used that divisor; earlier text mislabelled
+  the unit as GB). The `torch.cuda.max_memory_*` counters were not reset
+  between seeds, so the peaks are process-cumulative, not independent
+  per-seed peaks. No OOM, but this does not establish comfortable 12 GB
+  headroom. Generation took 446.54 s for seed 0 and 153.2 s for seed 1; each
+  timing includes device-to-host copy and WAV writing. The first seed was
+  slower than the second; the reason is unknown.
 - Numeric checks: raw clips are quiet (seed 0 RMS 0.0153, peak 0.0833),
   no clipping, and the processed 9.25 s loop has a seam step (0.0094) close
   to neighbouring sample steps (0.006–0.007) after the equal-power blend.
@@ -129,14 +133,20 @@ used.
   `tests/coast-ambience-source-choice.mjs`.
 - Real browser (`node tests/coast-ambience-browser.mjs`; prepare with
   `npm ci && npx playwright install chromium`, see `docs/browser-smoke.md`):
-  headless Chromium with software WebGL. A demo lap drives through the
-  380–660 m corner and past 680 m on `/road`.
+  headless Chromium with software WebGL. The normal menu's demo/test-drive
+  button starts an automatically driven lap; this is not player keyboard
+  driving and not an event replay. The demo drives through the 380–660 m
+  corner and past 680 m on `/road`.
   With `coast-v1` the clip is fetched once (HTTP 200), decoded as one
   2-channel 9.25 s buffer and started as one looping source; with `off` no
   request or source appears. Both runs render without console, page, request or
-  HTTP errors. The script saves corner screenshots and real-time mixed WebM
-  captures under the ignored `outputs/coast-ambience/` directory. The capture
-  is the live browser master bus, not an offline replay.
+  HTTP errors. The script saves corner screenshots and real-time WebM captures
+  under the ignored `outputs/coast-ambience/` directory. The recorder attaches
+  to the first node that connects to `context.destination`, which is the SFX
+  compressor; music nodes connected later are not included. Each WebM is
+  therefore the compressed SFX bus (including the ambience layer), not a
+  complete SFX+music final mix, and it is not an offline replay. The script was
+  not extended and nothing was re-recorded for this record revision.
 - The saved WebMs are for listening, not a settled level measurement. The
   previous attempt read the on-screen race clock (about 19–34 s) as capture
   time; on the WebM timeline the 380–660 m window is much later, so that
@@ -145,7 +155,15 @@ used.
   380/420/620/660 m, kept separate from the race clock) so the real corner can
   be selected for a later in-band measurement. The layer gain is fixed at
   0.05 and the captures exist; audibility is still a listening question.
-- **Not verified:** human listening of the isolated clip or the browser
-  captures, subjective comparison with the ambience-off mix, and loop-seam
-  audibility. Do not treat engineering checks, numeric seam continuity or the
-  existence of a capture as listening approval.
+- A complete two-bus mix (SFX plus music) was recorded separately by the
+  receiver from a fixed local candidate (`9fce32`) plus the `fa5664f` audio
+  diff: two different normal keyboard-driving takes in the Canvas renderer,
+  with the raw recording and a no-gain trimmed copy prepared. Those files are
+  outside this branch and their listening review is still pending; the default
+  build stays off and the layer is not adopted. They are not the SFX-bus WebMs
+  produced by the browser script above.
+- **Not verified:** human listening of the isolated clip, the two-bus
+  keyboard-driving recordings, or the browser SFX-bus captures; subjective
+  comparison with the ambience-off mix; and loop-seam audibility. Do not treat
+  engineering checks, numeric seam continuity or the existence of a capture as
+  listening approval.
