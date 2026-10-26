@@ -1,6 +1,11 @@
 import * as THREE from 'three';
 export function createThreeBackend(canvas){
- let renderer;try{const context=canvas.getContext('webgl2',{antialias:true,alpha:false});if(!context)return null;renderer=new THREE.WebGLRenderer({canvas,context,antialias:true,alpha:false,powerPreference:'default'});}catch(e){return null}
+ let renderer,phase='context';
+ try{
+  const context=canvas.getContext('webgl2',{antialias:true,alpha:false});
+  if(!context){console.warn('[Star Rush WebGL] webgl2 context unavailable; returning null for fallback handling');return null}
+  phase='renderer';renderer=new THREE.WebGLRenderer({canvas,context,antialias:true,alpha:false,powerPreference:'default'});
+ }catch(e){console.warn('[Star Rush WebGL] '+phase+' initialization failed; returning null for fallback handling:',e?.message||String(e));return null}
  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
  const scene=new THREE.Scene();scene.fog=new THREE.Fog('#cbddec',125,460);
  const camera=new THREE.PerspectiveCamera(62,1,.12,850),hemi=new THREE.HemisphereLight('#e7f4ff','#a08ba5',2.2),sun=new THREE.DirectionalLight('#fff0de',2.4);sun.position.set(-30,60,25);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-55,right:55,top:45,bottom:-45,near:1,far:160});sun.shadow.bias=-.0004;scene.add(hemi,sun,sun.target);
