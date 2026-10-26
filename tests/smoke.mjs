@@ -11,10 +11,11 @@ import {startSmokeServer} from './smoke-server.mjs';
 
 const output = new URL('../outputs/smoke/', import.meta.url);
 await mkdir(output, {recursive: true});
-for (const name of ['race.png', 'canvas.png', 'report.json']) await rm(new URL(name, output), {force: true});
+for (const name of ['race.png', 'canvas.png']) await rm(new URL(name, output), {force: true});
 const report = {startedAt: new Date().toISOString(), passed: false, browser: 'Chromium', sandbox: true,
   args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
   consoleErrors: [], pageErrors: [], requestFailures: [], httpErrors: [], warnings: []};
+await writeFile(new URL('report.json', output), JSON.stringify(report, null, 2) + '\n');
 let browser, resources;
 try {
   resources = await startSmokeServer(worker);
