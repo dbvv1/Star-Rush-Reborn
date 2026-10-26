@@ -18,7 +18,7 @@ function softwareHouseAnchors(s,length,closed){
 const softwareSignColors=new WeakMap();
 // Only existing directional sign meshes, using their actual scene transforms.
 // This is a bounded compatibility consumer, not a general mesh renderer.
-function softwareSignboards(items,meshes,project,w,h){
+function softwareSignboards(items,meshes,project,w,h,eye){
  const selected=[];
  for(const item of items){
   if(!meshes.includes(item.mesh))continue;
@@ -28,6 +28,10 @@ function softwareSignboards(items,meshes,project,w,h){
  }
  return selected.sort((a,b)=>a.q[2]-b.q[2]).slice(0,6).map(({item,q})=>{
   const mesh=item.mesh,data=mesh.sourceData,indices=mesh.sourceIndices,points=[];
+  const front=dot(sub(eye,transform(item.m,[0,2.28,0])),[item.m[8],item.m[9],item.m[10]])>=0;
+  // Pinned signBoard order: one CY8 pole, panel, then six CY8 arrow bars.
+  // Keep the panel from covering arrow fragments at oblique viewing angles.
+  const arrowStart=indices.length-6*CY8.i.length;
   for(let i=0;i<data.length;i+=10)points.push(project(transform(item.m,[data[i],data[i+1],data[i+2]])));
   let colors=softwareSignColors.get(mesh);
   if(!colors){colors=[];for(let i=0;i<indices.length;i+=3){const at=indices[i]*10+6;colors.push('rgb('+[0,1,2].map(j=>Math.round(Math.pow(data[at+j],1/2.2)*255)).join(',')+')')}softwareSignColors.set(mesh,colors)}
@@ -36,9 +40,10 @@ function softwareSignboards(items,meshes,project,w,h){
    const p=[points[indices[i]],points[indices[i+1]],points[indices[i+2]]];
    // Match the existing near-plane policy: do not draw a partially invalid face.
    if(p.some(v=>!v))continue;
-   triangles.push({p,color:colors[i/3],depth:(p[0][2]+p[1][2]+p[2][2])/3});
+   const layer=i<CY8.i.length?0:i>=arrowStart?(front?2:1):(front?1:2);
+   triangles.push({p,color:colors[i/3],layer,depth:(p[0][2]+p[1][2]+p[2][2])/3});
   }
-  triangles.sort((a,b)=>b.depth-a.depth);
+  triangles.sort((a,b)=>a.layer-b.layer||b.depth-a.depth);
   return {kind:'sign',q,triangles};
  });
 }
@@ -54,7 +59,7 @@ function drawSoftware(view){
  const absolute=p=>sub(p,view.origin),quads=[];
  for(let ds=-40;ds<240;ds+=5){const ss=player.s+ds,r0=road(ss),r1=road(ss+5);quads.push({d:ds,a:r0,b:r1})}
  for(const q of quads.reverse()){const pt=(r,l,y)=>absolute(add(add(r.p,mul(r.R,l)),[0,y,0]));surface([pt(q.a,-10,.0),pt(q.a,10,0),pt(q.b,10,0),pt(q.b,-10,0)],'#e3dce5');surface([pt(q.a,-7,.05),pt(q.a,7,.05),pt(q.b,7,.05),pt(q.b,-7,.05)],'#7b829a');if(Math.floor(q.d/5)%2===0)for(const l of [-2.3,2.3])surface([pt(q.a,l-.04,.06),pt(q.a,l+.04,.06),pt(q.b,l+.04,.06),pt(q.b,l-.04,.06)],'#e9edf1');for(const side of [-1,1])surface([pt(q.a,side*8.1,.4),pt(q.a,side*8.1,.8),pt(q.b,side*8.1,.8),pt(q.b,side*8.1,.4)],'#c0cfe2')}
- const signs=typeof drawList!=='undefined'&&typeof scenicCache!=='undefined'?softwareSignboards(drawList,[scenicCache.get('left'),scenicCache.get('right')],project,w,h):[];
+ const signs=typeof drawList!=='undefined'&&typeof scenicCache!=='undefined'?softwareSignboards(drawList,[scenicCache.get('left'),scenicCache.get('right')],project,w,h,eye):[];
  if(typeof softwareHouseAnchorsEnabled!=='undefined'&&softwareHouseAnchorsEnabled){
  const decorations=[...signs];for(let ds=0;ds<210;ds+=20)for(const side of [-1,1]){const pos=atRoad(Math.floor((player.s+ds)/20)*20,side*12,0),q=project(absolute(pos));if(q)decorations.push({q,side,ds,pos,kind:'tree'})}
  for(const anchor of softwareHouseAnchors(player.s,CIRCUIT_LENGTH,raceMode==='circuit'))for(const side of [-1,1]){const q=project(absolute(atRoad(anchor.s,side*20,0)));if(q)decorations.push({q,kind:'house'})}
