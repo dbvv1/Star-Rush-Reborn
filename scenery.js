@@ -98,17 +98,51 @@ function decorateChunk(k,origin,rr){
  return root;
 }
 let landscapeNode=null,landscapeTrack=null,ambientPetals=[];
+// One continuous mountain surface: the snow line shares the lower ring exactly.
+// Stacking a wider closed cone here creates a visible dark underside, not a lighting defect.
+const mountainLower=(()=>{const g=cylinder(4,.3);for(let i=1;i<g.p.length;i+=3)g.p[i]=g.p[i]*.7-.15;g.n.splice(0,30,...SC.n.slice(0,30));g.i=g.i.slice(0,36);return g})();
+const mountainSnow=shape(SC.p.map((v,i)=>i%3===1?v*.3+.35:v*.3),SC.n,SC.i.slice(0,24));
 const petalMesh=scenicMesh('petal',c=>box(c,[0,0,0],[.12,.025,.075],'#ffd2e8',.025));
+// Two low-poly CC0 rock silhouettes, not additional render objects. Flat normals
+// follow each source triangle; a single surface carries both rock and grassy top.
+let coastRockShapes=null;
+function coastalShapes(){
+ if(coastRockShapes)return coastRockShapes;
+ coastRockShapes=coastalRockData.map(data=>{
+  const parts=[shape([],[],[]),shape([],[],[])];
+  for(let j=0;j<data.i.length;j+=3){
+   const points=data.i.slice(j,j+3).map(i=>data.p.slice(i*3,i*3+3)),n=norm(cross(sub(points[1],points[0]),sub(points[2],points[0])));
+   const top=n[1]>.55&&points.reduce((sum,p)=>sum+p[1],0)/3>.2,g=parts[top?1:0],base=g.p.length/3;
+   for(const p of points){g.p.push(...p);g.n.push(...n)}g.i.push(base,base+1,base+2);
+  }return parts;
+ });return coastRockShapes;
+}
+function coastalBackdrop(c,center){
+ const shapes=coastalShapes();
+ const island=(variant,a,w,h,d,turn,far)=>{
+  const rx=far?470:440,rz=far?415:340,foot=variant===0?-1-h*.3:-1.15;
+  const m=trs([center[0]+Math.cos(a)*rx,foot,center[2]+Math.sin(a)*rz],[w,h,d],[0,turn,0]);
+  c.add(shapes[variant][0],m,far?'#a3b8c3':'#8f9c9b',.02);
+  c.add(shapes[variant][1],m,far?'#a9bdbe':'#a6b995',.02);
+ };
+ // Uneven headlands leave sea gaps; a lower, cooler outer band gives depth.
+ // Width/depth are full extents. Elliptical spacing fits this long coast;
+ // the largeA underside bevel (up to y=.292) is submerged, not lit as a cave.
+ for(const [a,w,h,d,variant] of [[.12,112,27,86,1],[1.02,155,26,100,0],[1.92,135,35,100,1],[2.77,150,27,105,0],[3.68,125,33,92,1],[4.51,163,24,106,0],[5.42,136,36,94,1]])island(variant,a,w,h,d,a+.4,false);
+ for(const [a,w,h,d,variant] of [[.55,140,25,80,0],[1.62,150,32,90,1],[2.62,135,24,80,0],[3.72,150,31,88,1],[4.74,140,26,85,0],[5.75,145,29,86,1]])island(variant,a,w,h,d,a-.5,true);
+}
 function buildLandscape(){
  if(landscapeNode)landscapeNode.mesh.dispose();
  if(landscapeNode){landscapeNode.mesh.dispose();landscapeNode=null}
  const c=new Collector(),b=circuitBounds,center=[(b.minX+b.maxX)*.5,0,(b.minZ+b.maxZ)*.5],w=b.maxX-b.minX,d=b.maxZ-b.minZ;
  const coast=trackInfo().biome===0;
  if(coast){for(const [rx,rz,y,col] of [[w*.82,d*.89,-.43,'#eadfce'],[w*.78,d*.85,-.30,'#c7d9b4']]){const verts=[center[0],y,center[2]],normals=[0,1,0],indices=[];for(let j=0;j<=96;j++){const a=j*TAU/96,r=1+.025*Math.sin(a*5);verts.push(center[0]+Math.cos(a)*rx*r,y,center[2]+Math.sin(a)*rz*r);normals.push(0,1,0);if(j)indices.push(0,j,j+1)}c.add(shape(verts,normals,indices),I,col,.02)}}
- for(let i=0;i<12;i++){
+ if(roadDriving&&coast)coastalBackdrop(c,center);
+ else for(let i=0;i<12;i++){
   const a=i*TAU/12,r=320+(i%3)*36,x=center[0]+Math.cos(a)*r,z=center[2]+Math.sin(a)*r,hh=40+(i%4)*18;
-  cone(c,[x,hh*.5-5,z],[70,hh,60],['#b5c4de','#a6bfd8','#c6cfdf'][i%3],[0,a,0],true);
-  if(i%3===0)cone(c,[x,hh*.85-5,z],[25,hh*.3,22],'#e5e5f0',[0,a,0],true);
+  const col=['#b5c4de','#a6bfd8','#c6cfdf'][i%3];
+  if(i%3===0){const m=trs([x,hh*.5-5,z],[70,hh,60],[0,a,0]);c.add(mountainLower,m,col);c.add(mountainSnow,m,'#e5e5f0');}
+  else cone(c,[x,hh*.5-5,z],[70,hh,60],col,[0,a,0],true);
  }
  // Distant fluffy clouds are full 3D, separate from the sky gradient.
  for(let i=0;i<10;i++){const a=i*TAU/10,pos=[center[0]+Math.cos(a)*260,57+(i%3)*14,center[2]+Math.sin(a)*250];for(let j=0;j<4;j++)ball(c,add(pos,[(j-1.5)*12,Math.sin(j*2)*4,0]),[17,7+(j%2)*3,10],'#fff5f3',true,.01)}

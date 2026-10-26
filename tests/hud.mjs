@@ -152,8 +152,27 @@ test('compact HUD keeps functional groups in independent flow regions with uniqu
  const compact=shell.slice(shell.indexOf('@media(max-height:500px) and (pointer:fine)'));
  // Guard against passing a compact screen by deleting functionality.
  const hiddenSelectors=[...compact.matchAll(/([^{}]+)\{[^{}]*(?:display:none|visibility:hidden)[^{}]*\}/g)].map(match=>match[1].trim());
- assert.deepEqual(hiddenSelectors,['.driving-hud .brand','.driving-hud .guide','.driving-hud .toast']);
+ assert.deepEqual(hiddenSelectors,['.driving-hud .brand','.driving-hud .guide','.driving-hud .toast','#game.road-driving .brand']);
  window.happyDOM.abort();
+});
+
+test('compact road separates route, clock, speed and touch regions without removing information',()=>{
+ const compact=shell.slice(shell.indexOf('/* Compact road HUD'),shell.indexOf('</style>'));
+ const rule=selector=>compact.match(new RegExp(selector.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\{([^}]*)\\}'))?.[1]??'';
+ for(const [selector,column,row] of [['.map','2','2'],['.race-clock','1','3'],['.speed','2','3'],['.toast','1','4']]){
+  const css=rule('#game.road-driving '+selector);
+  assert.match(css,new RegExp('grid-column:'+column+';'));
+  assert.match(css,new RegExp('grid-row:'+row+';'));
+ }
+ assert.match(compact,/@media\(max-height:500px\) and \(pointer:coarse\)/);
+ assert.match(rule('#game.road-driving .toast'),/transition:opacity \.18s/,'compact reflow must not animate from the old centred transform');
+ assert.match(compact,/@media\(max-width:700px\) and \(min-height:501px\)/);
+ assert.match(compact,/#game\.road-driving \.right-hud\{top:90px\}/,'portrait map leaves room below wrapped actions');
+ assert.match(compact,/#game\.road-driving \.toast\{left:18px;top:190px;width:180px/);
+ assert.match(rule('#game.road-driving .touch'),/bottom:12px/);
+ assert.match(compact,/#game\.road-driving \.driving-hud\{bottom:70px/);
+ assert.match(compact,/#game\.road-driving \.right-hud \.coach\{position:fixed;left:110px;right:110px;bottom:12px/);
+ assert.deepEqual([...compact.matchAll(/([^{}]+)\{[^{}]*(?:display:none|visibility:hidden)[^{}]*\}/g)].map(m=>m[1].trim()),['#game.road-driving .brand']);
 });
 
 test('driving school teaches brake keys and the low-speed reverse boundary',()=>{

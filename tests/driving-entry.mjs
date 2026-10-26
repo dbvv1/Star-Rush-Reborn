@@ -26,6 +26,8 @@ async function environment(model,instrumented){
  const code=instrumented?(await build({stdin:{contents:clientSource(hooks,model),resolveDir:process.cwd()},bundle:true,write:false,format:'iife',target:'es2022',logLevel:'silent'})).outputFiles[0].text:readFileSync(model==='road'?'dist/client/road/game.js':'dist/client/game.js','utf8');
  w.eval(code);if(instrumented)assert.deepEqual(JSON.parse(JSON.stringify(w.entryQA.renderingOptions)),model==='road'?{shading:'lambert',hemisphereIntensity:.7}:{shading:'toon',hemisphereIntensity:2.2});assert.deepEqual(errors,[]);assert.equal(w.document.querySelector('#error').hidden,true);
  assert.equal(w.document.querySelector('#drivingProfileLink').getAttribute('href'),model==='road'?'/':'/road');
+ assert.equal(w.document.querySelector('#game').classList.contains('road-driving'),model==='road');
+ assert.equal(w.document.querySelector('#coach').parentElement.classList.contains('right-hud'),model==='road');
  return {w,q:w.entryQA,requests};
 }
 for(const model of ['legacy','road']){const {w}=await environment(model,false);w.document.querySelector('#startBtn').click();assert.equal(w.document.querySelector('#welcome').hidden,true);await w.happyDOM.close();}

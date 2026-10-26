@@ -21,6 +21,8 @@ for(const id of ['racerName','roomName'])$(id).addEventListener('change',()=>{$(
 
 const drivingLink=document.createElement('a');drivingLink.id='drivingProfileLink';drivingLink.className='text-btn';drivingLink.href=roadDriving?'/':'/road';drivingLink.textContent=roadDriving?'返回默认街机驾驶 ↗':'试驾普通公路驾驶候选（未定稿） ↗';document.querySelector('#welcome .launch').after(drivingLink);
 if(roadDriving){
+ game.classList.add('road-driving');
+ document.querySelector('.right-hud').appendChild($('coach'));
  for(const id of ['roomBtn','welcomeRoom','endlessMode','boardCircuit','boardEndless','submitRun']){$(id).hidden=true;$(id).disabled=true;}
  document.querySelector('#welcome .eyebrow').textContent='普通公路驾驶候选 · 未定稿 / ROAD V2';
  $('rankBtn').textContent='本机';
