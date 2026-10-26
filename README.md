@@ -64,7 +64,7 @@ STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build
 
 - 选卡插画：原创 AI 插画，源图、提示词与处理配方见 [assets/course-art](assets/course-art/README.md)。
 - 护栏碰撞样本：Kenney Impact Sounds（CC0）与本地合成候选，见 [assets/impact-audio](assets/impact-audio/README.md)。
-- 海岸环境声候选：MOSS-SoundEffect v2.0（Apache-2.0；源码 revision 934d6826…；生成结果未自行标为 CC0）生成并处理，默认关闭，仅在 `/road` 汐见海岸 380–660 m 可听；来源、许可、参数与未听验状态见 [assets/coast-ambience](assets/coast-ambience/README.md)。
+- 海岸环境声候选：MOSS-SoundEffect v2.0（Apache-2.0；源码 revision 934d6826…；生成结果未自行标为 CC0）生成并处理，默认关闭，仅在 `/road` 选择汐见海岸后请求，380–660 m 可听；来源、许可、参数与未听验状态见 [assets/coast-ambience](assets/coast-ambience/README.md)。
 - 路边转向牌：原创程序几何与可编辑配色／粗细，见 [assets/signboard](assets/signboard/README.md)。
 - 除上述插画与音频样本外，其余人物、车辆、道路和场景由源码生成。Three.js（MIT）随客户端打包。
 
@@ -88,7 +88,7 @@ STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build
 
 ### 海岸环境声对照
 
-`STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build` 在 `/road` 汐见海岸 380–660 m 加入低调的海风与远海浪环境层；默认 `off` 不加载环境声字节，`/` 与其他赛道也不创建或请求它。来源（MOSS-SoundEffect v2.0，Apache-2.0，源码 revision 934d6826…；生成结果未自行标为 CC0）、生成参数、处理配方和候选限制见 [海岸环境声素材](assets/coast-ambience/README.md)。资产缺失、格式不符或解码失败时保持静音，原发动机／轮胎／碰撞／音乐混音参数不变。听感、循环接缝和实玩混音尚未人工验收。
+`STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build` 在 `/road` 汐见海岸 380–660 m 加入低调的海风与远海浪环境层；默认 `off` 不加载环境声字节，`coast-v1` 也只在 `/road` 选择汐见海岸并进入倒计时后才请求该音频，`/`、其他赛道与无尽模式都不请求它。来源（MOSS-SoundEffect v2.0，Apache-2.0，源码 revision 934d6826…；生成结果未自行标为 CC0）、生成参数、处理配方和候选限制见 [海岸环境声素材](assets/coast-ambience/README.md)。资产缺失、格式不符或解码失败时保持静音，原发动机／轮胎／碰撞／音乐混音参数不变。听感、循环接缝和实玩混音尚未人工验收。
 
 ### 公路驾驶候选
 

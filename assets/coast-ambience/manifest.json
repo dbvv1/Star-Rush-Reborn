@@ -39,7 +39,8 @@
     "targetRms": 0.08,
     "peakCeiling": 0.9
   },
-  "selection": "seed 0 selected for more 200-2000 Hz presence (29.8% vs 5.3% band energy) while remaining quiet; no subjective listening was performed.",
+  "selection": "seed 0 selected for a higher 200-2000 Hz band share (23.50% vs 6.35%) and lower full-band RMS (0.0153 vs 0.0247); measured by measure_seed_bands.py and recorded in source/seed-band-analysis.json. No subjective listening was performed.",
+  "selectionAnalysis": "source/seed-band-analysis.json",
   "alternatives": [
     {
       "seed": 1,

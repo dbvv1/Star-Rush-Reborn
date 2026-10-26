@@ -1,0 +1,35 @@
+{
+  "method": {
+    "bandHz": [
+      200,
+      2000
+    ],
+    "ffmpegFilter": "highpass=f=200:poles=2,lowpass=f=2000:poles=2",
+    "rmsMeter": "ffmpeg astats, Overall RMS level dB",
+    "bandShareFormula": "10 ** ((bandRmsDb - fullRmsDb) / 10) * 100",
+    "note": "Filter-defined numeric band share; not perceptual loudness or listening approval.",
+    "ffmpeg": "ffmpeg version 9.0.2-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers"
+  },
+  "seeds": [
+    {
+      "seed": 0,
+      "file": "source/seed0-10s.wav",
+      "sha256": "5a45fd82494794b88fa9dd99187f0d5a7cb0c1e6479de4243532009175943e9e",
+      "fullRmsDb": -36.316591,
+      "fullRmsLinear": 0.01528166,
+      "fullPeakDb": -21.586285,
+      "bandRmsDb": -42.605578,
+      "bandSharePercent": 23.5018
+    },
+    {
+      "seed": 1,
+      "file": "source/seed1-10s.wav",
+      "sha256": "d5af6b0dd0b29896899a9b5951d1353e37c9098f755bc6460a115f0fe50cd601",
+      "fullRmsDb": -32.161313,
+      "fullRmsLinear": 0.02465667,
+      "fullPeakDb": -20.010175,
+      "bandRmsDb": -44.132669,
+      "bandSharePercent": 6.3513
+    }
+  ]
+}

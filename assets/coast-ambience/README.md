@@ -2,9 +2,11 @@
 
 Opt-in sea breeze and distant surf for the `/road` coast circuit. The default
 build stays silent here: `STAR_RUSH_COAST_AMBIENCE` is `off` unless a build
-explicitly selects `coast-v1`. Only `/road` creates the layer, it is audible
-only around the 380–660 m coast corner, and it connects to the existing SFX
-master rather than changing engine, tire, impact or music levels.
+explicitly selects `coast-v1`. Only `/road` creates the layer, the clip is
+fetched only once the 汐见海岸 (`coast-reborn`) circuit is selected and its
+countdown starts, it is audible only around the 380–660 m coast corner, and it
+connects to the existing SFX master rather than changing engine, tire, impact
+or music levels.
 
 This is generated source plus a reproducible processing recipe and an
 engineering candidate, not listening approval. Subjective quality and the
@@ -22,9 +24,28 @@ actual in-race mix are **not verified** yet.
 - Prompt, seed and parameters: `manifest.json`.
 - Raw model output: `source/seed0-10s.wav` (48 kHz mono float32) and
   `source/seed1-10s.wav` for the alternative seed. Neither raw file is edited.
-  Seed 0 was selected because it kept more 200–2000 Hz presence (29.8% vs
-  5.3% band energy) while still being quiet; seed 1 is archived, not used.
-  This was a numeric choice, not a listening choice.
+  Seed 0 was selected because it kept more 200–2000 Hz band share (23.50% vs
+  6.35%) and had lower full-band RMS (0.0153 vs 0.0247); seed 1 is archived,
+  not used. This was a numeric choice, not a listening choice. The exact
+  measurement definition and output are below and in
+  `source/seed-band-analysis.json`.
+
+## Seed selection measurement
+
+`measure_seed_bands.py` measures the two archived raw clips with ffmpeg only:
+
+```bash
+python3 assets/coast-ambience/measure_seed_bands.py
+```
+
+For each seed it reads full-band RMS and the RMS after the fixed chain
+`highpass=f=200:poles=2,lowpass=f=2000:poles=2` (both from ffmpeg `astats`,
+dBFS) and computes `bandShare = 10^((bandRmsDb - fullRmsDb)/10) * 100`.
+The result is written to `source/seed-band-analysis.json`: seed 0 is 23.50%,
+seed 1 is 6.35%. The source SHA256 values and filter chain are recorded in the
+same file, so the numbers can be re-derived from the archived WAVs. This is a
+filter-defined numeric comparison, not perceptual loudness or listening
+approval; seed 0 was picked for the higher share plus its lower overall RMS.
 
 ## Runtime clip
 
@@ -71,16 +92,22 @@ format, exact byte count and SHA256, and reuses the existing inline
 the `/` entry never does, including when `STAR_RUSH_DRIVING_MODEL=road` serves
 the same road-driving simulation at both routes. `audio.js` additionally
 checks the actual pathname before creating the layer, so a stray shared bundle
-cannot fetch it from `/`. `audio.js` creates one looping
-`AudioBufferSourceNode` per `AudioContext`; loading is coalesced.
+cannot fetch it from `/`. The clip is not requested at audio init: `/road`
+creates the layer object, but `updateAudio` calls `load()` only once the coast
+circuit (`coast-reborn`) is selected and its countdown or running state is
+active. Selecting 花见坂 or 星跃训练场 on `/road` never fetches the bytes.
+`load()` makes at most one attempt, so a failed or timed-out asset is not
+refetched on every frame, and it creates one looping `AudioBufferSourceNode`
+per `AudioContext`; concurrent loading is coalesced.
 Missing/malformed/decode-failed/timeout assets leave the layer silent. Pause,
 finish, mute and SFX volume drive its gain to zero; restart reuses the same
 source, so repeated starts do not accumulate layers.
 
 Mix: the clip is sent at a fixed 0.05 through its own gain into the existing
 master (the same master that already applies mute/SFX volume). The region uses
-40 m smooth fades at 380–420 m and 620–660 m. Other tracks and the default `/`
-entry neither create nor fetch it. No global loudness increase is used.
+40 m smooth fades at 380–420 m and 620–660 m. Other circuits, non-circuit
+modes and the default `/` entry never fetch it. No global loudness increase is
+used.
 
 ## Verification status
 
@@ -93,9 +120,13 @@ entry neither create nor fetch it. No global loudness increase is used.
 - Numeric checks: raw clips are quiet (seed 0 RMS 0.0153, peak 0.0833),
   no clipping, and the processed 9.25 s loop has a seam step (0.0094) close
   to neighbouring sample steps (0.006–0.007) after the equal-power blend.
-  Runtime RMS is 0.080, peak 0.370, half-second RMS varies ~6.8 dB.
-- Asset format, build isolation and lifecycle are covered by
-  `tests/coast-ambience.mjs` and `tests/coast-ambience-source-choice.mjs`.
+  Runtime RMS is 0.080, peak 0.370, half-second RMS varies ~6.8 dB. The
+  manifest's seed band shares (23.50% vs 6.35%) are reproduced by
+  `measure_seed_bands.py`; the source hashes and filter chain are in
+  `source/seed-band-analysis.json`.
+- Asset format, build isolation, lazy per-track loading and lifecycle are
+  covered by `tests/coast-ambience.mjs` and
+  `tests/coast-ambience-source-choice.mjs`.
 - **Not verified:** human listening of the isolated clip, comparison with the
   ambience-off mix, loop-seam audibility, and an actual in-game mixed recording.
   Do not treat engineering checks or numeric seam continuity as listening

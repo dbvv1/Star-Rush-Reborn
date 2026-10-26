@@ -38,6 +38,21 @@ test('ambience is disabled by default and candidate exposes one checked clip', (
   assert.throws(() => loadCoastAmbienceAssets('assets/coast-ambience', 'oops'));
 });
 
+test('seed selection cites the reproducible band measurement', () => {
+  const manifest = JSON.parse(readFileSync('assets/coast-ambience/manifest.json', 'utf8'));
+  const analysis = JSON.parse(readFileSync('assets/coast-ambience/source/seed-band-analysis.json', 'utf8'));
+  assert.deepEqual(analysis.method.bandHz, [200, 2000]);
+  assert.equal(analysis.method.ffmpegFilter, 'highpass=f=200:poles=2,lowpass=f=2000:poles=2');
+  assert.equal(analysis.seeds.length, 2);
+  assert.equal(analysis.seeds[0].sha256, manifest.clip.sourceSha256);
+  assert.equal(analysis.seeds[1].sha256, manifest.alternatives[0].sourceSha256);
+  const pct = n => n.toFixed(2) + '%';
+  assert(manifest.selection.includes(pct(analysis.seeds[0].bandSharePercent)));
+  assert(manifest.selection.includes(pct(analysis.seeds[1].bandSharePercent)));
+  assert.equal(manifest.selectionAnalysis, 'source/seed-band-analysis.json');
+  assert(analysis.seeds[0].bandSharePercent > analysis.seeds[1].bandSharePercent);
+});
+
 test('one looping source follows the corner mix and stops on pause or dispose', async () => {
   const {p, nodes, gains} = fixture();
   const a = p.load();
@@ -57,8 +72,11 @@ test('one looping source follows the corner mix and stops on pause or dispose', 
 });
 
 test('HTTP, format, timeout and disposed loads never leave a source behind', async () => {
-  const bad = fixture(async () => ({ok: false, arrayBuffer: async () => new ArrayBuffer(4)}));
+  let badCalls = 0;
+  const bad = fixture(async () => { badCalls++; return {ok: false, arrayBuffer: async () => new ArrayBuffer(4)}; });
   await bad.p.load();
+  await bad.p.load();
+  assert.equal(badCalls, 1, 'a failed asset is not refetched by the per-frame caller');
   assert.equal(bad.nodes.length, 0);
   assert.equal(bad.p.status().status, 'fallback');
 
@@ -98,7 +116,10 @@ test('the layer is limited to the /road entry even when both routes share a driv
 });
 
 test('mix wiring is limited to the /road coast corner and preserves existing layers', () => {
-  assert.match(source, /roadDriving&&isRoadEntry\(\)&&typeof coastAmbienceConfig!=='undefined'&&coastAmbienceConfig\.profile==='coast-v1'/);
+  assert.match(source, /roadDriving&&isRoadEntry\(\)&&typeof coastAmbienceConfig!=='undefined'&&coastAmbienceConfig\.profile==='coast-v1'\)audio\.coast=createCoastAmbience/);
+  assert.doesNotMatch(source, /createCoastAmbience\(ctx,master,coastAmbienceConfig\);void audio\.coast\.load\(\)/, 'audio init must not fetch the clip before a circuit is selected');
+  assert.match(source, /eligible=raceMode==='circuit'&&activeTrackId==='coast-reborn'&&isRoadEntry\(\)&&\(state==='countdown'\|\|state==='running'\);if\(eligible\)void a\.coast\.load\(\)/);
+  assert.match(source, /if\(disposed\|\|source\|\|attempted\)return pending\|\|Promise\.resolve\(\)/, 'lazy per-frame calls retry at most once');
   assert.match(source, /a\.coast\.update\(\{running:active,mix:fade\*\.05\}\)/);
   assert.match(source, /active=running&&sound&&musicSettings\.sfxVolume>0&&raceMode==='circuit'&&activeTrackId==='coast-reborn'&&isRoadEntry\(\)/);
   assert.match(source, /coastFade\(\(player\.s-380\)\/40\),coastFade\(\(660-player\.s\)\/40\)/);
