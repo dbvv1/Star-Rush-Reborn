@@ -1,5 +1,8 @@
 // Procedural engine/tires/jets, with optional CC0 rail samples and procedural fallback.
 let audio=null,sound=true;
+// The coast bed belongs to the explicit /road entry, not to the shared road
+// driving bundle that may also be served at /.
+function isRoadEntry(){return typeof location!=='undefined'&&(location.pathname==='/road'||location.pathname.startsWith('/road/'))}
 function audioInit(){if(audio)return;try{
  const ctx=new (window.AudioContext||window.webkitAudioContext)(),master=ctx.createGain(),compressor=ctx.createDynamicsCompressor();master.gain.value=sound?.48:0;master.connect(compressor);compressor.threshold.value=-18;compressor.ratio.value=4;compressor.connect(ctx.destination);
  const engineGain=ctx.createGain(),engineFilter=ctx.createBiquadFilter();engineFilter.type='lowpass';engineFilter.frequency.value=1000;engineGain.gain.value=0;engineFilter.connect(engineGain);engineGain.connect(master);
@@ -10,6 +13,7 @@ function audioInit(){if(audio)return;try{
  audio={ctx,master,engine1,engine2,sub,engineGain,engineFilter,synthGain,subGain,noise,wind,tire,turbo,oldSpeed:0,oldBoost:false,gear:0};
  if(typeof drivingAudioConfig!=='undefined'&&drivingAudioConfig.profile==='sample-v1'){audio.driving=createDrivingAudioProfile(ctx,master,engineFilter,drivingAudioConfig.urls);void audio.driving.load();}
  if(Object.keys(railImpactUrls).length){audio.rail=createRailImpactPlayer(ctx,master,railImpactUrls);void audio.rail.load();}
+ if(typeof roadDriving!=='undefined'&&roadDriving&&isRoadEntry()&&typeof coastAmbienceConfig!=='undefined'&&coastAmbienceConfig.profile==='coast-v1'){audio.coast=createCoastAmbience(ctx,master,coastAmbienceConfig);void audio.coast.load();}
 }catch(e){}}
 function tone(freq=620,duration=.10){if(!sound||!audio||audio.ctx.state!=='running')return;const {ctx,master}=audio,o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(freq,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(freq*1.28,ctx.currentTime+duration);g.gain.setValueAtTime(.07,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+duration);o.connect(g);g.connect(master);o.start();o.stop(ctx.currentTime+duration+.02)}
 // One-shot game feedback is dropped while audio is interrupted, never queued for resume.
@@ -18,6 +22,9 @@ function impactSound(kind,speed){if(!sound||!audio||audio.ctx.state!=='running')
 function updateAudio(){if(!audio)return;const a=audio,t=a.ctx.currentTime,running=state==='running',speed=player.speed,gear=Math.min(5,Math.floor(speed/9)),rpm=48+speed*2.2+(speed%9)*5;
  if(!running||!sound||musicSettings.sfxVolume<=0)a.rail?.stop();
  a.master.gain.setTargetAtTime(sound?.48*musicSettings.sfxVolume:0,t,.05);
+ // Quiet coastal bed only inside the /road coast corner (380-660 m), with
+ // 40 m fades at both ends. Other tracks, pause and mute all drive it to zero.
+ if(a.coast){const fade=Math.min(coastFade((player.s-380)/40),coastFade((660-player.s)/40)),active=running&&sound&&musicSettings.sfxVolume>0&&raceMode==='circuit'&&activeTrackId==='coast-reborn'&&isRoadEntry();a.coast.update({running:active,mix:fade*.05})}
  const volume=running?.012+Math.min(.04,speed*.0007)+(input.gas?.013:0):.0;
  a.engineGain.gain.setTargetAtTime(volume,t,.07);a.engineFilter.frequency.setTargetAtTime(550+speed*25+(input.gas?500:0),t,.12);
  const shift=gear!==a.gear?.80:1;a.gear=gear;a.engine1.frequency.setTargetAtTime(rpm*shift,t,.045);a.engine2.frequency.setTargetAtTime(rpm*1.5*shift,t,.065);a.sub.frequency.setTargetAtTime(rpm*.5,t,.07);
@@ -62,4 +69,28 @@ function createDrivingAudioProfile(ctx,master,engineFilter,urls,{fetchImpl=globa
  }
  function dispose(){disposed=true;for(const c of controllers)c.abort();for(const key of ['engine','tire']){const l=layers[key];if(l){l.source.stop();l.source.disconnect();l.gain.disconnect();delete layers[key];}}layers.tireFilter?.disconnect();}
  return {load,update,dispose,status:()=>({states:{...states},disposed})};
+}
+
+// A single looping coastal ambience bed. It is created only for the /road
+// bundle and only when the build selected a valid clip; failures keep the
+// layer silent instead of affecting driving. One source per AudioContext.
+function coastFade(x){x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)}
+function createCoastAmbience(ctx,master,config,{fetchImpl=globalThis.fetch,timeoutMs=8000}={}){
+ const state={status:'idle',last:''};let source=null,gain=null,pending=null,disposed=false;
+ function load(){if(config?.profile!=='coast-v1'||typeof config.url!=='string'||!config.url.startsWith('/assets/impact-audio/coast-ambience-')){state.status='off';return Promise.resolve()}
+  if(disposed||source)return Promise.resolve();
+  if(pending)return pending;state.status='loading';const controller=new AbortController();let timer;
+  pending=Promise.race([(async()=>{
+   const response=await fetchImpl(config.url,{signal:controller.signal});if(!response.ok)throw Error('Coast HTTP');
+   const bytes=await response.arrayBuffer();if(bytes.byteLength>4000000)throw Error('Coast size');
+   const buffer=await ctx.decodeAudioData(bytes);if(buffer.numberOfChannels!==2||!(buffer.duration>6&&buffer.duration<11))throw Error('Coast format');
+   if(disposed)return;source=ctx.createBufferSource();gain=ctx.createGain();source.buffer=buffer;source.loop=true;gain.gain.value=0;source.connect(gain);gain.connect(master);source.start();state.status='ready';
+  })(),new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(Error('Coast timeout'))},timeoutMs)})]).catch(e=>{if(!disposed)state.status='fallback';state.last=e.message}).finally(()=>{clearTimeout(timer);pending=null});
+  return pending}
+ function update({running,mix}){
+  if(!gain||disposed)return;const level=running?Math.max(0,Math.min(.2,Number(mix)||0)):0;
+  gain.gain.setTargetAtTime(level,ctx.currentTime,.18);
+ }
+ function dispose(){disposed=true;try{source?.stop()}catch(e){}source?.disconnect();gain?.disconnect();source=null;gain=null;state.status='disposed'}
+ return {load,update,dispose,status:()=>({...state})};
 }

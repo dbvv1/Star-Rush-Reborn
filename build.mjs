@@ -4,6 +4,7 @@ import {join} from 'node:path';
 import {build} from 'esbuild';
 import {loadImpactAssets} from './impact-assets.mjs';
 import {loadDrivingAudioAssets} from './driving-audio-assets.mjs';
+import {loadCoastAmbienceAssets} from './coast-ambience-assets.mjs';
 import {loadSignboardStyles,selectedSignboardStyle,applySignboardStyle} from './signboard-assets.mjs';
 const signboardStyle=selectedSignboardStyle(loadSignboardStyles(),process.env.STAR_RUSH_SIGNBOARD_VARIANT??'baseline');
 const drivingModel=process.env.STAR_RUSH_DRIVING_MODEL??'legacy';
@@ -35,24 +36,28 @@ export function loadCourseArtwork(directory='assets/course-art') {
 const courseArtwork=loadCourseArtwork();
 rmSync('dist/client/assets/course-art',{recursive:true,force:true});mkdirSync('dist/client/assets/course-art',{recursive:true});
 for(const [url,base64] of Object.entries(courseArtwork.assets))writeFileSync('dist/client'+url,Buffer.from(base64,'base64'));
+const coastAmbience=process.env.STAR_RUSH_COAST_AMBIENCE??'off';
+if(!['off','coast-v1'].includes(coastAmbience))throw Error('Unknown coast ambience profile: '+coastAmbience);
 const impactArtwork=loadImpactAssets('assets/impact-audio',process.env.STAR_RUSH_RAIL_SOURCE??'kenney');
 const drivingArtwork=loadDrivingAudioAssets('assets/driving-audio',process.env.STAR_RUSH_DRIVING_AUDIO??'procedural');
-Object.assign(impactArtwork.assets,drivingArtwork.assets);
+const coastAmbienceArtwork=loadCoastAmbienceAssets('assets/coast-ambience',coastAmbience);
+Object.assign(impactArtwork.assets,drivingArtwork.assets,coastAmbienceArtwork.assets);
 rmSync('dist/client/assets/impact-audio',{recursive:true,force:true});mkdirSync('dist/client/assets/impact-audio',{recursive:true});
 for(const [url,base64] of Object.entries(impactArtwork.assets))writeFileSync('dist/client'+url,Buffer.from(base64,'base64'));
 const houseAnchors=process.env.STAR_RUSH_CANVAS_HOUSE_ANCHORS??'off';
 if(!['off','on'].includes(houseAnchors))throw Error('Unknown Canvas house anchor option: '+houseAnchors);
 const engine=read('engine.js');
 const intro=`import {RoadVehicleModel} from './road-vehicle-core.js';\nimport {createRailImpactPlayer} from './impact-audio.js';\nimport {initializeRendering} from './render-init.js';\nimport {initCourseArt} from './course-art.js';\n(()=>{'use strict';let canvas=document.getElementById('scene');const error=document.getElementById('error'),loading=document.getElementById('loading');function fail(message){error.hidden=false;document.getElementById('error-text').textContent=message;loading.classList.add('done')}\n`;
-const setup=(model)=>`\nconst roadDriving=${model==='road'};const drivingRevision=${JSON.stringify('road-v2')};const drivingAudioConfig=${JSON.stringify(drivingArtwork.client)};const coastFlowCandidate=${model==='legacy'&&coastFlow==='candidate'};const railImpactUrls=${JSON.stringify(impactArtwork.client)};const softwareHouseAnchorsEnabled=${houseAnchors==='on'};\ntry{\nconst renderingOptions=${JSON.stringify(model==='road'?{shading:'lambert',hemisphereIntensity:.7}:{shading:'toon',hemisphereIntensity:2.2})};const rendering=initializeRendering(canvas,renderingOptions);canvas=rendering.canvas;\nlet threeBackend=rendering.threeBackend,software=rendering.software,softwareContext=rendering.softwareContext;\n`;
+const setup=(model,coastAmbience=false)=>`\nconst roadDriving=${model==='road'};const drivingRevision=${JSON.stringify('road-v2')};const drivingAudioConfig=${JSON.stringify(drivingArtwork.client)};const coastAmbienceConfig=${JSON.stringify(model==='road'&&coastAmbience?coastAmbienceArtwork.client:{profile:'off',url:null})};const coastFlowCandidate=${model==='legacy'&&coastFlow==='candidate'};const railImpactUrls=${JSON.stringify(impactArtwork.client)};const softwareHouseAnchorsEnabled=${houseAnchors==='on'};\ntry{\nconst renderingOptions=${JSON.stringify(model==='road'?{shading:'lambert',hemisphereIntensity:.7}:{shading:'toon',hemisphereIntensity:2.2})};const rendering=initializeRendering(canvas,renderingOptions);canvas=rendering.canvas;\nlet threeBackend=rendering.threeBackend,software=rendering.software,softwareContext=rendering.softwareContext;\n`;
 const files=['racer.js','circuit.js','scenery.js','audio.js','vehicle-core.js','handling.js','race.js','ranking.js','music.js','network.js','race-features.js','ui.js'];
-export function clientSource(tail='',model=drivingModel){if(!['legacy','road'].includes(model))throw Error('Unknown client model');return intro+setup(model)+read('software-renderer.js')+engine+'\n'+files.map(f=>(f==='scenery.js'?applySignboardStyle(read(f),signboardStyle):read(f)).replace("import {RoadVehicleModel} from './road-vehicle-core.js';",'').replace('export const VehicleModel','const VehicleModel')).join('\n')+'\ninitCourseArt(document,'+JSON.stringify(courseArtwork.client)+');'+tail+"\n}catch(e){console.error(e);fail('游戏初始化异常：'+e.message)}\n})();"}
+export function clientSource(tail='',model=drivingModel,coastAmbience=false){if(!['legacy','road'].includes(model))throw Error('Unknown client model');return intro+setup(model,coastAmbience)+read('software-renderer.js')+engine+'\n'+files.map(f=>(f==='scenery.js'?applySignboardStyle(read(f),signboardStyle):read(f)).replace("import {RoadVehicleModel} from './road-vehicle-core.js';",'').replace('export const VehicleModel','const VehicleModel')).join('\n')+'\ninitCourseArt(document,'+JSON.stringify(courseArtwork.client)+');'+tail+"\n}catch(e){console.error(e);fail('游戏初始化异常：'+e.message)}\n})();"}
 // Preserve shader string values while escaping multiline literals in generated JS.
 // https://esbuild.github.io/api/#supported (template-literal)
 export const clientSyntaxSupport=Object.freeze({'template-literal':false});
-async function bundle(model){const result=await build({stdin:{contents:clientSource('',model),resolveDir:process.cwd(),loader:'js',sourcefile:'star-rush-'+model+'.js'},bundle:true,minify:true,target:'es2022',supported:clientSyntaxSupport,format:'iife',write:false,legalComments:'eof'});return result.outputFiles[0].text+'\n/*! Three.js license\n'+read('node_modules/three/LICENSE')+'*/\n';}
+async function bundle(model,coastAmbience=false){const result=await build({stdin:{contents:clientSource('',model,coastAmbience),resolveDir:process.cwd(),loader:'js',sourcefile:'star-rush-'+model+'.js'},bundle:true,minify:true,target:'es2022',supported:clientSyntaxSupport,format:'iife',write:false,legalComments:'eof'});return result.outputFiles[0].text+'\n/*! Three.js license\n'+read('node_modules/three/LICENSE')+'*/\n';}
 // Explicit arguments, not environment mutation / cached module re-imports.
-const game=await bundle(drivingModel),roadGame=drivingModel==='road'?game:await bundle('road');
+// Only the /road entry receives the coast clip; the / entry never does.
+const game=await bundle(drivingModel),roadGame=await bundle('road',true);
 const shell=coastFlow==='candidate'?read('game-shell.html').replace('桜と海、走り出そう。 / REBORN 01','同弯控制候选 · 非默认 / COAST FLOW').replace('或松开再按 W。','仅使用这两个主动喷射键；重新踩油门不会触发小喷。'):read('game-shell.html');
 const page=shell.replace('<!--GAME_SCRIPT-->','<script src="/game.js?v=reborn-1"></script>');
 const roadPage=read('game-shell.html').replace('<!--GAME_SCRIPT-->','<script src="/road/game.js?v=road-v2"></script>');

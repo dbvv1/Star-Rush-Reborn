@@ -1,0 +1,47 @@
+Star-Rush-Reborn coast ambience candidate — coast-v1
+
+Generated sound
+  Model: OpenMOSS Team, MOSS-SoundEffect-v2.0 (1.3B DiT, flow matching, DAC VAE, Qwen3 text encoder).
+  Model card: https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0
+  Weights host used: https://www.modelscope.cn/models/openmoss/MOSS-SoundEffect-v2.0
+    (the Hugging Face hostname was unreachable from the generation machine; ModelScope is the
+    same organization's repository. Every file was size- and SHA256-verified against that repo.)
+  Weights license: Apache-2.0 (model card and inference pyproject).
+  Inference source: https://github.com/OpenMOSS/MOSS-TTS/tree/main/moss_soundeffect_v2
+    Revision used: 934d6826b084c46a0d033402174d5f8ac4ed2519
+  Per-file weight revisions and hashes: assets/coast-ambience/source-metadata.json
+
+  Prompt: "A quiet coastal road on a clear morning. Soft steady sea breeze and distant gentle
+  surf below the seawall. Natural restrained ambience, consistent distance, no people,
+  no voices, no birds, no vehicles, no music, no dramatic gusts or impacts."
+  Seeds: 0 (selected) and 1 (archived alternative). 100 steps, cfg 4.0, sigma shift 5.0,
+  30 s latent cropped to 10 s, bfloat16, batch 1.
+  Runtime: Python 3.12 local environment, PyTorch 2.9.0+cu128, CUDA 12.8,
+  NVIDIA GeForce RTX 5070 12 GB. TORCHDYNAMO_DISABLE=1.
+  Actual load 46 s; peak allocated 9.895 GB / peak reserved 12.803 GB. No OOM, but the
+  driver used shared-memory oversubscription beyond the 12.2 GB dedicated memory while the
+  desktop GPU was also in use, so this is not evidence of comfortable 12 GB headroom.
+  Generation: seed 0 took 446.5 s (cold/contended), seed 1 took 153.2 s (warm).
+
+  Local inference adaptations, needed to run the pinned source with the published weights:
+  - The pinned source's DAC.load() expects a numpy codec archive, but the published
+    vae_128d_48k.pth is a torch state_dict. The runner constructs DAC from the checkpoint
+    metadata and loads the state_dict directly.
+  - from_pretrained() moves models without casting them. The runner casts real parameters
+    and buffers to bfloat16 while leaving complex rotary buffers in complex64.
+  These are runner-side changes only; no model weights were modified or retrained.
+
+Generated audio status
+  The generated audio is NOT relicensed as CC0 by this project. It is a candidate asset for
+  this work; use and redistribution remain subject to the model terms and the project's
+  review. No endorsement by the model authors is implied. Subjective listening quality is
+  not approved; see assets/coast-ambience/README.md.
+
+Processing
+  assets/coast-ambience/prepare.py: ffmpeg 25 Hz high-pass, equal-power last/first 0.75 s
+  loop seam, fixed RMS 0.08 with 0.90 peak ceiling, dual-mono 48 kHz PCM16. The model output
+  is mono; stereo is intentionally identical channels, not artificial widening.
+
+Existing game audio
+  Kenney rail impacts, the existing engine/tire candidates and all procedural audio are
+  unchanged. This candidate adds only a quiet ambience send at the coast corner.
