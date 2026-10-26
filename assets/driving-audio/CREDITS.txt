@@ -1,0 +1,22 @@
+Star-Rush driving audio audition — candidate sample-v1
+
+Engine: "racing car engine sound loops", domasx2.
+https://opengameart.org/content/racing-car-engine-sound-loops
+https://opengameart.org/sites/default/files/loop_0.wav
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Edited: mono 48-kHz decode, DC removal, 20-ms loop crossfade, fixed RMS scaling; pitch/filter/gain follow driving state.
+
+Tire: "Car tire squeal skid loop", audible-edge (Tom Haigh), loop edit/submission by qubodup.
+https://opengameart.org/content/car-tire-squeal-skid-loop
+https://opengameart.org/sites/default/files/tires_squal_loop.wav
+CC BY 3.0: https://creativecommons.org/licenses/by/3.0/
+Edited: mono 48-kHz decode, DC removal, 20-ms loop crossfade, fixed RMS and peak-safety scaling, 3500-Hz low-pass, driving slip/brake gain envelope.
+No endorsement by original authors is implied.
+
+Rail impacts (both versions): Kenney Impact Sounds.
+https://kenney.nl/assets/impact-sounds
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Existing Star derivatives: mono 22050-Hz PCM16, fixed 0.5 source scaling.
+
+Other engine/tire/boost/wind components are Star-Rush procedural audio.
+These are authored source assets processed and integrated with AI assistance, not AI-generated recordings. A/B is native WebAudio rendering of scripted game-state inputs, not a live driving recording. No subjective listening-quality approval is claimed.

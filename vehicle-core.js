@@ -1,3 +1,4 @@
+import {RoadVehicleModel} from './road-vehicle-core.js';
 // Original arcade handling model. Independent of rendering, DOM, road and jets.
 // A speed-only propulsion stage cannot rotate the trajectory; steering, slide
 // angle and collision impulses remain distinct stages and can be tested alone.
@@ -5,9 +6,14 @@ export const VehicleModel=(()=>{
  const clamp=(x,a,b)=>Math.min(b,Math.max(a,x)),lerp=(a,b,t)=>a+(b-a)*t,wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
  const config=Object.freeze({cruise:52,mini:63,nitro:76,combo:83,normalTurn:1.04,driftTurn:1.80,driveAcceleration:27,jetAcceleration:36});
  function step(p,c,dt,tune={}){
+  if(tune.road)return RoadVehicleModel.step(p,c,dt,tune);
   const v=Math.hypot(p.vS,p.vL),heading=v>.05?Math.atan2(p.vL,p.vS):p.yaw;
   const steer=clamp(Number(c.steer)||0,-1,1),sensitivity=tune.sensitivity||1,reverse=(p.vS*Math.cos(p.yaw)+p.vL*Math.sin(p.yaw))<-.05;
-  p.steering=lerp(p.steering||0,steer,1-Math.exp(-dt*26));
+  // High-speed keyboard onset is gentler, but full steering authority stays
+  // available. Release and the initial reversal of existing steering remain fast.
+  const oldSteer=p.steering||0,growing=steer*oldSteer>=0&&Math.abs(steer)>Math.abs(oldSteer);
+  const steerResponse=tune.arcadeCandidate&&growing?Math.max(8,26/(1+Math.max(0,v-30)/10)):26;
+  p.steering=lerp(oldSteer,steer,1-Math.exp(-dt*steerResponse));
   const drifting=!!p.drifting,side=p.driftSide||Math.sign(steer)||1,counter=drifting&&steer*side<-.1,release=drifting&&p.driftReleasing;
   let desired=p.steering*config.normalTurn*sensitivity*clamp(v/8,0,1)*(reverse?-1:1);
   if(drifting){

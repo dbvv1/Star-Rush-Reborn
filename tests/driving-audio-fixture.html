@@ -1,0 +1,37 @@
+<!doctype html><meta charset="utf-8"><title>Star driving audio — real WebAudio A/B</title>
+<style>body{font:18px system-ui;background:#101b2c;color:#eff5ff;max-width:900px;margin:35px auto;padding:20px}button,a{padding:12px;color:inherit}button{background:#245c88;border:1px solid #8dc7ff;border-radius:8px}pre{white-space:pre-wrap;background:#182a40;padding:18px}audio{width:100%}small{color:#bed1e4}</style>
+<h1>Star driving audio: one candidate</h1><p>Actual audio.js + native OfflineAudioContext. 28 seconds each. No music. Not recorded driving or a subjective quality verdict.</p>
+<button id="render">Render baseline + sample-v1</button><pre id="status">Ready. Click to render the same input trace through the real mixer.</pre>
+<h2>Baseline — current engine / tire</h2><audio id="baseline" controls></audio><a id="db">Download baseline</a>
+<h2>Candidate — recorded engine / tire</h2><audio id="candidate" controls></audio><a id="dc">Download candidate</a>
+<p><small>0–6 accelerate • 6–8 hold throttle • 8–10 coast at same speed • 10–16 drift • 17/18 collisions • 20–24 boost • 24–28 brake/coast. Default SFX 75%, effective master .36; no post-render gain or loudness matching. Compare gas/coast, slip onset/release, boost masking and impact clarity.</small></p>
+<script type="module">
+import {createRailImpactPlayer} from '/impact-audio.js';
+const status=document.querySelector('#status'),button=document.querySelector('#render');
+function wav(data,sr){const buf=new ArrayBuffer(44+data.length*2),v=new DataView(buf);function s(p,x){for(let i=0;i<x.length;i++)v.setUint8(p+i,x.charCodeAt(i));}s(0,'RIFF');v.setUint32(4,36+data.length*2,true);s(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);s(36,'data');v.setUint32(40,data.length*2,true);for(let i=0;i<data.length;i++)v.setInt16(44+i*2,Math.round(Math.max(-1,Math.min(1,data[i]))*32767),true);return buf;}
+function interp(t){const ts=[0,1,6,10,13,16,18,20,24,27,28],vs=[0,0,34,34,29,35,30,34,56,10,0];let i=0;while(i<ts.length-2&&t>ts[i+1])i++;return vs[i]+(vs[i+1]-vs[i])*(t-ts[i])/(ts[i+1]-ts[i]);}
+async function render(profile,code){
+ const native=new OfflineAudioContext(1,48000*28,48000);let clock=0;
+ const proxy=new Proxy(native,{get(target,key){if(key==='currentTime')return clock;if(key==='state')return 'running';const val=target[key];if(typeof val!=='function')return val;if(key==='createBufferSource'||key==='createOscillator')return (...args)=>{const node=val.apply(target,args),start=node.start.bind(node);node.start=(when=clock,...rest)=>start(when,...rest);return node;};return val.bind(target);}});
+ // The fixture clock adapts live calls into scheduled calls; node DSP is native WebAudio.
+ const config={profile,urls:{engine:'/assets/impact-audio/driving-engine.wav',tire:'/assets/impact-audio/driving-tire.wav'}};
+ const init=new Function('window','createRailImpactPlayer','drivingAudioConfig',`const railImpactUrls={light:'/assets/impact-audio/rail-light.wav',medium:'/assets/impact-audio/rail-medium.wav'};let state='running',player={speed:0,yaw:0,velocityYaw:0,jump:0,drifting:false,boostBlend:0,boostActive:false},input={gas:false,brake:false},musicSettings={sfxVolume:.75},gameTime=0;const wrapAngle=x=>Math.atan2(Math.sin(x),Math.cos(x));let seed=287;const Math=Object.create(globalThis.Math);Math.random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296};${code};return {init:audioInit,get:()=>audio,step(s){Object.assign(player,s.player);Object.assign(input,s.input);gameTime=s.time;updateAudio()},impact:impactSound,jet:jetSound};`);
+ const api=init({AudioContext:function(){return proxy}},createRailImpactPlayer,config);api.init();if(!api.get())throw Error('audioInit failed');await Promise.all([api.get().rail?.load(),api.get().driving?.load()]);
+ const events=[];
+ for(let frame=0;frame<28*60;frame++){
+  clock=frame/60;const t=clock,gas=(t>=1&&t<8)||(t>=10&&t<16)||(t>=18&&t<24),drift=t>=10&&t<16;
+  const blend=Math.max(0,Math.min(1,(t-20)/.18,(24-t)/.3));
+  api.step({time:t,player:{speed:interp(t),yaw:drift?.12+.45*Math.sin((t-10)/6*Math.PI):0,drifting:drift,boostBlend:blend,boostActive:t>=20&&t<24},input:{gas,brake:t>=24&&t<27}});
+  if(frame===17*60||frame===18*60){api.impact('rail',frame===17*60?2:7);events.push({t,kind:'rail'});}if(frame===20*60){api.jet('nitro');events.push({t,kind:'nitro'});}
+ }
+ const diagnostics={profile,rail:api.get().rail.status(),driving:api.get().driving?.status()??'procedural',events};
+ const rendered=await native.startRendering();return {data:new Float32Array(rendered.getChannelData(0)),diagnostics};
+}
+button.onclick=async()=>{button.disabled=true;try{
+ status.textContent='Rendering real native WebAudio baseline…';const code=await(await fetch('/audio.js')).text();const a=await render('procedural',code);status.textContent='Rendering sample-v1 with the same real audio.js calls…';const b=await render('sample-v1',code);
+ const rms=x=>Math.sqrt(x.reduce((s,v)=>s+v*v,0)/x.length);const match=1; // No post-render gain: compare the real runtime mix, not a louder audition.
+ const report={method:'Native OfflineAudioContext; actual audio.js control/event calls; authored fixture inputs, not live play',seconds:28,sampleRate:48000,postRenderGain:match,masterGain:.36,sfxVolume:.75,listening:'UNKNOWN',baseline:a.diagnostics,candidate:b.diagnostics};
+ for(const [name,result,id] of [['baseline',a,'db'],['candidate',b,'dc']]){const bytes=wav(result.data,48000);const blob=new Blob([bytes],{type:'audio/wav'}),url=URL.createObjectURL(blob);document.querySelector('#'+name).src=url;const link=document.querySelector('#'+id);link.href=url;link.download='star-webaudio-'+name+'.wav';const saved=await fetch('/results/'+name+'.wav',{method:'POST',body:bytes});if(!saved.ok)throw Error('WAV save HTTP '+saved.status);}
+ const savedReport=await fetch('/results/report.json',{method:'POST',body:JSON.stringify(report,null,2)});if(!savedReport.ok)throw Error('Report save HTTP '+savedReport.status);status.textContent='PASS — both 28-second renders saved. Listening quality UNKNOWN.\n'+JSON.stringify(report,null,2);
+ }catch(e){status.textContent='FAILED: '+e.stack;}finally{button.disabled=false;}};
+</script>

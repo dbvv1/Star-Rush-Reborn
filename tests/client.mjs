@@ -23,6 +23,10 @@ const w=new Window({url:'https://race.test/',settings:{disableIframePageLoading:
 Object.defineProperties(w.HTMLElement.prototype,{clientWidth:{get(){return 1280}},clientHeight:{get(){return 720}}});w.document.write(readFileSync('game-shell.html','utf8').replace('<!--GAME_SCRIPT-->','').replace(/<iframe[^>]*id="spotifyPlayer"[^>]*><\/iframe>/g,'<div id="spotifyPlayer"></div>'));
 const hooks=`\nwindow.qa={drawSoftware,player,input,controlEdges,VehicleModel,physics,resolveContacts,beginDrift,endDrift,reset,start,finish,pauseGame,goHome,prepareRaceFeatures,updateRaceFeatures,updateHUD,updateCoach,routePreview,updateDrivingAssists,refreshControls,road,atRoad,trackInfo,raceDistance,sceneFrame,renderRaceFeatures,frame,get state(){return state},get elapsed(){return elapsed},get bots(){return raceBots},get chunks(){return chunks},renderList(){drawList.length=0;collect(world);return drawList},signboardConsumers(){const result=[];for(const id of Object.keys(TRACKS)){activeTrackId=id;rebuildCircuit();routeSeed=id==='coast-reborn'?73121:95276;const directions=['left','right'];for(let k=0;k<Math.ceil(CIRCUIT_LENGTH/40);k++){const chunk=chunkMesh(k);function walk(n){for(const direction of directions)if(n.mesh===scenicProp(direction))result.push({track:id,k,direction,data:Array.from(n.mesh.sourceData),indices:Array.from(n.mesh.sourceIndices)});n.children.forEach(walk)}walk(chunk.node)}}activeTrackId='coast-reborn';reset(false);return result},get settings(){return settings},get profile(){return profile},get ghostNode(){return ghostNode},get ghostRun(){return ghostRun},get ghostPose(){return ghostPose},get splits(){return raceSplits},get circuitSamples(){return circuitSamples},set state(v){state=v},set event(v){eventType=v},set demo(v){demoDriving=v},set assisted(v){assistedSteer=v},choose(id){activeTrackId=id;raceMode='circuit';reset(false)},get tracks(){return TRACKS},clearKeys};`;
 const compiled=await build({stdin:{contents:clientSource(hooks),resolveDir:process.cwd(),loader:'js'},bundle:true,write:false,format:'iife',target:'es2022',logLevel:'silent'});w.eval(compiled.outputFiles[0].text);assert.equal(errors.length,0,errors.join('\n'));const q=w.qa;assert(q,'initialization must reach QA hooks');
+// The opening experiment changes only three boost removals and one lane.
+q.choose('coast-reborn');
+const openingPads=[...q.chunks.values()].flatMap(c=>c.entities.filter(e=>e.kind==='pad'&&e.s<700).map(e=>[e.s,e.l]));
+assert.deepEqual(openingPads,process.env.STAR_RUSH_COAST_FLOW==='candidate'?[[174,4.2]]:[[174,0],[334,-4.2],[494,-4.2],[654,-4.2]]);
 // Compare actual assembled-client consumers with the offline authored meshes.
 execFileSync(process.execPath,['authoring/signboard/export.mjs'],{stdio:'pipe'});
 const authored=JSON.parse(readFileSync('outputs/signboard-author/source.json','utf8'));
@@ -188,6 +192,8 @@ for(const result of obstacleRaces){
  assert(Number.isFinite(result.minBotGap));
 }
 console.log('AI moved-obstacle driving cases',obstacleRaces.map(r=>({track:r.track,offset:r.offset,moved:r.maxShift,overlapFrames:r.overlapFrames})));
+const {checkCoastFlowControls}=await import('./coast-flow-controls.mjs');
+checkCoastFlowControls(q,process.env.STAR_RUSH_COAST_FLOW??'baseline');
 // Stress contact, drift and boost transitions at the fixed simulation step.
 zero();let seed=3,maxSpeed=0;for(let i=0;i<6000;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;if(i%45===0){q.input.left=!!(seed&1);q.input.right=!!(seed&2);q.input.drift=!!(seed&4);q.input.gas=true;q.input.brake=!!(seed&16);q.input.boost=!!(seed&32);q.input.small=!!(seed&64)}q.physics(1/120);assert([q.player.s,q.player.l,q.player.yaw,q.player.speed].every(Number.isFinite));assert(Math.abs(q.player.l)<8);maxSpeed=Math.max(maxSpeed,q.player.speed)}assert(maxSpeed<84);
 // Exercise real Three.js geometry/material/instancing APIs with a draw stub.

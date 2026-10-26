@@ -9,14 +9,14 @@ const hash=x=>createHash('sha256').update(x).digest('hex');
 export const SOURCE='07e18395bff8a172f7d552ccae0f6cefe7458fce';
 // Original scene baseline; circuit's display-only formatter was amended later.
 // Exact hashes below remain authoritative; geometry/camera are unchanged.
-export const SOURCE_AMENDMENTS={'circuit.js':'formatTime centisecond carry only; no geometry or simulation changes'};
+export const SOURCE_AMENDMENTS={'circuit.js':'formatTime centisecond carry only; no geometry or simulation changes','race.js':'opt-in road profile moves runner obstacles outside rails, removes pickups and changes runtime HUD; legacy scene preserved; road-only record storage isolated','handling.js':'opt-in road vehicle control; legacy branch and author geometry preserved','racer.js':'opt-in front wheel animation uses actual road steering; rest geometry preserved'};
 export const SOURCE_HASHES={
   "engine.js": "baa90e01c1eee30ba88ee1316a7a390a168415826208f379b2b608c4b89d505a",
-  "racer.js": "2f9286e0f53cdcae9a8333b3d97212fa53ad606de2ba985954ad1786071783e5",
+  "racer.js": "4e6008c7fcce64342078cd06051a931edc4153f23756bbb4498abdd9022d7d39",
   "circuit.js": "6ad3b7570e24ea546c95004233ccf3eeedb6d14fbc386190cbb7dd79c0482082",
   "scenery.js": "18b92b39b2b6a7735bd524069d8c54ed8732ce8706cfd7e9b1916a0b9aa036da",
-  "race.js": "73f8b7ced6ce28953cf8a87bb940e3b55485dbb7500cea0a638a9d764ce9dc98",
-  "handling.js": "977f7a4f0228f26dc5402b213b6d79121bcc736f657fb9ad6766d0af0571bb4e"
+  "race.js": "295f74c3077bcb4785e903780581d6a713fdcec932649148397b24696c769c9d",
+  "handling.js": "9426ed5f9e7fdc301e1a1ba315db3edfbd22ecddcfeb482fe47cf3e352854af9"
 };
 export function validateSources(root=process.cwd()){
   for(const [file,expected] of Object.entries(SOURCE_HASHES))
@@ -28,7 +28,7 @@ validateSources(root); // Fail before executing any input or writing output.
 const read=(f,encoding)=>readFileSync(join(root,f),encoding);
 mkdirSync(output,{recursive:true});
 const sourceFiles=['engine.js','racer.js','circuit.js','scenery.js','race.js'];
-let src='';
+let src='const coastFlowCandidate=false,roadDriving=false;\n';
 for(const f of sourceFiles){let code=read(f,'utf8');if(f==='race.js')code=code.slice(0,code.indexOf('function stream()'));
 if(f==='scenery.js'&&mode==='candidate'){const needle='const place=(key,s,l,scale=1,rot=0)=>{';assert.equal(code.split(needle).length,2);code=code.replace(needle,needle+"if(k===2&&key==='cherry0'&&s===90&&l===-12.5)scale=.65;")}
 if(f==='scenery.js'&&mode!=='raw'){const old='root.add(n);return n';assert.equal(code.split(old).length,2);code=code.replace(old,`n.author={id:'coast/chunk/'+k+'/'+key+'/'+s+'/'+l,key,k,s,l,scale,rot};root.add(n);return n`)}src+=code+'\n';}

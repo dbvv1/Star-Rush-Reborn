@@ -1,6 +1,6 @@
 export default {
  async fetch(request,env){
-  const url=new URL(request.url);if(url.pathname==='/game.js')return new Response(GAME,{headers:{'content-type':'text/javascript; charset=utf-8','cache-control':'no-cache'}});if(url.pathname==='/api/rooms')return roomApi(request,env);
+  const url=new URL(request.url);if(url.pathname==='/road'||url.pathname==='/road/'||url.pathname==='/road/index.html')return new Response(ROAD_PAGE,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-cache'}});if(url.pathname==='/road/game.js')return new Response(ROAD_GAME,{headers:{'content-type':'text/javascript; charset=utf-8','cache-control':'no-cache'}});if(url.pathname==='/game.js')return new Response(GAME,{headers:{'content-type':'text/javascript; charset=utf-8','cache-control':'no-cache'}});if(url.pathname==='/api/rooms')return roomApi(request,env);
   if(Object.hasOwn(COURSE_ARTWORK,url.pathname)){
    if(request.method!=='GET'&&request.method!=='HEAD')return new Response('Method not allowed',{status:405,headers:{allow:'GET, HEAD'}});
    const bytes=Uint8Array.from(atob(COURSE_ARTWORK[url.pathname]),char=>char.charCodeAt(0));

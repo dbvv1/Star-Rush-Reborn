@@ -8,6 +8,7 @@ const peerMarkers=peerColors.map(c=>{const col=new Collector();cone(col,[0,2.55,
 function cloneCar(index){function copy(n){const c=new Node(n.mesh);c.local=new Float32Array(n.local);c.shadow=n.shadow;for(const child of n.children)c.add(copy(child));return c}const root=copy(car),marker=root.add(new Node(peerMarkers[index%4]));return {root,marker,spin:0}}
 function networkSnapshot(){return {s:player.s,l:player.l,vS:player.vS,vL:player.vL,yaw:player.yaw,jump:player.jump,mini:player.mini,nitroTime:player.nitroTime,paint:profile.paint,time:raceClock(),finished:state==='finished'}}
 async function roomRequest(action,extra={}){
+ if(roadDriving)throw new Error('公路候选仅本机跑圈，不连接在线房间');
  const began=Date.now(),response=await fetch('/api/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,id:net.id,code:net.room?.code||$('roomCode').value.trim(),name:$('roomName').value.trim()||'匿名车手',track:activeTrackId,...extra}),signal:AbortSignal.timeout(4000)});
  const data=await response.json();if(!response.ok)throw new Error(data.error||'房间请求失败');
  net.rtt=Date.now()-began;if(data.serverTime){const offset=data.serverTime-(began+Date.now())/2;net.offset=net.room?mix(net.offset,offset,.25):offset}return data;
@@ -41,7 +42,7 @@ function updateRoomUI(){
  const order=net.members.map(m=>({id:m.id,s:m.id===net.id?player.s:m.snapshot?.s||0,finished:m.id===net.id?state==='finished':!!m.snapshot?.finished,time:m.id===net.id?raceClock():m.snapshot?.time||0})).sort((a,b)=>a.finished&&b.finished?a.time-b.time:b.finished-a.finished||b.s-a.s);
  $('racePosition').textContent='POS '+(order.findIndex(m=>m.id===net.id)+1)+' / '+net.members.length;
 }
-function showRoom(){openPanel('roomPanel');updateRoomUI()}
+function showRoom(){if(roadDriving)return;openPanel('roomPanel');updateRoomUI()}
 async function joinAction(action){
  if(net.busy)return;net.busy=true;$('roomStatus').textContent='正在连接房间…';
  try{const data=await roomRequest(action);net.session++;clearPeers();activeTrackId=data.room.track;raceMode='circuit';reset(false);refreshTrackUI();receiveRoom(data);state='ready';panelResume=false;$('paused').hidden=true;$('finished').hidden=true;$('welcome').hidden=false;game.classList.add('menu-open');try{localStorage.setItem('star-rush-name',$('roomName').value.trim())}catch(e){}}catch(e){$('roomStatus').textContent=e.message}finally{net.busy=false}
