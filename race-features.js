@@ -15,7 +15,7 @@ function prepareRaceFeatures(){
 }
 function updateRaceFeatures(dt){
  for(const bot of raceBots){if(bot.finishAt!==null)continue;let curve=0;for(let d=15;d<=65;d+=10)curve=Math.max(curve,Math.abs(road(bot.s+d).curv));const target=clamp(Math.sqrt(24/Math.max(.004,curve)),24,53)*(1-bot.index*.028);bot.speed=mix(bot.speed,target,1-Math.exp(-dt*(bot.speed>target?3:1.2)));const curv=road(bot.s+20).curv;let lane=Math.sign(curv)*1.6+Math.sin(bot.s*.012+bot.index)*.45;
-  for(const ch of chunks.values())for(const e of ch.entities)if((e.kind==='barrier'||e.kind==='cone')&&courseDelta(e.s,bot.s)>0&&courseDelta(e.s,bot.s)<28&&Math.abs(lane-e.l)<2.1)lane=e.l>0?-2.8:2.8;
+  for(const ch of chunks.values())for(const e of ch.entities){if(e.kind!=='barrier'&&e.kind!=='cone')continue;const s=e.s+(e.ds||0),l=e.l+(e.dl||0),ahead=courseDelta(s,bot.s);if(ahead>0&&ahead<28&&Math.abs(lane-l)<2.1)lane=l>0?-2.8:2.8;}
   const old=bot.l;bot.l=mix(bot.l,lane,1-Math.exp(-dt*2.3));bot.yaw=Math.atan2((bot.l-old)/dt,Math.max(5,bot.speed))+clamp(curv*12,-.4,.4);bot.s+=bot.speed*dt;if(bot.s>=raceDistance()){bot.s=raceDistance();bot.finishAt=elapsed;firstFinish??=elapsed}
  }
  if(raceMode==='circuit'&&!net.room){ghostClock+=dt;if(ghostClock>=.1){ghostClock=0;ghostPoints.push([Number(raceClock().toFixed(3)),Number(player.s.toFixed(3)),Number(player.l.toFixed(3)),Number(player.yaw.toFixed(4)),Number(player.jump.toFixed(3))])}}

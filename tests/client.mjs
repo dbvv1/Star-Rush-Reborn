@@ -177,6 +177,17 @@ for(let i=0;i<120*120&&q.state==='running';i++)q.physics(1/120);
 assert.equal(q.state,'finished');assert.equal(hud('resultDistance').textContent,'DNF');assert.equal(hud('eventLabel').textContent,'未完赛');assert.equal(hud('localPosition').textContent,'POS 4 / 4');
 q.start();assert.equal(hud('eventLabel').textContent,'星跃训练场');assert.equal(hud('localPosition').textContent,'POS 1 / 4');
 console.log('Local AI finish/readability results');console.table(raceResults);
+// A real player collision can move a track prop into the rivals' lane.
+// Reuse actual physics from the start grid, not a manually displaced fixture.
+const {observePushedObstacleRaces}=await import('./ai-obstacle-driving.mjs');
+const obstacleRaces=observePushedObstacleRaces(q);
+assert.equal(obstacleRaces.length,5);
+for(const result of obstacleRaces){
+ assert(result.hit&&result.maxShift>1,'normal input must really push the original prop');
+ assert.equal(result.overlapFrames,0,JSON.stringify(result));
+ assert(Number.isFinite(result.minBotGap));
+}
+console.log('AI moved-obstacle driving cases',obstacleRaces.map(r=>({track:r.track,offset:r.offset,moved:r.maxShift,overlapFrames:r.overlapFrames})));
 // Stress contact, drift and boost transitions at the fixed simulation step.
 zero();let seed=3,maxSpeed=0;for(let i=0;i<6000;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;if(i%45===0){q.input.left=!!(seed&1);q.input.right=!!(seed&2);q.input.drift=!!(seed&4);q.input.gas=true;q.input.brake=!!(seed&16);q.input.boost=!!(seed&32);q.input.small=!!(seed&64)}q.physics(1/120);assert([q.player.s,q.player.l,q.player.yaw,q.player.speed].every(Number.isFinite));assert(Math.abs(q.player.l)<8);maxSpeed=Math.max(maxSpeed,q.player.speed)}assert(maxSpeed<84);
 // Exercise real Three.js geometry/material/instancing APIs with a draw stub.
