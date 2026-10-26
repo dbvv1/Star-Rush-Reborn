@@ -8,14 +8,14 @@ import {createHash} from 'node:crypto';
 const hash=x=>createHash('sha256').update(x).digest('hex');
 export const SOURCE='07e18395bff8a172f7d552ccae0f6cefe7458fce';
 // Original scene baseline; circuit's display-only formatter was amended later.
-// Exact hashes below remain authoritative; geometry/camera are unchanged.
-export const SOURCE_AMENDMENTS={'circuit.js':'formatTime centisecond carry only; no geometry or simulation changes','race.js':'opt-in road profile moves runner obstacles outside rails, removes pickups and changes runtime HUD; legacy scene preserved; road-only record storage isolated','handling.js':'opt-in road vehicle control; legacy branch and author geometry preserved','racer.js':'opt-in front wheel animation uses actual road steering; rest geometry preserved'};
+// Exact hashes remain authoritative; quad winding amended as noted, vertex positions/camera unchanged.
+export const SOURCE_AMENDMENTS={'circuit.js':'formatTime centisecond carry only; no geometry or simulation changes','race.js':'opt-in road profile moves runner obstacles outside rails, removes pickups and changes runtime HUD; legacy scene preserved; road-only record storage isolated; quad indices now agree with existing upward normals, positions unchanged','handling.js':'opt-in road vehicle control; legacy branch and author geometry preserved','racer.js':'opt-in front wheel animation uses actual road steering; rest geometry preserved'};
 export const SOURCE_HASHES={
   "engine.js": "baa90e01c1eee30ba88ee1316a7a390a168415826208f379b2b608c4b89d505a",
   "racer.js": "4e6008c7fcce64342078cd06051a931edc4153f23756bbb4498abdd9022d7d39",
   "circuit.js": "6ad3b7570e24ea546c95004233ccf3eeedb6d14fbc386190cbb7dd79c0482082",
   "scenery.js": "18b92b39b2b6a7735bd524069d8c54ed8732ce8706cfd7e9b1916a0b9aa036da",
-  "race.js": "295f74c3077bcb4785e903780581d6a713fdcec932649148397b24696c769c9d",
+  "race.js": "790885eab59329616c51ba13b853dd6e5c142830b44335a17afc443ccd4472c5",
   "handling.js": "9426ed5f9e7fdc301e1a1ba315db3edfbd22ecddcfeb482fe47cf3e352854af9"
 };
 export function validateSources(root=process.cwd()){

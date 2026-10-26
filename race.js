@@ -21,7 +21,9 @@ function heightAt(s){return 1.7*Math.sin(s*.005)+.65*Math.sin(s*.017)}
 function ensureRoad(s){if(raceMode==='circuit')return;while(points[points.length-1].s<s+8){const prev=points[points.length-1],ss=prev.s+4;if(ss>untilTurn){targetHeading=-PI/2+(trackRand()-.5)*2.15;untilTurn=ss+90+trackRand()*130}const desired=clamp((targetHeading-prev.h)*.022,-.0175,.0175);curve=mix(curve,desired,.15);const h=prev.h+curve*4;points.push({s:ss,p:[prev.p[0]+Math.cos((h+prev.h)*.5)*4,heightAt(ss),prev.p[2]+Math.sin((h+prev.h)*.5)*4],h})}}
 function road(s){if(raceMode==='circuit')return circuitRoad(s);ensureRoad(s);const index=Math.floor((s+80)/4),j=clamp(index-pointStart,0,points.length-2),a=points[j],b=points[j+1],u=clamp((s-a.s)/4,0,1),h=mix(a.h,b.h,u),p=a.p.map((v,i)=>mix(v,b.p[i],u));return {p,h,T:[Math.cos(h),0,Math.sin(h)],R:[-Math.sin(h),0,Math.cos(h)],curv:(b.h-a.h)/4,slope:(b.p[1]-a.p[1])/4}}
 function atRoad(s,l=0,y=0){const r=road(s);return add(add(r.p,mul(r.R,l)),[0,y,0])}
-function quad(c,a,b,cc,d,col){let n=norm(cross(sub(b,a),sub(d,a)));if(n[1]<0)n=mul(n,-1);c.add(shape([...a,...b,...cc,...d],[...n,...n,...n,...n],[0,1,2,0,2,3]),I,col,.06)}
+// Preserve the existing upward-facing surface convention in both normals and winding.
+// Vertical faces retain their authored order; this is not an all-faces-up rewrite.
+function quad(c,a,b,cc,d,col){let n=norm(cross(sub(b,a),sub(d,a)));const flip=n[1]<0;if(flip)n=mul(n,-1);c.add(shape([...a,...b,...cc,...d],[...n,...n,...n,...n],flip?[0,2,1,0,3,2]:[0,1,2,0,2,3]),I,col,.06)}
 function chunkMesh(k){const start=k*40,origin=road(start).p,c=new Collector(),rr=localRand(k),biome=raceMode==='circuit'?BIOMES[trackInfo().biome]:BIOMES[((Math.floor(Math.max(0,start)/1000))%3+3)%3],L=p=>sub(p,origin);
  for(let j=0;j<10;j++){const s=start+j*4;if(raceMode==='circuit'&&s>=CIRCUIT_LENGTH)break;const r0=road(s),r1=road(raceMode==='circuit'?Math.min(s+4,CIRCUIT_LENGTH):s+4);const pt=(r,l,y)=>L(add(add(r.p,mul(r.R,l)),[0,y,0]));
   quad(c,pt(r0,-7,.04),pt(r0,7,.04),pt(r1,7,.04),pt(r1,-7,.04),'#69728e');
