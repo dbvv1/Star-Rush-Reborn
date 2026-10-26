@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Window} from 'happy-dom';
 import {build} from 'esbuild';
-import {clientSource} from '../build.mjs';
+import {clientSource,clientSyntaxSupport} from '../build.mjs';
+import vm from 'node:vm';
 const {default:worker}=await import('../dist/server/index.js');
 const request=path=>worker.fetch(new Request('https://race.test'+path),{});
 for(const path of ['/','/road','/road/','/road/index.html'])assert.equal((await request(path)).status,200);
@@ -36,3 +37,13 @@ assert.equal(q.localRuns().length,1);for(const [k,v]of old)assert.equal(w.localS
 q.goHome();q.start();assert.equal(q.state,'countdown');await w.happyDOM.close();
 const legacy=await environment('legacy',true);assert.equal(legacy.q.localRuns()[0].timeMs,1234);assert.equal(legacy.q.ghostKey(),'star-rush-best-reborn-coast-reborn');await legacy.q.loadBoard();assert.equal(legacy.requests.length,1);await legacy.w.happyDOM.close();
 console.log('Dual entry: actual bundles/start, restart, road-only records/ghost, no road API requests, legacy API/storage unchanged');
+
+// esbuild preserves all real Three shader strings; formatting is not shader trimming.
+const shaderValues=[];
+for(const supported of [{'template-literal':true},clientSyntaxSupport]){
+ const built=await build({stdin:{contents:"import {ShaderChunk} from 'three';globalThis.shaders=ShaderChunk;",resolveDir:process.cwd()},bundle:true,minify:true,target:'es2022',supported,format:'iife',write:false,logLevel:'silent'});
+ const scope={};vm.runInNewContext(built.outputFiles[0].text,scope);shaderValues.push(JSON.parse(JSON.stringify(scope.shaders)));
+}
+assert.deepEqual(shaderValues[0],shaderValues[1]);assert(Object.keys(shaderValues[0]).length>100);
+for(const file of ['dist/client/game.js','dist/client/road/game.js']){const text=readFileSync(file,'utf8');assert.doesNotMatch(text,/[ \t]+$/m,file+' trailing whitespace');assert.doesNotMatch(text,/^ +\t/m,file+' space before tab');}
+console.log('Three ShaderChunk strings byte-identical across literal encoding; generated clients whitespace-clean');
