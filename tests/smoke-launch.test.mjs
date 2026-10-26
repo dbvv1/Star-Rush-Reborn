@@ -6,6 +6,7 @@ test('smoke keeps bundled Chromium and sandbox by default', () => {
   assert.equal(options.chromiumSandbox, true);
   assert.equal(options.executablePath, undefined);
   assert.deepEqual(options.args, ['--use-angle=swiftshader']);
+  assert.deepEqual(options.ignoreDefaultArgs, ['--enable-unsafe-swiftshader']);
 });
 test('explicit installed executable does not disable sandbox', () => {
   assert.equal(smokeLaunchOptions({STAR_RUSH_SMOKE_CHROMIUM: '/usr/bin/chromium'}).chromiumSandbox, true);

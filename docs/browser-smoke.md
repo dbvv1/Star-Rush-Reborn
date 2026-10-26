@@ -36,3 +36,7 @@ STAR_RUSH_SMOKE_CHROMIUM=/usr/bin/chromium npm run smoke
 `npm run smoke:serve` 使用与自动 smoke 相同的生产 Worker、项目迁移和内存 SQLite，只在 loopback 随机端口启动服务，不启动或重配浏览器。读取输出的 `STAR_SMOKE_LOOPBACK`，在同一已授权云桌面的现有浏览器里打开；Ctrl+C 关闭服务与内存库。命令应运行在该浏览器可访问的执行环境，不能假定不同 exec 会话共享 loopback。
 
 此入口用于真实界面检查，不自动执行断言，也不产出通过报告。必须分别记录实际渲染模式、开局／输入／计时、截图与控制台范围；页面进入 Canvas 兼容模式不算 WebGL2 smoke 通过。不得用它在另一执行环境重试被明确拒绝的浏览器启动或扩大网络监听。
+
+### 启动参数核实
+
+Playwright 会自行加入默认 Chromium 参数。仅从项目 `args` 删除 unsafe 标志不能证明最终进程未使用它；脚本同时用 `ignoreDefaultArgs: ['--enable-unsafe-swiftshader']` 精确排除此项，不关闭其余默认参数或 sandbox。报告中的 `args` / `ignoreDefaultArgs` 仅表示请求配置，不冒充完整进程命令。需要核实最终启动行时，按官方调试入口使用 `DEBUG=pw:browser npm run smoke` 并只在本地保留日志，检查真正 launch 行；不从通过截图反推参数安全性。此前只删显式参数的运行可保实际 WebGL 断言与像素证据，不能引用为“最终无 unsafe 参数”通过。

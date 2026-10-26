@@ -23,6 +23,8 @@ try {
   const launchOptions = smokeLaunchOptions();
   report.sandbox = launchOptions.chromiumSandbox;
   report.args = [...launchOptions.args];
+  report.ignoreDefaultArgs = [...launchOptions.ignoreDefaultArgs];
+  report.argumentScope = 'requested launch options, not the full Chromium command line';
   report.executablePath = launchOptions.executablePath || 'playwright-bundled';
   browser = await chromium.launch(launchOptions);
   report.browserVersion = browser.version();

@@ -7,6 +7,8 @@ export function smokeLaunchOptions(env = process.env) {
   const noSandbox = env.STAR_RUSH_SMOKE_CLOUD_NO_SANDBOX;
   if (noSandbox !== undefined && noSandbox !== '1') throw Error('STAR_RUSH_SMOKE_CLOUD_NO_SANDBOX must be unset or 1');
   return {headless: true, chromiumSandbox: noSandbox !== '1',
+    // Playwright itself adds this flag; removing it from args is insufficient.
+    ignoreDefaultArgs: ['--enable-unsafe-swiftshader'],
     args: ['--use-angle=swiftshader'], timeout: 30000,
     ...(executablePath ? {executablePath} : {})};
 }
