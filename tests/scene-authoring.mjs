@@ -9,13 +9,13 @@ const hash=x=>createHash('sha256').update(x).digest('hex');
 export const SOURCE='07e18395bff8a172f7d552ccae0f6cefe7458fce';
 // Original scene baseline; circuit's display-only formatter was amended later.
 // Exact hashes remain authoritative; quad winding amended as noted, vertex positions/camera unchanged.
-export const SOURCE_AMENDMENTS={'scenery.js':'distant snow joins share an uncapped ring; road coast alone uses CC0 low headlands; original legacy chunk props and placement unchanged','circuit.js':'formatTime centisecond carry only; no geometry or simulation changes','race.js':'opt-in road profile moves runner obstacles outside rails, removes pickups and changes runtime HUD; legacy scene preserved; road-only record storage isolated; quad indices now agree with existing upward normals, positions unchanged','handling.js':'opt-in road vehicle control; legacy branch and author geometry preserved','racer.js':'opt-in front wheel animation uses actual road steering; rest geometry preserved'};
+export const SOURCE_AMENDMENTS={'scenery.js':'distant snow joins share an uncapped ring; road coast alone uses CC0 low headlands; original legacy chunk props and placement unchanged','circuit.js':'formatTime centisecond carry and road-only academy teaching text; no geometry or simulation changes','race.js':'road profile moves runner obstacles outside rails, removes pickups and changes runtime HUD; legacy scene preserved; road-only record storage isolated; default-road result wording; quad indices now agree with existing upward normals, positions unchanged','handling.js':'opt-in road vehicle control; legacy branch and author geometry preserved','racer.js':'opt-in front wheel animation uses actual road steering; rest geometry preserved'};
 export const SOURCE_HASHES={
   "engine.js": "baa90e01c1eee30ba88ee1316a7a390a168415826208f379b2b608c4b89d505a",
   "racer.js": "4e6008c7fcce64342078cd06051a931edc4153f23756bbb4498abdd9022d7d39",
-  "circuit.js": "6ad3b7570e24ea546c95004233ccf3eeedb6d14fbc386190cbb7dd79c0482082",
+  "circuit.js": "3ffe538eb89f13ca2373d001ce152658e52155db8a172ebe75d0e283f16e4147",
   "scenery.js": "3cb197a61412980845ee1816b40745ebca19948cd847ff5290fb9d65cad7d401",
-  "race.js": "790885eab59329616c51ba13b853dd6e5c142830b44335a17afc443ccd4472c5",
+  "race.js": "6ddc9a3bb5d40e67831851d819bd996685576fabf1600dbfb64924bd7a1ddd2f",
   "handling.js": "9426ed5f9e7fdc301e1a1ba315db3edfbd22ecddcfeb482fe47cf3e352854af9"
 };
 export function validateSources(root=process.cwd()){

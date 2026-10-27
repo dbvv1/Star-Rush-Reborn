@@ -9,11 +9,11 @@ mkdirSync('outputs/coast-flow',{recursive:true});
 try {
  try {
   for(const profile of profiles){
-   execFileSync(process.execPath,['build.mjs'],{stdio:'inherit',env:{...process.env,STAR_RUSH_COAST_FLOW:profile,STAR_RUSH_SIGNBOARD_VARIANT:'baseline',STAR_RUSH_CANVAS_HOUSE_ANCHORS:'off',STAR_RUSH_COAST_CORNER:'baseline'}});
+   execFileSync(process.execPath,['build.mjs'],{stdio:'inherit',env:{...process.env,STAR_RUSH_COAST_FLOW:profile,STAR_RUSH_DRIVING_MODEL:'legacy',STAR_RUSH_SIGNBOARD_VARIANT:'baseline',STAR_RUSH_CANVAS_HOUSE_ANCHORS:'off',STAR_RUSH_COAST_CORNER:'baseline'}});
    copyFileSync('dist/server/index.js',`outputs/coast-flow/${profile}.mjs`);
   }
  } finally {
-  execFileSync(process.execPath,['build.mjs'],{stdio:'inherit',env:{...process.env,STAR_RUSH_COAST_FLOW:'baseline',STAR_RUSH_SIGNBOARD_VARIANT:'baseline',STAR_RUSH_CANVAS_HOUSE_ANCHORS:'off',STAR_RUSH_COAST_CORNER:'baseline'}});
+  execFileSync(process.execPath,['build.mjs'],{stdio:'inherit',env:{...process.env,STAR_RUSH_COAST_FLOW:'baseline',STAR_RUSH_DRIVING_MODEL:'road',STAR_RUSH_SIGNBOARD_VARIANT:'baseline',STAR_RUSH_CANVAS_HOUSE_ANCHORS:'off',STAR_RUSH_COAST_CORNER:'baseline'}});
  }
  for(const profile of profiles){
   const {default:worker}=await import(`../outputs/coast-flow/${profile}.mjs`);

@@ -6,7 +6,7 @@ import {loadImpactAssets} from './impact-assets.mjs';
 import {loadDrivingAudioAssets} from './driving-audio-assets.mjs';
 import {loadSignboardStyles,selectedSignboardStyle,applySignboardStyle} from './signboard-assets.mjs';
 const signboardStyle=selectedSignboardStyle(loadSignboardStyles(),process.env.STAR_RUSH_SIGNBOARD_VARIANT??'baseline');
-const drivingModel=process.env.STAR_RUSH_DRIVING_MODEL??'legacy';
+const drivingModel=process.env.STAR_RUSH_DRIVING_MODEL??'road';
 if(!['legacy','road'].includes(drivingModel))throw Error('Unknown driving model: '+drivingModel);
 const coastFlow=process.env.STAR_RUSH_COAST_FLOW??'baseline';
 if(drivingModel==='road'&&coastFlow!=='baseline')throw Error('Road driving must not be mixed with the historical coast-flow controls');
@@ -52,10 +52,12 @@ export function clientSource(tail='',model=drivingModel){if(!['legacy','road'].i
 export const clientSyntaxSupport=Object.freeze({'template-literal':false});
 async function bundle(model){const result=await build({stdin:{contents:clientSource('',model),resolveDir:process.cwd(),loader:'js',sourcefile:'star-rush-'+model+'.js'},bundle:true,minify:true,target:'es2022',supported:clientSyntaxSupport,format:'iife',write:false,legalComments:'eof'});return result.outputFiles[0].text+'\n/*! Three.js license\n'+read('node_modules/three/LICENSE')+'*/\n';}
 // Explicit arguments, not environment mutation / cached module re-imports.
-const game=await bundle(drivingModel),roadGame=drivingModel==='road'?game:await bundle('road');
+const game=await bundle(drivingModel),roadGame=drivingModel==='road'?game:await bundle('road'),legacyGame=drivingModel==='legacy'?game:await bundle('legacy');
 const shell=coastFlow==='candidate'?read('game-shell.html').replace('桜と海、走り出そう。 / REBORN 01','同弯控制候选 · 非默认 / COAST FLOW').replace('或松开再按 W。','仅使用这两个主动喷射键；重新踩油门不会触发小喷。'):read('game-shell.html');
-const page=shell.replace('<!--GAME_SCRIPT-->','<script src="/game.js?v=reborn-1"></script>');
+const page=shell.replace('<!--GAME_SCRIPT-->','<script src="/game.js?v='+(drivingModel==='road'?'road-v2':'reborn-1')+'"></script>');
 const roadPage=read('game-shell.html').replace('<!--GAME_SCRIPT-->','<script src="/road/game.js?v=road-v2"></script>');
+const legacyPage=shell.replace('<!--GAME_SCRIPT-->','<script src="/legacy/game.js?v=reborn-1"></script>');
 writeFileSync('dist/index.html',page);writeFileSync('dist/client/game.js',game);
 mkdirSync('dist/client/road',{recursive:true});writeFileSync('dist/client/road/index.html',roadPage);writeFileSync('dist/client/road/game.js',roadGame);
-const worker='const PAGE='+JSON.stringify(page)+';\nconst GAME='+JSON.stringify(game)+';\nconst ROAD_PAGE='+JSON.stringify(roadPage)+';\nconst ROAD_GAME='+JSON.stringify(roadGame)+';\nconst COURSE_ARTWORK='+JSON.stringify(courseArtwork.assets)+';\nconst IMPACT_AUDIO='+JSON.stringify(impactArtwork.assets)+';\n'+read('worker/rooms.js')+'\n'+read('worker/api.js');writeFileSync('dist/server/index.js',worker);writeFileSync('worker/index.js',worker);cpSync('.openai/hosting.json','dist/.openai/hosting.json');cpSync('drizzle','dist/drizzle',{recursive:true});console.log('Reborn built: '+Math.round(game.length/1024)+' KB client, '+Object.keys(courseArtwork.assets).length+' course illustrations');
+mkdirSync('dist/client/legacy',{recursive:true});writeFileSync('dist/client/legacy/index.html',legacyPage);writeFileSync('dist/client/legacy/game.js',legacyGame);
+const worker='const PAGE='+JSON.stringify(page)+';\nconst GAME='+JSON.stringify(game)+';\nconst ROAD_PAGE='+JSON.stringify(roadPage)+';\nconst ROAD_GAME='+(drivingModel==='road'?'GAME':JSON.stringify(roadGame))+';\nconst LEGACY_PAGE='+JSON.stringify(legacyPage)+';\nconst LEGACY_GAME='+(drivingModel==='legacy'?'GAME':JSON.stringify(legacyGame))+';\nconst COURSE_ARTWORK='+JSON.stringify(courseArtwork.assets)+';\nconst IMPACT_AUDIO='+JSON.stringify(impactArtwork.assets)+';\n'+read('worker/rooms.js')+'\n'+read('worker/api.js');writeFileSync('dist/server/index.js',worker);writeFileSync('worker/index.js',worker);cpSync('.openai/hosting.json','dist/.openai/hosting.json');cpSync('drizzle','dist/drizzle',{recursive:true});console.log('Reborn built: '+Math.round(game.length/1024)+' KB client, '+Object.keys(courseArtwork.assets).length+' course illustrations');

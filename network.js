@@ -8,7 +8,7 @@ const peerMarkers=peerColors.map(c=>{const col=new Collector();cone(col,[0,2.55,
 function cloneCar(index){function copy(n){const c=new Node(n.mesh);c.local=new Float32Array(n.local);c.shadow=n.shadow;for(const child of n.children)c.add(copy(child));return c}const root=copy(car),marker=root.add(new Node(peerMarkers[index%4]));return {root,marker,spin:0}}
 function networkSnapshot(){return {s:player.s,l:player.l,vS:player.vS,vL:player.vL,yaw:player.yaw,jump:player.jump,mini:player.mini,nitroTime:player.nitroTime,paint:profile.paint,time:raceClock(),finished:state==='finished'}}
 async function roomRequest(action,extra={}){
- if(roadDriving)throw new Error('公路候选仅本机跑圈，不连接在线房间');
+ if(roadDriving)throw new Error('公路驾驶仅本机跑圈，不连接在线房间');
  const began=Date.now(),response=await fetch('/api/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,id:net.id,code:net.room?.code||$('roomCode').value.trim(),name:$('roomName').value.trim()||'匿名车手',track:activeTrackId,...extra}),signal:AbortSignal.timeout(4000)});
  const data=await response.json();if(!response.ok)throw new Error(data.error||'房间请求失败');
  net.rtt=Date.now()-began;if(data.serverTime){const offset=data.serverTime-(began+Date.now())/2;net.offset=net.room?mix(net.offset,offset,.25):offset}return data;

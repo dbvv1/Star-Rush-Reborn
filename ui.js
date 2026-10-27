@@ -19,12 +19,13 @@ $('compatNotice').hidden=!software;drawCourseCards();syncSettingsUI();updateLoca
 
 for(const id of ['racerName','roomName'])$(id).addEventListener('change',()=>{$('profileName').value=$(id).value;saveProfile()});
 
-const drivingLink=document.createElement('a');drivingLink.id='drivingProfileLink';drivingLink.className='text-btn';drivingLink.href=roadDriving?'/':'/road';drivingLink.textContent=roadDriving?'返回默认街机驾驶 ↗':'试驾普通公路驾驶候选（未定稿） ↗';document.querySelector('#welcome .launch').after(drivingLink);
+const drivingLink=document.createElement('a');drivingLink.id='drivingProfileLink';drivingLink.className='text-btn';drivingLink.href=roadDriving?'/legacy':'/road';drivingLink.textContent=roadDriving?'切换旧版街机驾驶 ↗':'返回公路驾驶 ↗';document.querySelector('#welcome .launch').after(drivingLink);
+if(!roadDriving){document.querySelector('#welcome .eyebrow').textContent='旧版街机驾驶 / LEGACY';}
 if(roadDriving){
  game.classList.add('road-driving');
  document.querySelector('.right-hud').appendChild($('coach'));
  for(const id of ['roomBtn','welcomeRoom','endlessMode','boardCircuit','boardEndless','submitRun']){$(id).hidden=true;$(id).disabled=true;}
- document.querySelector('#welcome .eyebrow').textContent='普通公路驾驶候选 · 未定稿 / ROAD V2';
+ document.querySelector('#welcome .eyebrow').textContent='公路竞速 / ROAD V2';
  $('rankBtn').textContent='本机';
  for(const id of ['score','coins'])$(id).closest('.stat').hidden=true;
  for(const id of ['resultScore','resultBest'])$(id).parentElement.hidden=true;
@@ -33,9 +34,9 @@ if(roadDriving){
  document.querySelector('.nitro').hidden=true;
  for(const el of document.querySelectorAll('[data-key=small],[data-key=boost],[data-key=drift]'))el.hidden=true;
  document.querySelector('.guide').textContent='W / ↑ 油门 · S / ↓ 制动 · A D 转向 · 退格回正';
- document.querySelector('#welcome .intro').textContent='公路驾驶候选：入弯前制动，稳定转向，出弯再加油。无喷射与加速带，默认基线未改变。';
+ document.querySelector('#welcome .intro').textContent='入弯前制动，稳定转向，出弯再加油。本机跑圈、计时与练习；旧版街机驾驶可从下方切换。';
  document.querySelector('#helpPanel h2').textContent='先把一段弯道开顺。';
- document.querySelector('#helpPanel .lesson-grid').innerHTML='<article><b>油门与制动</b><p>W / ↑ 加速，S / ↓ 制动。接近停下后继续按 S 可倒车。先在直线上减速，再平顺转向。</p></article><article><b>侧滑与恢复</b><p>A D 或左右方向键控制前轮。抓地有限，过快入弯会转向不足；轮胎侧滑时松油并适量修正，避免连续大幅反打。</p></article><article><b>碰撞与跑圈</b><p>护栏划定真实赛道边界；随机锥桶与路障只在护栏外装饰，赛道内不收集金币。退格回正增加两秒。候选无氮气、小喷、跳台与加速带；对手使用相同车体／抓地与道路积分，路径控制不同；仍为非接触对手，不冒充完整对手碰撞。</p></article>';
+ document.querySelector('#helpPanel .lesson-grid').innerHTML='<article><b>油门与制动</b><p>W / ↑ 加速，S / ↓ 制动。接近停下后继续按 S 可倒车。先在直线上减速，再平顺转向。</p></article><article><b>侧滑与恢复</b><p>A D 或左右方向键控制前轮。抓地有限，过快入弯会转向不足；轮胎侧滑时松油并适量修正，避免连续大幅反打。</p></article><article><b>碰撞与跑圈</b><p>护栏划定真实赛道边界；随机锥桶与路障只在护栏外装饰，赛道内不收集金币。退格回正增加两秒。公路驾驶无氮气、小喷、跳台与加速带；对手使用相同车体／抓地与道路积分，路径控制不同；仍为非接触对手，不冒充完整对手碰撞。</p></article>';
  document.querySelector('#helpPanel .board-note').textContent='参考地平线的驾驶反馈目标；原创轻量模型，并非其物理实现。';
- $('settingsStatus').textContent+=' 公路候选：无喷射连招。';
+ $('settingsStatus').textContent+=' 公路驾驶：无喷射连招。';
 }
