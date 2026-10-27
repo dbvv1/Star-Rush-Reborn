@@ -49,3 +49,6 @@ test('actual coast headlands fit within the existing finite sea plane',()=>{
  const points=vm.runInNewContext(`const roadDriving=true;\n${engine}\n${read('circuit.js')}\n${data}\n${source}\nconst c=new Collector(),center=[(circuitBounds.minX+circuitBounds.maxX)*.5,0,(circuitBounds.minZ+circuitBounds.maxZ)*.5];coastalBackdrop(c,center);Array.from({length:c.data.length/10},(_,i)=>c.data.slice(i*10,i*10+3))`);
  assert(points.every(p=>Math.abs(p[0])<550&&Math.abs(p[2])<550),'no underside past the finite sea rectangle');
 });
+
+// Training-ground-only foliage from the shared landscape source family.
+import "./training-verge.test.mjs";

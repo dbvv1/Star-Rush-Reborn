@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import * as THREE from 'three';
 import {createThreeBackend} from '../render-three.js';
+import {createSkyPanorama} from '../sky-panorama.js';
 
 test('unavailable WebGL2 keeps null fallback and identifies context failure',t=>{
   const warn=t.mock.method(console,'warn',()=>{});let calls=0;
@@ -29,8 +30,8 @@ function sceneBackend(options){
   constructor(){this.shadowMap={};this.info={render:{calls:0,triangles:0}}}
   setPixelRatio(){} setSize(){} render(){}
  }
- const scope={THREE:{...THREE,WebGLRenderer:Renderer},devicePixelRatio:1,performance};
- vm.runInNewContext(readFileSync(new URL('../render-three.js',import.meta.url),'utf8').replace("import * as THREE from 'three';",'').replace('export function','function'),scope);
+ const scope={createSkyPanorama,THREE:{...THREE,WebGLRenderer:Renderer},devicePixelRatio:1,performance};
+ vm.runInNewContext(readFileSync(new URL('../render-three.js',import.meta.url),'utf8').replace("import * as THREE from 'three';",'').replace("import {createSkyPanorama} from './sky-panorama.js';",'').replace('export function','function'),scope);
  return scope.createThreeBackend({getContext:()=>({})},options);
 }
 function triangle(){return {sourceData:new Float32Array([0,0,0,0,1,0,.2,.5,.6,0, 1,0,0,0,1,0,.2,.5,.6,0, 0,0,-1,0,1,0,.2,.5,.6,0]),sourceIndices:new Uint32Array([0,1,2]),paintable:true}}

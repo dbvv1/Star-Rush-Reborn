@@ -92,11 +92,17 @@ function completeRaceFeatures(){
  else if(!net.room&&raceMode==='circuit'&&ghostPoints.length>10&&(!ghostRun||raceClock()<ghostRun.time)){try{localStorage.setItem(ghostKey(),JSON.stringify({time:raceClock(),points:ghostPoints,splits:raceSplits,laps:lapTimes,date:Date.now()}));$('resultNote').textContent='刷新本机最佳！已保存幽灵，可在计时挑战中追逐自己。'}catch(e){}}
  $('coach').hidden=true;
 }
+// Shared renderer cue: speed is the physical magnitude in m/s, not HUD km/h.
+// Preserve the established road grip margin and the original legacy rule.
+// This centerline preview is advisory, not a full braking/traction prediction.
+function routeArrowNeedsBrake(curvature,speed){
+ return roadDriving?Math.abs(curvature)*speed*speed>RoadVehicleModel.config.gripAcceleration*.8:Math.abs(curvature)*speed>.95;
+}
 function renderRaceFeatures(origin,dt){
  ghostPose=null;
  for(const bot of raceBots){const rr=road(bot.s);bot.node.local=trs(sub(atRoad(bot.s,bot.l,.07),origin),[.97,.97,.97],[0,-rr.h-bot.yaw,Math.atan(rr.slope)]);world.add(bot.node);for(let i=0;i<tires.length;i++){const w=tires[i];bot.node.children[2+i].local=mm(translation(w.x,.41,w.z),rz(-bot.s/.4))}}
  if(ghostNode&&ghostRun?.points?.length&&state==='running'){const points=ghostRun.points,t=raceClock();while(ghostCursor<points.length-2&&points[ghostCursor+1][0]<t)ghostCursor++;const a=points[ghostCursor],b=points[ghostCursor+1],u=clamp((t-a[0])/(b[0]-a[0]||1),0,1),s=mix(a[1],b[1],u),l=mix(a[2],b[2],u),yaw=a[3]+wrapAngle(b[3]-a[3])*u;const jump=mix(a[4],b[4],u);ghostPose={s,l,yaw,jump};const rr=road(s);ghostNode.local=trs(sub(atRoad(s,l,.07+jump),origin),[.97,.97,.97],[0,-rr.h-yaw,0]);world.add(ghostNode)}
- if(settings.line&&state==='running')for(let i=0;i<routeArrows.length;i++){const s=player.s+12+i*9,rr=road(s),lane=clamp(rr.curv*80,-2.1,2.1),n=routeArrows[i];n.mesh=routeArrowMeshes[(roadDriving?Math.abs(rr.curv)*player.speed*player.speed>RoadVehicleModel.config.gripAcceleration*.8:Math.abs(rr.curv)*player.speed>.95)?1:0];n.local=trs(sub(atRoad(s,lane,.085),origin),[1,1,1],[0,-rr.h,0]);world.add(n)}
+ if(settings.line&&state==='running')for(let i=0;i<routeArrows.length;i++){const s=player.s+12+i*9,rr=road(s),lane=clamp(rr.curv*80,-2.1,2.1),n=routeArrows[i];n.mesh=routeArrowMeshes[routeArrowNeedsBrake(rr.curv,player.speed)?1:0];n.local=trs(sub(atRoad(s,lane,.085),origin),[1,1,1],[0,-rr.h,0]);world.add(n)}
 }
 let frameDurations=[],perfClock=0,lastPerfTime=performance.now(),gamepadPrior={},gamepadConnected=false;
 function updateDiagnostics(now,dt){

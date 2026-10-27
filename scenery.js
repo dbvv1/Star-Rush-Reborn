@@ -95,9 +95,12 @@ function decorateChunk(k,origin,rr){
   if(k===2){place('station',start+17,-20,1);place('tram',start+17,-27,1);place('vending',start+9,-12.8)}
   if(percent>.66&&percent<.74&&k%2===0){place('torii',start+22,-16);for(const side of [-1,1])place('lantern',start+9,side*10.0)}
  }
+ // Low plants are a separate deterministic mesh; original props and random draws stay unchanged.
+ if(roadDriving&&raceMode==='circuit'&&activeTrackId==='academy-reborn')root.add(trainingVerge(k,origin));
  return root;
 }
-let landscapeNode=null,landscapeTrack=null,ambientPetals=[];
+let landscapeNode=null,landscapeTrack=null,landscapeSkyReady=false,ambientPetals=[];
+function hasPanoramaSky(){return roadDriving&&typeof threeBackend!=='undefined'&&Boolean(threeBackend?.skyReady);}
 // One continuous mountain surface: the snow line shares the lower ring exactly.
 // Stacking a wider closed cone here creates a visible dark underside, not a lighting defect.
 const mountainLower=(()=>{const g=cylinder(4,.3);for(let i=1;i<g.p.length;i+=3)g.p[i]=g.p[i]*.7-.15;g.n.splice(0,30,...SC.n.slice(0,30));g.i=g.i.slice(0,36);return g})();
@@ -131,8 +134,28 @@ function coastalBackdrop(c,center){
  for(const [a,w,h,d,variant] of [[.12,112,27,86,1],[1.02,155,26,100,0],[1.92,135,35,100,1],[2.77,150,27,105,0],[3.68,125,33,92,1],[4.51,163,24,106,0],[5.42,136,36,94,1]])island(variant,a,w,h,d,a+.4,false);
  for(const [a,w,h,d,variant] of [[.55,140,25,80,0],[1.62,150,32,90,1],[2.62,135,24,80,0],[3.72,150,31,88,1],[4.74,140,26,85,0],[5.75,145,29,86,1]])island(variant,a,w,h,d,a-.5,true);
 }
+// Geometry-only CC0 plant source, reused without runtime model downloads.
+let trainingPlantCache=null;
+function trainingPlantShape(){
+ if(trainingPlantCache)return trainingPlantCache;
+ const data=trainingVergeData,g=shape([],[],[]);
+ for(let j=0;j<data.i.length;j+=3){
+  const p=data.i.slice(j,j+3).map(i=>data.p.slice(i*3,i*3+3)),n=norm(cross(sub(p[1],p[0]),sub(p[2],p[0]))),base=g.p.length/3;
+  for(const v of p){g.p.push(...v);g.n.push(...n)}g.i.push(base,base+1,base+2);
+ }
+ return trainingPlantCache=g;
+}
+function trainingVerge(k,origin){
+ const c=new Collector(),g=trainingPlantShape(),start=k*40;
+ for(const side of [-1,1])for(let group=0;group<2;group++)for(let j=0;j<5;j++){
+  const s=start+7+group*20+(j%3)*1.12,l=side*(12.3+Math.floor(j/3)*1.10+Math.sin(k*2+j)*.28);
+  if(s>=CIRCUIT_LENGTH||!sceneryClear(s,l))continue;
+  const scale=(.9+((k+j*3)%5)*.15)*.65,pos=sub(atRoad(s,l,-.11),origin),turn=(k*2.399+j)*1.7;
+  c.add(g,trs(pos,[scale*1.45,scale*.70,scale*1.35],[0,turn,0]),['#739469','#8fa77c','#829e70'][(k+j)%3],.02);
+ }
+ return new Node(c.finish());
+}
 function buildLandscape(){
- if(landscapeNode)landscapeNode.mesh.dispose();
  if(landscapeNode){landscapeNode.mesh.dispose();landscapeNode=null}
  const c=new Collector(),b=circuitBounds,center=[(b.minX+b.maxX)*.5,0,(b.minZ+b.maxZ)*.5],w=b.maxX-b.minX,d=b.maxZ-b.minZ;
  const coast=trackInfo().biome===0;
@@ -144,13 +167,13 @@ function buildLandscape(){
   if(i%3===0){const m=trs([x,hh*.5-5,z],[70,hh,60],[0,a,0]);c.add(mountainLower,m,col);c.add(mountainSnow,m,'#e5e5f0');}
   else cone(c,[x,hh*.5-5,z],[70,hh,60],col,[0,a,0],true);
  }
- // Distant fluffy clouds are full 3D, separate from the sky gradient.
- for(let i=0;i<10;i++){const a=i*TAU/10,pos=[center[0]+Math.cos(a)*260,57+(i%3)*14,center[2]+Math.sin(a)*250];for(let j=0;j<4;j++)ball(c,add(pos,[(j-1.5)*12,Math.sin(j*2)*4,0]),[17,7+(j%2)*3,10],'#fff5f3',true,.01)}
- landscapeNode=new Node(c.finish());landscapeNode.shadow=false;landscapeTrack=activeTrackId;
+ // Keep the original clouds until the optional panorama actually decodes.
+ if(!hasPanoramaSky())for(let i=0;i<10;i++){const a=i*TAU/10,pos=[center[0]+Math.cos(a)*260,57+(i%3)*14,center[2]+Math.sin(a)*250];for(let j=0;j<4;j++)ball(c,add(pos,[(j-1.5)*12,Math.sin(j*2)*4,0]),[17,7+(j%2)*3,10],'#fff5f3',true,.01)}
+ landscapeNode=new Node(c.finish());landscapeNode.shadow=false;landscapeTrack=activeTrackId;landscapeSkyReady=hasPanoramaSky();
  ambientPetals=Array.from({length:24},(_,i)=>({phase:i*2.399,node:new Node(petalMesh)}));for(const p of ambientPetals)p.node.shadow=false;
 }
 function addLandscape(origin,t){
  if(raceMode!=='circuit')return;
- if(landscapeTrack!==activeTrackId||!landscapeNode)buildLandscape();landscapeNode.local=translation(-origin[0],-origin[1],-origin[2]);world.add(landscapeNode);
+ if(landscapeTrack!==activeTrackId||!landscapeNode||landscapeSkyReady!==hasPanoramaSky())buildLandscape();landscapeNode.local=translation(-origin[0],-origin[1],-origin[2]);world.add(landscapeNode);
  const rr=road(player.s);for(const p of ambientPetals){const a=p.phase,forward=((a*13+t*1.7)%55)-10,l=Math.sin(a*7)*10+Math.sin(t*.6+a)*2,y=1.0+((a*2-t*.65)%7+7)%7,pos=add(atRoad(player.s+forward,l,y),[Math.sin(t+a)*.25,0,0]);p.node.local=trs(sub(pos,origin),[1,1,1],[t*.8+a,a,t]);world.add(p.node)}
 }

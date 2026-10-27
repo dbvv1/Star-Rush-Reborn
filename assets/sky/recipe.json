@@ -1,0 +1,10 @@
+{
+  "sourceSha256": "b7d98fe95157e74b3899a1dd468a1e478005bcd1f668b29b5b42a48cb5358fa2",
+  "size": [
+    2048,
+    1024
+  ],
+  "quality": 86,
+  "yaw": 1.2197432008505646,
+  "sunNote": "Yaw aligns the painted sun azimuth to the existing directional light. Painted elevation ~50 degrees is retained; the actual light stays ~57 degrees. No IBL."
+}

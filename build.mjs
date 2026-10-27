@@ -3,6 +3,7 @@ import {createHash} from 'node:crypto';
 import {join} from 'node:path';
 import {build} from 'esbuild';
 import {loadImpactAssets} from './impact-assets.mjs';
+import {loadSkyAssets} from './sky-assets.mjs';
 import {loadDrivingAudioAssets} from './driving-audio-assets.mjs';
 import {loadSignboardStyles,selectedSignboardStyle,applySignboardStyle} from './signboard-assets.mjs';
 const signboardStyle=selectedSignboardStyle(loadSignboardStyles(),process.env.STAR_RUSH_SIGNBOARD_VARIANT??'baseline');
@@ -33,6 +34,11 @@ export function loadCourseArtwork(directory='assets/course-art') {
  return {client,assets};
 }
 const courseArtwork=loadCourseArtwork();
+const skyChoice=process.env.STAR_RUSH_SKY??'kenney';
+if(!['baseline','kenney'].includes(skyChoice))throw Error('Unknown sky source: '+skyChoice);
+const skyArtwork=skyChoice==='kenney'?loadSkyAssets():{client:null,assets:{}};
+Object.assign(courseArtwork.assets,skyArtwork.assets);
+rmSync('dist/client/assets/sky',{recursive:true,force:true});mkdirSync('dist/client/assets/sky',{recursive:true});
 rmSync('dist/client/assets/course-art',{recursive:true,force:true});mkdirSync('dist/client/assets/course-art',{recursive:true});
 for(const [url,base64] of Object.entries(courseArtwork.assets))writeFileSync('dist/client'+url,Buffer.from(base64,'base64'));
 const impactArtwork=loadImpactAssets('assets/impact-audio',process.env.STAR_RUSH_RAIL_SOURCE??'kenney');
@@ -44,7 +50,7 @@ const houseAnchors=process.env.STAR_RUSH_CANVAS_HOUSE_ANCHORS??'off';
 if(!['off','on'].includes(houseAnchors))throw Error('Unknown Canvas house anchor option: '+houseAnchors);
 const engine=read('engine.js');
 const intro=`import {RoadVehicleModel} from './road-vehicle-core.js';\nimport {createRailImpactPlayer} from './impact-audio.js';\nimport {initializeRendering} from './render-init.js';\nimport {initCourseArt} from './course-art.js';\n(()=>{'use strict';let canvas=document.getElementById('scene');const error=document.getElementById('error'),loading=document.getElementById('loading');function fail(message){error.hidden=false;document.getElementById('error-text').textContent=message;loading.classList.add('done')}\n`;
-const setup=(model)=>`\nconst roadDriving=${model==='road'};const drivingRevision=${JSON.stringify('road-v2')};const drivingAudioConfig=${JSON.stringify(drivingArtwork.client)};const coastFlowCandidate=${model==='legacy'&&coastFlow==='candidate'};const railImpactUrls=${JSON.stringify(impactArtwork.client)};const softwareHouseAnchorsEnabled=${houseAnchors==='on'};\ntry{\nconst renderingOptions=${JSON.stringify(model==='road'?{shading:'lambert',hemisphereIntensity:.7}:{shading:'toon',hemisphereIntensity:2.2})};const rendering=initializeRendering(canvas,renderingOptions);canvas=rendering.canvas;\nlet threeBackend=rendering.threeBackend,software=rendering.software,softwareContext=rendering.softwareContext;\n`;
+const setup=(model)=>`\nconst roadDriving=${model==='road'};const drivingRevision=${JSON.stringify('road-v2')};const drivingAudioConfig=${JSON.stringify(drivingArtwork.client)};const coastFlowCandidate=${model==='legacy'&&coastFlow==='candidate'};const railImpactUrls=${JSON.stringify(impactArtwork.client)};const softwareHouseAnchorsEnabled=${houseAnchors==='on'};\ntry{\nconst renderingOptions=${JSON.stringify(model==='road'?{shading:'lambert',hemisphereIntensity:.7,skyPanorama:skyArtwork.client}:{shading:'toon',hemisphereIntensity:2.2})};const rendering=initializeRendering(canvas,renderingOptions);canvas=rendering.canvas;\nlet threeBackend=rendering.threeBackend,software=rendering.software,softwareContext=rendering.softwareContext;\n`;
 const files=['racer.js','circuit.js','assets/landscape/coastal-rocks.js','scenery.js','audio.js','vehicle-core.js','handling.js','race.js','ranking.js','music.js','network.js','race-features.js','ui.js'];
 export function clientSource(tail='',model=drivingModel){if(!['legacy','road'].includes(model))throw Error('Unknown client model');return intro+setup(model)+read('software-renderer.js')+engine+'\n'+files.map(f=>(f==='scenery.js'?applySignboardStyle(read(f),signboardStyle):read(f)).replace("import {RoadVehicleModel} from './road-vehicle-core.js';",'').replace('export const VehicleModel','const VehicleModel')).join('\n')+'\ninitCourseArt(document,'+JSON.stringify(courseArtwork.client)+');'+tail+"\n}catch(e){console.error(e);fail('游戏初始化异常：'+e.message)}\n})();"}
 // Preserve shader string values while escaping multiline literals in generated JS.
@@ -60,4 +66,4 @@ const legacyPage=shell.replace('<!--GAME_SCRIPT-->','<script src="/legacy/game.j
 writeFileSync('dist/index.html',page);writeFileSync('dist/client/game.js',game);
 mkdirSync('dist/client/road',{recursive:true});writeFileSync('dist/client/road/index.html',roadPage);writeFileSync('dist/client/road/game.js',roadGame);
 mkdirSync('dist/client/legacy',{recursive:true});writeFileSync('dist/client/legacy/index.html',legacyPage);writeFileSync('dist/client/legacy/game.js',legacyGame);
-const worker='const PAGE='+JSON.stringify(page)+';\nconst GAME='+JSON.stringify(game)+';\nconst ROAD_PAGE='+JSON.stringify(roadPage)+';\nconst ROAD_GAME='+(drivingModel==='road'?'GAME':JSON.stringify(roadGame))+';\nconst LEGACY_PAGE='+JSON.stringify(legacyPage)+';\nconst LEGACY_GAME='+(drivingModel==='legacy'?'GAME':JSON.stringify(legacyGame))+';\nconst COURSE_ARTWORK='+JSON.stringify(courseArtwork.assets)+';\nconst IMPACT_AUDIO='+JSON.stringify(impactArtwork.assets)+';\n'+read('worker/rooms.js')+'\n'+read('worker/api.js');writeFileSync('dist/server/index.js',worker);writeFileSync('worker/index.js',worker);cpSync('.openai/hosting.json','dist/.openai/hosting.json');cpSync('drizzle','dist/drizzle',{recursive:true});console.log('Reborn built: '+Math.round(game.length/1024)+' KB client, '+Object.keys(courseArtwork.assets).length+' course illustrations');
+const worker='const PAGE='+JSON.stringify(page)+';\nconst GAME='+JSON.stringify(game)+';\nconst ROAD_PAGE='+JSON.stringify(roadPage)+';\nconst ROAD_GAME='+(drivingModel==='road'?'GAME':JSON.stringify(roadGame))+';\nconst LEGACY_PAGE='+JSON.stringify(legacyPage)+';\nconst LEGACY_GAME='+(drivingModel==='legacy'?'GAME':JSON.stringify(legacyGame))+';\nconst COURSE_ARTWORK='+JSON.stringify(courseArtwork.assets)+';\nconst IMPACT_AUDIO='+JSON.stringify(impactArtwork.assets)+';\n'+read('worker/rooms.js')+'\n'+read('worker/api.js');writeFileSync('dist/server/index.js',worker);writeFileSync('worker/index.js',worker);cpSync('.openai/hosting.json','dist/.openai/hosting.json');cpSync('drizzle','dist/drizzle',{recursive:true});console.log('Reborn built: '+Math.round(game.length/1024)+' KB client, '+Object.keys(courseArtwork.client).length+' course illustrations');

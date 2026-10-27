@@ -1,0 +1,14 @@
+{
+  "file": "day.webp",
+  "source": "source/kenney-day.png",
+  "sourceSha256": "b7d98fe95157e74b3899a1dd468a1e478005bcd1f668b29b5b42a48cb5358fa2",
+  "sha256": "910a7a7cd2ac7b90650b25a16e6803522207668c8be7f11ef68fd553f4416fcd",
+  "recipeSha256": "213fdac4f7cce8d6d965537a5c23b3e58568813c9516a5156c30c3f9383880c7",
+  "width": 2048,
+  "height": 1024,
+  "bytes": 22504,
+  "colorSpace": "srgb",
+  "range": "LDR",
+  "lighting": false,
+  "yaw": 1.2197432008505646
+}

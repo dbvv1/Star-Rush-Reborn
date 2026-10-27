@@ -5,6 +5,7 @@ import {Window} from 'happy-dom';
 import {build} from 'esbuild';
 import {clientSource,clientSyntaxSupport} from '../build.mjs';
 import vm from 'node:vm';
+import {loadSkyAssets} from '../sky-assets.mjs';
 const {default:worker}=await import('../dist/server/index.js');
 const request=path=>worker.fetch(new Request('https://race.test'+path),{});
 for(const path of ['/','/index.html','/road','/road/','/road/index.html','/legacy','/legacy/','/legacy/index.html'])assert.equal((await request(path)).status,200);
@@ -35,7 +36,7 @@ async function environment(model,instrumented,initial=stored,storageFails=false)
  w.document.write(readFileSync('game-shell.html','utf8').replace('<!--GAME_SCRIPT-->','').replace(/<iframe[^>]*id="spotifyPlayer"[^>]*><\/iframe>/g,'<div id="spotifyPlayer"></div>'));
  const hooks=`window.entryQA={renderingOptions,start,finish,goHome,chooseMode,showBoard,loadBoard,roomRequest,localRuns,ghostKey,getBestGhost,get settings(){return settings},get state(){return state},get mode(){return raceMode},get pending(){return pendingRun}};`;
  const code=instrumented?(await build({stdin:{contents:clientSource(hooks,model),resolveDir:process.cwd()},bundle:true,write:false,format:'iife',target:'es2022',logLevel:'silent'})).outputFiles[0].text:readFileSync(model==='road'?'dist/client/game.js':'dist/client/legacy/game.js','utf8');
- w.eval(code);if(instrumented)assert.deepEqual(JSON.parse(JSON.stringify(w.entryQA.renderingOptions)),model==='road'?{shading:'lambert',hemisphereIntensity:.7}:{shading:'toon',hemisphereIntensity:2.2});assert.deepEqual(errors,[]);assert.equal(w.document.querySelector('#error').hidden,true);
+ w.eval(code);if(instrumented)assert.deepEqual(JSON.parse(JSON.stringify(w.entryQA.renderingOptions)),model==='road'?{shading:'lambert',hemisphereIntensity:.7,skyPanorama:process.env.STAR_RUSH_SKY==='baseline'?null:loadSkyAssets().client}:{shading:'toon',hemisphereIntensity:2.2});assert.deepEqual(errors,[]);assert.equal(w.document.querySelector('#error').hidden,true);
  assert.equal(w.document.querySelector('#drivingProfileLink').getAttribute('href'),model==='road'?'/legacy':'/road');
  assert.equal(w.document.querySelector('#game').classList.contains('road-driving'),model==='road');
  assert.equal(w.document.querySelector('#coach').parentElement.classList.contains('right-hud'),model==='road');
