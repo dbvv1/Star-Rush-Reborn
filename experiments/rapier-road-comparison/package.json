@@ -1,0 +1,19 @@
+{
+  "name": "star-rush-rapier-road-comparison",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node server.mjs",
+    "test": "node build.mjs --prepare-only && node --test --test-concurrency=1 test.mjs dom.test.mjs"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-compat": "0.21.0",
+    "three": "0.186.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "happy-dom": "21.0.4"
+  }
+}
