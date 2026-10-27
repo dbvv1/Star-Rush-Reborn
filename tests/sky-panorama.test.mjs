@@ -75,3 +75,9 @@ test('built immutable route serves exact sky bytes, but source and recipe are no
  assert.deepEqual(Buffer.from(await response.arrayBuffer()),readFileSync('assets/sky/day.webp'));
  for(const url of ['/assets/sky/recipe.json','/assets/sky/source/kenney-day.png'])assert.equal((await worker.fetch(new Request('https://race.test'+url),{})).status,404);
 });
+
+test('capture readiness settles on decode, failure and disposal without changing normal fallback',async()=>{
+ const loaded=fixture();loaded.load();assert.deepEqual(await loaded.sky.ready,{status:'ready'});loaded.sky.dispose();
+ const failed=fixture();failed.fail();assert.deepEqual(await failed.sky.ready,{status:'failed'});failed.sky.dispose();
+ const disposed=fixture();disposed.sky.dispose();assert.deepEqual(await disposed.sky.ready,{status:'disposed'});
+});

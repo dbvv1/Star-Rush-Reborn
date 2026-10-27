@@ -1,5 +1,5 @@
 const defaultSettings={quality:'auto',sensitivity:1,fov:62,autoGas:false,line:true,ghost:true};
-let settings={...defaultSettings},profile={name:'车手'+Math.floor(100+Math.random()*900),paint:'#83cde4',car:'Mint Comet'},eventType='race';
+let settings={...defaultSettings},profile={name:'车手'+Math.floor(100+captureRuntime.random()*900),paint:'#83cde4',car:'Mint Comet'},eventType='race';
 try{Object.assign(settings,JSON.parse(localStorage.getItem((roadDriving?'star-rush-settings-'+drivingRevision:'star-rush-settings-reborn'))||'{}'));Object.assign(profile,JSON.parse(localStorage.getItem('star-rush-profile')||'{}'));profile.name=localStorage.getItem('star-rush-name')||profile.name}catch(e){}
 const garagePaints=[['Mint Comet','#83cde4','薄荷彗星'],['Sakura Bloom','#efabc8','樱花绽放'],['Violet Hour','#b1a0df','暮色紫'],['Solar Flare','#edc784','日光金']];
 function saveSettings(){try{localStorage.setItem((roadDriving?'star-rush-settings-'+drivingRevision:'star-rush-settings-reborn'),JSON.stringify(settings))}catch(e){}}

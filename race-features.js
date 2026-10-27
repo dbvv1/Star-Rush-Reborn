@@ -103,7 +103,7 @@ function renderRaceFeatures(origin,dt){
  if(ghostNode&&ghostRun?.points?.length&&state==='running'){const points=ghostRun.points,t=raceClock();while(ghostCursor<points.length-2&&points[ghostCursor+1][0]<t)ghostCursor++;const a=points[ghostCursor],b=points[ghostCursor+1],u=clamp((t-a[0])/(b[0]-a[0]||1),0,1),s=mix(a[1],b[1],u),l=mix(a[2],b[2],u),yaw=a[3]+wrapAngle(b[3]-a[3])*u;const jump=mix(a[4],b[4],u);ghostPose={s,l,yaw,jump};const rr=road(s);ghostNode.local=trs(sub(atRoad(s,l,.07+jump),origin),[.97,.97,.97],[0,-rr.h-yaw,0]);world.add(ghostNode)}
  if(settings.line&&state==='running')for(let i=0;i<routeArrows.length;i++){const s=player.s+12+i*9,rr=road(s),lane=clamp(rr.curv*80,-2.1,2.1),n=routeArrows[i];n.mesh=routeArrowMeshes[routeArrowNeedsBrake(rr.curv,player.speed)?1:0];n.local=trs(sub(atRoad(s,lane,.085),origin),[1,1,1],[0,-rr.h,0]);world.add(n)}
 }
-let frameDurations=[],perfClock=0,lastPerfTime=performance.now(),gamepadPrior={},gamepadConnected=false;
+let frameDurations=[],perfClock=0,lastPerfTime=gameClock.now(),gamepadPrior={},gamepadConnected=false;
 function updateDiagnostics(now,dt){
  const duration=now-lastPerfTime;lastPerfTime=now;if(duration>0&&duration<1000)frameDurations.push(duration);if(frameDurations.length>180)frameDurations.shift();perfClock+=dt;if(perfClock<.25)return;perfClock=0;
  const avg=frameDurations.reduce((a,b)=>a+b,0)/(frameDurations.length||1),sorted=[...frameDurations].sort((a,b)=>a-b),p95=sorted[Math.floor(sorted.length*.95)]||0;
@@ -116,6 +116,7 @@ function updateDrivingAssists(dt){
 
   let curvature=0;for(let d=15;d<=90;d+=10)curvature=Math.max(curvature,Math.abs(road(player.s+d).curv));const safe=clamp(.85/Math.max(.012,curvature),14,48),r=road(player.s),look=atRoad(player.s+clamp(player.speed*.45,12,26),0,0),delta=sub(look,atRoad(player.s,player.l,0)),target=Math.atan2(dot(delta,r.R),dot(delta,r.T)),error=wrapAngle(target-player.velocityYaw);assistedSteer=clamp((error*3+road(player.s+12).curv*player.speed)/1.04,-1,1);input.brake=player.speed>safe+1.5;input.gas=!input.brake;return;
  }
+ if(captureRuntime.active)return;
  const pad=navigator.getGamepads?.()[0];if(!pad){if(gamepadConnected){refreshControls();gamepadPrior={};gamepadConnected=false}return}gamepadConnected=true;
  refreshControls();const axis=Math.abs(pad.axes[0]||0)>.13?pad.axes[0]:0;if(axis)assistedSteer=axis;
  const states={gas:pad.buttons[7]?.value>.13,brake:pad.buttons[6]?.value>.13,drift:!!pad.buttons[2]?.pressed,small:!!pad.buttons[0]?.pressed,boost:!!pad.buttons[1]?.pressed};for(const [k,v] of Object.entries(states)){input[k]||=v;if(v&&!gamepadPrior[k]&&k in controlEdges)controlEdges[k]++}gamepadPrior=states;
