@@ -1,0 +1,671 @@
+{
+  "schema": 1,
+  "recipe": "recipe-warm.json",
+  "recipe_id": "coastal-day-v2-warm",
+  "recipe_sha256": "62af0b3e55c66c239a645a22a1c29467d4d1c48526372813140723f0bffa9c34",
+  "producer_sha256": "945c4ce2fa1958a6f1baed8bf88619834c388e3ed781a2daacb7164f4c3bb714",
+  "sources_sha256": "af7cbfc756a9e2d198d282f065392c96a3246a55cc08aba632df23e5a26ffade",
+  "units": "metres",
+  "axes": {
+    "up": "+Y",
+    "forward": "+X",
+    "road_lateral": "+Z"
+  },
+  "assets": [
+    {
+      "id": "car",
+      "file": "car.glb",
+      "sha256": "b37aa1eb23a88bf870ff2ad9674d85487ef7d9bb58cacc8c840a694cc1e26266",
+      "bytes": 262684,
+      "triangles": 2075,
+      "bounds_m": {
+        "min": [
+          -1.6899999690055847,
+          -1.5497207628278886e-08,
+          -0.8449999690055847
+        ],
+        "max": [
+          1.624999969005585,
+          1.4299999070167542,
+          0.8449999690055847
+        ]
+      },
+      "dimensions_m": [
+        3.3149999380111694,
+        1.4299999225139617,
+        1.6899999380111694
+      ],
+      "parts": [
+        {
+          "name": "body",
+          "node": 0,
+          "pivot_m": [
+            0,
+            0,
+            0
+          ],
+          "action": "body-roll-x_bob-y",
+          "triangles": 747,
+          "material_families": [
+            "glass",
+            "marking",
+            "paint",
+            "rubber"
+          ]
+        },
+        {
+          "name": "wheel-back-right",
+          "node": 1,
+          "pivot_m": [
+            -0.8579999571,
+            0.39,
+            0.39
+          ],
+          "action": "roll-z",
+          "triangles": 332,
+          "material_families": [
+            "glass",
+            "marking",
+            "rubber"
+          ]
+        },
+        {
+          "name": "wheel-back-left",
+          "node": 2,
+          "pivot_m": [
+            -0.8579999571,
+            0.39,
+            -0.39
+          ],
+          "action": "roll-z",
+          "triangles": 332,
+          "material_families": [
+            "glass",
+            "marking",
+            "rubber"
+          ]
+        },
+        {
+          "name": "wheel-front-left",
+          "node": 3,
+          "pivot_m": [
+            0.8579999571,
+            0.39,
+            -0.39
+          ],
+          "action": "front-steer-y_then-roll-z",
+          "triangles": 332,
+          "material_families": [
+            "glass",
+            "marking",
+            "rubber"
+          ]
+        },
+        {
+          "name": "wheel-front-right",
+          "node": 4,
+          "pivot_m": [
+            0.8579999571,
+            0.39,
+            0.39
+          ],
+          "action": "front-steer-y_then-roll-z",
+          "triangles": 332,
+          "material_families": [
+            "glass",
+            "marking",
+            "rubber"
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "source": "source/car/sedan-sports.glb",
+          "source_sha256": "2889c428ca1dd9c975c3ff760eb8757883490410555ab60b818f712f583826d6",
+          "input_triangles": 2088,
+          "removed_exact_degenerate": 13,
+          "output_triangles": 2075,
+          "max_bake_srgb8_error": 2.3794505211608783,
+          "minimum_winding_normal_dot": 0.8473830874418183
+        }
+      ],
+      "budget": {
+        "uniform_scale": 1.3,
+        "max_triangles": 3000,
+        "max_bytes": 450000
+      },
+      "vertex_encoding": "Float32 POSITION/NORMAL/COLOR_0; Uint32 indices; 4-byte aligned",
+      "material_contract": "linear-sRGB vertex colors; PBR roughness metadata not consumed by current Star Lambert/Toon"
+    },
+    {
+      "id": "road",
+      "file": "road.glb",
+      "sha256": "1b4dbe8c4f94f86d8f283cba9bfff51a76aff4c5a32fb7814266b33dd9e4c53b",
+      "bytes": 276056,
+      "triangles": 2202,
+      "bounds_m": {
+        "min": [
+          -12.0,
+          -2.9225952060247287,
+          -22.0
+        ],
+        "max": [
+          12.0,
+          0.8500000000000001,
+          22.0
+        ]
+      },
+      "dimensions_m": [
+        24.0,
+        3.7725952060247288,
+        44.0
+      ],
+      "parts": [
+        {
+          "name": "road-and-graded-shoulder",
+          "node": 0,
+          "pivot_m": [
+            0,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 1658,
+          "material_families": [
+            "asphalt",
+            "foliage",
+            "gravel",
+            "marking",
+            "soil"
+          ]
+        },
+        {
+          "name": "rail--1--9",
+          "node": 1,
+          "pivot_m": [
+            -9,
+            0,
+            -8.3
+          ],
+          "action": "static",
+          "triangles": 68,
+          "material_families": [
+            "metal"
+          ]
+        },
+        {
+          "name": "rail--1--3",
+          "node": 2,
+          "pivot_m": [
+            -3,
+            0,
+            -8.3
+          ],
+          "action": "static",
+          "triangles": 68,
+          "material_families": [
+            "metal"
+          ]
+        },
+        {
+          "name": "rail--1-3",
+          "node": 3,
+          "pivot_m": [
+            3,
+            0,
+            -8.3
+          ],
+          "action": "static",
+          "triangles": 68,
+          "material_families": [
+            "metal"
+          ]
+        },
+        {
+          "name": "rail--1-9",
+          "node": 4,
+          "pivot_m": [
+            9,
+            0,
+            -8.3
+          ],
+          "action": "static",
+          "triangles": 68,
+          "material_families": [
+            "metal"
+          ]
+        },
+        {
+          "name": "rail-1--9",
+          "node": 5,
+          "pivot_m": [
+            -9,
+            0,
+            8.3
+          ],
+          "action": "static",
+          "triangles": 68,
+          "material_families": [
+            "metal"
+          ]
+        },
+        {
+          "name": "rail-1--3",
+          "node": 6,
+          "pivot_m": [
+            -3,
+            0,
+            8.3
+          ],
+          "action": "static",
+          "triangles": 68,
+          "material_families": [
+            "metal"
+          ]
+        },
+        {
+          "name": "rail-1-3",
+          "node": 7,
+          "pivot_m": [
+            3,
+            0,
+            8.3
+          ],
+          "action": "static",
+          "triangles": 68,
+          "material_families": [
+            "metal"
+          ]
+        },
+        {
+          "name": "rail-1-9",
+          "node": 8,
+          "pivot_m": [
+            9,
+            0,
+            8.3
+          ],
+          "action": "static",
+          "triangles": 68,
+          "material_families": [
+            "metal"
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "source": "source/racing/roadStraight.glb",
+          "source_sha256": "6b1f92e5859d417951f259e52c9c9eadad5bfceb3b545e074049bbc17d02f00d",
+          "input_triangles": 18,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 1458,
+          "max_bake_srgb8_error": 0,
+          "minimum_winding_normal_dot": 0.9999999999999999
+        },
+        {
+          "source": "source/racing/rail.glb",
+          "source_sha256": "c60d60e34b675d5d832d91c6f5d7c125a1020953c2e22dbcd1215397990aaaf4",
+          "input_triangles": 68,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 68,
+          "max_bake_srgb8_error": 0,
+          "minimum_winding_normal_dot": 0.9999999999999973
+        },
+        {
+          "source": "source/racing/rail.glb",
+          "source_sha256": "c60d60e34b675d5d832d91c6f5d7c125a1020953c2e22dbcd1215397990aaaf4",
+          "input_triangles": 68,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 68,
+          "max_bake_srgb8_error": 0,
+          "minimum_winding_normal_dot": 0.9999999999999973
+        },
+        {
+          "source": "source/racing/rail.glb",
+          "source_sha256": "c60d60e34b675d5d832d91c6f5d7c125a1020953c2e22dbcd1215397990aaaf4",
+          "input_triangles": 68,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 68,
+          "max_bake_srgb8_error": 0,
+          "minimum_winding_normal_dot": 0.9999999999999973
+        },
+        {
+          "source": "source/racing/rail.glb",
+          "source_sha256": "c60d60e34b675d5d832d91c6f5d7c125a1020953c2e22dbcd1215397990aaaf4",
+          "input_triangles": 68,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 68,
+          "max_bake_srgb8_error": 0,
+          "minimum_winding_normal_dot": 0.9999999999999973
+        },
+        {
+          "source": "source/racing/rail.glb",
+          "source_sha256": "c60d60e34b675d5d832d91c6f5d7c125a1020953c2e22dbcd1215397990aaaf4",
+          "input_triangles": 68,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 68,
+          "max_bake_srgb8_error": 0,
+          "minimum_winding_normal_dot": 0.9999999999999973
+        },
+        {
+          "source": "source/racing/rail.glb",
+          "source_sha256": "c60d60e34b675d5d832d91c6f5d7c125a1020953c2e22dbcd1215397990aaaf4",
+          "input_triangles": 68,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 68,
+          "max_bake_srgb8_error": 0,
+          "minimum_winding_normal_dot": 0.9999999999999973
+        },
+        {
+          "source": "source/racing/rail.glb",
+          "source_sha256": "c60d60e34b675d5d832d91c6f5d7c125a1020953c2e22dbcd1215397990aaaf4",
+          "input_triangles": 68,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 68,
+          "max_bake_srgb8_error": 0,
+          "minimum_winding_normal_dot": 0.9999999999999973
+        },
+        {
+          "source": "source/racing/rail.glb",
+          "source_sha256": "c60d60e34b675d5d832d91c6f5d7c125a1020953c2e22dbcd1215397990aaaf4",
+          "input_triangles": 68,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 68,
+          "max_bake_srgb8_error": 0,
+          "minimum_winding_normal_dot": 0.9999999999999973
+        }
+      ],
+      "budget": {
+        "length": 24.0,
+        "asphalt_width": 16.0,
+        "bank_end_lateral": 22.0,
+        "max_triangles": 3000,
+        "max_bytes": 450000
+      },
+      "vertex_encoding": "Float32 POSITION/NORMAL/COLOR_0; Uint32 indices; 4-byte aligned",
+      "material_contract": "linear-sRGB vertex colors; PBR roughness metadata not consumed by current Star Lambert/Toon"
+    },
+    {
+      "id": "street",
+      "file": "street.glb",
+      "sha256": "7881dd9d614bbbf82d7bfc75f4bd16e138a6dd608ab16c8675be043219ebd458",
+      "bytes": 405016,
+      "triangles": 3317,
+      "bounds_m": {
+        "min": [
+          -13.899999856948853,
+          0.0,
+          -4.284000277519226
+        ],
+        "max": [
+          14.284000277519226,
+          5.001245856285095,
+          5.533999919891357
+        ]
+      },
+      "dimensions_m": [
+        28.18400013446808,
+        5.001245856285095,
+        9.818000197410583
+      ],
+      "parts": [
+        {
+          "name": "house-a",
+          "node": 0,
+          "pivot_m": [
+            -10,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 1156,
+          "material_families": [
+            "roof",
+            "wall"
+          ]
+        },
+        {
+          "name": "house-g",
+          "node": 1,
+          "pivot_m": [
+            0,
+            0,
+            2
+          ],
+          "action": "static",
+          "triangles": 1059,
+          "material_families": [
+            "glass",
+            "roof",
+            "wall"
+          ]
+        },
+        {
+          "name": "house-m",
+          "node": 2,
+          "pivot_m": [
+            10,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 1102,
+          "material_families": [
+            "glass",
+            "roof",
+            "wall"
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "source": "source/suburban/building-type-a.glb",
+          "source_sha256": "49f32e20b9dcd24b1c8f6d6488807b8c8cb684cbb595bfb0bb36ad903e470faa",
+          "input_triangles": 1174,
+          "removed_exact_degenerate": 18,
+          "output_triangles": 1156,
+          "max_bake_srgb8_error": 3.263254617789223,
+          "minimum_winding_normal_dot": 0.8536658934737275
+        },
+        {
+          "source": "source/suburban/building-type-g.glb",
+          "source_sha256": "f497a7bc3a8e6b6273ba99f090042d1cfb3141da57d3c51998c57a479a0ece11",
+          "input_triangles": 1067,
+          "removed_exact_degenerate": 8,
+          "output_triangles": 1059,
+          "max_bake_srgb8_error": 2.2792577015973103,
+          "minimum_winding_normal_dot": 0.7052100536252628
+        },
+        {
+          "source": "source/suburban/building-type-m.glb",
+          "source_sha256": "36d31f4e45498f6229805b6a7a1577ef00230daeea4c6a4469481e9d5a0fdb7c",
+          "input_triangles": 1112,
+          "removed_exact_degenerate": 10,
+          "output_triangles": 1102,
+          "max_bake_srgb8_error": 2.2792577015973103,
+          "minimum_winding_normal_dot": 0.7052100536252628
+        }
+      ],
+      "budget": {
+        "uniform_scale": 6.0,
+        "max_triangles": 5000,
+        "max_bytes": 700000
+      },
+      "vertex_encoding": "Float32 POSITION/NORMAL/COLOR_0; Uint32 indices; 4-byte aligned",
+      "material_contract": "linear-sRGB vertex colors; PBR roughness metadata not consumed by current Star Lambert/Toon"
+    },
+    {
+      "id": "verge",
+      "file": "verge.glb",
+      "sha256": "b499953d58cbd78efa7df4670b6c6fa1bfa9bbbec97bc4b4464139fef1c61247",
+      "bytes": 150500,
+      "triangles": 1192,
+      "bounds_m": {
+        "min": [
+          -7.45,
+          -1.30124535278886e-13,
+          -1.5999999046325684
+        ],
+        "max": [
+          7.45,
+          1.0799999237060547,
+          1.9500000000000002
+        ]
+      },
+      "dimensions_m": [
+        14.9,
+        1.0799999237061848,
+        3.5499999046325685
+      ],
+      "parts": [
+        {
+          "name": "fence--4.8",
+          "node": 0,
+          "pivot_m": [
+            0,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 284,
+          "material_families": [
+            "soil"
+          ]
+        },
+        {
+          "name": "fence-4.8",
+          "node": 1,
+          "pivot_m": [
+            0,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 284,
+          "material_families": [
+            "soil"
+          ]
+        },
+        {
+          "name": "bush-0",
+          "node": 2,
+          "pivot_m": [
+            0,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 104,
+          "material_families": [
+            "foliage"
+          ]
+        },
+        {
+          "name": "bush-1",
+          "node": 3,
+          "pivot_m": [
+            0,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 104,
+          "material_families": [
+            "foliage"
+          ]
+        },
+        {
+          "name": "bush-2",
+          "node": 4,
+          "pivot_m": [
+            0,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 104,
+          "material_families": [
+            "foliage"
+          ]
+        },
+        {
+          "name": "bush-3",
+          "node": 5,
+          "pivot_m": [
+            0,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 104,
+          "material_families": [
+            "foliage"
+          ]
+        },
+        {
+          "name": "bush-4",
+          "node": 6,
+          "pivot_m": [
+            0,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 104,
+          "material_families": [
+            "foliage"
+          ]
+        },
+        {
+          "name": "bush-5",
+          "node": 7,
+          "pivot_m": [
+            0,
+            0,
+            0
+          ],
+          "action": "static",
+          "triangles": 104,
+          "material_families": [
+            "foliage"
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "source": "source/suburban/fence-2x3.glb",
+          "source_sha256": "1a8270c40f650c9a2e58785945aad457fd58d42cc979b862b347e05a5f0a2f6f",
+          "input_triangles": 284,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 284,
+          "max_bake_srgb8_error": 0.45130210403651894,
+          "minimum_winding_normal_dot": 0.9906019205154841
+        },
+        {
+          "source": "source/suburban/fence-2x3.glb",
+          "source_sha256": "1a8270c40f650c9a2e58785945aad457fd58d42cc979b862b347e05a5f0a2f6f",
+          "input_triangles": 284,
+          "removed_exact_degenerate": 0,
+          "output_triangles": 284,
+          "max_bake_srgb8_error": 0.45130210403651894,
+          "minimum_winding_normal_dot": 0.9906019205154841
+        },
+        {
+          "source": "source/nature/plant_bushDetailed.obj",
+          "source_sha256": "be40d35b392db76f68c7235a1c2ba0452a37fe441d93929ef42918bdb91f4a11",
+          "input_triangles": 104,
+          "output_triangles": 624,
+          "instances": 6,
+          "normal_policy": "per-face outward winding retained; no alpha cards"
+        }
+      ],
+      "budget": {
+        "max_triangles": 2000,
+        "max_bytes": 300000
+      },
+      "vertex_encoding": "Float32 POSITION/NORMAL/COLOR_0; Uint32 indices; 4-byte aligned",
+      "material_contract": "linear-sRGB vertex colors; PBR roughness metadata not consumed by current Star Lambert/Toon"
+    }
+  ],
+  "validation_boundary": "CPU assets only; not integrated, not visually accepted, no driving/audio/GPU claim"
+}

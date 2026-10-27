@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "verified_on": "2026-10-27",
+  "packs": [
+    {
+      "id": "car",
+      "author": "Kenney",
+      "version": "3.1",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/car-kit",
+      "archive_url": "https://kenney.nl/media/pages/assets/car-kit/1a312ec241-1775131960/kenney_car-kit.zip",
+      "archive_bytes": 4814237,
+      "archive_sha256": "fac7dacac5c7874348cf19729af3ef205f3d366493edaf0a827d93f4fdf3d0c4",
+      "files": [
+        {
+          "path": "source/car/sedan-sports.glb",
+          "archive_member": "Models/GLB format/sedan-sports.glb",
+          "bytes": 177676,
+          "sha256": "2889c428ca1dd9c975c3ff760eb8757883490410555ab60b818f712f583826d6"
+        },
+        {
+          "path": "source/car/Textures/colormap.png",
+          "archive_member": "Models/GLB format/Textures/colormap.png",
+          "bytes": 12371,
+          "sha256": "f3622a03a20c6696065cae9cbe391351be873508af190c2ebd1d420c055787a5"
+        },
+        {
+          "path": "source/car/License.txt",
+          "archive_member": "License.txt",
+          "bytes": 664,
+          "sha256": "c23d6b953deca182252462823ae96248c8b4338e4f0d0a0b223eed8d8623e043",
+          "archive_member_sha256": "c33b7f6453d134deae7b1b8493717d9ccfa754c25ab97f6de89b88f8fda19b00",
+          "archive_member_bytes": 696,
+          "normalization": "UTF-8 LF, trailing whitespace and outer blank lines removed; license words unchanged"
+        }
+      ]
+    },
+    {
+      "id": "racing",
+      "author": "Kenney",
+      "version": "2.0 (archive license)",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/racing-kit",
+      "archive_url": "https://kenney.nl/media/pages/assets/racing-kit/933b8fd9fd-1677580949/kenney_racing-kit.zip",
+      "archive_bytes": 6082755,
+      "archive_sha256": "8a71ea16219315a01d00d5a90c4f6b5c090faddbc56d80ecf727e2b3b853c6c0",
+      "files": [
+        {
+          "path": "source/racing/roadStraight.glb",
+          "archive_member": "Models/GLTF format/roadStraight.glb",
+          "bytes": 3644,
+          "sha256": "6b1f92e5859d417951f259e52c9c9eadad5bfceb3b545e074049bbc17d02f00d"
+        },
+        {
+          "path": "source/racing/rail.glb",
+          "archive_member": "Models/GLTF format/rail.glb",
+          "bytes": 5940,
+          "sha256": "c60d60e34b675d5d832d91c6f5d7c125a1020953c2e22dbcd1215397990aaaf4"
+        },
+        {
+          "path": "source/racing/License.txt",
+          "archive_member": "License.txt",
+          "bytes": 586,
+          "sha256": "603cb60698da38e4338dcd6d3eb65aa6f9dfb99661dfa6a196f5e1633452a96e",
+          "archive_member_sha256": "905627df4313a9eb7fa9337129e572979ef51cc3857c8d2942e57ae84736096c",
+          "archive_member_bytes": 611,
+          "normalization": "UTF-8 LF, trailing whitespace and outer blank lines removed; license words unchanged"
+        }
+      ],
+      "official_page_update_label": "1.0",
+      "upstream_version_note": "Official page Updates says 1.0; downloaded archive License.txt says Racing Kit (2.0). Identity is pinned by archive SHA, not inferred from either label."
+    },
+    {
+      "id": "suburban",
+      "author": "Kenney",
+      "version": "2.0",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/city-kit-suburban",
+      "archive_url": "https://kenney.nl/media/pages/assets/city-kit-suburban/2c871b7af2-1745479373/kenney_city-kit-suburban_20.zip",
+      "archive_bytes": 3038740,
+      "archive_sha256": "5869c35cf30b1c87bdb2d197b6d325eebadd2ef08ea27f04797e8e08d77a9a39",
+      "files": [
+        {
+          "path": "source/suburban/building-type-a.glb",
+          "archive_member": "Models/GLB format/building-type-a.glb",
+          "bytes": 98604,
+          "sha256": "49f32e20b9dcd24b1c8f6d6488807b8c8cb684cbb595bfb0bb36ad903e470faa"
+        },
+        {
+          "path": "source/suburban/building-type-g.glb",
+          "archive_member": "Models/GLB format/building-type-g.glb",
+          "bytes": 93596,
+          "sha256": "f497a7bc3a8e6b6273ba99f090042d1cfb3141da57d3c51998c57a479a0ece11"
+        },
+        {
+          "path": "source/suburban/building-type-m.glb",
+          "archive_member": "Models/GLB format/building-type-m.glb",
+          "bytes": 96996,
+          "sha256": "36d31f4e45498f6229805b6a7a1577ef00230daeea4c6a4469481e9d5a0fdb7c"
+        },
+        {
+          "path": "source/suburban/fence-2x3.glb",
+          "archive_member": "Models/GLB format/fence-2x3.glb",
+          "bytes": 28412,
+          "sha256": "1a8270c40f650c9a2e58785945aad457fd58d42cc979b862b347e05a5f0a2f6f"
+        },
+        {
+          "path": "source/suburban/Textures/colormap.png",
+          "archive_member": "Models/GLB format/Textures/colormap.png",
+          "bytes": 11784,
+          "sha256": "9b5de86078c25ef02351a80d35ff3c978693a1044565b73eedd9ae9b5b80665d"
+        },
+        {
+          "path": "source/suburban/License.txt",
+          "archive_member": "License.txt",
+          "bytes": 674,
+          "sha256": "1aa23655a5c50428e57e3d06033b164af58f37f9bd7d366c8dae7c6f13c8bb2c",
+          "archive_member_sha256": "d778fa769a89a7d9f167bc337fdf8fc2144e47d9abb0c35eb6ad897c0ee24d0a",
+          "archive_member_bytes": 706,
+          "normalization": "UTF-8 LF, trailing whitespace and outer blank lines removed; license words unchanged"
+        }
+      ]
+    },
+    {
+      "id": "nature",
+      "author": "Kenney",
+      "version": "2.1",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/nature-kit",
+      "archive_sha256": "fa7974a0d342bfe63c38664ba9f8ec1a4aab8ea25f099bdc56870e33588c4d9d",
+      "origin_commit": "1dd89d3931196cb08f7b9a00541a54a6715dfe1d",
+      "files": [
+        {
+          "path": "source/nature/plant_bushDetailed.obj",
+          "base_path": "assets/landscape/source/plant_bushDetailed.obj",
+          "sha256": "be40d35b392db76f68c7235a1c2ba0452a37fe441d93929ef42918bdb91f4a11",
+          "bytes": 9033
+        },
+        {
+          "path": "source/nature/LICENSE.txt",
+          "base_path": "assets/landscape/LICENSE.txt",
+          "sha256": "5c063f83e0422114f703fc6bbe23010f32b12d132b93578fa776289c0d334675",
+          "bytes": 586
+        }
+      ],
+      "original_obj_sha256": "f657029e99a52f6933389c8d445699d352102990af574cfe190f4ec746de0b7d",
+      "source_normalization": "Base repository OBJ: LF, trailing whitespace removed; geometry unchanged."
+    }
+  ]
+}

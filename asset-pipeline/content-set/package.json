@@ -1,0 +1,7 @@
+{
+  "name": "star-content-set-validation",
+  "private": true,
+  "type": "module",
+  "scripts": {"test": "node --test tests/*.test.mjs", "validate": "node validate.mjs"},
+  "devDependencies": {"gltf-validator": "2.0.0-dev.3.10", "three": "0.186.0"}
+}

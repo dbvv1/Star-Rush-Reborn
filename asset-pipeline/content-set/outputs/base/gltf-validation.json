@@ -1,0 +1,154 @@
+[
+  {
+    "file": "car.glb",
+    "sha256": "b822c2da8cb6fd1ef1f2f012fe308cb470e4dcf8c4fcf4a519217c44068cde21",
+    "bytes": 262684,
+    "validator": "2.0.0-dev.3.10",
+    "issues": {
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    "info": {
+      "version": "2.0",
+      "generator": "Star content-set build.py",
+      "resources": [
+        {
+          "pointer": "/buffers/0",
+          "mimeType": "application/gltf-buffer",
+          "storage": "glb",
+          "byteLength": 249000
+        }
+      ],
+      "animationCount": 0,
+      "materialCount": 4,
+      "hasMorphTargets": false,
+      "hasSkins": false,
+      "hasTextures": false,
+      "hasDefaultScene": true,
+      "drawCallCount": 16,
+      "totalVertexCount": 6225,
+      "totalTriangleCount": 2075,
+      "maxUVs": 0,
+      "maxInfluences": 0,
+      "maxAttributes": 3
+    }
+  },
+  {
+    "file": "road.glb",
+    "sha256": "9eb6a584f5dfc625680e7dadfaa7c8a66ff155f7c90c95a07de4f1b43feebd9a",
+    "bytes": 276056,
+    "validator": "2.0.0-dev.3.10",
+    "issues": {
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    "info": {
+      "version": "2.0",
+      "generator": "Star content-set build.py",
+      "resources": [
+        {
+          "pointer": "/buffers/0",
+          "mimeType": "application/gltf-buffer",
+          "storage": "glb",
+          "byteLength": 264240
+        }
+      ],
+      "animationCount": 0,
+      "materialCount": 6,
+      "hasMorphTargets": false,
+      "hasSkins": false,
+      "hasTextures": false,
+      "hasDefaultScene": true,
+      "drawCallCount": 13,
+      "totalVertexCount": 6606,
+      "totalTriangleCount": 2202,
+      "maxUVs": 0,
+      "maxInfluences": 0,
+      "maxAttributes": 3
+    }
+  },
+  {
+    "file": "street.glb",
+    "sha256": "a542129fdc374200f2cf78ec46b2c811dd7f7e3d8c3167003be4aaa73637c958",
+    "bytes": 405016,
+    "validator": "2.0.0-dev.3.10",
+    "issues": {
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    "info": {
+      "version": "2.0",
+      "generator": "Star content-set build.py",
+      "resources": [
+        {
+          "pointer": "/buffers/0",
+          "mimeType": "application/gltf-buffer",
+          "storage": "glb",
+          "byteLength": 398040
+        }
+      ],
+      "animationCount": 0,
+      "materialCount": 3,
+      "hasMorphTargets": false,
+      "hasSkins": false,
+      "hasTextures": false,
+      "hasDefaultScene": true,
+      "drawCallCount": 8,
+      "totalVertexCount": 9951,
+      "totalTriangleCount": 3317,
+      "maxUVs": 0,
+      "maxInfluences": 0,
+      "maxAttributes": 3
+    }
+  },
+  {
+    "file": "verge.glb",
+    "sha256": "0479af55bd3bcc937739aa49648ce4ecc41d739279d548af28ead8df7b433d15",
+    "bytes": 150500,
+    "validator": "2.0.0-dev.3.10",
+    "issues": {
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    "info": {
+      "version": "2.0",
+      "generator": "Star content-set build.py",
+      "resources": [
+        {
+          "pointer": "/buffers/0",
+          "mimeType": "application/gltf-buffer",
+          "storage": "glb",
+          "byteLength": 143040
+        }
+      ],
+      "animationCount": 0,
+      "materialCount": 2,
+      "hasMorphTargets": false,
+      "hasSkins": false,
+      "hasTextures": false,
+      "hasDefaultScene": true,
+      "drawCallCount": 8,
+      "totalVertexCount": 3576,
+      "totalTriangleCount": 1192,
+      "maxUVs": 0,
+      "maxInfluences": 0,
+      "maxAttributes": 3
+    }
+  }
+]

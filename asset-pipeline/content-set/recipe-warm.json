@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "id": "coastal-day-v2-warm",
+  "units": "metres",
+  "axes": {
+    "up": "+Y",
+    "forward": "+X",
+    "road_lateral": "+Z"
+  },
+  "palette": {
+    "paint": "#69b9ce",
+    "rubber": "#29323f",
+    "glass": "#426277",
+    "wall": "#e1d8c4",
+    "roof": "#596577",
+    "foliage": "#71876a",
+    "asphalt": "#535b67",
+    "marking": "#e5e4d7",
+    "gravel": "#a59f89",
+    "soil": "#827e70",
+    "metal": "#9caeb6"
+  },
+  "color_gain": [
+    1.05,
+    0.98,
+    0.93
+  ],
+  "bake": {
+    "max_srgb8_error": 4.0,
+    "max_subdivision_depth": 4,
+    "samples_per_triangle": 15
+  },
+  "car": {
+    "uniform_scale": 1.3,
+    "max_triangles": 3000,
+    "max_bytes": 450000
+  },
+  "road": {
+    "length": 24.0,
+    "asphalt_width": 16.0,
+    "bank_end_lateral": 22.0,
+    "max_triangles": 3000,
+    "max_bytes": 450000
+  },
+  "street": {
+    "uniform_scale": 6.0,
+    "max_triangles": 5000,
+    "max_bytes": 700000
+  },
+  "verge": {
+    "max_triangles": 2000,
+    "max_bytes": 300000
+  },
+  "max_total_bytes": 1500000
+}
