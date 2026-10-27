@@ -16,13 +16,13 @@ assert.equal(await (await request('/game.js')).text(),readFileSync('dist/client/
 assert.equal(await (await request('/legacy/game.js')).text(),readFileSync('dist/client/legacy/game.js','utf8'));
 assert.equal((await request('/legacy/missing.js')).status,404);
 assert.equal(await (await request('/road/game.js')).text(),readFileSync('dist/client/road/game.js','utf8'));
-const stored=new Map([['star-rush-runs-reborn',JSON.stringify([{mode:'circuit',track:'coast-reborn',timeMs:1234}])],['star-rush-best-distance','777'],['star-rush-best-score','888'],['star-rush-best-reborn-coast-reborn',JSON.stringify({time:1,points:[]})],['star-rush-best-reborn-road-v1-coast-reborn',JSON.stringify({time:2,points:[]})]]);
+const stored=new Map([['star-rush-runs-reborn',JSON.stringify([{id:'legacy-old',mode:'circuit',track:'coast-reborn',timeMs:1234,seed:73121,distance:4800,score:0,name:'Legacy'}])],['star-rush-best-distance','777'],['star-rush-best-score','888'],['star-rush-best-reborn-coast-reborn',JSON.stringify({time:1,points:[[0,0,0,0,0],[1,10,0,0,0]],splits:[],laps:[1],date:1})],['star-rush-best-reborn-road-v1-coast-reborn',JSON.stringify({time:2,points:[]})]]);
 stored.set('star-rush-settings-reborn',JSON.stringify({sensitivity:1.15}));
 stored.set('star-rush-settings-road-v1',JSON.stringify({sensitivity:1.1}));
 stored.set('star-rush-settings-road-v2',JSON.stringify({sensitivity:.8}));
 stored.set('star-rush-runs-road-v1',JSON.stringify([{timeMs:123}]));
-stored.set('star-rush-runs-road-v2',JSON.stringify([{mode:'circuit',track:'coast-reborn',timeMs:9876,score:0}]));
-stored.set('star-rush-best-reborn-road-v2-coast-reborn',JSON.stringify({time:3,points:[[0,0,0,0,0],[1,10,0,0,0]]}));
+stored.set('star-rush-runs-road-v2',JSON.stringify([{id:'road-old',mode:'circuit',track:'coast-reborn',timeMs:9876,score:0,seed:73121,distance:4800,name:'Road'}]));
+stored.set('star-rush-best-reborn-road-v2-coast-reborn',JSON.stringify({time:3,points:[[0,0,0,0,0],[1,10,0,0,0]],splits:[],laps:[3],date:1}));
 const old=new Map([...stored].filter(([key])=>!key.includes('road-v2')));
 async function environment(model,instrumented,initial=stored,storageFails=false){
  const w=new Window({url:'https://race.test'+(model==='road'?'/':'/legacy'),settings:{disableIframePageLoading:true,handleDisabledFileLoadingAsSuccess:true}}),errors=[],requests=[];

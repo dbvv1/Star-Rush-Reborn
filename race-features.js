@@ -4,7 +4,7 @@ const rivalNames=['Aoi / AI','Haru / AI','Rin / AI'],rivalPaint=['#f0a7c8','#b6a
 const routeArrowMeshes=['#a5dbe6','#f0b7c3'].map(col=>{const c=new Collector();bar(c,[-.6,.03,-.38],[.1,.03,0],.055,col);bar(c,[.1,.03,0],[-.6,.03,.38],.055,col);return c.finish()});
 const routeArrows=Array.from({length:9},()=>new Node(routeArrowMeshes[0]));for(const n of routeArrows)n.shadow=false;
 function ghostKey(){return 'star-rush-best-reborn-'+(roadDriving?drivingRevision+'-':'')+activeTrackId}
-function getBestGhost(){try{return JSON.parse(localStorage.getItem(ghostKey())||'null')}catch(e){return null}}
+function getBestGhost(){const saved=raceSave.readGhost(activeTrackId);if(!saved.ok)announce('本机幽灵不可用',saved.status==='invalid-data'?'现有数据异常，未覆盖；本局不显示幽灵。':'暂时无法读取；本局不显示幽灵。',3);return saved.value}
 function prepareRaceFeatures(){
  raceBots=[];raceDNF=false;firstFinish=null;ghostRun=getBestGhost();ghostPose=null;ghostCursor=0;ghostPoints=[];ghostClock=0;raceSplits=[];lapTimes=[];nextSector=1;nextLap=1;featureClock=0;
  $('resultGrid').replaceChildren();$('splitLabel').textContent='SECTOR 1 / 3';$('splitDelta').textContent='';$('lapTimeLabel').textContent='';$('coach').hidden=eventType!=='practice';
@@ -89,7 +89,6 @@ function completeRaceFeatures(){
  demoDriving=false;drawRaceResults();
  updateLocalPosition();
  if(raceDNF){$('resultDistance').textContent='DNF';$('resultNote').textContent='本局未能在倒计时结束前完赛，可以再挑战一次。';$('submitRun').disabled=true;pendingRun=null}
- else if(!net.room&&raceMode==='circuit'&&ghostPoints.length>10&&(!ghostRun||raceClock()<ghostRun.time)){try{localStorage.setItem(ghostKey(),JSON.stringify({time:raceClock(),points:ghostPoints,splits:raceSplits,laps:lapTimes,date:Date.now()}));$('resultNote').textContent='刷新本机最佳！已保存幽灵，可在计时挑战中追逐自己。'}catch(e){}}
  $('coach').hidden=true;
 }
 // Shared renderer cue: speed is the physical magnitude in m/s, not HUD km/h.
