@@ -8,6 +8,7 @@
 
 ```bash
 npm ci
+npm ci --prefix experiments/rapier-road-comparison
 npm run build
 npm run dev
 ```
@@ -70,7 +71,7 @@ STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build
 - [Slow Roads 作者介绍](https://web.dev/case-studies/slow-roads)：Three.js 生成场景、调度与性能
 - [固定时间步与插值](https://gafferongames.com/post/fix_your_timestep/)
 - [腾讯策划公开的转向与漂移维度](https://speedm.qq.com/web201712/strategy-detail.shtml?newsid=9388344)
-- [PlayCanvas 车辆物理](https://developer.playcanvas.com/tutorials/vehicle-physics/)、[Rapier 车辆控制器](https://rapier.rs/javascript3d/classes/DynamicRayCastVehicleController.html)：底盘与悬挂的后续研究方向，当前未使用
+- [PlayCanvas 车辆物理](https://developer.playcanvas.com/tutorials/vehicle-physics/)、[Rapier 车辆控制器](https://rapier.rs/javascript3d/classes/DynamicRayCastVehicleController.html)：底盘与悬挂研究参照；Rapier 已用于旁置同弯试驾，默认公路模型不变
 - [Forza 车辆物理说明](https://forza.net/news/forza-motorsport-drivatars-tire-physics)
 
 开发约定见 [AGENTS.md](AGENTS.md)，设计任务书见 [docs/brief.md](docs/brief.md)。
@@ -97,6 +98,6 @@ STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build
 
 ### 旁置同弯试驾
 
-打开 `/rapier/` 进入 Rapier 同弯试驾：W 油门、S/空格刹车、A/D 转向、X 倒车、R 复位、Esc 暂停。退出后可回正式公路；不写成绩与存档，默认 `/` 与 `/legacy` 不变。此入口是操控候选，不代表手感优于正式版。
+[网站 v8 旁置入口](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/rapier/) 已提供 Rapier 汐见海岸 170–740 m 驾驶比较短段，并非完整赛车比赛。打开 `/rapier/`：W 油门、S/空格刹车、A/D 转向、X 倒车、R 复位、Esc 暂停。退出后可回正式公路；不写成绩与存档，默认 `/` 与 `/legacy` 不变。此入口是操控候选，不代表手感优于正式版。
 
 构建前执行 `npm ci` 和 `npm ci --prefix experiments/rapier-road-comparison`，再运行 `npm run build`。
