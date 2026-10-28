@@ -1,0 +1,70 @@
+{
+  "profile": "coast-v1",
+  "prompt": "A quiet coastal road on a clear morning. Soft steady sea breeze and distant gentle surf below the seawall. Natural restrained ambience, consistent distance, no people, no voices, no birds, no vehicles, no music, no dramatic gusts or impacts.",
+  "seed": 0,
+  "parameters": {
+    "seconds": 10.0,
+    "num_inference_steps": 100,
+    "cfg_scale": 4.0,
+    "sigma_shift": 5.0,
+    "max_inference_seconds": 30,
+    "torch_dtype": "bfloat16",
+    "batch_size": 1
+  },
+  "model": {
+    "name": "MOSS-SoundEffect-v2.0",
+    "weights": "modelscope openmoss/MOSS-SoundEffect-v2.0",
+    "weightsRevision": "pinned by per-file revisions and SHA256 in source-metadata.json (17 files); ModelScope branch used for transport: master",
+    "source": "https://github.com/OpenMOSS/MOSS-TTS/tree/main/moss_soundeffect_v2",
+    "sourceRevision": "934d6826b084c46a0d033402174d5f8ac4ed2519",
+    "license": "Apache-2.0 (model card and pyproject); generated output is not relicensed as CC0 by this project",
+    "access": "No gated consent page used; no credentials or paid service."
+  },
+  "clip": {
+    "file": "coast-breeze-v1.wav",
+    "sourceFile": "source/seed0-10s.wav",
+    "sourceSha256": "5a45fd82494794b88fa9dd99187f0d5a7cb0c1e6479de4243532009175943e9e",
+    "sha256": "c27bb22001e5675018c74c7e664f763bbd5fa03dd88332dee6dcf6261b159e11",
+    "bytes": 1776044,
+    "duration": 9.25,
+    "sampleRate": 48000,
+    "channels": 2,
+    "rms": 0.08,
+    "peak": 0.370379,
+    "normalizationScale": 5.37789415
+  },
+  "processing": {
+    "recipe": "ffmpeg highpass 25 Hz / mono 48 kHz f32; equal-power last-first 0.75s loop seam; fixed RMS 0.08 with 0.9 peak ceiling; dual-mono PCM16 stereo",
+    "loopFadeSeconds": 0.75,
+    "targetRms": 0.08,
+    "peakCeiling": 0.9
+  },
+  "selection": "seed 0 selected for a higher 200-2000 Hz band share (23.50% vs 6.35%) and lower full-band RMS (0.0153 vs 0.0247); measured by measure_seed_bands.py and recorded in source/seed-band-analysis.json. No subjective listening was performed.",
+  "selectionAnalysis": "source/seed-band-analysis.json",
+  "alternatives": [
+    {
+      "seed": 1,
+      "sourceFile": "source/seed1-10s.wav",
+      "sourceSha256": "d5af6b0dd0b29896899a9b5951d1353e37c9098f755bc6460a115f0fe50cd601",
+      "rms": 0.024657,
+      "peak": 0.099883
+    }
+  ],
+  "environment": {
+    "torch": "2.9.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 5070 12 GB",
+    "precision": "bfloat16, batch 1, 100 steps, 30 s latent (10 s output)",
+    "loadSeconds": 46.0,
+    "vramUnit": "GiB (bytes / 2**30)",
+    "vramAfterLoadAllocatedGiB": 6.554,
+    "vramAfterLoadReservedGiB": 10.518,
+    "vramPeakAllocatedGiB": 9.895,
+    "vramPeakReservedGiB": 12.803,
+    "vramPeakScope": "process-cumulative; torch.cuda.max_memory_* was not reset between seeds, so this is not an independent per-seed peak",
+    "generateSecondsSeed0": 446.54,
+    "generateSecondsSeed1": 153.2,
+    "generateSecondsInclude": "device-to-host copy and WAV write",
+    "note": "No OOM. This does not establish comfortable 12 GB headroom. The first seed was slower than the second; the reason is unknown."
+  }
+}

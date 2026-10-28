@@ -1,11 +1,11 @@
 let boardTrack=activeTrackId;
 let pendingRun=null,boardMode='circuit',boardLocal=false,boardRequest=0;
-const raceSave=createLocalRaceSave({storage:()=>window.localStorage,roadDriving,drivingRevision,trackIds:Object.keys(TRACKS)});
+const raceSave=createLocalRaceSave({storage:()=>localStorage,roadDriving,drivingRevision,trackIds:Object.keys(TRACKS)});
 function localRuns(){return raceSave.readRuns().value}
 function clearLocalSaveAttempt(){localSaveAttempt=null;$('retryLocalSave').hidden=true}
 function saveFinishedRun(run){
  const ghost=!net.room&&raceMode==='circuit'&&ghostPoints.length>10
-  ?{time:raceClock(),points:ghostPoints.map(p=>[...p]),splits:[...raceSplits],laps:[...lapTimes],date:Date.now()}:null;
+  ?{time:raceClock(),points:ghostPoints.map(p=>[...p]),splits:[...raceSplits],laps:[...lapTimes],date:gameClock.wallNow()}:null;
  let name='本机车手';try{name=localStorage.getItem('star-rush-name')||name}catch(e){}
  const input={run:{...run},name,dnf:raceDNF,ghost};
  localSaveAttempt={input,receipt:raceSave.finish(input),note:''};

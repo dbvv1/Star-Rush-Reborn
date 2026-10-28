@@ -53,14 +53,17 @@ STAR_RUSH_RAIL_SOURCE=procedural npm run build
 STAR_RUSH_CANVAS_HOUSE_ANCHORS=on npm run build
 # 转向牌：baseline（默认原粉）、navy-v1（深蓝）、navy-v2（深蓝加粗）
 STAR_RUSH_SIGNBOARD_VARIANT=navy-v2 npm run build
+# 海岸环境声：off（默认）或 coast-v1（仅 /road 汐见海岸 380–660 m）
+STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build
 ```
 
 ## 素材与来源
 
 - 选卡插画：原创 AI 插画，源图、提示词与处理配方见 [assets/course-art](assets/course-art/README.md)。
 - 护栏碰撞样本：Kenney Impact Sounds（CC0）与本地合成候选，见 [assets/impact-audio](assets/impact-audio/README.md)。
+- 海岸环境声候选：MOSS-SoundEffect v2.0（Apache-2.0；源码 revision 934d6826…；生成结果未自行标为 CC0）生成并处理，默认关闭，仅在 `/road` 汐见海岸 380–660 m 可听；来源、许可、参数与未听验状态见 [assets/coast-ambience](assets/coast-ambience/README.md)。
 - 路边转向牌：原创程序几何与可编辑配色／粗细，见 [assets/signboard](assets/signboard/README.md)。
-- 其余人物、车辆、道路和场景由源码生成。Three.js（MIT）随客户端打包。
+- 除上述插画与音频样本外，其余人物、车辆、道路和场景由源码生成。Three.js（MIT）随客户端打包。
 
 ## 参考
 
@@ -87,3 +90,13 @@ STAR_RUSH_SIGNBOARD_VARIANT=navy-v2 npm run build
 公路驾驶只提供本机跑圈、计时与练习，不接在线房间或上传旧版榜单。已有 `road-v2` 记录、最快幽灵与操控设置继续使用；旧街机与 `road-v1` 数据不迁移、不删除。昵称、涂装和音量保持原有共享方式。幽灵是记录的车身位置，不是输入重演，不能跨驾驶规则混用。
 
 `STAR_RUSH_DRIVING_MODEL=legacy npm run build` 可把根入口临时构建为旧街机对照，`/road` 和 `/legacy` 仍明确固定各自规则；取消该变量后重新构建恢复公路默认。`node tests/road-driving-preview.mjs` 提供两个临时本机对照地址，Ctrl+C 关闭。公路驾驶以地平线反馈为方向，原创轻量车体与抓地模型仍在调优。
+
+### 海岸环境声候选
+
+`STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build` 仅为 `/road` 增加海岸环境声，默认关闭；来源与人工听验限制见 [素材说明](assets/coast-ambience/README.md)。
+
+### 旁置同弯试驾
+
+打开 `/rapier/` 进入 Rapier 同弯试驾：W 油门、S/空格刹车、A/D 转向、X 倒车、R 复位、Esc 暂停。退出后可回正式公路；不写成绩与存档，默认 `/` 与 `/legacy` 不变。此入口是操控候选，不代表手感优于正式版。
+
+构建前执行 `npm ci` 和 `npm ci --prefix experiments/rapier-road-comparison`，再运行 `npm run build`。

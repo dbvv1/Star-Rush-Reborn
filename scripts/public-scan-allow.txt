@@ -1,0 +1,18 @@
+# Exact false positives inside npm-locked @dimforge/rapier3d-compat 0.21.0 embedded WASM base64.
+# npm ci verified package integrity; vendor dist/rapier.mjs SHA256 02dc6a4e2fffc013bab08fbb44fa68f501d8303615e9afe4c7d89ad4eedda0d0
+# These are public binary-encoding fragments, not account credentials. No wildcard exemptions.
+dist/client/rapier/comparison.js	AKIA1DAACAP5JDAACAQJ
+dist/client/rapier/comparison.js	AKIASEKIJUDKALAASEAI
+dist/client/rapier/comparison.js	ASIAIJIDKALYAUYEQCCS
+dist/client/rapier/comparison.js	ASIAIJUDKAK8AUYEQCAG
+dist/client/rapier/comparison.js	ASIAIKMDKALUAUYEQCC5
+dist/server/index.js	AKIA1DAACAP5JDAACAQJ
+dist/server/index.js	AKIASEKIJUDKALAASEAI
+dist/server/index.js	ASIAIJIDKALYAUYEQCCS
+dist/server/index.js	ASIAIJUDKAK8AUYEQCAG
+dist/server/index.js	ASIAIKMDKALUAUYEQCC5
+worker/index.js	AKIA1DAACAP5JDAACAQJ
+worker/index.js	AKIASEKIJUDKALAASEAI
+worker/index.js	ASIAIJIDKALYAUYEQCCS
+worker/index.js	ASIAIJUDKAK8AUYEQCAG
+worker/index.js	ASIAIKMDKALUAUYEQCC5

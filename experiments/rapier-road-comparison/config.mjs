@@ -1,0 +1,48 @@
+// Project-specific starting hypotheses, NOT Forza parameters or accepted tuning.
+// Units: metres, kilograms, seconds, radians; force N, brake converted to N.s/tick.
+export const CONFIG = Object.freeze({
+  fixedStep: 1 / 120,
+  maxFrame: 0.25, // discard excess stall time, never integrate one huge physics step
+  mass: 800,
+  halfLength: 1.57 * .97,
+  halfWidth: .76 * .97,
+  halfHeight: .18,
+  visualCOM: .47,
+  wheelRadius: .41 * .97,
+  rearX: -1.02 * .97,
+  frontX: 1.06 * .97,
+  wheelZ: .83 * .97,
+  connectionY: .12,
+  suspensionRest: .30,
+  suspensionTravel: .16,
+  suspensionStiffness: 30,
+  suspensionCompression: 4.4,
+  suspensionRelaxation: 5.2,
+  suspensionMaxForce: 7000,
+  frictionSlip: 1.15,
+  sideFrictionStiffness: 1,
+  engineForce: 4200, // distributed equally, four driven wheels
+  brakeDeceleration: 8.5,
+  reverseForce: 2200,
+  linearDamping: .025,
+  aerodynamicDrag: .42,
+  steeringLowSpeed: .50,
+  steeringSpeedScale: 12,
+  steeringRise: 2.8,
+  steeringReturn: 4.5,
+  throttleRise: 2.5,
+  throttleFall: 5,
+  startS: 170,
+  endS: 740,
+  roadStartS: 100,
+  roadEndS: 820,
+  sampleSpacing: 1,
+  roadHalfWidth: 7,
+  shoulderOuter: 7.65,
+  railInner: 8.045,
+  railThickness: .14,
+  railHeight: .84,
+  checkpoints: Object.freeze([240,320,400,480,560,640,720]),
+});
+export const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+export const approach = (v,target,maxDelta) => v + clamp(target-v,-maxDelta,maxDelta);
