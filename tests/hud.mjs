@@ -131,7 +131,7 @@ test('compact HUD keeps functional groups in independent flow regions with uniqu
   assert.equal(hud.querySelector(selector).parentElement,hud,`${selector} needs its own flow region`);
  }
  const status=hud.querySelector('.race-status');
- assert.deepEqual([...status.children].map(node=>node.className),['network-hud','race-feed','split-hud','drift']);
+ assert.deepEqual([...status.children].map(node=>node.className),['network-hud','race-feed','race-objective','split-hud','drift']);
  for(const id of ['turnText','turnArrow','raceTime','lapLabel','speed','energyText','energyBar','jetCount','coach','recoverBtn','pauseBtn','localPosition','eventLabel','splitLabel','splitDelta','lapTimeLabel','driftText','driftBar','minimap']){
   assert(hud.querySelector(`#${id}`),`${id} must remain in the HUD`);
  }

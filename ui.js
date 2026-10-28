@@ -9,8 +9,8 @@ $('settingsBtn').onclick=()=>{syncSettingsUI();openPanel('settingsPanel')};$('cl
 for(const [id,key] of [['autoGasSetting','autoGas'],['lineSetting','line'],['ghostSetting','ghost']])$(id).onchange=e=>{settings[key]=e.target.checked;saveSettings()};$('qualitySetting').onchange=e=>{settings.quality=e.target.value;saveSettings()};$('steeringSetting').oninput=e=>{settings.sensitivity=Number(e.target.value)/100;saveSettings()};$('fovSetting').oninput=e=>{settings.fov=Number(e.target.value);saveSettings()};$('resetSettings').onclick=()=>{settings={...defaultSettings};saveSettings();syncSettingsUI()};
 for(const [name,paint,chinese] of garagePaints){const b=document.createElement('button');b.type='button';b.style.setProperty('--paint',paint);b.setAttribute('aria-label',chinese+'涂装');const icon=document.createElement('i'),title=document.createElement('b'),sub=document.createElement('small');title.textContent=name;sub.textContent=chinese;b.append(icon,title,sub);b.onclick=()=>{profile.paint=paint;profile.car=name;for(const el of $('garageGrid').children)el.classList.toggle('selected',el===b);saveProfile()};if(profile.paint===paint)b.classList.add('selected');$('garageGrid').appendChild(b)}
 $('garageBtn').onclick=()=>openPanel('garagePanel');$('closeGarage').onclick=()=>closePanel('garagePanel');$('saveProfile').onclick=saveProfile;$('profileName').value=profile.name;saveProfile();
-$('eventType').onchange=e=>{eventType=e.target.value;if(eventType==='practice')chooseTrack('academy-reborn')};
-function goHome(){if(net.room){showRoom();return}demoDriving=false;state='ready';reset(false);raceBots=[];ghostNode=null;clearKeys();$('welcome').hidden=false;$('paused').hidden=true;$('finished').hidden=true;$('coach').hidden=true;game.classList.add('menu-open');$('countdown').hidden=true}
+$('eventType').onchange=e=>{eventType=e.target.value;if(eventType==='practice')chooseTrack('academy-reborn');if(typeof updateRaceBrief==='function')updateRaceBrief()};
+function goHome(){if(net.room){showRoom();return}demoDriving=false;state='ready';reset(false);raceBots=[];ghostNode=null;clearKeys();$('welcome').hidden=false;$('paused').hidden=true;$('finished').hidden=true;$('coach').hidden=true;game.classList.add('menu-open');$('countdown').hidden=true;if(typeof updateRaceReview==='function')updateRaceReview()}
 $('pauseHome').onclick=goHome;$('newRouteBtn').onclick=goHome;
 $('demoBtn').onclick=()=>{start(false);demoDriving=true;announce('DEMO DRIVE','自动试驾 · 按任意方向键接管',2)};
 window.addEventListener('keydown',e=>{if(e.target.closest('input,select,textarea'))return;if(['KeyW','KeyA','KeyS','KeyD','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.code)&&demoDriving){demoDriving=false;assistedSteer=null;announce('YOUR TURN','已接管赛车',1)}});
@@ -40,3 +40,5 @@ if(roadDriving){
  document.querySelector('#helpPanel .board-note').textContent='参考地平线的驾驶反馈目标；原创轻量模型，并非其物理实现。';
  $('settingsStatus').textContent+=' 公路驾驶：无喷射连招。';
 }
+
+raceReviewReady=true;updateRaceBrief();

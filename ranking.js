@@ -58,7 +58,7 @@ $('submitRun').onclick=async()=>{
 };
 
 function chooseTrack(id){if(!TRACKS[id])return;if(typeof net!=='undefined'&&net.room){announce('已在联机房间','退出房间后可更换地图',1.5);return}activeTrackId=id;reset(false);refreshTrackUI()}
-function refreshTrackUI(){for(const b of document.querySelectorAll('[data-track]')){b.classList.toggle('selected',b.dataset.track===activeTrackId);b.setAttribute('aria-pressed',String(b.dataset.track===activeTrackId))}$('trackDescription').textContent=trackInfo().description;$('modeDistance').textContent=Math.round(CIRCUIT_LENGTH)+' m / 圈 · '+trackInfo().laps+' 圈'}
+function refreshTrackUI(){if(typeof updateRaceBrief==='function')updateRaceBrief();for(const b of document.querySelectorAll('[data-track]')){b.classList.toggle('selected',b.dataset.track===activeTrackId);b.setAttribute('aria-pressed',String(b.dataset.track===activeTrackId))}$('trackDescription').textContent=trackInfo().description;$('modeDistance').textContent=Math.round(CIRCUIT_LENGTH)+' m / 圈 · '+trackInfo().laps+' 圈'}
 for(const b of document.querySelectorAll('[data-track]'))b.onclick=()=>chooseTrack(b.dataset.track);refreshTrackUI();
 
 const rankTrackSelect=document.createElement('select');rankTrackSelect.id='rankTrack';rankTrackSelect.setAttribute('aria-label','排行榜赛道');for(const [id,t] of Object.entries(TRACKS)){const o=document.createElement('option');o.value=id;o.textContent=t.name;rankTrackSelect.appendChild(o)}$('rankStatus').before(rankTrackSelect);rankTrackSelect.onchange=()=>{boardTrack=rankTrackSelect.value;loadBoard()};
