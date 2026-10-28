@@ -1,0 +1,12 @@
+# Playwright DEBUG=pw:browser excerpt, redacted
+# The full argv and the temporary profile path are withheld; renderer strings are not in this file.
+# Audited flags on the actual <launching> line: --headless present;
+# --no-sandbox, --enable-unsafe-swiftshader, --use-angle=swiftshader and --disable-gpu absent.
+
+2026-10-28T13:23:16.965Z pw:browser <launching> chrome-headless-shell.exe [absolute path and full argv withheld] --headless --remote-debugging-pipe [temporary user-data-dir path withheld]
+2026-10-28T13:23:17.133Z pw:browser <launched> pid=49572
+2026-10-28T13:28:36.173Z pw:browser [pid=49572] <gracefully close start>
+2026-10-28T13:28:36.701Z pw:browser [pid=49572] <process did exit: exitCode=0, signal=null>
+2026-10-28T13:28:36.701Z pw:browser [pid=49572] starting temporary directories cleanup
+2026-10-28T13:28:36.717Z pw:browser [pid=49572] finished temporary directories cleanup
+2026-10-28T13:28:36.717Z pw:browser [pid=49572] <gracefully close end>

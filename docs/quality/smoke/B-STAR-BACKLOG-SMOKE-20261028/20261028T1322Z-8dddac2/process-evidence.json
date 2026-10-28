@@ -1,0 +1,143 @@
+{
+  "runId": "20261028T1322Z-8dddac2",
+  "checkedAtUtc": {
+    "preflightScan": "2026-10-28T13:20:34Z (process/listener/GPU scan, executed before npm ci/build)",
+    "finalPreflight": "2026-10-28T13:22:58Z (final identity/artifact-sha256/no-headless check after build, immediately before smoke)",
+    "npmCiRoot": {
+      "start": "2026-10-28T13:21:52Z",
+      "end": "2026-10-28T13:22:09Z",
+      "exitCode": 0,
+      "externalTimeoutSeconds": 560,
+      "toolTimeoutSeconds": 600,
+      "timeoutNote": "shell timeout 560 s wrapped by a 600 s Bash-tool timeout; the task card's 10 min dependency-prep budget was split across two sequential npm ci runs, not executed as a single 600 s command",
+      "externalTimeoutTriggered": false
+    },
+    "npmCiRapier": {
+      "start": "2026-10-28T13:22:13Z",
+      "end": "2026-10-28T13:22:26Z",
+      "exitCode": 0,
+      "externalTimeoutSeconds": 300,
+      "toolTimeoutSeconds": 360,
+      "timeoutNote": "second, sequential npm ci; shell timeout 300 s wrapped by a 360 s Bash-tool timeout",
+      "externalTimeoutTriggered": false
+    },
+    "build": {
+      "start": "2026-10-28T13:22:29Z",
+      "end": "2026-10-28T13:22:34Z",
+      "exitCode": 0,
+      "externalTimeoutSeconds": 300,
+      "toolTimeoutSeconds": 320,
+      "timeoutNote": "shell timeout 300 s wrapped by a 320 s Bash-tool timeout",
+      "externalTimeoutTriggered": false
+    },
+    "smoke": {
+      "start": "2026-10-28T13:23:10Z",
+      "end": "2026-10-28T13:28:36Z",
+      "exitCode": 0,
+      "externalTimeoutSeconds": 1200,
+      "toolTimeoutSeconds": null,
+      "timeoutNote": "shell timeout 1200 s; no explicit Bash-tool timeout was set for this call",
+      "externalTimeoutTriggered": false,
+      "scriptStartedAt": "2026-10-28T13:23:15.757Z",
+      "scriptFinishedAt": "2026-10-28T13:28:36.718Z"
+    },
+    "finalCleanupCheck": "2026-10-28T13:29:50Z"
+  },
+  "gpuAdapters": {
+    "sampledBy": "Win32_VideoController",
+    "adapters": [
+      "GameViewer Virtual Display Adapter (driver 15.6.5.199)",
+      "NVIDIA GeForce RTX 5070 (driver 32.0.16.1714)",
+      "AMD Radeon(TM) Graphics (driver 32.0.21042.62)"
+    ],
+    "utilization": "unknown: per-adapter utilization was not sampled; the WebGL renderer used by this run was SwiftShader software"
+  },
+  "serialPreflight": {
+    "receiverState": "B-STAR-BACKLOG-SMOKE-20261028 was phase=running for this unit. A-PARALLEL-REVIEW-SOURCES-20261028 was also phase=running (reader task, node worker PID 5884, no browser or GPU process observed). Other state entries were idle or imported markers.",
+    "sharedGpuLock": "No existing shared GPU mutex entry or lock file was found under the receiver root, work root, run roots or worktrees. No lock was acquired, taken over or released; the absence of a lock is not a claim of cross-task GPU exclusivity.",
+    "otherGpuWork": "Process scan found no chromium/chrome-headless-shell/headless_shell/Playwright processes before the run. No listener existed on 3000, 4173, 4174, 5173, 5174, 7702, 8080, 8000 or 8757. The Git state was not used as evidence of process exit.",
+    "userBrowsers": "Pre-existing msedge, msedgewebview2 and chrome roots had no --headless, --remote-debugging or Playwright temporary-profile flag; they were left untouched and are outside the task-owned chain.",
+    "priorTaskExitReceipts": "FPS 05e39b6 actual exit was already checked in its own round. MOBA 02e1aa2: ChildProcess PID 85436 reported exitCode=0/exited=true; that round's outer command exited 1 only because the finally block's origin fetch was unreachable (normal return, not a child failure). PID 85436 was later reused by conhost and must never be terminated by the old PID. MOBA's OS parent chain is unknown, its ports were not independently probed, and there was no shared lock. Preflight found no FPS/MOBA browser or preview remnant.",
+    "serialization": "The five entries ran one after another inside the single smoke:backlog command; exactly one Chromium instance existed for the whole command and no parallel self-started browser or preview was used."
+  },
+  "processChain": {
+    "smokeNode": {
+      "pid": 86920,
+      "name": "node.exe",
+      "role": "node tests/backlog-smoke.mjs",
+      "firstSeenUtc": "2026-10-28T13:23:21.297Z",
+      "createdUtc": "2026-10-28T13:23:14.678Z",
+      "lastSeenUtc": "2026-10-28T13:28:36.452Z",
+      "goneByUtc": "2026-10-28T13:28:38.268Z",
+      "parentPid": 111832,
+      "parentName": "cmd.exe",
+      "grandparentPid": 99668,
+      "grandparentName": "node.exe",
+      "note": "parent/grandparent command lines were not sampled and those processes had exited before the final scan"
+    },
+    "browser": {
+      "pid": 49572,
+      "name": "chrome-headless-shell.exe",
+      "parentPid": 86920,
+      "parentName": "node.exe",
+      "createdUtc": "2026-10-28T13:23:17.004Z",
+      "launchedAtUtc": "2026-10-28T13:23:17.133Z",
+      "gracefulCloseStartUtc": "2026-10-28T13:28:36.173Z",
+      "exitedAtUtc": "2026-10-28T13:28:36.701Z",
+      "exitCode": 0,
+      "signal": null,
+      "source": "Playwright DEBUG=pw:browser <process did exit> line plus process-table disappearance"
+    },
+    "preview": {
+      "kind": "in-process node:http server started by startSmokeServer inside the smoke node",
+      "pid": 86920,
+      "loopbackPort": 4009,
+      "separateProcess": false,
+      "note": "no separate preview process existed; the server and the smoke script shared node PID 86920"
+    }
+  },
+  "finalCleanup": {
+    "ownedPidsChecked": [86920, 49572, 111832, 99668],
+    "ownedPidsRemaining": [],
+    "ownBrowsersRemaining": [],
+    "previewPortAfter": {
+      "4009": "not listening"
+    },
+    "browserDisconnected": true,
+    "browserConnected": false,
+    "serverListening": false,
+    "serverAddress": null,
+    "cleanupErrors": [],
+    "taskOwnedGpuProcessesExited": true,
+    "gpuProcessScope": "task-owned only: the Chromium instance launched by this smoke (PID 49572) and the smoke node that used it (PID 86920) exited. Pre-existing non-task GPU work observed in preflight (msedge/msedgewebview2 GPU processes and 24 UnityShaderCompiler processes) was not touched and is not claimed to have exited.",
+    "sharedGpuSlotReleased": "not applicable: no shared lock existed; all task-owned GPU-using processes exited",
+    "crossTaskGpuState": "unknown; no global scheduler or lock evidence"
+  },
+  "actualArgvAudit": {
+    "source": "local Playwright DEBUG=pw:browser <launching> line (full argv not published)",
+    "headless": true,
+    "noSandboxFlag": false,
+    "enableUnsafeSwiftShaderFlag": false,
+    "useAngleSwiftShaderFlag": false,
+    "disableGpuFlag": false,
+    "remoteDebuggingPipe": true,
+    "chromiumSandboxRequested": true,
+    "userDataDir": "run-local temporary Chromium profile (path withheld)"
+  },
+  "environment": {
+    "node": "v24.22.1",
+    "npm": "10.9.8",
+    "playwright": "1.64.1",
+    "chromium": "156.0.8078.4 (revision 1248, chromium headless shell)",
+    "os": "Windows 11"
+  },
+  "unknowns": [
+    "Per-GPU utilization and which physical adapter Chromium could have used were not sampled; the WebGL renderer was SwiftShader software, so this run is not GPU evidence.",
+    "Command lines of smoke-node parent 111832 (cmd.exe) and grandparent 99668 (node.exe) were not sampled; both had exited before the final scan.",
+    "Cross-task GPU exclusivity cannot be proven without a shared lock or scheduler; preflight and post-run scans found no conflicting headless browser or preview process.",
+    "A-PARALLEL-REVIEW-SOURCES-20261028 was running concurrently as a reader worker but no browser/GPU process belonging to it was observed.",
+    "MOBA 02e1aa2's OS parent chain is unknown and its ports were not independently probed; ChildProcess PID 85436 was later reused by conhost, so the old PID is not a live handle and must not be terminated. The exit receipt applies only to that child process.",
+    "Non-task GPU processes seen in preflight (msedge/msedgewebview2 GPU processes, 24 UnityShaderCompiler processes) were left untouched; whether they exited later is unknown and outside this run's cleanup scope."
+  ],
+  "sanitization": "Local absolute paths, the full browser argv and the temporary profile path are withheld from this public copy; renderer strings are unchanged. screenshots/*.png in this directory are public byte-identical copies of this run's raw route-0..4.png, and report.json is a public byte-identical copy of the raw report with no local paths. The full DEBUG browser log, full argv and other local raw state stay in the local ignored output directory and are not published."
+}

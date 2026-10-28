@@ -1,0 +1,118 @@
+{
+  "passed": true,
+  "startedAt": "2026-10-28T13:23:15.757Z",
+  "commit": "8dddac2ce5cd7941a2eb64cceeeb04ef1e17831a",
+  "routes": [
+    {
+      "path": "/",
+      "renderer": {
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "unmaskedVendor": "Google Inc. (Google)"
+      },
+      "class": "software",
+      "colors": 2103,
+      "passed": true
+    },
+    {
+      "path": "/road/",
+      "renderer": {
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "unmaskedVendor": "Google Inc. (Google)"
+      },
+      "class": "software",
+      "colors": 2167,
+      "passed": true
+    },
+    {
+      "path": "/legacy/",
+      "renderer": {
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "unmaskedVendor": "Google Inc. (Google)"
+      },
+      "class": "software",
+      "colors": 1510,
+      "passed": true
+    },
+    {
+      "path": "/rapier/",
+      "renderer": {
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "unmaskedVendor": "Google Inc. (Google)"
+      },
+      "class": "software",
+      "colors": 866,
+      "passed": true
+    },
+    {
+      "path": "/?shot=coast-chase&t=0",
+      "renderer": {
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "unmaskedVendor": "Google Inc. (Google)"
+      },
+      "class": "software",
+      "colors": 2117,
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "startIdentity": {
+    "commit": "8dddac2ce5cd7941a2eb64cceeeb04ef1e17831a",
+    "tree": "ef27a5020b2249899c6b1f7a40003e737eb166ae",
+    "dirty": "",
+    "sha256": {
+      "dist/server/index.js": "8e53e17094d3e91d79055550467bb8362eb6b80a12b8821d30f9afafe4d0b8a6",
+      "dist/client/game.js": "f20656157a4bdbf6cc0496dedb39c45e173fe29bd045ce247c970dfa2d4a5519",
+      "dist/client/road/game.js": "f20656157a4bdbf6cc0496dedb39c45e173fe29bd045ce247c970dfa2d4a5519",
+      "dist/client/legacy/game.js": "2ba14d66548a0a2a202fffd3dd6de625f899919464849cec99cd43a8e0413d01",
+      "dist/client/rapier/comparison.js": "c997da359e8747d4a41bf1dd6936de8d601315b7c3e331965701aceb121d6dc6",
+      "tests/backlog-smoke.mjs": "1ef9c1291045189c1c159bdbd18c56bd39da7a721e5098e5b7600b3e76898a60"
+    }
+  },
+  "serverOrigin": "http://127.0.0.1:4009",
+  "launchOptions": {
+    "headless": true,
+    "chromiumSandbox": true,
+    "ignoreDefaultArgs": [
+      "--enable-unsafe-swiftshader"
+    ],
+    "args": [],
+    "timeout": 30000
+  },
+  "browser": "156.0.8078.4",
+  "endIdentity": {
+    "commit": "8dddac2ce5cd7941a2eb64cceeeb04ef1e17831a",
+    "tree": "ef27a5020b2249899c6b1f7a40003e737eb166ae",
+    "dirty": "",
+    "sha256": {
+      "dist/server/index.js": "8e53e17094d3e91d79055550467bb8362eb6b80a12b8821d30f9afafe4d0b8a6",
+      "dist/client/game.js": "f20656157a4bdbf6cc0496dedb39c45e173fe29bd045ce247c970dfa2d4a5519",
+      "dist/client/road/game.js": "f20656157a4bdbf6cc0496dedb39c45e173fe29bd045ce247c970dfa2d4a5519",
+      "dist/client/legacy/game.js": "2ba14d66548a0a2a202fffd3dd6de625f899919464849cec99cd43a8e0413d01",
+      "dist/client/rapier/comparison.js": "c997da359e8747d4a41bf1dd6936de8d601315b7c3e331965701aceb121d6dc6",
+      "tests/backlog-smoke.mjs": "1ef9c1291045189c1c159bdbd18c56bd39da7a721e5098e5b7600b3e76898a60"
+    }
+  },
+  "cleanupErrors": [],
+  "resourcesAfterClose": {
+    "browserDisconnected": true,
+    "browserConnected": false,
+    "serverListening": false,
+    "serverAddress": null
+  },
+  "finishedAt": "2026-10-28T13:28:36.718Z"
+}

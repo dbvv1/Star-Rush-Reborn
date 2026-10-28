@@ -1,0 +1,56 @@
+{
+  "runId": "20261028T1322Z-8dddac2",
+  "note": "SHA-256 of every published file except this index",
+  "files": [
+    {
+      "path": "logs/browser-excerpt.log",
+      "bytes": 967,
+      "sha256": "11c2ec30131c5939e3c9181515f49e2cbb418ca9f5e8ab19baafaad35cff65e5"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 6433,
+      "sha256": "2a84aded46a320c164e07e17a5536a5c5e477efa1689f6e81a3138ee3b6ae692"
+    },
+    {
+      "path": "process-evidence.json",
+      "bytes": 8617,
+      "sha256": "cac6d001a50d73e6766037faa2cf3761d6192b759c2652e508941a07c5defd95"
+    },
+    {
+      "path": "report.json",
+      "bytes": 4371,
+      "sha256": "6dba468928f06a414bb8b98f547ad72d3162e38c6ce42fd13b8b8f379310a982"
+    },
+    {
+      "path": "report.md",
+      "bytes": 9332,
+      "sha256": "486af40ce7190aa8950275350a260deb1a045b92016b0c00f0ee0ccc73244925"
+    },
+    {
+      "path": "screenshots/coast-chase-shot.png",
+      "bytes": 443049,
+      "sha256": "8dac604902d6b69bdf3d273c1559d9e742b252e8ef08ae616926079c43d84e76"
+    },
+    {
+      "path": "screenshots/default.png",
+      "bytes": 442253,
+      "sha256": "caf7f65a519c9cdec17cdaa8b58764f859cf5600db4ba5f78f6051bd6e333592"
+    },
+    {
+      "path": "screenshots/legacy.png",
+      "bytes": 356045,
+      "sha256": "842a0be6d3899732980fbaf7367bdc464b9041051f266e63d0326ee14bc575e1"
+    },
+    {
+      "path": "screenshots/rapier.png",
+      "bytes": 182042,
+      "sha256": "a0409e0e34fe38540cd312600b471ffe070a7be63062589f8bdac133a6ec822b"
+    },
+    {
+      "path": "screenshots/road.png",
+      "bytes": 451145,
+      "sha256": "b272524992972aa351f62c7c721ace0a5b555c27b83f68194bcff137e7867063"
+    }
+  ]
+}
