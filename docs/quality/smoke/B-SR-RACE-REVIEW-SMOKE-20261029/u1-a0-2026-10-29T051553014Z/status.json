@@ -1,0 +1,75 @@
+{
+  "task": "B-SR-RACE-REVIEW-SMOKE-20261029",
+  "unit": 1,
+  "unitRun": "u1-a0-2026-10-29T051553014Z",
+  "runKind": "unit run; blocked at startup preconditions, no smoke run was started",
+  "asOf": "2026-10-29T05:52:15Z",
+  "status": "blocked",
+  "fixedCandidate": {
+    "commit": "42f8404c07f3ebc3d1fd575dd16ead440231e917",
+    "tree": "5386d5c6d5b6b0a60c6128c38542315c8e9a91d5",
+    "dirty": false,
+    "check": "git rev-parse HEAD / HEAD^{tree} and git status --porcelain -uall in the isolated worktree; clean before this report was written."
+  },
+  "decision": "Blocked. The card's startup hard preconditions are not satisfied, so no build, no browser, no preview server, no backlog smoke and no race-review smoke were started. This unit did not touch source, assets, lockfiles, runners, locks or task files; the only added file is this blocked report.",
+  "serialPreflight": {
+    "checkedUtc": "2026-10-29T05:52:15Z",
+    "priorResidualProcess": "The prior tower unit (B-MOBA-TOWER-STANDARDS-SMOKE-20261029) left two inert Git head.exe -30 text filters from its implement subagent's two 02:35:37Z grep|head -30 pipelines; neither is a browser, preview server, GPU task or ancestor and neither holds a serial slot, and no kill was issued. One matched the prior tower unit's registered process-subtree entry by process identifier and creation time, and the recorded parent of that entry was already exited at census time; the other came from the second invocation and its parent chain was not registered in that subtree. For this Star card that unverified parent chain is part of the blocked missing evidence, not just an attribution note. 两个 head.exe 中仅一个按 PID/创建时点命中已登记子树，且该条目已记录的父进程在普查时已退出；另一个的已记录父链未在该子树登记、父链未核实；该父链核实属于 blocked 缺证，需一并书面接受或取得核实。"
+  },
+  "historyAndExit": {
+    "extraBotSnapshotCalls": "Three read-only bot snapshot calls in the prior MOBA unit's fix/review phase, call_00_2ZLw8rhWunL5tW0963DU1008, call_00_VAhmRP8dVDN8aQzNHWvt4908 and call_00_zLf93UTvT26hVBXosZRg4432, have no captured browser exit code or signal. The original run.mjs smoke and the reviewer full-smoke rerun each hold their own browserExitCode 0 receipt; those receipts are not applied to these three calls.",
+    "priorHeadExeLeftover": "Two Git head.exe -30 filters, each the tail of a separate grep|head -30 pipeline issued by the prior tower unit at 02:35:37Z (0.27 s apart); both hit a 120 s timeout at 02:37:37Z and continued in the background. One matched the prior tower unit's registered process-subtree entry by process identifier and creation time, and the recorded parent of that entry was already exited at census time; the other came from the second call and its recorded parent chain was not registered, so its parent chain is unverified. Both were present in the 03:30Z census and both are absent from the 04:39:43Z census, but neither has an exit receipt, so both exit times and codes are unknown; a census is not an exit receipt. 只有一个 head.exe 按 PID/创建时点命中已登记子树、且该条目已记录的父进程在普查时已退出；来自第二次调用的另一个父链未登记、未核实；该父链核实属于 blocked 缺证。",
+    "sourceFields": [
+      "prior MOBA status.json: serialPreflight.priorResidualProcess, historyAndExit.priorHeadExeLeftover",
+      "prior MOBA history-exit-notes.json: priorHeadExeLeftover.parentChain, priorHeadExeLeftover.identityAtPreflight"
+    ]
+  },
+  "serialScheduling": {
+    "asOf": "2026-10-29T05:52:15Z",
+    "state": "blocked for this Star unit; no local smoke may start",
+    "unclosedExitFacts": "The blocked exit facts are: (1) the three read-only bot snapshot calls lack a captured browser exit code/signal; (2) the two prior head.exe -30 filters have unknown exit times and codes; and (3) the parent chain of the prior head.exe that came from the second invocation was not registered in the tower unit's subtree and is unverified. Items (1) and (2) are exit receipts; item (3) is a separate parent-chain gap and is part of the blocked missing evidence.",
+    "releaseCondition": "Either (a) the receiver records written acceptance of the three bot snapshot calls' missing browser exit receipts and of the two unknown head.exe exits, AND the parent chain of the second-call head.exe is verified or the receiver's written acceptance explicitly covers that parent-chain gap; or (b) real exit receipts are obtained for those processes AND the same parent chain is verified or explicitly covered. A point-in-time process census is not an exit receipt, and a written acceptance limited to the two unknown exits does not cover the parent-chain gap.",
+    "releaseConditionScope": "The serialScheduling.releaseCondition in the prior MOBA status.json and history-exit-notes.json covers only exit receipts (three bot snapshot browser exits plus two head.exe exits). It does not cover this parent-chain gap, so it must not be read as a complete release condition.",
+    "nextSteps": [
+      "Satisfy the release condition above, including the parent-chain verification or an explicit written acceptance that covers it.",
+      "Wait for the MOBA narrow rework to finish and confirm all own browser/preview/parent chains actually exited and the receiver's real serial slot is free.",
+      "Then rerun this unit under a new run id: node tests/backlog-smoke.mjs <run-dir>/backlog first, and only after that browser/preview chain has exited start node tests/race-review-smoke.mjs <run-dir>/review."
+    ]
+  },
+  "sourceEvidence": {
+    "mobaStatus": {
+      "file": "docs/quality/smoke/B-MOBA-COMMAND-ENVELOPE-SMOKE-20261029/status.json",
+      "sha256": "a8158f074f9fb652253ca448fc197d837c25447bc120999479cceb7680c93daf",
+      "fieldsRead": [
+        "serialPreflight.priorResidualProcess",
+        "historyAndExit.priorHeadExeLeftover",
+        "serialScheduling.unclosedExitFacts",
+        "serialScheduling.releaseCondition"
+      ]
+    },
+    "mobaHistoryExitNotes": {
+      "file": "docs/quality/smoke/B-MOBA-COMMAND-ENVELOPE-SMOKE-20261029/history-exit-notes.json",
+      "sha256": "329a947c3aec381ce2d3322c1a2c034c7a513136a86849aff8116c8ceb99e92e",
+      "fieldsRead": [
+        "priorHeadExeLeftover.parentChain",
+        "priorHeadExeLeftover.identityAtPreflight"
+      ]
+    },
+    "readOnly": true,
+    "note": "Both prior-card files were opened read-only and were not modified by this unit; the hashes above are the versions actually read."
+  },
+  "notDone": {
+    "build": "not run",
+    "backlogSmoke": "not run",
+    "raceReviewSmoke": "not run",
+    "browserOrPreview": "not started",
+    "reason": "Startup hard preconditions unresolved; per the card, any unknown fact means blocked."
+  },
+  "notVerified": [
+    "race-review smoke itself, including per-segment times, pre-race best deltas and partial-DNF behavior",
+    "default and legacy non-regression",
+    "academy twice autonomous finish, retry/home flow and small-screen scrolling",
+    "human judgment of feel, visuals and audio"
+  ],
+  "boundary": "Blocked report only. No smoke, CPU suite, build, GPU capture or screenshot was produced; no source, asset, lockfile or runner change; not merged or deployed."
+}
