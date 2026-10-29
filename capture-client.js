@@ -35,7 +35,7 @@ if(captureRuntime.active){
   },
   step:(now,dt)=>{inputStep();frame(now,dt,false);},
   render:()=>{if(!software&&threeBackend.renderer.getContext().isContextLost())throw Error('WebGL context lost');renderCurrentFrame();},
-  snapshot:()=>({renderer:rendererInfo.renderer,rendererInfo,track:activeTrackId,drivingRevision,
+  snapshot:()=>({environment:coastalSpaceEnabled()?'coast-space-v1':'baseline',renderer:rendererInfo.renderer,rendererInfo,track:activeTrackId,drivingRevision,
    viewport:{width,height,dpr:devicePixelRatio||1},quality:settings.quality,sky:software?'not-used':threeBackend.skyReady?'ready':'disabled',
    state,elapsed,player:{s:player.s,l:player.l,yaw:player.yaw,speed:player.speed},
    camera:{...captureView(currentView),fov:options.preset.fov},audio:'disabled',evidence:'deterministic-scene-only'}),

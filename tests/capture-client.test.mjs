@@ -66,3 +66,7 @@ test('invalid shot or unsupported legacy capture is an explicit error, never nor
   const f=await fixture(search,entry);try{assert.equal(f.w.__shot.ready,false);assert(f.w.__shot.error);assert.equal(f.frames.length,0);assert.equal(f.w.document.getElementById('error').hidden,false);}finally{await f.w.happyDOM.close();}
  }
 });
+
+test('environment candidate preserves fixed gameplay and leaves academy disabled',async()=>{
+ for(const shot of ['coast-chase','academy-depth']){const states=[];for(const candidate of [false,true]){const f=await fixture('?shot='+shot+'&t=4'+(candidate?'&environment=coast-space-v1':''));try{const state=await settled(f.w);assert.equal(state.environment,candidate&&shot==='coast-chase'?'coast-space-v1':'baseline');delete state.environment;states.push(state);assert.deepEqual(f.errors,[]);}finally{await f.w.happyDOM.close();}}assert.deepEqual(states[0],states[1]);}
+});

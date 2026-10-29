@@ -97,6 +97,7 @@ function decorateChunk(k,origin,rr){
  }
  // Low plants are a separate deterministic mesh; original props and random draws stay unchanged.
  if(roadDriving&&raceMode==='circuit'&&activeTrackId==='academy-reborn')root.add(trainingVerge(k,origin));
+ if(typeof coastalSpaceEnabled==='function'&&coastalSpaceEnabled())coastalSpaceDecorate(root,k,origin);
  return root;
 }
 let landscapeNode=null,landscapeTrack=null,landscapeSkyReady=false,ambientPetals=[];
@@ -159,7 +160,8 @@ function buildLandscape(){
  if(landscapeNode){landscapeNode.mesh.dispose();landscapeNode=null}
  const c=new Collector(),b=circuitBounds,center=[(b.minX+b.maxX)*.5,0,(b.minZ+b.maxZ)*.5],w=b.maxX-b.minX,d=b.maxZ-b.minZ;
  const coast=trackInfo().biome===0;
- if(coast){for(const [rx,rz,y,col] of [[w*.82,d*.89,-.43,'#eadfce'],[w*.78,d*.85,-.30,'#c7d9b4']]){const verts=[center[0],y,center[2]],normals=[0,1,0],indices=[];for(let j=0;j<=96;j++){const a=j*TAU/96,r=1+.025*Math.sin(a*5);verts.push(center[0]+Math.cos(a)*rx*r,y,center[2]+Math.sin(a)*rz*r);normals.push(0,1,0);if(j)indices.push(0,j,j+1)}c.add(shape(verts,normals,indices),I,col,.02)}}
+ if(typeof coastalSpaceEnabled==='function'&&coastalSpaceEnabled())coastalSpaceTerrain(c);
+ else if(coast){for(const [rx,rz,y,col] of [[w*.82,d*.89,-.43,'#eadfce'],[w*.78,d*.85,-.30,'#c7d9b4']]){const verts=[center[0],y,center[2]],normals=[0,1,0],indices=[];for(let j=0;j<=96;j++){const a=j*TAU/96,r=1+.025*Math.sin(a*5);verts.push(center[0]+Math.cos(a)*rx*r,y,center[2]+Math.sin(a)*rz*r);normals.push(0,1,0);if(j)indices.push(0,j,j+1)}c.add(shape(verts,normals,indices),I,col,.02)}}
  if(roadDriving&&coast)coastalBackdrop(c,center);
  else for(let i=0;i<12;i++){
   const a=i*TAU/12,r=320+(i%3)*36,x=center[0]+Math.cos(a)*r,z=center[2]+Math.sin(a)*r,hh=40+(i%4)*18;
