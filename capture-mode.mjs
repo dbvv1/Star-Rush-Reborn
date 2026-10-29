@@ -2,6 +2,11 @@ import {CAPTURE_PRESETS, CAPTURE_INPUTS, CAPTURE_HZ, CAPTURE_WARMUP_FRAMES} from
 
 export function parseCaptureOptions(search = '') {
   const query = new URLSearchParams(search);
+  if (query.has('feel')) {
+    if(query.getAll('feel').length!==1||query.get('feel')!=='accelerate-brake'||query.getAll('shot').length!==1||query.get('shot')!=='academy-depth')throw Error('Feel replay requires academy-depth and accelerate-brake');
+    for(const key of query.keys())if(!['shot','feel'].includes(key))throw Error('Feel replay has fixed parameters');
+    return Object.freeze({shot:'academy-depth',preset:CAPTURE_PRESETS['academy-depth'],seed:95276,input:'idle',ticks:186,t:3.1,requestedTime:3.1,frames:91,dt:1/60,feel:'accelerate-brake'});
+  }
   if (!query.has('shot')) return null; // Ordinary play ignores capture-only parameters.
   for (const key of ['shot', 'seed', 't', 'input', 'frames']) {
     if (query.getAll(key).length > 1) throw Error('Duplicate capture parameter: ' + key);
@@ -76,7 +81,7 @@ export function readRendererInfo(gl) {
 
 export function exitCaptureUrl(href) {
   const url = new URL(href);
-  for (const key of ['shot', 'seed', 't', 'input', 'frames']) url.searchParams.delete(key);
+  for (const key of ['shot', 'seed', 't', 'input', 'frames', 'feel']) url.searchParams.delete(key);
   return url.href;
 }
 

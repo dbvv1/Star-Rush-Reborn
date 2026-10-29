@@ -15,8 +15,34 @@ if(captureRuntime.active){
  profile={name:'Capture Driver',paint:'#83cde4',car:'Mint Comet'};
  activeTrackId=options.preset.track;raceMode='circuit';eventType='practice';start(false);
  cameraFov=options.preset.fov;lastFrame=0;lastPerfTime=0;
+ // Observation wraps the actual shipped physics only for this explicit tape.
+ const originalPhysics=physics,feel=options.feel?{tape:options.feel,simulationHz:120,recordingFps:60,inputs:[],steps:[],firstVisibleFrame:null,audio:'unknown: disabled, no recording'}:null;
+ let feelTick=0,feelCommand=null;
+ const pose=()=>({s:player.s,l:player.l,yaw:player.yaw,speed:player.speed,vS:player.vS,vL:player.vL,spin:player.spin});
+ if(feel){
+  settings.autoGas=false;settings.sensitivity=1;
+  physics=dt=>{
+   const recordingFrame=captureRuntime.clock.tick-options.ticks;
+   const before=pose(),sampled={gas:input.gas,brake:input.brake,left:input.left,right:input.right,assistedSteer};
+   originalPhysics(dt);
+   if(recordingFrame>0){
+    feelTick++;
+    if(Math.abs(player.l)>1||player.s>30||player.s<0||state!=='running')throw Error('Feel tape left verified clear straight');
+    feel.steps.push({commandId:feelCommand,physicsTick:feelTick,recordingFrame,dt,sampled,before,after:pose()});
+   }
+  };
+ }
  const inputStep=()=>{
   clearKeys();demoDriving=options.input==='road-tour';
+  if(feel){
+   const recordingFrame=captureRuntime.clock.tick-options.ticks;
+   input.gas=recordingFrame>0&&recordingFrame<=60;input.brake=recordingFrame>60;
+   if(recordingFrame===1||recordingFrame===61){
+    feelCommand=recordingFrame===1?'gas-on':'gas-off-brake-on';
+    if(recordingFrame===61&&player.speed<4)throw Error('No moving baseline before braking');
+    feel.inputs.push({id:feelCommand,enteredAfterFrame:recordingFrame-1,inputFrame:recordingFrame,targetPhysicsTick:feelTick+1,gas:input.gas,brake:input.brake,before:pose()});
+   }
+  }
   if(options.input==='accelerate-brake'){
    const t=gameClock.now()/1000;
    input.gas=t>=3.05&&t<7;input.brake=t>=7&&t<9;
@@ -37,6 +63,7 @@ if(captureRuntime.active){
   render:()=>{if(!software&&threeBackend.renderer.getContext().isContextLost())throw Error('WebGL context lost');renderCurrentFrame();},
   snapshot:()=>({renderer:rendererInfo.renderer,rendererInfo,track:activeTrackId,drivingRevision,
    viewport:{width,height,dpr:devicePixelRatio||1},quality:settings.quality,sky:software?'not-used':threeBackend.skyReady?'ready':'disabled',
+   feel:feel?JSON.parse(JSON.stringify({...feel,stage:'sceneFrame and render submitted; no PNG or display present',cameraFrame:captureRuntime.clock.tick-options.ticks})):null,
    state,elapsed,player:{s:player.s,l:player.l,yaw:player.yaw,speed:player.speed},
    camera:{...captureView(currentView),fov:options.preset.fov},audio:'disabled',evidence:'deterministic-scene-only'}),
  });
@@ -48,7 +75,7 @@ if(captureRuntime.active){
  };
  window.__shotExit=()=>window.location.replace(exit.href);
  const dispose=()=>{
-  if(disposed)return;disposed=true;controller.dispose();clearKeys();
+  if(disposed)return;disposed=true;controller.dispose();if(feel)physics=originalPhysics;clearKeys();
   for(const type of blocked)window.removeEventListener(type,block,true);
   window.removeEventListener('pagehide',dispose);delete window.__shotNext;delete window.__shotExit;
   delete window.__shot;style.remove();exit.remove();

@@ -2,9 +2,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
 import {Window} from 'happy-dom';
 
-async function fixture(search='',entry='game.js') {
+async function fixture(search='',entry='game.js',source=null) {
  const w=new Window({url:'https://race.test/'+search,settings:{disableIframePageLoading:true,handleDisabledFileLoadingAsSuccess:true}});
  const errors=[],frames=[];let drawCalls=0;
  w.console.error=(...args)=>errors.push(args.map(String).join(' '));w.console.warn=()=>{};
@@ -18,7 +19,7 @@ async function fixture(search='',entry='game.js') {
  w.localStorage.setItem('star-rush-settings-road-v2',JSON.stringify({fov:80,quality:'low',autoGas:true}));
  const before=Array.from({length:w.localStorage.length},(_,i)=>[w.localStorage.key(i),w.localStorage.getItem(w.localStorage.key(i))]);
  w.document.write(readFileSync('game-shell.html','utf8').replace('<!--GAME_SCRIPT-->','').replace(/<iframe[^>]*id="spotifyPlayer"[^>]*><\/iframe>/g,'<div id="spotifyPlayer"></div>'));
- w.eval(readFileSync('dist/client/'+entry,'utf8'));
+ w.eval(source??readFileSync('dist/client/'+entry,'utf8'));
  return {w,errors,frames,before,draws:()=>drawCalls};
 }
 async function settled(w){
@@ -66,3 +67,50 @@ test('invalid shot or unsupported legacy capture is an explicit error, never nor
   const f=await fixture(search,entry);try{assert.equal(f.w.__shot.ready,false);assert(f.w.__shot.error);assert.equal(f.frames.length,0);assert.equal(f.w.document.getElementById('error').hidden,false);}finally{await f.w.happyDOM.close();}
  }
 });
+
+test('feel tape uses real physics and scene camera; two ticks per recording frame, clear straight braking',async()=>{
+ const runs=[];
+ for(let run=0;run<2;run++){
+  const f=await fixture('?shot=academy-depth&feel=accelerate-brake');
+  try{
+   const first=await settled(f.w);assert.equal(first.feel.steps.length,0);assert.equal(first.player.speed,0);
+   let last=first;const cameras=[];
+   for(let frame=1;frame<=90;frame++){
+    last=JSON.parse(JSON.stringify(await f.w.__shotNext()));
+    assert.equal(last.frame,frame);assert.equal(last.feel.cameraFrame,frame);
+    assert.equal(last.feel.steps.length,frame*2);assert.equal(last.feel.firstVisibleFrame,null);
+    cameras.push(last.camera);
+    if(frame===1)f.w.__shot.feel.steps[0].after.speed=999;
+    if(frame===2)assert.notEqual(last.feel.steps[0].after.speed,999);
+   }
+   const trace=last.feel;
+   assert.deepEqual(trace.inputs.map(i=>[i.id,i.inputFrame,i.targetPhysicsTick]),[['gas-on',1,1],['gas-off-brake-on',61,121]]);
+   for(const [i,s] of trace.steps.entries()){
+    assert.equal(s.physicsTick,i+1);assert.equal(s.recordingFrame,Math.ceil((i+1)/2));assert.equal(s.dt,1/120);
+    assert.equal(s.sampled.gas,i<120);assert.equal(s.sampled.brake,i>=120);assert.equal(s.sampled.assistedSteer,null);
+    assert(Math.abs(s.after.l)<1);assert(s.after.s<30);assert(s.after.s>=s.before.s);
+   }
+   assert(trace.steps[119].after.speed>4);assert(trace.steps[119].after.s-trace.steps[119].before.s>.03);
+   assert(trace.steps[120].after.speed<trace.steps[120].before.speed);
+   assert(trace.steps[179].after.speed<trace.steps[119].after.speed);
+   assert.notDeepEqual(cameras[0],cameras[59]);assert.match(trace.audio,/unknown/);
+   // Published trace is copied, not a writable alias into observations.
+   assert.equal((await f.w.__shotNext()).frame,90);
+   assert.deepEqual(f.errors,[]);runs.push({trace,cameras});
+  }finally{await f.w.happyDOM.close();}
+ }
+ assert.deepEqual(runs[0],runs[1]);
+ console.log('feel endpoint',JSON.stringify({beforeBrake:runs[0].trace.steps[119].after,end:runs[0].trace.steps[179].after}));
+});
+
+ test('unchanged fixed captures match parent shipped client state and camera exactly',async()=>{
+ const baseline=execFileSync('git',['show','e3aa319:dist/client/game.js'],{encoding:'utf8',maxBuffer:8e6});
+ for(const shot of ['academy-depth','coast-chase','coast-full-bend']){
+  const values=[];for(const source of [baseline,null]){
+   const f=await fixture('?shot='+shot+'&t=4&frames=2','game.js',source);try{
+    const first=await settled(f.w),second=JSON.parse(JSON.stringify(await f.w.__shotNext()));
+    for(const v of [first,second])delete v.feel;values.push([first,second]);
+   }finally{await f.w.happyDOM.close();}
+  }assert.deepEqual(values[0],values[1],shot);
+ }
+ });

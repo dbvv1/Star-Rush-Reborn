@@ -60,3 +60,10 @@ test('controller blocks overlapping advancement and reports ready/asset failures
  await assert.rejects(failed.start(),/missing sky/);
  assert.equal(exitCaptureUrl('https://race.test/road?shot=x&t=1&frames=2&seed=0&input=idle&keep=yes#here'),'https://race.test/road?keep=yes#here');
 });
+
+test('feel tape is explicit fixed academy route and exit removes feel selector',()=>{
+ const option=parseCaptureOptions('?shot=academy-depth&feel=accelerate-brake');
+ assert.equal(option.frames,91);assert.equal(option.ticks,186);assert.equal(option.seed,95276);
+ for(const q of ['?feel=accelerate-brake','?shot=coast-chase&feel=accelerate-brake','?shot=academy-depth&feel=bad','?shot=academy-depth&feel=accelerate-brake&t=9','?shot=academy-depth&feel=accelerate-brake&feel=accelerate-brake'])assert.throws(()=>parseCaptureOptions(q));
+ assert.equal(exitCaptureUrl('https://race.test/?shot=academy-depth&feel=accelerate-brake'),'https://race.test/');
+});
