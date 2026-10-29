@@ -10,18 +10,19 @@ import {PNG} from 'pngjs';
 import worker from '../dist/server/index.js';
 import {startSmokeServer} from './smoke-server.mjs';
 import {cleanupSmoke} from './smoke-cleanup.mjs';
-import {smokeLaunchOptions} from './smoke-launch.mjs';
+import {raceReviewSmokeLaunchOptions,readSmokeWebGL} from './race-review-smoke-support.mjs';
+import {classifyRenderer} from '../capture-mode.mjs';
 const directory=resolve(process.argv[2]||'outputs/race-review-smoke-'+Date.now());
 await mkdir(dirname(directory),{recursive:true});await mkdir(directory,{recursive:false});
 const git=(...args)=>execFileSync('git',args,{encoding:'utf8'}).trim();
-const identity=async()=>({commit:git('rev-parse','HEAD'),tree:git('rev-parse','HEAD^{tree}'),dirty:git('status','--porcelain','--untracked-files=no'),sha256:Object.fromEntries(await Promise.all(['race-review.js','game-shell.html','race-features.js','ranking.js','ui.js','build.mjs','dist/server/index.js','dist/client/game.js','dist/client/road/game.js','dist/client/legacy/game.js','dist/client/rapier/comparison.js','tests/race-review-smoke.mjs'].map(async path=>[path,createHash('sha256').update(await readFile(path)).digest('hex')])))});
+const identity=async()=>({commit:git('rev-parse','HEAD'),tree:git('rev-parse','HEAD^{tree}'),dirty:git('status','--porcelain','--untracked-files=no'),sha256:Object.fromEntries(await Promise.all(['race-review.js','game-shell.html','race-features.js','ranking.js','ui.js','build.mjs','dist/server/index.js','dist/client/game.js','dist/client/road/game.js','dist/client/legacy/game.js','dist/client/rapier/comparison.js','tests/race-review-smoke.mjs','tests/race-review-smoke-support.mjs'].map(async path=>[path,createHash('sha256').update(await readFile(path)).digest('hex')])))});
 const report={passed:false,startedAt:new Date().toISOString(),scope:'default regression + academy race-review UI; other tracks CPU-only',stages:[],errors:[],warnings:[]};
 await writeFile(join(directory,'report.json'),JSON.stringify(report,null,2)+'\n');
 let browser,resources,disconnected=false;
 try{
  report.startIdentity=await identity();assert.equal(report.startIdentity.dirty,'','run only the clean fixed commit with its rebuilt artifacts');
  resources=await startSmokeServer(worker);report.origin=resources.origin;
- const options=smokeLaunchOptions();assert.equal(options.chromiumSandbox,true,'this focused smoke requires the established sandboxed browser route');
+ const options=raceReviewSmokeLaunchOptions();assert.equal(options.chromiumSandbox,true,'this focused smoke requires the established sandboxed browser route');
  report.launchOptions=options;report.argumentScope='requested options only; verify full launch command with DEBUG=pw:browser';
  browser=await chromium.launch(options);browser.on('disconnected',()=>{disconnected=true});report.browser=browser.version();
  const context=await browser.newContext({viewport:{width:1280,height:720}}),page=await context.newPage();page.setDefaultTimeout(45000);
@@ -31,9 +32,9 @@ try{
  const rows=()=>page.locator('#raceReview tbody tr').evaluateAll(list=>list.map(row=>[...row.children].map(cell=>cell.textContent)));
  const running=()=>page.waitForFunction(()=>document.querySelector('#welcome').hidden&&document.querySelector('#countdown').hidden&&document.querySelector('#finished').hidden);
  async function canvasEvidence(name){
-  const renderer=await page.locator('#scene').evaluate(canvas=>{const gl=canvas.getContext('webgl2');if(!gl||gl.isContextLost())return null;const ext=gl.getExtension('WEBGL_debug_renderer_info');return {version:gl.getParameter(gl.VERSION),renderer:gl.getParameter(gl.RENDERER),unmaskedRenderer:ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):null};});assert.ok(renderer,'live WebGL2, not Canvas fallback');
+  const renderer=await page.locator('#scene').evaluate(readSmokeWebGL);assert.ok(renderer,'live WebGL2, not Canvas fallback');
   const png=PNG.sync.read(await page.locator('#scene').screenshot({path:join(directory,name+'-canvas.png'),style:'#game > :not(#scene){visibility:hidden!important}'})),colors=new Set();for(let i=0;i<png.data.length;i+=4)colors.add(`${png.data[i]>>3},${png.data[i+1]>>3},${png.data[i+2]>>3}`);assert.ok(colors.size>100,'non-background scene pixels');
-  return {renderer,colors:colors.size};
+  return {renderer,class:classifyRenderer(renderer.unmaskedRenderer||renderer.renderer),colors:colors.size};
  }
  // Shared-shell/default regression must be current, not inherited from an older smoke.
  await page.goto(resources.origin+'/',{waitUntil:'networkidle'});await page.locator('#loading.done').waitFor({state:'attached'});
