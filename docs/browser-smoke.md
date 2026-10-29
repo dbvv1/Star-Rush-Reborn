@@ -40,3 +40,17 @@ STAR_RUSH_SMOKE_CHROMIUM=/usr/bin/chromium npm run smoke
 ### 启动参数核实
 
 Playwright 会自行加入默认 Chromium 参数。仅从项目 `args` 删除 unsafe 标志不能证明最终进程未使用它；脚本同时用 `ignoreDefaultArgs: ['--enable-unsafe-swiftshader']` 精确排除此项，不关闭其余默认参数或 sandbox。报告中的 `args` / `ignoreDefaultArgs` 仅表示请求配置，不冒充完整进程命令。需要核实最终启动行时，按官方调试入口使用 `DEBUG=pw:browser npm run smoke` 并只在本地保留日志，检查真正 launch 行；不从通过截图反推参数安全性。此前只删显式参数的运行可保实际 WebGL 断言与像素证据，不能引用为“最终无 unsafe 参数”通过。
+
+## 比赛复盘候选的最小增量烟测
+
+在已提交、工作树干净且由该源码重建的固定版本上运行：
+
+```sh
+DEBUG=pw:browser node tests/race-review-smoke.mjs outputs/race-review-smoke-unique
+```
+
+脚本只准备了路线，浏览器运行结果以该次 `report.json` 为准；语法检查和 CPU 测试不等于运行通过。仅启动一个 headless Chromium，沿现有 sandbox／软件 WebGL 参数，拒绝 no-sandbox；不调用本机、不创建窗口、不写入生产服务。独占输出目录已存在时拒绝覆盖，固定 commit、tree 与构建 SHA-256 前后必须一致；结束关闭浏览器、loopback 服务与内存数据库。
+
+范围是新构建的默认 `/` 开局、W 输入、暂停／恢复、重开／回大厅回归，以及 `/?raceReview=1` 的训练场赛中目标的定位层级与真实截图、正常自动试驾两次完赛、第一次自然产生的最佳幽灵与第二次分段差、390×568 结算滚动、重开清空，最后接管并刹停、等 AI 正常冲线和 30 秒窗口到期，检查 DNF 仅已完成段。它不注入游戏状态、不修改时钟、不通过 capture 快进、不播写入快照，也不预置存档。正常模拟训练场约 43 秒一局，完整路线至少约 3 分钟；软件渲染慢时墙钟更长，超时是失败而非通过。
+
+三赛道计算与完赛表由 `tests/race-review-client.mjs` 的正常菜单／自动试驾处理器加固定步 CPU 模拟检查（画布桩，无浏览器）；同文件核默认／旧街机开关、capture 加 `raceReview=1` 的快照与隔离存储保持、Rapier 与客户端资源查询隔离。该 CPU 证据不能称为三赛道实玩。上述最小浏览器路线只验训练场，不代替另外两条赛道浏览器体验、人工可读性、驾驶手感或 GPU 品质判断；旧版本 smoke 也不能替代本次共享 UI 的默认回归。

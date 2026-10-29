@@ -11,7 +11,7 @@ function prepareRaceFeatures(){
  if(raceMode==='circuit'&&eventType==='race'&&!net.room){player.l=-1.8;for(let i=0;i<3;i++){const model=cloneCar(i);model.root.tint=rivalPaint[i];raceBots.push({s:-3.8*Math.floor((i+1)/2),l:(i%2?1:-1)*1.9,speed:0,vS:0,vL:0,spin:0,roadSteer:0,yaw:0,color:rivalPaint[i],name:rivalNames[i],node:model.root,finishAt:null,index:i})}}
  if(ghostRun&&settings.ghost&&raceMode==='circuit'&&eventType==='timeTrial'&&!net.room){ghostNode=cloneCar(3).root;ghostNode.tint='#b8e9e6';ghostNode.opacity=.27}else ghostNode=null;
  // Countdown renders before periodic running updates: initialize the new race HUD now.
- updateLocalPosition();if(eventType==='practice'&&!net.room)updateCoach();
+ updateLocalPosition();if(typeof updateRaceReview==='function')updateRaceReview();if(eventType==='practice'&&!net.room)updateCoach();
 }
 function roadDriverControls(p,lane=0,pace=1){
  let curvature=0;for(let d=12;d<=75;d+=7){const k=road(p.s+d).curv;curvature=Math.max(curvature,Math.abs(k/clamp(1-k*lane,.45,1.55)))}
@@ -44,7 +44,7 @@ function updateRaceFeatures(dt){
   if(player.s>=nextLap*CIRCUIT_LENGTH){const previous=lapTimes.reduce((a,b)=>a+b,0);lapTimes.push(raceClock()-previous);$('lapTimeLabel').textContent='上一圈 '+formatTime(lapTimes.at(-1));if(nextLap<trackInfo().laps)announce('LAP '+(nextLap+1),'上一圈 '+formatTime(lapTimes.at(-1)),1.5);nextLap++}
  }
  if(firstFinish!==null&&elapsed-firstFinish>30&&player.s<raceDistance()){raceDNF=true;finish();return}
- featureClock+=dt;if(featureClock>.18){featureClock=0;updateLocalPosition()}
+ featureClock+=dt;if(featureClock>.18){featureClock=0;updateLocalPosition();if(typeof updateRaceReview==='function')updateRaceReview()}
 }
 function updateLocalPosition(){
  if(net.room){$('localPosition').textContent='ONLINE';$('eventLabel').textContent='好友房间 · '+net.room.code;return}
@@ -86,7 +86,7 @@ function drawRaceResults(){
  if(list.length>1)for(let i=0;i<list.length;i++){const row=document.createElement('div');row.className='result-row';const n=document.createElement('span'),t=document.createElement('b');n.textContent=(i+1)+'. '+list[i].name;t.textContent=list[i].time===null?(net.room?.status==='racing'?'比赛中':'未完赛'):formatTime(list[i].time);row.append(n,t);$('resultGrid').appendChild(row)}
 }
 function completeRaceFeatures(){
- demoDriving=false;drawRaceResults();
+ demoDriving=false;drawRaceResults();if(typeof updateRaceReview==='function')updateRaceReview();
  updateLocalPosition();
  if(raceDNF){$('resultDistance').textContent='DNF';$('resultNote').textContent='本局未能在倒计时结束前完赛，可以再挑战一次。';$('submitRun').disabled=true;pendingRun=null}
  $('coach').hidden=true;

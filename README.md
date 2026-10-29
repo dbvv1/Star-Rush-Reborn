@@ -101,3 +101,7 @@ STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build
 [网站 v8 旁置入口](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/rapier/) 已提供 Rapier 汐见海岸 170–740 m 驾驶比较短段，并非完整赛车比赛。打开 `/rapier/`：W 油门、S/空格刹车、A/D 转向、X 倒车、R 复位、Esc 暂停。退出后可回正式公路；不写成绩与存档，默认 `/` 与 `/legacy` 不变。此入口是操控候选，不代表手感优于正式版。
 
 构建前执行 `npm ci` 和 `npm ci --prefix experiments/rapier-road-comparison`，再运行 `npm run build`。
+
+### 比赛复盘旁置入口
+
+打开 `/?raceReview=1`（`/road?raceReview=1` 亦可）：赛前查看当前赛事目标，赛中查看圈数、已完成分段与剩余距离；结算查看每圈三个计时段，以及相对赛前本机最佳幽灵的分段差值。未完赛只显示已完成段，不补造整圈成绩。默认 `/`、旧街机与好友房间不启用此候选；圈数、驾驶、AI 和保存规则不变。
