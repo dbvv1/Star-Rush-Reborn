@@ -1,0 +1,15 @@
+{
+  "model": [
+    {"id":"model-flat-full-throttle","initialKmh":0,"phases":[{"ticks":7200,"input":{"gas":true}}]},
+    {"id":"model-60-coast","initialKmh":60,"phases":[{"ticks":120,"input":{}}]},
+    {"id":"model-60-brake","initialKmh":60,"phases":[{"ticks":120,"input":{"brake":true}}]},
+    {"id":"model-60-turn-release","initialKmh":60,"phases":[{"ticks":120,"input":{"gas":true,"steer":1}},{"ticks":120,"input":{"gas":true,"steer":0}}]},
+    {"id":"model-60-countersteer","initialKmh":60,"phases":[{"ticks":120,"input":{"gas":true,"steer":1}},{"ticks":60,"input":{"gas":true,"steer":-1}},{"ticks":120,"input":{"gas":true}}]}
+  ],
+  "client": [
+    {"id":"client-academy-accelerate","initialKmh":0,"phases":[{"ticks":1200,"input":{"gas":true}}]},
+    {"id":"client-academy-60-coast","initialKmh":60,"phases":[{"ticks":120,"input":{}}]},
+    {"id":"client-academy-60-brake","initialKmh":60,"phases":[{"ticks":120,"input":{"brake":true}}]},
+    {"id":"client-academy-60-turn-release","initialKmh":60,"phases":[{"ticks":120,"input":{"gas":true,"right":true}},{"ticks":120,"input":{"gas":true}}]}
+  ]
+}
