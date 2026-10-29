@@ -1,0 +1,308 @@
+{
+  "kind": "CPU simulation; not screen frames",
+  "candidate": false,
+  "dt": 0.008333333333333333,
+  "hashes": {
+    "road-vehicle-core.js": "ce7e65e47015e6fca77997d45cbb53d0127c26513e535c2ac8fa47cdbb2ae214",
+    "vehicle-core.js": "7eeeefd75cbfddcbb2b36cd3bebdbba46eba4f10af500b95baf4cc43fefc81c0",
+    "handling.js": "5546a5943d2c121af346025959de3fc10c9b90aae2e997c1ca70c56048c125f8",
+    "race.js": "e3ac556ec841da89ef503aca7a73e1af0f9c5885744565b51e6fa5aa5f3aabe2",
+    "circuit.js": "3ffe538eb89f13ca2373d001ce152658e52155db8a172ebe75d0e283f16e4147",
+    "tests/fixtures/feel-inputs.json": "2dafb601dd42bb629b4fd8fa2cbfd64bb127f71c76bfcc7c619fe5d017d5a0c3",
+    "tests/feel-measure.mjs": "36d360b3db7ee1b439009f45c23566582b8a17e305155846a84f414162eb86ad"
+  },
+  "fixture": {
+    "model": [
+      {
+        "id": "model-flat-full-throttle",
+        "initialKmh": 0,
+        "phases": [
+          {
+            "ticks": 7200,
+            "input": {
+              "gas": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "model-60-coast",
+        "initialKmh": 60,
+        "phases": [
+          {
+            "ticks": 120,
+            "input": {}
+          }
+        ]
+      },
+      {
+        "id": "model-60-brake",
+        "initialKmh": 60,
+        "phases": [
+          {
+            "ticks": 120,
+            "input": {
+              "brake": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "model-60-turn-release",
+        "initialKmh": 60,
+        "phases": [
+          {
+            "ticks": 120,
+            "input": {
+              "gas": true,
+              "steer": 1
+            }
+          },
+          {
+            "ticks": 120,
+            "input": {
+              "gas": true,
+              "steer": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "model-60-countersteer",
+        "initialKmh": 60,
+        "phases": [
+          {
+            "ticks": 120,
+            "input": {
+              "gas": true,
+              "steer": 1
+            }
+          },
+          {
+            "ticks": 60,
+            "input": {
+              "gas": true,
+              "steer": -1
+            }
+          },
+          {
+            "ticks": 120,
+            "input": {
+              "gas": true
+            }
+          }
+        ]
+      }
+    ],
+    "client": [
+      {
+        "id": "client-academy-accelerate",
+        "initialKmh": 0,
+        "phases": [
+          {
+            "ticks": 1200,
+            "input": {
+              "gas": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "client-academy-60-coast",
+        "initialKmh": 60,
+        "phases": [
+          {
+            "ticks": 120,
+            "input": {}
+          }
+        ]
+      },
+      {
+        "id": "client-academy-60-brake",
+        "initialKmh": 60,
+        "phases": [
+          {
+            "ticks": 120,
+            "input": {
+              "brake": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "client-academy-60-turn-release",
+        "initialKmh": 60,
+        "phases": [
+          {
+            "ticks": 120,
+            "input": {
+              "gas": true,
+              "right": true
+            }
+          },
+          {
+            "ticks": 120,
+            "input": {
+              "gas": true
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "summaries": [
+    {
+      "id": "model-flat-full-throttle",
+      "ticks": 7200,
+      "endKmh": 99.3394977920443,
+      "maxKmh": 99.3394977920443,
+      "zeroTo100Seconds": null,
+      "firstYawTick": null,
+      "maxAbsSlipDegrees": 0,
+      "atOneSecond": {
+        "kmh": 18.074935247293595,
+        "yawDegrees": 0,
+        "slipDegrees": 0,
+        "s": 2.6028449360191552,
+        "l": 0
+      },
+      "driftSeconds": 0
+    },
+    {
+      "id": "model-60-coast",
+      "ticks": 120,
+      "endKmh": 49.57888471285153,
+      "maxKmh": 60.00000000000001,
+      "zeroTo100Seconds": null,
+      "firstYawTick": null,
+      "maxAbsSlipDegrees": 0,
+      "atOneSecond": {
+        "kmh": 49.57888471285153,
+        "yawDegrees": 0,
+        "slipDegrees": 0,
+        "s": 15.158671359127048,
+        "l": 0
+      },
+      "driftSeconds": 0
+    },
+    {
+      "id": "model-60-brake",
+      "ticks": 120,
+      "endKmh": 25.84168931420386,
+      "maxKmh": 60.00000000000001,
+      "zeroTo100Seconds": null,
+      "firstYawTick": null,
+      "maxAbsSlipDegrees": 0,
+      "atOneSecond": {
+        "kmh": 25.84168931420386,
+        "yawDegrees": 0,
+        "slipDegrees": 0,
+        "s": 11.795138243988754,
+        "l": 0
+      },
+      "driftSeconds": 0
+    },
+    {
+      "id": "model-60-turn-release",
+      "ticks": 240,
+      "endKmh": 72.42106854691363,
+      "maxKmh": 72.42106854691363,
+      "zeroTo100Seconds": null,
+      "firstYawTick": 1,
+      "maxAbsSlipDegrees": 2.7291398741851496,
+      "atOneSecond": {
+        "kmh": 66.49583628177763,
+        "yawDegrees": 19.26971918366793,
+        "slipDegrees": 2.546600611185722,
+        "s": 17.48459152561601,
+        "l": 1.9320440902463583
+      },
+      "driftSeconds": 0
+    },
+    {
+      "id": "model-60-countersteer",
+      "ticks": 300,
+      "endKmh": 75.14888548295549,
+      "maxKmh": 75.14888548295549,
+      "zeroTo100Seconds": null,
+      "firstYawTick": 1,
+      "maxAbsSlipDegrees": 2.7291398741851496,
+      "atOneSecond": {
+        "kmh": 66.49583628177763,
+        "yawDegrees": 19.26971918366793,
+        "slipDegrees": 2.546600611185722,
+        "s": 17.48459152561601,
+        "l": 1.9320440902463583
+      },
+      "driftSeconds": 0
+    },
+    {
+      "id": "client-academy-accelerate",
+      "ticks": 1200,
+      "endKmh": 85.8853315429576,
+      "maxKmh": 85.8853315429576,
+      "zeroTo100Seconds": null,
+      "firstYawTick": 1,
+      "maxAbsSlipDegrees": 7.208155346546067,
+      "atOneSecond": {
+        "kmh": 18.07493524729359,
+        "yawDegrees": 2.1775917972309897,
+        "slipDegrees": 3.975693351829396e-16,
+        "s": 2.601602826055876,
+        "l": 0.050037720820095666
+      },
+      "driftSeconds": 0.075
+    },
+    {
+      "id": "client-academy-60-coast",
+      "ticks": 120,
+      "endKmh": 49.57888471285157,
+      "maxKmh": 60.00000000000001,
+      "zeroTo100Seconds": null,
+      "firstYawTick": 1,
+      "maxAbsSlipDegrees": 6.3611093629270335e-15,
+      "atOneSecond": {
+        "kmh": 49.57888471285157,
+        "yawDegrees": 9.444171337266239,
+        "slipDegrees": -4.770832022195275e-15,
+        "s": 15.01167645773556,
+        "l": 1.3912835235898766
+      },
+      "driftSeconds": 0
+    },
+    {
+      "id": "client-academy-60-brake",
+      "ticks": 120,
+      "endKmh": 25.841689314203776,
+      "maxKmh": 60.00000000000001,
+      "zeroTo100Seconds": null,
+      "firstYawTick": 1,
+      "maxAbsSlipDegrees": 7.951386703658792e-15,
+      "atOneSecond": {
+        "kmh": 25.841689314203776,
+        "yawDegrees": 7.90685566189463,
+        "slipDegrees": 3.1805546814635168e-15,
+        "s": 11.716359343561813,
+        "l": 0.8858916870675625
+      },
+      "driftSeconds": 0
+    },
+    {
+      "id": "client-academy-60-turn-release",
+      "ticks": 240,
+      "endKmh": 54.84805658112051,
+      "maxKmh": 68.02292323119379,
+      "zeroTo100Seconds": null,
+      "firstYawTick": 1,
+      "maxAbsSlipDegrees": 29.676114570498413,
+      "atOneSecond": {
+        "kmh": 66.49583628177749,
+        "yawDegrees": 29.515486883125178,
+        "slipDegrees": 2.5466006111857316,
+        "s": 16.94020022556225,
+        "l": 3.6906966567559656
+      },
+      "driftSeconds": 0.24166666666666667
+    }
+  ]
+}

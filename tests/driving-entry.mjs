@@ -24,8 +24,8 @@ stored.set('star-rush-runs-road-v1',JSON.stringify([{timeMs:123}]));
 stored.set('star-rush-runs-road-v2',JSON.stringify([{id:'road-old',mode:'circuit',track:'coast-reborn',timeMs:9876,score:0,seed:73121,distance:4800,name:'Road'}]));
 stored.set('star-rush-best-reborn-road-v2-coast-reborn',JSON.stringify({time:3,points:[[0,0,0,0,0],[1,10,0,0,0]],splits:[],laps:[3],date:1}));
 const old=new Map([...stored].filter(([key])=>!key.includes('road-v2')));
-async function environment(model,instrumented,initial=stored,storageFails=false){
- const w=new Window({url:'https://race.test'+(model==='road'?'/':'/legacy'),settings:{disableIframePageLoading:true,handleDisabledFileLoadingAsSuccess:true}}),errors=[],requests=[];
+async function environment(model,instrumented,initial=stored,storageFails=false,candidate=false){
+ const w=new Window({url:'https://race.test'+(model==='road'?'/':'/legacy')+(candidate?'?handling=power-tires-v1':''),settings:{disableIframePageLoading:true,handleDisabledFileLoadingAsSuccess:true}}),errors=[],requests=[];
  w.console.error=(...a)=>errors.push(a.join(' '));w.requestAnimationFrame=()=>1;
  w.fetch=async(url)=>{requests.push(String(url));return new Response(JSON.stringify({runs:[]}));};
  const ctx=new Proxy({createLinearGradient:()=>({addColorStop(){}}),measureText:()=>({width:10})},{get:(o,k)=>k in o?o[k]:()=>{}});
@@ -34,7 +34,7 @@ async function environment(model,instrumented,initial=stored,storageFails=false)
  for(const [k,v]of initial)w.localStorage.setItem(k,v);
  if(storageFails){for(const name of ['getItem','setItem'])Object.defineProperty(w.localStorage,name,{value:()=>{throw new Error('storage unavailable')},configurable:true});}
  w.document.write(readFileSync('game-shell.html','utf8').replace('<!--GAME_SCRIPT-->','').replace(/<iframe[^>]*id="spotifyPlayer"[^>]*><\/iframe>/g,'<div id="spotifyPlayer"></div>'));
- const hooks=`window.entryQA={renderingOptions,start,finish,goHome,chooseMode,showBoard,loadBoard,roomRequest,localRuns,ghostKey,getBestGhost,get settings(){return settings},get state(){return state},get mode(){return raceMode},get pending(){return pendingRun}};`;
+ const hooks=`window.entryQA={player,input,physics,get powerTiresCandidate(){return powerTiresCandidate},renderingOptions,start,finish,goHome,chooseMode,showBoard,loadBoard,roomRequest,localRuns,ghostKey,getBestGhost,get settings(){return settings},get state(){return state},get mode(){return raceMode},get pending(){return pendingRun}};`;
  const code=instrumented?(await build({stdin:{contents:clientSource(hooks,model),resolveDir:process.cwd()},bundle:true,write:false,format:'iife',target:'es2022',logLevel:'silent'})).outputFiles[0].text:readFileSync(model==='road'?'dist/client/game.js':'dist/client/legacy/game.js','utf8');
  w.eval(code);if(instrumented)assert.deepEqual(JSON.parse(JSON.stringify(w.entryQA.renderingOptions)),model==='road'?{shading:'lambert',hemisphereIntensity:.7,skyPanorama:process.env.STAR_RUSH_SKY==='baseline'?null:loadSkyAssets().client}:{shading:'toon',hemisphereIntensity:2.2});assert.deepEqual(errors,[]);assert.equal(w.document.querySelector('#error').hidden,true);
  assert.equal(w.document.querySelector('#drivingProfileLink').getAttribute('href'),model==='road'?'/legacy':'/road');
@@ -64,3 +64,11 @@ for(const supported of [{'template-literal':true},clientSyntaxSupport]){
 assert.deepEqual(shaderValues[0],shaderValues[1]);assert(Object.keys(shaderValues[0]).length>100);
 for(const file of ['dist/client/game.js','dist/client/road/game.js','dist/client/legacy/game.js']){const text=readFileSync(file,'utf8');assert.doesNotMatch(text,/[ \t]+$/m,file+' trailing whitespace');assert.doesNotMatch(text,/^ +\t/m,file+' space before tab');}
 console.log('Three ShaderChunk strings byte-identical across literal encoding; generated clients whitespace-clean');
+
+// Candidate never reads/writes baseline personal bests or ghosts; restarting clears transient loads.
+const sport=await environment('road',true,after,false,true);
+assert.equal(sport.q.powerTiresCandidate,true);assert.equal(sport.q.ghostKey(),'star-rush-best-reborn-road-v3-coast-reborn');assert.equal(sport.q.getBestGhost(),null);assert.equal(sport.q.localRuns().length,0);
+sport.q.start();sport.q.player.roadAx=7;sport.q.player.roadAy=4;sport.q.goHome();sport.q.start();assert.equal(sport.q.player.roadAx,0);assert.equal(sport.q.player.roadAy,0);sport.q.finish();assert.equal(sport.q.localRuns().length,1);
+for(const [key,value]of after)assert.equal(sport.w.localStorage.getItem(key),value,'candidate keeps earlier data: '+key);
+await sport.w.happyDOM.close();
+const legacyCandidate=await environment('legacy',true,after,false,true);assert.equal(legacyCandidate.q.powerTiresCandidate,false);await legacyCandidate.w.happyDOM.close();

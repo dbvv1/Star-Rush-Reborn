@@ -1,0 +1,18 @@
+{
+  "before-summary.json": {
+    "rawSha256": "66898228494382251557ec6a1836113cf35da2e96f875c6d228137abdd3cecc8",
+    "rawBytes": 7594
+  },
+  "before-ticks.jsonl.gz": {
+    "rawSha256": "d322366e68ac8e3b2efc3223b6e889fdecdf2746f65a2b20f4cc824934f77cb0",
+    "rawBytes": 2046843
+  },
+  "after-summary.json": {
+    "rawSha256": "a3b404fc0ae707a4caae8c4d78dbbe9e5b435aa5626698004f0ce0d2fc46d946",
+    "rawBytes": 7625
+  },
+  "after-ticks.jsonl.gz": {
+    "rawSha256": "871a8ea8f5f2cdf2b804a0bc523f81be1c2dbc32e57180f17177ad8292f6e061",
+    "rawBytes": 3985940
+  }
+}

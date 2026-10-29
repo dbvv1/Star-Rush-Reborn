@@ -73,7 +73,7 @@ function physics(dt){
  if(controlEdges.small>0||input.small&&!player.prevSmall||!coastFlowCandidate&&input.gas&&!player.prevGas)player.jetInputBuffer=.15;controlEdges.boost=0;controlEdges.small=0;
  if(player.boostInputBuffer>0&&player.nitro>0&&player.nitroTime<=0){useNitro();player.boostInputBuffer=0}
  if(player.jetInputBuffer>0&&player.smallJets>0&&player.jetCooldown<=0){useSmallJet();player.jetInputBuffer=0}
- const movement=VehicleModel.step(player,{steer:typeof assistedSteer==='number'?assistedSteer:rawSteer,gas:input.gas||settings.autoGas&&!input.brake||demoDriving&&!input.brake,brake:input.brake},dt,{sensitivity:settings.sensitivity,arcadeCandidate:coastFlowCandidate,road:roadDriving});
+ const movement=VehicleModel.step(player,{steer:typeof assistedSteer==='number'?assistedSteer:rawSteer,gas:input.gas||settings.autoGas&&!input.brake||demoDriving&&!input.brake,brake:input.brake},dt,{sensitivity:settings.sensitivity,arcadeCandidate:coastFlowCandidate,road:roadDriving,powerTires:powerTiresCandidate});
  steering=player.steering;player.boostActive=player.nitroTime>0;player.boostBlend=mix(player.boostBlend,movement.boost?1:0,1-Math.exp(-dt*7));
  const ds=advanceRoadPose(player,dt,r);
  const wasAir=player.jump>0;if(wasAir||player.vy>0){player.vy-=17*dt;player.jump=Math.max(0,player.jump+player.vy*dt);if(player.jump<=0){player.vy=0;if(wasAir){awardSmallJets(1,'落地喷已就绪');jetSound('land')}}}

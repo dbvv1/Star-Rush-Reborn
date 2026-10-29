@@ -101,3 +101,7 @@ STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build
 [网站 v8 旁置入口](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/rapier/) 已提供 Rapier 汐见海岸 170–740 m 驾驶比较短段，并非完整赛车比赛。打开 `/rapier/`：W 油门、S/空格刹车、A/D 转向、X 倒车、R 复位、Esc 暂停。退出后可回正式公路；不写成绩与存档，默认 `/` 与 `/legacy` 不变。此入口是操控候选，不代表手感优于正式版。
 
 构建前执行 `npm ci` 和 `npm ci --prefix experiments/rapier-road-comparison`，再运行 `npm run build`。
+
+### 动力与轮胎旁置试玩
+
+打开 `/?handling=power-tires-v1`，体验更接近轻型公路跑车量级的加速、松油滑行和动态载荷抓地。HUD 显示 POWER-TIRES V1；成绩与幽灵独立保存，去掉参数返回原驾驶。
