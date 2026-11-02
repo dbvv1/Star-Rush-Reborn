@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {parseCaptureOptions, createCaptureRuntime, createCaptureController, readRendererInfo, classifyRenderer, exitCaptureUrl} from '../capture-mode.mjs';
+import {parseCaptureOptions, createCaptureRuntime, createCaptureController, readRendererInfo, classifyRenderer, exitCaptureUrl, captureOutput} from '../capture-mode.mjs';
 import {CAPTURE_PRESETS} from '../capture-presets.mjs';
 
 test('capture is absent by default and validates only an explicit shot', () => {
@@ -59,4 +59,12 @@ test('controller blocks overlapping advancement and reports ready/asset failures
  const failed=createCaptureController({runtime,step(){},render(){},snapshot:()=>({}),ready:async()=>{throw Error('missing sky');}});
  await assert.rejects(failed.start(),/missing sky/);
  assert.equal(exitCaptureUrl('https://race.test/road?shot=x&t=1&frames=2&seed=0&input=idle&keep=yes#here'),'https://race.test/road?keep=yes#here');
+});
+
+test('capture output reports WebGL2 and exact PNG dimensions or fails',()=>{
+ const gl={isContextLost:()=>false,finish(){}};
+ const canvas={width:1280,height:720,getContext:()=>gl,toDataURL:()=> 'data:image/png;base64,AA=='};
+ assert.deepEqual(captureOutput(canvas,gl),{backend:'webgl2',image:{width:1280,height:720,dpr:1},viewport:{width:1280,height:720,dpr:1},pngDataUrl:'data:image/png;base64,AA=='});
+ canvas.width=317;assert.throws(()=>captureOutput(canvas,gl),/1280x720/);canvas.width=1280;
+ assert.throws(()=>captureOutput(canvas,null),/WebGL2/);gl.isContextLost=()=>true;assert.throws(()=>captureOutput(canvas,gl),/WebGL2/);
 });

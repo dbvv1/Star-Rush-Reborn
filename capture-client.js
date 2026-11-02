@@ -1,6 +1,7 @@
 // Opt-in capture adapter. Ordinary play neither publishes hooks nor changes input.
 if(captureRuntime.active){
  const options=captureRuntime.options;
+ const preview=document.createElement('img');preview.id='capturePreview';preview.alt='当前拍摄帧';preview.style.cssText='position:absolute;inset:0;width:1280px;height:720px';document.getElementById('scene').replaceWith(preview);
  game.style.width=options.preset.width+'px';game.style.height=options.preset.height+'px';resize();
  const style=document.createElement('style');style.id='captureStyle';
  style.textContent='*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}#captureExit{position:absolute;z-index:30;left:16px;bottom:8px;padding:4px 8px;background:#172039;color:#fff;font:11px sans-serif}';
@@ -25,35 +26,37 @@ if(captureRuntime.active){
  inputStep();frame(0,0,false);
  const rendererInfo=readRendererInfo(software?null:threeBackend.renderer.getContext());
  let disposed=false;
- const publishError=error=>{if(disposed)return;window.__shot={ready:false,error:String(error.message||error),shot:options.shot,renderer:rendererInfo.renderer,rendererInfo};fail('拍摄失败：'+(error.message||error));};
+ const publishError=error=>{if(disposed)return;window.__shot={backend:rendererInfo.api,image:{...CAPTURE_SIZE},ready:false,error:String(error.message||error),shot:options.shot,renderer:rendererInfo.renderer,rendererInfo};fail('拍摄失败：'+(error.message||error));};
  const controller=createCaptureController({runtime:captureRuntime,
   ready:async()=>{
-   const status=software?{status:'canvas-fallback'}:await threeBackend.assetsReady;
+   if(software)throw Error('Capture requires WebGL2; Canvas2D fallback is disabled');
+   const status=await threeBackend.assetsReady;
    if(status.status==='failed'||status.status==='disposed')throw Error('Sky asset not ready: '+status.status);
    if(document.fonts?.ready)await document.fonts.ready;
    frame(0,0,false); // Rebuild the scene after decoded sky changes its landscape suffix.
   },
   step:(now,dt)=>{inputStep();frame(now,dt,false);},
-  render:()=>{if(!software&&threeBackend.renderer.getContext().isContextLost())throw Error('WebGL context lost');renderCurrentFrame();},
+  render:()=>{if(threeBackend.renderer.getContext().isContextLost())throw Error('WebGL context lost');renderCurrentFrame();},
   snapshot:()=>({renderer:rendererInfo.renderer,rendererInfo,track:activeTrackId,drivingRevision,
-   viewport:{width,height,dpr:devicePixelRatio||1},quality:settings.quality,sky:software?'not-used':threeBackend.skyReady?'ready':'disabled',
+   ...captureOutput(canvas,threeBackend.renderer.getContext()),quality:settings.quality,sky:software?'not-used':threeBackend.skyReady?'ready':'disabled',
    state,elapsed,player:{s:player.s,l:player.l,yaw:player.yaw,speed:player.speed},
    camera:{...captureView(currentView),fov:options.preset.fov},audio:'disabled',evidence:'deterministic-scene-only'}),
  });
- window.__shot={ready:false,shot:options.shot};
+ const publish=value=>{window.__shot=value;preview.src=value.pngDataUrl;return value;};
+ window.__shot={ready:false,backend:rendererInfo.api,image:{...CAPTURE_SIZE},shot:options.shot};
  window.__shotNext=async()=>{
   if(!window.__shot?.ready)throw Error('Capture frame is not ready');
   window.__shot={...window.__shot,ready:false};
-  try{return window.__shot=await controller.next();}catch(error){publishError(error);throw error;}
+  try{return publish(await controller.next());}catch(error){publishError(error);throw error;}
  };
  window.__shotExit=()=>window.location.replace(exit.href);
  const dispose=()=>{
   if(disposed)return;disposed=true;controller.dispose();clearKeys();
   for(const type of blocked)window.removeEventListener(type,block,true);
   window.removeEventListener('pagehide',dispose);delete window.__shotNext;delete window.__shotExit;
-  delete window.__shot;style.remove();exit.remove();
+  delete window.__shot;style.remove();exit.remove();preview.remove();
  };
  window.addEventListener('pagehide',dispose);
  window.addEventListener('pageshow',event=>{if(event.persisted)window.location.reload();});
- void controller.start().then(value=>{if(!disposed)window.__shot=value;}).catch(publishError);
+ void controller.start().then(value=>{if(!disposed)publish(value);}).catch(publishError);
 }

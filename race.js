@@ -134,7 +134,7 @@ $('endRunBtn').onclick=()=>{if(raceMode==='endless'&&(state==='running'||state==
 // Renderer-independent scene traversal. Three.js handles GPU rendering.
 const floorMeshes=['#a1cddd','#c2d4bc'].map(c=>new Collector().add(rounded(1100,.16,1100,.04),I,c,.02).finish()),floorNode=new Node();
 const drawList=[];function collect(n,p=I,cast=true,tint=null,opacity=1){n.world=mm(p,n.local);const shadow=cast&&n.shadow;const paint=n.tint||tint,alpha=n.opacity??opacity;if(n.mesh)drawList.push({mesh:n.mesh,m:n.world,shadow,tint:paint,opacity:alpha});for(const c of n.children)collect(c,n.world,shadow,paint,alpha)}
-let width=1,height=1;function resize(){width=Math.max(1,canvas.clientWidth);height=Math.max(1,canvas.clientHeight);const dpr=Math.min(devicePixelRatio||1,1.5),w=Math.round(width*dpr),h=Math.round(height*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}}new ResizeObserver(resize).observe(canvas);resize();
+let width=1,height=1;function resize(){width=captureRuntime.active?CAPTURE_SIZE.width:Math.max(1,canvas.clientWidth);height=captureRuntime.active?CAPTURE_SIZE.height:Math.max(1,canvas.clientHeight);const dpr=captureRuntime.active?1:Math.min(devicePixelRatio||1,1.5),w=Math.round(width*dpr),h=Math.round(height*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}}new ResizeObserver(resize).observe(canvas);resize();
 reset(false);
 let currentView=null;
 function renderCurrentFrame(){

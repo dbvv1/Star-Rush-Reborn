@@ -67,11 +67,14 @@ try{
     if(software)assert.equal(classification,'software','software launch must not be labelled GPU');
     const stem=`${shot}-${classification}-run${run+1}-${String(frame).padStart(5,'0')}`;
     assert.equal(await page.locator('#error').isVisible(),false,'visible game error');
-    const sceneBytes=await page.locator('#scene').screenshot({path:join(directory,stem+'-scene.png'),style:'#game > :not(#scene), #captureExit {visibility:hidden!important}'});
+    assert.equal(metadata.backend,'webgl2');assert.match(metadata.pngDataUrl,/^data:image\/png;base64,/);
+    const sceneBytes=Buffer.from(metadata.pngDataUrl.split(',')[1],'base64');
+    await writeFile(join(directory,stem+'-scene.png'),sceneBytes);
     const scene=PNG.sync.read(sceneBytes),colors=new Map();
+    assert.equal(scene.width,1280);assert.equal(scene.height,720);
     for(let i=0;i<scene.data.length;i+=4){const key=`${scene.data[i]>>3},${scene.data[i+1]>>3},${scene.data[i+2]>>3}`;colors.set(key,(colors.get(key)||0)+1);}
     assert(colors.size>100&&Math.max(...colors.values())/(scene.width*scene.height)<.99,'scene must contain non-background pixels, not only a HUD');
-    const bytes=await page.screenshot({path:join(directory,stem+'.png'),animations:'disabled'});
+    const bytes=sceneBytes;await writeFile(join(directory,stem+'.png'),bytes);
     const png=PNG.sync.read(bytes),hash=createHash('sha256').update(png.data).digest('hex');
     const record={...metadata,classification,hardwareEvidence:hardwareVerified?evidence:null,file:stem+'.png',sceneFile:stem+'-scene.png',scenePixelSha256:createHash('sha256').update(scene.data).digest('hex'),pixelSha256:hash};
     await writeFile(join(directory,stem+'.json'),JSON.stringify(record,null,2)+'\n');captured.push(record);

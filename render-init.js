@@ -5,6 +5,7 @@ import {createThreeBackend} from './render-three.js';
 export function initializeRendering(canvas, options={}, createBackend=createThreeBackend){
  const threeBackend=createBackend(canvas,options);
  if(threeBackend)return {canvas,threeBackend,software:false,softwareContext:null};
+ if(options.capture)throw new Error('Capture requires WebGL2; Canvas2D fallback is disabled');
  const context2d=element=>{try{return element.getContext('2d')}catch{return null}};
  let softwareContext=context2d(canvas);
  if(!softwareContext){

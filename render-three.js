@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 import {createSkyPanorama} from './sky-panorama.js';
-export function createThreeBackend(canvas,{shading='toon',hemisphereIntensity=2.2,skyPanorama=null}={}){
+export function createThreeBackend(canvas,{shading='toon',hemisphereIntensity=2.2,skyPanorama=null,capture=false}={}){
  if(!['toon','lambert'].includes(shading))throw new Error('Unknown shading model: '+shading);
  if(!Number.isFinite(hemisphereIntensity)||hemisphereIntensity<0)throw new Error('Invalid hemisphere intensity');
  let renderer,phase='context';
  try{
-  const context=canvas.getContext('webgl2',{antialias:true,alpha:false});
+  const context=canvas.getContext('webgl2',{antialias:true,alpha:false,...(capture?{preserveDrawingBuffer:true}:{})});
   if(!context){console.warn('[Star Rush WebGL] webgl2 context unavailable; returning null for fallback handling');return null}
-  phase='renderer';renderer=new THREE.WebGLRenderer({canvas,context,antialias:true,alpha:false,powerPreference:'default'});
+  phase='renderer';renderer=new THREE.WebGLRenderer({canvas,context,antialias:true,alpha:false,powerPreference:'default',preserveDrawingBuffer:capture});
  }catch(e){console.warn('[Star Rush WebGL] '+phase+' initialization failed; returning null for fallback handling:',e?.message||String(e));return null}
- renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+ renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.setPixelRatio(capture?1:Math.min(devicePixelRatio||1,1.5));
  const scene=new THREE.Scene();scene.fog=new THREE.Fog('#cbddec',125,460);
  const camera=new THREE.PerspectiveCamera(62,1,.12,850),hemi=new THREE.HemisphereLight('#e7f4ff','#a08ba5',hemisphereIntensity),sun=new THREE.DirectionalLight('#fff0de',2.4);sun.position.set(-30,60,25);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-55,right:55,top:45,bottom:-45,near:1,far:160});sun.shadow.bias=-.0004;scene.add(hemi,sun,sun.target);
  const tones=shading==='toon'?new THREE.DataTexture(new Uint8Array([95,145,195,245]),4,1,THREE.RedFormat):null;if(tones){tones.minFilter=THREE.NearestFilter;tones.magFilter=THREE.NearestFilter;tones.needsUpdate=true;}
@@ -28,7 +28,8 @@ export function createThreeBackend(canvas,{shading='toon',hemisphereIntensity=2.
  }
  function render(list,view,width,height,fov,options={},now=performance.now()){
   if(lastFrame){const frame=now-lastFrame;if(frame<100)frameAverage+=(frame-frameAverage)*.035}lastFrame=now;if(options.quality==='auto'){if(frameAverage>23){slowFrames++;fastFrames=0}else if(frameAverage<16.9){fastFrames++;slowFrames=0}else {slowFrames=0;fastFrames=0}if(slowFrames>90&&autoTier>0){autoTier--;slowFrames=0}if(fastFrames>360&&autoTier<2){autoTier++;fastFrames=0}}const quality=options.quality==='auto'?tiers[autoTier]:options.quality;
-  const scale=quality==='low'?1:quality==='medium'?1.2:Math.min(devicePixelRatio||1,1.5);if(scale!==lastScale){renderer.setPixelRatio(scale);lastScale=scale}
+  if(capture){width=1280;height=720;}
+  const scale=capture?1:quality==='low'?1:quality==='medium'?1.2:Math.min(devicePixelRatio||1,1.5);if(scale!==lastScale){renderer.setPixelRatio(scale);lastScale=scale}
   if(width!==lastW||height!==lastH){renderer.setSize(width,height,false);lastW=width;lastH=height}camera.aspect=width/height;camera.fov=fov;camera.updateProjectionMatrix();camera.position.fromArray(view.eye);camera.lookAt(new THREE.Vector3(...view.target));sky.position.copy(camera.position);panorama?.update(camera);sky.visible=!panorama?.active;
   const desired=new Map();for(const d of list){if(!d.mesh.sourceIndices.length)continue;const g=geometry(d.mesh,d.tint),opacity=d.opacity??1,key=g.uuid+':'+d.shadow+':'+opacity;let group=desired.get(key);if(!group){group={geometry:g,shadow:d.shadow,opacity,items:[]};desired.set(key,group)}group.items.push(d)}
   for(const b of batches.values())b.visible=false;
