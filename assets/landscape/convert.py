@@ -48,5 +48,5 @@ plant = convert("plant_bushDetailed")
     "// Geometry only; the game chooses placement and muted coast colors.\n"
     "const coastalRockData=" + json.dumps(result, separators=(",", ":")) + ";\n"
     "// Low road-side foliage; original coast array remains unchanged.\n"
-    "const trainingVergeData=" + json.dumps(plant, separators=(",", ":")) + ";\n")
+    "const trainingVergeData=" + json.dumps(plant, separators=(",", ":")) + ";\n", encoding="utf-8", newline="\n")
 print("Coastal rock triangles:", [len(x["i"]) // 3 for x in result])

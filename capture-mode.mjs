@@ -116,3 +116,13 @@ export function createCaptureController({runtime, step, render, snapshot, ready 
     dispose() { disposed = true; published = null; },
   };
 }
+
+export const CAPTURE_SIZE = Object.freeze({width:1280,height:720,dpr:1});
+export function captureOutput(canvas,gl){
+ if(!gl||canvas.getContext('webgl2')!==gl||gl.isContextLost())throw Error('Capture requires an active WebGL2 context; Canvas2D fallback is disabled');
+ if(canvas.width!==CAPTURE_SIZE.width||canvas.height!==CAPTURE_SIZE.height)throw Error('Capture buffer must be 1280x720');
+ gl.finish();
+ const pngDataUrl=canvas.toDataURL('image/png');
+ if(!pngDataUrl.startsWith('data:image/png;base64,'))throw Error('Capture PNG encoding failed');
+ return {backend:'webgl2',image:{...CAPTURE_SIZE},viewport:{...CAPTURE_SIZE},pngDataUrl};
+}

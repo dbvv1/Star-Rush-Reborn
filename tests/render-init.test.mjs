@@ -37,3 +37,8 @@ for(const options of [{shading:'toon',hemisphereIntensity:2.2},{shading:'lambert
  });
 }
 test('unexpected backend initialization exception returns the default Canvas renderer',()=>{const context={};const canvas={getContext:()=>context};const result=initializeRendering(canvas,{},()=>{throw Error('synthetic backend init')});assert.equal(result.software,true);assert.equal(result.softwareContext,context);});
+
+test('capture stops before Canvas2D fallback when WebGL2 is unavailable',()=>{
+ const canvas={getContext(){throw Error('must not request Canvas2D');},cloneNode(){throw Error('must not replace capture target');}};
+ assert.throws(()=>initializeRendering(canvas,{capture:true},()=>null),/Capture requires WebGL2/);
+});

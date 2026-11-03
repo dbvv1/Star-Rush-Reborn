@@ -4,7 +4,7 @@
 
 ## 命名机位
 
-统一 1280×720、DPR 1、高画质、原 `road-v2`、固定薄荷涂装、练习模式、无幽灵；保留原 HUD 与路线提示。表里的 `t` 从点击开始计，包含原 3.05 秒倒计时。
+统一 1280×720、DPR 1、高画质、原 `road-v2`、固定薄荷涂装、练习模式、无幽灵；保留页面上的 HUD 与路线提示；导出的 PNG 仅含 WebGL 场景，不含 DOM HUD。表里的 `t` 从点击开始计，包含原 3.05 秒倒计时。
 
 | 名称 | 原赛道／时间／种子 | 相机 | 用途 |
 |---|---|---|---|
@@ -28,7 +28,7 @@
 - `frames`：1–600 帧，整个序列不得超过 120 秒。第一帧是 `t`，之后每次确认推进 1/60 秒。
 - 缺省值来自机位表；空值、非法机位／输入、重复参数、非有限或越界数值会显示错误，不悄悄退回普通比赛。
 
-主循环使用同一个时钟：正常为真实时间；拍摄为整数 tick 虚拟时间。每个 60 Hz presentation tick 调用原 120 Hz physics；等待网络、后台节流、截图耗时不增加模拟时间。预热只重复绘制已准备好的场景 **12 次，不推进车辆、粒子或相机阻尼**。天空贴图完成解码后才准备拍摄；失败会报错，不拿加载占位与成功贴图混做前后对照。Canvas fallback 如实标软件，不作为 Three 灯光基线。
+主循环使用同一个时钟：正常为真实时间；拍摄为整数 tick 虚拟时间。每个 60 Hz presentation tick 调用原 120 Hz physics；等待网络、后台节流、截图耗时不增加模拟时间。预热只重复绘制已准备好的场景 **12 次，不推进车辆、粒子或相机阻尼**。天空贴图完成解码后才准备拍摄；失败会报错，不拿加载占位与成功贴图混做前后对照。拍摄没有 WebGL2 时直接报错，不进入 Canvas fallback；普通游玩仍保留原回退。
 
 完成时 `window.__shot.ready === true`，包含原始 renderer、分类、机位／车辆状态、时钟、天空、分辨率与范围。序列脚本截取后调用 `await window.__shotNext()`；`frame` 从 0 递增，末帧 `done: true`，再次调用不会超前。API 不在正常模式中存在。
 
@@ -51,7 +51,7 @@ npm run capture -- http://127.0.0.1:PORT outputs/sequence coast-chase --t 24 --f
 
 `outputs/` 父目录须存在，具体输出目录须是新目录，不能复用旧通过结果。脚本默认运行自己的 **sandbox Chromium**；无硬件 GPU 可显式加 `--software`（SwiftShader），需要有窗口加 `--headful`。已装 Chromium 可用绝对路径环境变量 `STAR_RUSH_CAPTURE_CHROMIUM` 指定。脚本不自动换浏览器、关闭 sandbox 或恢复旧会话；启动被拒只记录失败。
 
-每帧输出整页 PNG、仅场景 PNG、JSON；报告记录实际浏览器、请求参数、源码 commit／dirty 状态和服务端脚本 SHA-256，并要求服务脚本与本地所构建的 road bundle 一致。仅场景像素须非纯背景，HUD 文字不能冒充渲染成功。`--repeat` 创建两次独立上下文，从同一初始条件开局，对照每帧像素哈希与车辆／相机元数据。CSS 动画冻结、locale 与时区固定；跨浏览器、跨驱动、跨系统字体不保证逐像素一致。
+每帧直接从固定离屏 WebGL 画布导出 PNG、JSON；原 `-scene.png` 文件名保留为同一场景图，不再有整页截图；报告记录实际浏览器、请求参数、源码 commit／dirty 状态和服务端脚本 SHA-256，并要求服务脚本与本地所构建的 road bundle 一致。仅场景像素须非纯背景，HUD 文字不能冒充渲染成功。`--repeat` 创建两次独立上下文，从同一初始条件开局，对照每帧像素哈希与车辆／相机元数据。CSS 动画冻结、locale 与时区固定；跨浏览器、跨驱动、跨系统字体不保证逐像素一致。
 
 文件名只有三类：`software`、`unknown`、`gpu`。**不是 SwiftShader，不等于硬件 GPU。** 原始 `WEBGL_debug_renderer_info` renderer／vendor 和 masked renderer 不改写；无扩展时保留 null，默认 unknown。真 GPU 验证者另保存浏览器 GPU 诊断的独立证据，使用 `--hardware-evidence gpu-evidence.json`：
 
@@ -66,3 +66,9 @@ npm run capture -- http://127.0.0.1:PORT outputs/sequence coast-chase --t 24 --f
 当前源码已有半球光、暖方向光与 PCF 阴影、ACES 色调映射、雾和 Kenney LDR 天空全景；全景不是 `scene.environment`，没有 HDRI 环境照明和屏幕后处理链。本变更没有改变上述灯光或材质。
 
 CPU 测试覆盖解析失败、固定 dt／RNG、重复状态与相机、帧握手、内存隔离、普通／legacy 启动和离页清理。它不等于像素验证。实际浏览器同机位双拍、退出后操作、完整序列与真 GPU 基线仍是采用前的必验项；没有 ready 帧不能记作成功。
+
+## 固定内部 PNG 输出
+
+云端打开 `/road?shot=coast-chase`（其他机位、种子及输入沿上文）。拍摄使用独立画布，内部 1280×720、DPR 1，窗口大小、设备 DPR 与页面缩放不参与绘图尺寸。`window.__shot` 保留 `shot`／`camera`，新增 `pngDataUrl`、`image` 和实际 `backend:'webgl2'`；没有 WebGL2 时 `ready:false`、`error`、`backend:null`，不生成 Canvas2D 替代图。
+
+等 `__shot.ready || __shot.error`，成功时读取 `__shot.pngDataUrl` 保存 PNG；序列仍调用 `await __shotNext()`。`npm run capture` 也消费同一 PNG。普通游玩保持原画质／DPR 和 Canvas 回退。实际 PNG 像素与云端复拍仍须接收验证。

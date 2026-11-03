@@ -25,12 +25,12 @@ test('renderer construction failure is distinguished from context creation',t=>{
 });
 
 // Real scene/material/geometry code with only the GPU renderer stubbed; not visual QA.
-function sceneBackend(options){
+function sceneBackend(options,dpr=1){
  class Renderer {
   constructor(){this.shadowMap={};this.info={render:{calls:0,triangles:0}}}
-  setPixelRatio(){} setSize(){} render(){}
+  setPixelRatio(value){this.ratio=value;} setSize(width,height){this.size=[width,height];} render(){}
  }
- const scope={createSkyPanorama,THREE:{...THREE,WebGLRenderer:Renderer},devicePixelRatio:1,performance};
+ const scope={createSkyPanorama,THREE:{...THREE,WebGLRenderer:Renderer},devicePixelRatio:dpr,performance};
  vm.runInNewContext(readFileSync(new URL('../render-three.js',import.meta.url),'utf8').replace("import * as THREE from 'three';",'').replace("import {createSkyPanorama} from './sky-panorama.js';",'').replace('export function','function'),scope);
  return scope.createThreeBackend({getContext:()=>({})},options);
 }
@@ -66,4 +66,11 @@ test('invalid rendering options fail explicitly before asking for a graphics con
  const canvas={getContext(){throw Error('must not allocate a context')}};
  assert.throws(()=>createThreeBackend(canvas,{shading:'unknown'}),/Unknown shading/);
  for(const hemisphereIntensity of [-1,NaN,Infinity])assert.throws(()=>createThreeBackend(canvas,{hemisphereIntensity}),/Invalid hemisphere/);
+});
+
+test('actual Three backend fixes capture buffer and DPR independently of host and quality settings',()=>{
+ const captured=sceneBackend({capture:true},3),normal=sceneBackend({},3);
+ captured.render([],view,317,233,62,{quality:'high'});assert.deepEqual(captured.renderer.size,[1280,720]);assert.equal(captured.renderer.ratio,1);
+ captured.render([],view,900,500,62,{quality:'medium'});assert.deepEqual(captured.renderer.size,[1280,720]);assert.equal(captured.renderer.ratio,1);
+ normal.render([],view,317,233,62,{quality:'high'});assert.deepEqual(normal.renderer.size,[317,233]);assert.equal(normal.renderer.ratio,1.5);
 });
