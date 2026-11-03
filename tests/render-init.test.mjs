@@ -36,3 +36,4 @@ for(const options of [{shading:'toon',hemisphereIntensity:2.2},{shading:'lambert
   assert.equal(calls,1);assert.equal(result.software,true);assert.equal(result.softwareContext,ctx);assert.equal(result.canvas,canvas);
  });
 }
+test('unexpected backend initialization exception returns the default Canvas renderer',()=>{const context={};const canvas={getContext:()=>context};const result=initializeRendering(canvas,{},()=>{throw Error('synthetic backend init')});assert.equal(result.software,true);assert.equal(result.softwareContext,context);});

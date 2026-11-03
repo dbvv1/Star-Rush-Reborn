@@ -1,0 +1,91 @@
+[
+  {
+    "name": "default",
+    "ticks": 600,
+    "hash": "d899120e012d4ffa8508d451a4829e90e6e6f1048df0d91ef14afc55b8064d2e",
+    "status": {
+      "space": false,
+      "power": false,
+      "ticks": 600,
+      "backend": "canvas2d",
+      "warnings": []
+    },
+    "errors": []
+  },
+  {
+    "name": "space",
+    "ticks": 600,
+    "hash": "d899120e012d4ffa8508d451a4829e90e6e6f1048df0d91ef14afc55b8064d2e",
+    "status": {
+      "space": true,
+      "power": false,
+      "ticks": 600,
+      "backend": "canvas2d",
+      "warnings": [
+        "WebGL2 不可用，已使用默认 Canvas2D 兼容渲染；旁置驾驶仍可试玩。"
+      ]
+    },
+    "errors": []
+  },
+  {
+    "name": "power",
+    "ticks": 600,
+    "hash": "4b11bb95a18ee81e3e4cf50a10da65d0b0034e372adc67d7e13b6c2dfae78dfc",
+    "status": {
+      "space": false,
+      "power": true,
+      "ticks": 600,
+      "backend": "canvas2d",
+      "warnings": [
+        "WebGL2 不可用，已使用默认 Canvas2D 兼容渲染；旁置驾驶仍可试玩。"
+      ]
+    },
+    "errors": []
+  },
+  {
+    "name": "combined",
+    "ticks": 600,
+    "hash": "4b11bb95a18ee81e3e4cf50a10da65d0b0034e372adc67d7e13b6c2dfae78dfc",
+    "status": {
+      "space": true,
+      "power": true,
+      "ticks": 600,
+      "backend": "canvas2d",
+      "warnings": [
+        "WebGL2 不可用，已使用默认 Canvas2D 兼容渲染；旁置驾驶仍可试玩。"
+      ]
+    },
+    "errors": []
+  },
+  {
+    "name": "space-failure",
+    "ticks": 600,
+    "hash": "d899120e012d4ffa8508d451a4829e90e6e6f1048df0d91ef14afc55b8064d2e",
+    "status": {
+      "space": false,
+      "power": false,
+      "ticks": 600,
+      "backend": "canvas2d",
+      "warnings": [
+        "WebGL2 不可用，已使用默认 Canvas2D 兼容渲染；旁置驾驶仍可试玩。",
+        "旁置候选初始化失败，已回退默认场景渲染。"
+      ]
+    },
+    "errors": []
+  },
+  {
+    "name": "power-failure",
+    "ticks": 600,
+    "hash": "d899120e012d4ffa8508d451a4829e90e6e6f1048df0d91ef14afc55b8064d2e",
+    "status": {
+      "space": false,
+      "power": false,
+      "ticks": 600,
+      "backend": "canvas2d",
+      "warnings": [
+        "旁置候选初始化失败，已回退默认驾驶与渲染。"
+      ]
+    },
+    "errors": []
+  }
+]

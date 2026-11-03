@@ -13,7 +13,7 @@ try {
   // The road driving model serves the same simulation logic at both `/` and
   // `/road`; the ambience must still be attached only to the /road entry.
   for (const model of ['legacy', 'road']) {
-    for (const profile of ['off', 'coast-v1']) {
+    for (const profile of ['off']) {
       build(profile, model);
       const worker = (await import(pathToFileURL(process.cwd() + '/dist/server/index.js').href + '?coast=' + model + '-' + profile)).default;
       const roadGame = await (await worker.fetch(new Request('https://test.invalid/road/game.js'), {})).text();
@@ -37,8 +37,10 @@ try {
       }
     }
   }
+  for(const model of ['legacy','road'])assert.throws(()=>build('coast-v1',model),/candidate retired/);
+  assert.equal(Object.keys(selected.assets).length,1,'retired source remains recoverable');
 } finally {
   build('off');
 }
 assert.deepEqual(readFileSync('dist/server/index.js'), baseline, 'default artifact restored exactly');
-console.log('Coast ambience build: off excludes bytes/fetch, candidate serves exact PCM to /road only in both driving models, default restored (not listening).');
+console.log('Coast ambience build: off excludes bytes/fetch, retired candidate rejected in both models, source PCM preserved, default restored (not listening).');

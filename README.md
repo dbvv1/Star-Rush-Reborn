@@ -2,6 +2,13 @@
 
 日系 ACG 风格的原创网页公路竞速：制动入弯、稳定转向、出弯加速，三条闭环赛道，可与 AI 比赛或追逐本机幽灵。旧版漂移喷射、无尽巡游与好友房间保留在菜单的「旧版街机驾驶」。
 
+## 旁置试玩
+
+- [海岸连续道路空间](/road/?environment=coast-space-v1)：汐见海岸的地形、建筑与道路承接。
+- [动力与峰后轮胎](/road/?handling=power-tires-v1)：载荷转移与抓地到侧滑；成绩和幽灵使用独立档案。
+- [空间＋轮胎](/road/?environment=coast-space-v1&handling=power-tires-v1)：两项组合。
+- [Rapier 短段](/rapier/)：保留 170–740 m 的独立比较，不接正式比赛成绩。
+
 ## 运行
 
 需要 Node.js 24 与 Python 3。
@@ -54,15 +61,15 @@ STAR_RUSH_RAIL_SOURCE=procedural npm run build
 STAR_RUSH_CANVAS_HOUSE_ANCHORS=on npm run build
 # 转向牌：baseline（默认原粉）、navy-v1（深蓝）、navy-v2（深蓝加粗）
 STAR_RUSH_SIGNBOARD_VARIANT=navy-v2 npm run build
-# 海岸环境声：off（默认）或 coast-v1（仅 /road 汐见海岸 380–660 m）
-STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build
+# 海岸环境声：仅 off；旧候选源码保留，暂不开放构建
+STAR_RUSH_COAST_AMBIENCE=off npm run build
 ```
 
 ## 素材与来源
 
 - 选卡插画：原创 AI 插画，源图、提示词与处理配方见 [assets/course-art](assets/course-art/README.md)。
 - 护栏碰撞样本：Kenney Impact Sounds（CC0）与本地合成候选，见 [assets/impact-audio](assets/impact-audio/README.md)。
-- 海岸环境声候选：MOSS-SoundEffect v2.0（Apache-2.0；源码 revision 934d6826…；生成结果未自行标为 CC0）生成并处理，默认关闭，仅在 `/road` 汐见海岸 380–660 m 可听；来源、许可、参数与未听验状态见 [assets/coast-ambience](assets/coast-ambience/README.md)。
+- 海岸环境声候选：MOSS-SoundEffect v2.0（Apache-2.0；源码 revision 934d6826…；生成结果未自行标为 CC0）生成并处理，旧构建入口已关闭，源码与原定 `/road` 380–660 m 范围保留；来源、许可、参数与未听验状态见 [assets/coast-ambience](assets/coast-ambience/README.md)。
 - 路边转向牌：原创程序几何与可编辑配色／粗细，见 [assets/signboard](assets/signboard/README.md)。
 - 除上述插画与音频样本外，其余人物、车辆、道路和场景由源码生成。Three.js（MIT）随客户端打包。
 
@@ -78,7 +85,6 @@ STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build
 
 ### 同弯加速带对照
 
-`STAR_RUSH_DRIVING_MODEL=legacy STAR_RUSH_COAST_FLOW=candidate npm run build` 构建海岸开局加速带编排候选；`unset STAR_RUSH_COAST_FLOW; npm run build` 恢复默认。`node tests/coast-flow-preview.mjs` 同时打开两个仅本机地址，选择练习再选择汐见海岸，以正常镜头驾驶；Ctrl+C 关闭。候选同时试验高速转向渐入及 Q／空格主动小喷，最大转弯能力与碰撞不变，尚未选为默认。
 
 ### 驾驶声音对照
 
@@ -94,10 +100,12 @@ STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build
 
 ### 海岸环境声候选
 
-`STAR_RUSH_COAST_AMBIENCE=coast-v1 npm run build` 仅为 `/road` 增加海岸环境声，默认关闭；来源与人工听验限制见 [素材说明](assets/coast-ambience/README.md)。
+旧 `coast-v1` 构建选择已关闭；源资产保留，待听验并腾出候选名额后再开放。来源与人工听验限制见 [素材说明](assets/coast-ambience/README.md)。
 
 ### 旁置同弯试驾
 
 [网站 v8 旁置入口](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/rapier/) 已提供 Rapier 汐见海岸 170–740 m 驾驶比较短段，并非完整赛车比赛。打开 `/rapier/`：W 油门、S/空格刹车、A/D 转向、X 倒车、R 复位、Esc 暂停。退出后可回正式公路；不写成绩与存档，默认 `/` 与 `/legacy` 不变。此入口是操控候选，不代表手感优于正式版。
 
 构建前执行 `npm ci` 和 `npm ci --prefix experiments/rapier-road-comparison`，再运行 `npm run build`。
+
+海岸环境音旧构建候选已停用；默认引擎、轮胎、护栏声音保持原样。

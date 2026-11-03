@@ -24,7 +24,7 @@ function roadDriverControls(p,lane=0,pace=1){
 function stepRoadRival(bot,dt){
  let lane=bot.index%2?1.6:-1.6;
  for(const ch of chunks.values())for(const e of ch.entities){if(e.kind!=='barrier'&&e.kind!=='cone')continue;const s=e.s+(e.ds||0),l=e.l+(e.dl||0),ahead=courseDelta(s,bot.s);if(ahead>0&&ahead<32&&Math.abs(lane-l)<2.1)lane=l>0?-2.8:2.8;}
- RoadVehicleModel.step(bot,roadDriverControls(bot,lane,1-bot.index*.025),dt);
+ RoadVehicleModel.step(bot,roadDriverControls(bot,lane,1-bot.index*.025),dt,{powerTires:powerTiresCandidate});
  advanceRoadPose(bot,dt);
  // Rivals remain non-contact opponents as in the legacy game; this bounds the
  // rendered route at the rail, not a claim of full rival collision simulation.
