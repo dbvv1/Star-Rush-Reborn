@@ -12,7 +12,7 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
 import {chromium} from 'playwright';
 import {startSmokeServer} from './smoke-server.mjs';
-import {smokeLaunchOptions} from './smoke-launch.mjs';
+import {smokeLaunchOptions,assertArgv,restrictCaseContext} from './smoke-launch.mjs';
 import {cleanupSmoke} from './smoke-cleanup.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -187,13 +187,14 @@ async function run(profile, tag) {
   let browser;
   try {
     browser = await chromium.launch(smokeLaunchOptions());
-    const page = await browser.newPage({viewport: {width: 1280, height: 720}});
+    const session=await browser.newBrowserCDPSession();assertArgv((await session.send('Browser.getBrowserCommandLine')).arguments);await session.detach();
+    const page = await browser.newPage({viewport: {width: 1280, height: 720},serviceWorkers:'block'});
     page.setDefaultTimeout(60000);
     page.on('console', m => { if (m.type() === 'error') report.consoleErrors.push(m.text()); });
     page.on('pageerror', e => report.pageErrors.push(String(e)));
     page.on('requestfailed', r => report.requestFailures.push({url: r.url(), error: r.failure()?.errorText}));
     page.on('response', r => { if (r.status() >= 400) report.httpErrors.push({url: r.url(), status: r.status()}); });
-    await page.route('**/*', route => new URL(route.request().url()).origin === resources.origin ? route.continue() : route.abort('blockedbyclient'));
+    await restrictCaseContext(page.context(),resources.origin);
     await page.addInitScript(probe);
     await driveThroughCorner(page, report, tag);
   } finally {

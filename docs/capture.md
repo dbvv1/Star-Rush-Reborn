@@ -49,7 +49,7 @@ npm run capture -- http://127.0.0.1:PORT outputs/academy-depth academy-depth --r
 npm run capture -- http://127.0.0.1:PORT outputs/sequence coast-chase --t 24 --frames 180
 ```
 
-`outputs/` 父目录须存在，具体输出目录须是新目录，不能复用旧通过结果。脚本默认运行自己的 **sandbox Chromium**；无硬件 GPU 可显式加 `--software`（SwiftShader），需要有窗口加 `--headful`。已装 Chromium 可用绝对路径环境变量 `STAR_RUSH_CAPTURE_CHROMIUM` 指定。脚本不自动换浏览器、关闭 sandbox 或恢复旧会话；启动被拒只记录失败。
+`outputs/` 父目录须存在，具体输出目录须是新目录，不能复用旧通过结果。脚本运行独立的云端软件 Chromium：保留 Playwright 默认参数，`chromiumSandbox:false`，强制三项软件渲染参数，详见[启动与访问范围](browser-smoke.md)。`--software` 兼容保留，默认已使用 SwiftShader；`--headful` 只改变窗口模式。可用绝对路径变量 `STAR_RUSH_CAPTURE_CHROMIUM` 指定已安装 Chromium。浏览器仅访问本次已校验的案例源，拒绝重定向、跨源请求和 WebSocket；启动被拒即保留失败，不自动换浏览器或修改外层沙箱。
 
 每帧直接从固定离屏 WebGL 画布导出 PNG、JSON；原 `-scene.png` 文件名保留为同一场景图，不再有整页截图；报告记录实际浏览器、请求参数、源码 commit／dirty 状态和服务端脚本 SHA-256，并要求服务脚本与本地所构建的 road bundle 一致。仅场景像素须非纯背景，HUD 文字不能冒充渲染成功。`--repeat` 创建两次独立上下文，从同一初始条件开局，对照每帧像素哈希与车辆／相机元数据。CSS 动画冻结、locale 与时区固定；跨浏览器、跨驱动、跨系统字体不保证逐像素一致。
 
@@ -59,7 +59,7 @@ npm run capture -- http://127.0.0.1:PORT outputs/sequence coast-chase --t 24 --f
 {"hardwareAccelerated": true, "renderer": "与当次原始 renderer 完全一致", "source": "本机浏览器 GPU 诊断截图或报告标识"}
 ```
 
-脚本要求证据 renderer 精确匹配；已识别的软件渲染不能被该标记改成 GPU。此文件必须来自实际核验，不能由“非软件字符串”推断。相同分类、同一浏览器／驱动、同版本／种子／时间／输入／机位才能比较；定灯光和材质以真 GPU 图为准。商业游戏参照图只留本地。
+脚本要求证据 renderer 精确匹配；已识别的软件渲染不能被该标记改成 GPU。此文件必须来自实际核验，不能由“非软件字符串”推断。相同分类、同一浏览器／驱动、同版本／种子／时间／输入／机位才能比较。软件 WebGL2 图可用于本轮同机位视觉对照；硬件效果与性能需另验，不能把软件分类改成 GPU。商业游戏参照图只留本地。
 
 ## 当前范围
 

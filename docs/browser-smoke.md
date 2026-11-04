@@ -1,6 +1,6 @@
 # 浏览器烟测
 
-需要 Node.js 24、Python 3，以及能够运行沙箱 Chromium 的环境：
+需要 Node.js 24、Python 3、已安装的 Playwright Chromium，以及允许该浏览器运行的隔离执行环境：
 
 ```sh
 npm ci
@@ -8,17 +8,9 @@ npx playwright install chromium
 npm run smoke
 ```
 
-Linux 如缺系统浏览器依赖，由该环境管理员按 Playwright 官方依赖清单安装。正常环境保留 sandbox；Dot 自有隔离云容器确实无法启动 Chromium 时，按 brief 约定处理，或沿 a1dbv local-jobs 在真实浏览器验收。浏览器包下载失败不是 sandbox 问题。无 GPU 时脚本固定使用 `--use-angle=swiftshader`，并显式开启 Chromium sandbox；不重试其他浏览器，不自动切换 Canvas，不把缺浏览器或启动失败标成通过。
+本轮云端软件 WebGL2 配置保留全部 Playwright 默认参数，设 `chromiumSandbox:false`，并要求实际 Chromium argv 同时包含 `--no-sandbox`、`--enable-unsafe-swiftshader`、`--use-angle=swiftshader`。这是专用于三个案例自有页面的浏览器配置，不修改外层执行沙箱，不适合作为通用网页浏览配置。只允许 HTTP loopback 预览或 `smoke-launch.mjs` 列出的三个 HTTPS 网站；每次上下文进一步限制为本次预览的单一源，拒绝重定向、跨源请求和 WebSocket，禁用 service worker。
 
-## 已安装 Chromium 与隔离云容器
-
-默认使用 Playwright 对应版本的浏览器且开启 sandbox，不自动更换或重试。也可显式选择当前执行环境已安装的 Chromium（绝对路径），版本会记入报告；这不保证任意 Chromium 与 Playwright 版本兼容，仍须完整通过原断言：
-
-```sh
-STAR_RUSH_SMOKE_CHROMIUM=/usr/bin/chromium npm run smoke
-```
-
-仅在已有明确授权的 Dot 自有隔离云容器中，确认是 Chromium sandbox 启动问题时，可显式设置 `STAR_RUSH_SMOKE_CLOUD_NO_SANDBOX=1`。该选项默认关闭，不适用于用户电脑，不改变系统设置，不得用于绕过平台权限拒绝；下载失败、socket EPERM 等不能自动归因于 Chromium sandbox。报告如实记录实际 sandbox 配置及可执行文件。其他环境仍使用默认安全配置。
+默认用 Playwright 对应浏览器；也可用 `STAR_RUSH_SMOKE_CHROMIUM=/usr/bin/chromium` 指定当前环境已安装的绝对路径。旧 `STAR_RUSH_SMOKE_CLOUD_NO_SANDBOX=1` 兼容保留，不再是开启本轮配置的必要条件。启动失败不会换浏览器、增加绕过参数或切换 Canvas；遇到 `socket() EPERM`、证书错误或访问拒绝，保留失败并停止相应浏览器动作。
 
 `npm run smoke` 首先运行现有生产构建，然后把 `dist/server/index.js` Worker 放到 `127.0.0.1` 随机空闲端口。SQLite 只在内存中应用项目迁移，不连接生产 D1，不创建用户账户或凭据、不上传成绩；浏览器只允许访问这个测试源。结束时关闭浏览器、服务器和数据库。
 
@@ -39,4 +31,6 @@ STAR_RUSH_SMOKE_CHROMIUM=/usr/bin/chromium npm run smoke
 
 ### 启动参数核实
 
-Playwright 会自行加入默认 Chromium 参数。仅从项目 `args` 删除 unsafe 标志不能证明最终进程未使用它；脚本同时用 `ignoreDefaultArgs: ['--enable-unsafe-swiftshader']` 精确排除此项，不关闭其余默认参数或 sandbox。报告中的 `args` / `ignoreDefaultArgs` 仅表示请求配置，不冒充完整进程命令。需要核实最终启动行时，按官方调试入口使用 `DEBUG=pw:browser npm run smoke` 并只在本地保留日志，检查真正 launch 行；不从通过截图反推参数安全性。此前只删显式参数的运行可保实际 WebGL 断言与像素证据，不能引用为“最终无 unsafe 参数”通过。
+Playwright 默认参数不再过滤。smoke 与 capture 通过 CDP `Browser.getBrowserCommandLine` 检查真实 argv 的三项必要参数，报告与原始日志区分请求配置和实际验证。`DEBUG=pw:browser` 原始日志仅留本地，避免公开可执行路径和调试地址。软件 WebGL2 可以验证功能及同机位图，不记作硬件 GPU 验收。
+
+2026-11-04 的一次云端 Star 实拍尝试在导航前失败：实际启动行已含三项参数，Chromium 的进程单例 socket 返回 `EPERM`，随后 `SIGABRT`；Node 非零退出、预览已关闭，没有 PNG。此项是执行环境限制，不是 WebGL2 或像素通过证据。未重试或修改外层沙箱。

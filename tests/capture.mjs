@@ -1,18 +1,19 @@
-// Use a dedicated sandboxed Chromium. Never attach to a shared desktop browser.
+// Use a dedicated case-only Chromium inside the execution sandbox. Never attach to a shared desktop browser.
 import assert from 'node:assert/strict';
 import {mkdir, writeFile, readFile} from 'node:fs/promises';
 import {resolve, isAbsolute, join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {chromium} from 'playwright';
+import {smokeLaunchOptions,requiredBrowserArgs,assertArgv,assertCaseUrl,restrictCaseContext} from './smoke-launch.mjs';
 import {PNG} from 'pngjs';
 import {CAPTURE_PRESETS} from '../capture-presets.mjs';
 import {parseCaptureOptions, classifyRenderer} from '../capture-mode.mjs';
 
 const [base, output, shot='coast-chase', ...args]=process.argv.slice(2);
 if(!base||!output)throw Error('Usage: npm run capture -- <local-base-url> <new-output-directory> [shot] [--repeat] [--software] [--headful] [--seed n] [--t seconds] [--frames n] [--input name] [--hardware-evidence file]');
-const url=new URL(base);url.searchParams.set('shot',shot);
-let repeat=false,software=false,headful=false,hardwareEvidencePath=null;
+const url=assertCaseUrl(base);url.searchParams.set('shot',shot);
+let repeat=false,software=true,headful=false,hardwareEvidencePath=null;
 for(let index=0;index<args.length;index++){
  const arg=args[index];
  if(arg==='--repeat')repeat=true;
@@ -29,9 +30,8 @@ if(evidence&&(!evidence.source||!evidence.renderer||evidence.hardwareAccelerated
 const directory=resolve(output);await mkdir(directory,{recursive:false}); // Never reuse a stale passing receipt.
 const executablePath=process.env.STAR_RUSH_CAPTURE_CHROMIUM;
 if(executablePath&&!isAbsolute(executablePath))throw Error('STAR_RUSH_CAPTURE_CHROMIUM must be absolute');
-const launchOptions={headless:!headful,chromiumSandbox:true,ignoreDefaultArgs:['--enable-unsafe-swiftshader'],
- args:[...(software?['--use-angle=swiftshader']:[]),'--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows'],
- ...(executablePath?{executablePath}:{}),timeout:30000};
+const launchOptions={...smokeLaunchOptions({...process.env,STAR_RUSH_SMOKE_CHROMIUM:executablePath}),headless:!headful,
+ args:[...requiredBrowserArgs,'--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows']};
 const report={passed:false,scope:'deterministic-scene-only',shot,options:{...options,preset:undefined},launchOptions,runs:[],errors:[]};
 try{report.commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();report.dirty=Boolean(execFileSync('git',['status','--porcelain','--untracked-files=no'],{encoding:'utf8'}).trim());}catch{report.commit=null;}
 let browser;
@@ -39,8 +39,9 @@ const save=()=>writeFile(join(directory,'report.json'),JSON.stringify(report,nul
 await save();
 try{
  browser=await chromium.launch(launchOptions);report.browser=browser.version();
+ const session=await browser.newBrowserCDPSession();const argv=(await session.send('Browser.getBrowserCommandLine')).arguments;assertArgv(argv,{headless:!headful});await session.detach();report.actualRequiredArgs=requiredBrowserArgs.filter(arg=>argv.includes(arg));
  for(let run=0;run<(repeat?2:1);run++){
-  const context=await browser.newContext({viewport:{width:preset.width,height:preset.height},deviceScaleFactor:1,locale:'en-US',timezoneId:'UTC'});
+  const context=await browser.newContext({viewport:{width:preset.width,height:preset.height},deviceScaleFactor:1,locale:'en-US',timezoneId:'UTC',serviceWorkers:'block'});
   try{
    const page=await context.newPage(),failures=[];
    page.on('pageerror',error=>failures.push(String(error)));
@@ -48,10 +49,11 @@ try{
    page.on('requestfailed',request=>failures.push(request.url()+': '+request.failure()?.errorText));
    page.on('response',response=>{if(response.status()>=400)failures.push(response.status()+' '+response.url());});
    // Preserve the application's assets, but refuse unrelated third-party requests.
-   await page.route('**/*',route=>new URL(route.request().url()).origin===url.origin?route.continue():route.abort('blockedbyclient'));
+   await restrictCaseContext(context,url.href);
    await page.goto(url.href,{waitUntil:'domcontentloaded'});
    const script=await page.locator('script[src]').last().getAttribute('src');
-   const served=await page.request.get(new URL(script,url).href);assert(served.ok(),'game bundle must load');
+   const bundleUrl=assertCaseUrl(new URL(script,url).href);assert.equal(bundleUrl.origin,url.origin);
+   const served=await page.request.get(bundleUrl.href,{maxRedirects:0});assert.equal(served.status(),200,'game bundle must load without redirects');
    const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
    report.servedBundleSha256=hash(await served.body());
    assert.equal(report.servedBundleSha256,hash(await readFile(new URL('../dist/client/road/game.js',import.meta.url))),'served bundle must match the local road build whose commit is recorded');

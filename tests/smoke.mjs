@@ -6,7 +6,7 @@ import {chromium} from 'playwright';
 import {PNG} from 'pngjs';
 import worker from '../dist/server/index.js';
 import {cleanupSmoke} from './smoke-cleanup.mjs';
-import {smokeLaunchOptions} from './smoke-launch.mjs';
+import {smokeLaunchOptions,assertArgv,restrictCaseContext} from './smoke-launch.mjs';
 import {startSmokeServer} from './smoke-server.mjs';
 
 const output = new URL('../outputs/smoke/', import.meta.url);
@@ -23,12 +23,13 @@ try {
   const launchOptions = smokeLaunchOptions();
   report.sandbox = launchOptions.chromiumSandbox;
   report.args = [...launchOptions.args];
-  report.ignoreDefaultArgs = [...launchOptions.ignoreDefaultArgs];
+  report.playwrightDefaultsPreserved = launchOptions.ignoreDefaultArgs === undefined;
   report.argumentScope = 'requested launch options, not the full Chromium command line';
   report.executablePath = launchOptions.executablePath || 'playwright-bundled';
   browser = await chromium.launch(launchOptions);
   report.browserVersion = browser.version();
-  const page = await browser.newPage({viewport: {width: 1280, height: 720}});
+  const session=await browser.newBrowserCDPSession();assertArgv((await session.send('Browser.getBrowserCommandLine')).arguments);await session.detach();report.actualArgvVerified=true;
+  const page = await browser.newPage({viewport: {width: 1280, height: 720},serviceWorkers:'block'});
   page.setDefaultTimeout(30000);
   page.on('console', message => {
     if (message.type() === 'error') report.consoleErrors.push(message.text());
@@ -38,7 +39,7 @@ try {
   page.on('requestfailed', request => report.requestFailures.push({url: request.url(), error: request.failure()?.errorText}));
   page.on('response', response => { if (response.status() >= 400) report.httpErrors.push({url: response.url(), status: response.status()}); });
   // This test has no need for production services or third-party resources.
-  await page.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort('blockedbyclient'));
+  await restrictCaseContext(page.context(),origin);
   await page.goto(origin, {waitUntil: 'networkidle'});
   await page.locator('#loading.done').waitFor({state: 'attached'});
   assert.equal(await page.locator('#error').isVisible(), false, 'initialization error');
