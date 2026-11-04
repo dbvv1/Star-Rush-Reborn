@@ -292,13 +292,14 @@ def main() -> int:
         if args.check:
             if not args.out.is_file():
                 raise SystemExit(f'Committed sideband is missing: {args.out.name}')
-            if args.out.read_text() != text:
+            if args.out.read_bytes() != text.encode('utf-8'):
                 raise SystemExit(f'Committed sideband is stale: {args.out.name}')
             print(json.dumps({'ok': True, 'sideband': args.out.name, 'triangles': sideband['triangleCount'],
                               'roadGlbSha256': sideband['replay']['roadGlbSha256']}))
         else:
             args.out.parent.mkdir(parents=True, exist_ok=True)
-            args.out.write_text(text)
+            # Write bytes so the committed sideband stays UTF-8/LF on Windows too.
+            args.out.write_bytes(text.encode('utf-8'))
             print(json.dumps({'ok': True, 'written': args.out.name, 'triangles': sideband['triangleCount'],
                               'roadGlbSha256': sideband['replay']['roadGlbSha256']}))
     finally:

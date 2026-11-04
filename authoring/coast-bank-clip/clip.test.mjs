@@ -95,41 +95,84 @@ function rectangles(corridors) {
   return output;
 }
 
-function strictlyInside(rectangle, x, z) {
-  const points = rectangle.points;
-  let sign = 0;
+function signedArea2(points) {
+  let sum = 0;
   for (let i = 0; i < points.length; i++) {
     const [ax, az] = points[i], [bx, bz] = points[(i + 1) % points.length];
-    const cross = (bx - ax) * (z - az) - (bz - az) * (x - ax);
-    if (Math.abs(cross) <= 1e-6) return false;
-    const current = Math.sign(cross);
-    if (sign === 0) sign = current;
-    else if (current !== sign) return false;
+    sum += ax * bz - bx * az;
   }
-  return true;
+  return sum;
 }
 
-function assertNoCentroidInProtectedArea(outputPart, originalPart, bank, corridors) {
+const TANGENT_EPS = 1e-9; // metres, matches clip.mjs GEOM_EPS
+const OVERLAP_EPS = 1e-6; // square metres
+
+/** Exact XZ intersection area between a triangle and a band rectangle.
+ * Sutherland-Hodgman against the rectangle's four convex half-planes: a
+ * corner touch or edge tangency yields zero, while a thin crossing sliver is
+ * measured by area rather than by one interior sample point.
+ */
+function rectangleOverlapArea(triangle, rectangle) {
+  const rect = rectangle.points.map(([x, z]) => [x, z]);
+  if (signedArea2(rect) < 0) rect.reverse();
+  let polygon = triangle;
+  for (let i = 0; i < rect.length && polygon.length >= 3; i++) {
+    const [ax, az] = rect[i], [bx, bz] = rect[(i + 1) % rect.length];
+    const side = ([x, z]) => (bx - ax) * (z - az) - (bz - az) * (x - ax);
+    const output = [];
+    for (let j = 0; j < polygon.length; j++) {
+      const current = polygon[j], next = polygon[(j + 1) % polygon.length];
+      const dc = side(current), dn = side(next);
+      const currentIn = dc >= -TANGENT_EPS, nextIn = dn >= -TANGENT_EPS;
+      if (currentIn) output.push(current);
+      if (currentIn !== nextIn) {
+        const denominator = dc - dn;
+        const t = denominator === 0 ? 0 : dc / denominator;
+        output.push([current[0] + (next[0] - current[0]) * t, current[1] + (next[1] - current[1]) * t]);
+      }
+    }
+    polygon = output;
+  }
+  return polygon.length >= 3 ? Math.abs(signedArea2(polygon)) / 2 : 0;
+}
+
+/** Reject any surviving bank-derived triangle whose XZ area still overlaps a
+ * protected rectangle.  Output vertices are checked for finiteness and valid
+ * indices before the area test so a broken result cannot slip through as NaN.
+ * Returns the number of bank-derived triangles inspected.
+ */
+function assertNoBankOverlap(outputPart, originalPart, bank, corridors) {
   const rects = rectangles(corridors);
+  const vertexCount = outputPart.sourceData.length / 10;
   const originalVertexCount = originalPart.sourceData.length / 10;
   const originalBankKeys = new Set([...bank].map(triangleId => triangleKey(originalPart, triangleId)));
+  let checked = 0;
   for (let triangleId = 0; triangleId < outputPart.sourceIndices.length / 3; triangleId++) {
     const base = triangleId * 3;
     const ids = [outputPart.sourceIndices[base], outputPart.sourceIndices[base + 1], outputPart.sourceIndices[base + 2]];
+    for (const id of ids) {
+      assert.ok(Number.isInteger(id) && id >= 0 && id < vertexCount,
+        `output triangle ${triangleId} references invalid vertex id ${id}`);
+    }
     const clipped = ids.some(id => id >= originalVertexCount);
     const unchangedBank = !clipped && originalBankKeys.has(`${ids[0]},${ids[1]},${ids[2]}`);
     if (!clipped && !unchangedBank) continue;
-    const centroid = [0, 0];
-    for (const id of ids) {
-      const world = triangleWorld(outputPart, id);
-      centroid[0] += world[0] / 3;
-      centroid[1] += world[2] / 3;
+    const vertices = triangleWorld(outputPart, triangleId);
+    for (const vertex of vertices) {
+      assert.ok(Array.isArray(vertex) && vertex.length === 3 && vertex.every(Number.isFinite),
+        `output triangle ${triangleId} has a non-finite vertex`);
     }
+    const triangle = vertices.map(vertex => [vertex[0], vertex[2]]);
+    assert.ok(Number.isFinite(signedArea2(triangle)), `output triangle ${triangleId} has a non-finite area`);
     for (const rectangle of rects) {
-      assert.ok(!strictlyInside(rectangle, centroid[0], centroid[1]),
-        `bank triangle centroid ${triangleId} remains inside ${rectangle.id}/${rectangle.segment}`);
+      const overlap = rectangleOverlapArea(triangle, rectangle);
+      assert.ok(Number.isFinite(overlap), `output triangle ${triangleId} overlap area is not finite`);
+      assert.ok(overlap <= OVERLAP_EPS,
+        `bank triangle ${triangleId} overlaps ${rectangle.id}/${rectangle.segment} by ${overlap} m^2`);
     }
+    checked++;
   }
+  return checked;
 }
 
 function tangentCorridor(part, triangleId, halfWidth = 8) {
@@ -228,8 +271,69 @@ test('hairpin neighbor clips only outer bank; asphalt, markings and rails stay b
     assert.ok(bytesEqual(result[i].sourceIndices, original[i].sourceIndices));
   }
   for (const part of result) assertValidGeometry(part);
-  assertNoCentroidInProtectedArea(outputPart, originalPart, bank, corridors);
+  const checkedBank = assertNoBankOverlap(outputPart, originalPart, bank, corridors);
+  assert.ok(checkedBank > 0, 'no bank-derived output triangles were inspected');
   assertAllPartsByteEqual(parts, original);
+
+  // Negative 1: a completely uncut part still has bank triangles inside the
+  // hairpin band, so the area assertion must reject it.
+  assert.throws(() => assertNoBankOverlap(originalPart, originalPart, bank, corridors),
+    /overlaps hairpin-neighbor/);
+
+  // Negative 2: restoring one originally overlapping bank triangle into an
+  // otherwise clipped result must be rejected even though every other
+  // triangle is clean.
+  const rects = rectangles(corridors);
+  const restore = [...bank].find(triangleId => {
+    const triangle = triangleWorld(originalPart, triangleId).map(vertex => [vertex[0], vertex[2]]);
+    return rects.some(rectangle => rectangleOverlapArea(triangle, rectangle) > 1);
+  });
+  assert.ok(Number.isInteger(restore), 'no overlapping prototype triangle found for the partial-overlap negative');
+  const tampered = cloneParts(result);
+  const tamperedPart = getPart(tampered);
+  const restoredIndices = new Uint32Array(tamperedPart.sourceIndices.length + 3);
+  restoredIndices.set(tamperedPart.sourceIndices);
+  restoredIndices.set(originalPart.sourceIndices.subarray(restore * 3, restore * 3 + 3), tamperedPart.sourceIndices.length);
+  tamperedPart.sourceIndices = restoredIndices;
+  assert.throws(() => assertNoBankOverlap(getPart(tampered), originalPart, bank, corridors),
+    /overlaps hairpin-neighbor/);
+
+  // Negative 3: a thin crossing sliver whose centroid is outside every band
+  // must still be rejected by the area test.  Vertices sit around seg 0's
+  // z = -25 edge, outside the coverage of the other two hairpin segments.
+  const sliver = cloneParts(result);
+  const sliverPart = getPart(sliver);
+  const pivot = sliverPart.pivot ?? [0, 0, 0];
+  const firstSliverVertex = sliverPart.sourceData.length / 10;
+  const sliverPoints = [[2, -24.95], [4, -24.95], [3, -25.30]];
+  const sliverData = new Float32Array(sliverPart.sourceData.length + sliverPoints.length * 10);
+  sliverData.set(sliverPart.sourceData);
+  sliverPoints.forEach(([x, z], index) => {
+    sliverData.set([x - pivot[0], -pivot[1], z - pivot[2], 0, 1, 0, 0.5, 0.5, 0.5, 0.12],
+      sliverPart.sourceData.length + index * 10);
+  });
+  sliverPart.sourceData = sliverData;
+  const sliverIndices = new Uint32Array(sliverPart.sourceIndices.length + 3);
+  sliverIndices.set(sliverPart.sourceIndices);
+  sliverIndices.set([firstSliverVertex, firstSliverVertex + 1, firstSliverVertex + 2],
+    sliverPart.sourceIndices.length);
+  sliverPart.sourceIndices = sliverIndices;
+  assert.throws(() => assertNoBankOverlap(sliverPart, originalPart, bank, corridors),
+    /overlaps hairpin-neighbor/);
+
+  // Non-finite output coordinates must be rejected explicitly rather than
+  // flowing into the intersection test as NaN.
+  const broken = cloneParts(result);
+  const brokenPart = getPart(broken);
+  const brokenOriginalVertexCount = originalPart.sourceData.length / 10;
+  const brokenTriangle = Array.from({length: brokenPart.sourceIndices.length / 3}, (_, triangleId) => triangleId)
+    .find(triangleId => [0, 1, 2].some(k => brokenPart.sourceIndices[triangleId * 3 + k] >= brokenOriginalVertexCount));
+  assert.ok(Number.isInteger(brokenTriangle), 'no clipped triangle found for the non-finite negative');
+  const brokenVertex = [0, 1, 2]
+    .map(k => brokenPart.sourceIndices[brokenTriangle * 3 + k])
+    .find(id => id >= brokenOriginalVertexCount);
+  brokenPart.sourceData[brokenVertex * 10] = NaN;
+  assert.throws(() => assertNoBankOverlap(brokenPart, originalPart, bank, corridors), /non-finite vertex/);
 
   const outputKeys = outputTriangleKeys(outputPart);
   let asphalt = 0, markings = 0;
@@ -273,6 +377,9 @@ test('boundary tangency is untouched and bad corridors or partitions are rejecte
   const tangentResult = clipOuterBank(parts, sideband, [tangent]);
   assert.equal(tangentResult.stats.affectedTriangles, 0);
   assertAllPartsByteEqual(tangentResult.parts, original);
+  // Boundary tangency carries zero intersection area, so the area check accepts
+  // the byte-identical result instead of failing on a corner touch.
+  assert.ok(assertNoBankOverlap(getPart(tangentResult.parts), part, new Set(sideband.triangles), [tangent]) > 0);
 
   const ok = {id: 'ok', points: [[0, -13], [4, -13]], halfWidth: 8};
   assert.throws(() => clipOuterBank(parts, sideband, [{...ok, points: [[0, -13], [0, -13]]}]), /zero or non-finite length/);
@@ -361,6 +468,9 @@ test('halfWidth 8 to 8.5 changes only outer bank, not module seams or the seawar
     for (const part of result.parts) assertValidGeometry(part);
   }
   assert.ok(wide.stats.outputBankArea < narrow.stats.outputBankArea);
+  const bankResidual = new Set(sideband.triangles);
+  assert.ok(assertNoBankOverlap(getPart(narrow.parts), getPart(parts), bankResidual, corridor(8)) > 0);
+  assert.ok(assertNoBankOverlap(getPart(wide.parts), getPart(parts), bankResidual, corridor(8.5)) > 0);
   for (let i = 0; i < wide.parts.length; i++) {
     if (wide.parts[i].name !== BANK_PART) {
       assert.ok(bytesEqual(wide.parts[i].sourceData, narrow.parts[i].sourceData));
