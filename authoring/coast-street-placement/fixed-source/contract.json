@@ -1,0 +1,187 @@
+{
+  "schema": 1,
+  "kind": "fixed-source-sample-contract",
+  "source": {
+    "commit": "ab2655930996b9d81f5fb35469669c72b7be28e1",
+    "asset_pipeline_path": "asset-pipeline/content-set",
+    "files": {
+      "street_glb": {
+        "path": "street.glb",
+        "sha256": "a542129fdc374200f2cf78ec46b2c811dd7f7e3d8c3167003be4aaa73637c958",
+        "bytes": 405016
+      },
+      "manifest": {
+        "path": "manifest.json",
+        "sha256": "3a431f8780c716b2f94803e8652f24a309c37943e6432986a9876f97d4c75c80",
+        "bytes": 17809
+      },
+      "upstream_adapter": {
+        "path": "upstream-adapter.mjs",
+        "sha256": "31a9e59f476ba705382731b4d91a1d51bea252f00a05590b20ebd9c76b363299",
+        "bytes": 9274
+      },
+      "coast_frame_sample": {
+        "path": "coast-280-720.frames.json",
+        "sha256": "3272e94fb3ae04f57e7cd41b1e07d088c32a76477869e820c61b5c1d49b581e2",
+        "bytes": 184244
+      }
+    },
+    "license": {
+      "path": "LICENSE-suburban.txt",
+      "sha256": "1aa23655a5c50428e57e3d06033b164af58f37f9bd7d366c8dae7c6f13c8bb2c",
+      "bytes": 674,
+      "note": "Kenney City Kit Suburban 2.0, CC0"
+    }
+  },
+  "asset": {
+    "id": "street",
+    "file": "street.glb",
+    "sha256": "a542129fdc374200f2cf78ec46b2c811dd7f7e3d8c3167003be4aaa73637c958",
+    "bytes": 405016,
+    "triangles": 3317,
+    "units": "metres",
+    "axes": {
+      "up": "+Y",
+      "forward": "+X",
+      "road_lateral": "+Z"
+    },
+    "door_local": "-Z",
+    "bounds_m": {
+      "min": [
+        -13.899999856948853,
+        0,
+        -4.284000277519226
+      ],
+      "max": [
+        14.284000277519226,
+        5.001245856285095,
+        5.533999919891357
+      ]
+    },
+    "dimensions_m": [
+      28.18400013446808,
+      5.001245856285095,
+      9.818000197410583
+    ],
+    "budget": {
+      "uniform_scale": 6,
+      "max_triangles": 5000,
+      "max_bytes": 700000
+    },
+    "vertex_encoding": "Float32 POSITION/NORMAL/COLOR_0; Uint32 indices; 4-byte aligned",
+    "material_contract": "linear-sRGB vertex colors; PBR roughness metadata not consumed by current Star Lambert/Toon"
+  },
+  "parts": [
+    {
+      "name": "house-a",
+      "pivot_m": [
+        -10,
+        0,
+        0
+      ],
+      "action": "static",
+      "triangles": 1156,
+      "vertices": 3468,
+      "mesh_sha256": "0999604e9289e0bace689ed3953d746461ae4ac84b681f693b946922d56b1f15",
+      "local_bounds_m": {
+        "min": [
+          -3.8999998569488525,
+          0,
+          -3.084413528442383
+        ],
+        "max": [
+          3.8999998569488525,
+          5.001245975494385,
+          3.084413528442383
+        ]
+      },
+      "material_families": [
+        "roof",
+        "wall"
+      ]
+    },
+    {
+      "name": "house-g",
+      "pivot_m": [
+        0,
+        0,
+        2
+      ],
+      "action": "static",
+      "triangles": 1059,
+      "vertices": 3177,
+      "mesh_sha256": "aecdcc1f2db6f5c002552251bc263babdbfeeb0934cbb65a2fa5cd736794c736",
+      "local_bounds_m": {
+        "min": [
+          -4.350000381469727,
+          0,
+          -3.5339999198913574
+        ],
+        "max": [
+          4.350000381469727,
+          4.60925817489624,
+          3.5339999198913574
+        ]
+      },
+      "material_families": [
+        "glass",
+        "roof",
+        "wall"
+      ]
+    },
+    {
+      "name": "house-m",
+      "pivot_m": [
+        10,
+        0,
+        0
+      ],
+      "action": "static",
+      "triangles": 1102,
+      "vertices": 3306,
+      "mesh_sha256": "c85450e77617b39f3463d70e9859374eef170a184f1b54a99b958dc9e88671ad",
+      "local_bounds_m": {
+        "min": [
+          -4.284000396728516,
+          0,
+          -4.284000396728516
+        ],
+        "max": [
+          4.284000396728516,
+          4.424999713897705,
+          4.283999919891357
+        ]
+      },
+      "material_families": [
+        "glass",
+        "roof",
+        "wall"
+      ]
+    }
+  ],
+  "placement": {
+    "interface": "placeStreet(parts, sampleRoad, centerS, side, setback)",
+    "center_station": "metres along the current circuitRoad arc length",
+    "side_values": [
+      -1,
+      1
+    ],
+    "setback": "non-negative metres beyond the 8 m clearance base",
+    "clearance_base_m": 8,
+    "polyline_step_m": 1,
+    "door_local": "-Z",
+    "axes": {
+      "up": "+Y",
+      "forward": "+X",
+      "road_lateral": "+Z"
+    },
+    "rules": [
+      "station_i = centerS + parts[i].pivot.x",
+      "local +X maps to side*T, local +Z maps to side*R, local +Y stays up",
+      "bottom pivot (local y=0) lands on sampleRoad(station_i).p[1]",
+      "lateral origin = side*(sharedBaseOffset + parts[i].pivot.z)",
+      "sharedBaseOffset expands deterministically until every world XZ box is >= 8 m + setback from the 1 m road polyline",
+      "one rigid yaw+translation per house; no scale, shear, foundation or tilt"
+    ]
+  }
+}
