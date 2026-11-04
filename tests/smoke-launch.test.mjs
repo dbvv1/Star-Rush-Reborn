@@ -28,3 +28,29 @@ test('explicit executable is absolute and does not filter defaults',()=>{
  assert.equal(smokeLaunchOptions({STAR_RUSH_SMOKE_CLOUD_NO_SANDBOX:'1'}).chromiumSandbox,false);
  for(const value of ['', '0', 'true'])assert.throws(()=>smokeLaunchOptions({STAR_RUSH_SMOKE_CLOUD_NO_SANDBOX:value}),/unset or 1/);
 });
+
+test('smoke and actual capture launch assembly enable CDP argv inspection',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const source=readFileSync(new URL('./capture.mjs',import.meta.url),'utf8');
+ const start=source.indexOf('const launchOptions='),end=source.indexOf('const report=',start);
+ assert(start>=0&&end>start);
+ // Evaluate only the launch-options expression, never the browser entrypoint.
+ const assemble=Function('smokeLaunchOptions','requiredBrowserArgs','process','executablePath','headful',source.slice(start,end)+'return launchOptions;');
+ const executablePath='/usr/bin/chromium',env={STAR_RUSH_SMOKE_CHROMIUM:'/ignored/chromium'};
+ const capture=assemble(smokeLaunchOptions,requiredBrowserArgs,{env},executablePath,false);
+ for(const options of [smokeLaunchOptions({}),capture]){
+  assert(options.args.includes('--enable-automation'),'CDP command-line inspection must be enabled explicitly');
+  for(const flag of ['--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader'])assert(options.args.includes(flag));
+  assert.equal(options.ignoreDefaultArgs,undefined);assert.equal(options.chromiumSandbox,false);assert.equal(options.headless,true);
+  assertArgv(['--headless',...options.args]);
+  assert.throws(()=>assertArgv(['--headless',...options.args.filter(a=>a!=='--enable-automation')]),/enable-automation/);
+ }
+ assert.equal(capture.executablePath,executablePath);
+ for(const flag of ['--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows'])assert(capture.args.includes(flag));
+ assert.equal(assemble(smokeLaunchOptions,requiredBrowserArgs,{env},executablePath,true).headless,false);
+ const smoke=readFileSync(new URL('./smoke.mjs',import.meta.url),'utf8');
+ assert.match(smoke,/const launchOptions = smokeLaunchOptions\(\);/);
+ assert.match(smoke,/chromium\.launch\(launchOptions\)/);
+ assert.match(source,/session\.send\('Browser\.getBrowserCommandLine'\)/);
+ assert.match(smoke,/session\.send\('Browser\.getBrowserCommandLine'\)/);
+});

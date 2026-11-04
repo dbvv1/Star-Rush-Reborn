@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import {isAbsolute} from 'node:path';
 
 // Dedicated case-only browsers. The outer execution sandbox remains unchanged.
-export const requiredBrowserArgs=Object.freeze(['--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader']);
+// CDP Browser.getBrowserCommandLine requires --enable-automation; do not rely on Playwright defaults.
+export const requiredBrowserArgs=Object.freeze(['--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader','--enable-automation']);
 export const caseOrigins=Object.freeze([
  'https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site',
  'https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site',

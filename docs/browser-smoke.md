@@ -31,6 +31,8 @@ npm run smoke
 
 ### 启动参数核实
 
-Playwright 默认参数不再过滤。smoke 与 capture 通过 CDP `Browser.getBrowserCommandLine` 检查真实 argv 的三项必要参数，报告与原始日志区分请求配置和实际验证。`DEBUG=pw:browser` 原始日志仅留本地，避免公开可执行路径和调试地址。软件 WebGL2 可以验证功能及同机位图，不记作硬件 GPU 验收。
+smoke 与 capture 的共享启动参数显式包含 `--enable-automation`，这是 CDP `Browser.getBrowserCommandLine` 读回实际 argv 的前置，不能依赖 Playwright 默认提供。原三项启动参数与 Playwright 默认参数保留，实际 argv 同时核自动化参数；报告区分请求配置和实际验证。`DEBUG=pw:browser` 原始日志仅留本地，避免公开可执行路径和调试地址。软件 WebGL2 可以验证功能及同机位图，不记作硬件 GPU 验收。
 
 2026-11-04 的一次云端 Star 实拍尝试在导航前失败：实际启动行已含三项参数，Chromium 的进程单例 socket 返回 `EPERM`，随后 `SIGABRT`；Node 非零退出、预览已关闭，没有 PNG。此项是执行环境限制，不是 WebGL2 或像素通过证据。未重试或修改外层沙箱。
+
+本机固定机位失败后的这项参数修复仅完成 CPU 参数组装回归；真实 CDP、WebGL2 与 PNG 尚待验证，原调用退出与 Node 24 前置仍须先核清。协议依据：[Browser.getBrowserCommandLine](https://github.com/ChromeDevTools/devtools-protocol/blob/master/pdl/domains/Browser.pdl)（2026-11-04 核实）。
