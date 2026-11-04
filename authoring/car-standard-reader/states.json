@@ -1,0 +1,1298 @@
+{
+  "fixedCommit": "ab2655930996b9d81f5fb35469669c72b7be28e1",
+  "fixture": {
+    "source": "tests/road-vehicle.test.mjs @ ab2655930996b9d81f5fb35469669c72b7be28e1",
+    "dt": 0.008333333333333333,
+    "note": "car({vS:20}) + 1 s gas, gas+steer:1 (right), gas+steer:-1 (left); reset is reset() zero state"
+  },
+  "code": {
+    "head": "0bd62df9be7528cc9da643ebde089063d6166da8",
+    "engine": "baa90e01c1eee30ba88ee1316a7a390a168415826208f379b2b608c4b89d505a",
+    "racer": "4e6008c7fcce64342078cd06051a931edc4153f23756bbb4498abdd9022d7d39",
+    "roadVehicleCore": "9eb4d996e37f085e744bace9f5cddd20f03cd857c92e8d388a7b08409c1291f7",
+    "vehicleCore": "7eeeefd75cbfddcbb2b36cd3bebdbba46eba4f10af500b95baf4cc43fefc81c0",
+    "handling": "70878058cc5b36d6058298ce0f940442c4c1a5a814a256607792a0ebbf30e3a5"
+  },
+  "manifestContract": {
+    "units": "metres",
+    "axes": {
+      "up": "+Y",
+      "forward": "+X",
+      "road_lateral": "+Z"
+    },
+    "dimensions_m": [
+      3.3149999380111694,
+      1.4299999225139617,
+      1.6899999380111694
+    ],
+    "bounds_m": {
+      "min": [
+        -1.6899999690055847,
+        -1.5497207628278886e-8,
+        -0.8449999690055847
+      ],
+      "max": [
+        1.624999969005585,
+        1.4299999070167542,
+        0.8449999690055847
+      ]
+    },
+    "declaredAxles": [
+      {
+        "name": "wheel-back-right",
+        "pivot_m": [
+          -0.8579999571,
+          0.39,
+          0.39
+        ],
+        "action": "roll-z"
+      },
+      {
+        "name": "wheel-back-left",
+        "pivot_m": [
+          -0.8579999571,
+          0.39,
+          -0.39
+        ],
+        "action": "roll-z"
+      },
+      {
+        "name": "wheel-front-left",
+        "pivot_m": [
+          0.8579999571,
+          0.39,
+          -0.39
+        ],
+        "action": "front-steer-y_then-roll-z"
+      },
+      {
+        "name": "wheel-front-right",
+        "pivot_m": [
+          0.8579999571,
+          0.39,
+          0.39
+        ],
+        "action": "front-steer-y_then-roll-z"
+      }
+    ]
+  },
+  "geometry": {
+    "body": {
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "action": "body-roll-x_bob-y",
+      "triangles": 747,
+      "localMin": [
+        -1.69,
+        0.195,
+        -0.845
+      ],
+      "localMax": [
+        1.625,
+        1.43,
+        0.845
+      ],
+      "localSize": [
+        3.315,
+        1.235,
+        1.69
+      ],
+      "localMid": [
+        -0.0325,
+        0.8125,
+        0
+      ]
+    },
+    "wheel-back-right": {
+      "pivot": [
+        -0.8579999571,
+        0.39,
+        0.39
+      ],
+      "action": "roll-z",
+      "triangles": 332,
+      "localMin": [
+        -0.39,
+        -0.39,
+        -0.065
+      ],
+      "localMax": [
+        0.39,
+        0.39,
+        0.39
+      ],
+      "localSize": [
+        0.78,
+        0.78,
+        0.455
+      ],
+      "localMid": [
+        0,
+        0,
+        0.1625
+      ]
+    },
+    "wheel-back-left": {
+      "pivot": [
+        -0.8579999571,
+        0.39,
+        -0.39
+      ],
+      "action": "roll-z",
+      "triangles": 332,
+      "localMin": [
+        -0.39,
+        -0.39,
+        -0.39
+      ],
+      "localMax": [
+        0.39,
+        0.39,
+        0.065
+      ],
+      "localSize": [
+        0.78,
+        0.78,
+        0.455
+      ],
+      "localMid": [
+        0,
+        0,
+        -0.1625
+      ]
+    },
+    "wheel-front-left": {
+      "pivot": [
+        0.8579999571,
+        0.39,
+        -0.39
+      ],
+      "action": "front-steer-y_then-roll-z",
+      "triangles": 332,
+      "localMin": [
+        -0.39,
+        -0.39,
+        -0.39
+      ],
+      "localMax": [
+        0.39,
+        0.39,
+        0.065
+      ],
+      "localSize": [
+        0.78,
+        0.78,
+        0.455
+      ],
+      "localMid": [
+        0,
+        0,
+        -0.1625
+      ]
+    },
+    "wheel-front-right": {
+      "pivot": [
+        0.8579999571,
+        0.39,
+        0.39
+      ],
+      "action": "front-steer-y_then-roll-z",
+      "triangles": 332,
+      "localMin": [
+        -0.39,
+        -0.39,
+        -0.065
+      ],
+      "localMax": [
+        0.39,
+        0.39,
+        0.39
+      ],
+      "localSize": [
+        0.78,
+        0.78,
+        0.455
+      ],
+      "localMid": [
+        0,
+        0,
+        0.1625
+      ]
+    }
+  },
+  "states": {
+    "straight": {
+      "input": {
+        "gas": true
+      },
+      "simulated": {
+        "speed": 21.463266187,
+        "vS": 21.463266187,
+        "vL": 0,
+        "yaw": 0,
+        "spin": 0,
+        "roadSteer": 0,
+        "roadSteerDeg": 0,
+        "steeringNormalised": 0,
+        "wheelSpin": -51.908056296,
+        "fixtureTime": 1
+      },
+      "pose": {
+        "steer": 0,
+        "wheelSpin": -51.90805629552185,
+        "roll": 0,
+        "bob": -0.008059319590107512
+      },
+      "nodes": {
+        "body": {
+          "action": "body-roll-x_bob-y",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "local": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            -0.00805932,
+            0,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-back-right": {
+          "action": "roll-z",
+          "pivot": [
+            -0.8579999571,
+            0.39,
+            0.39
+          ],
+          "local": [
+            -0.071715891,
+            -0.997425079,
+            0,
+            0,
+            0.997425079,
+            -0.071715891,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            -0.85799998,
+            0.389999986,
+            0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-back-left": {
+          "action": "roll-z",
+          "pivot": [
+            -0.8579999571,
+            0.39,
+            -0.39
+          ],
+          "local": [
+            -0.071715891,
+            -0.997425079,
+            0,
+            0,
+            0.997425079,
+            -0.071715891,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            -0.85799998,
+            0.389999986,
+            -0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-front-left": {
+          "action": "front-steer-y_then-roll-z",
+          "pivot": [
+            0.8579999571,
+            0.39,
+            -0.39
+          ],
+          "local": [
+            -0.071715891,
+            -0.997425079,
+            0,
+            0,
+            0.997425079,
+            -0.071715891,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.85799998,
+            0.389999986,
+            -0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-front-right": {
+          "action": "front-steer-y_then-roll-z",
+          "pivot": [
+            0.8579999571,
+            0.39,
+            0.39
+          ],
+          "local": [
+            -0.071715891,
+            -0.997425079,
+            0,
+            0,
+            0.997425079,
+            -0.071715891,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.85799998,
+            0.389999986,
+            0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "contacts": {
+        "wheel-back-right": {
+          "analyticContact": [
+            -0.858,
+            -1.4e-8,
+            0.5525
+          ],
+          "lowestVertex": [
+            -0.885969,
+            0.001004,
+            0.455
+          ],
+          "lowestVertexY": 0.001004189,
+          "tessellationGapMm": 1.004204
+        },
+        "wheel-back-left": {
+          "analyticContact": [
+            -0.858,
+            -1.4e-8,
+            -0.5525
+          ],
+          "lowestVertex": [
+            -0.885969,
+            0.001004,
+            -0.455
+          ],
+          "lowestVertexY": 0.001004189,
+          "tessellationGapMm": 1.004204
+        },
+        "wheel-front-left": {
+          "analyticContact": [
+            0.858,
+            -1.4e-8,
+            -0.5525
+          ],
+          "lowestVertex": [
+            0.830031,
+            0.001004,
+            -0.455
+          ],
+          "lowestVertexY": 0.001004189,
+          "tessellationGapMm": 1.004204
+        },
+        "wheel-front-right": {
+          "analyticContact": [
+            0.858,
+            -1.4e-8,
+            0.5525
+          ],
+          "lowestVertex": [
+            0.830031,
+            0.001004,
+            0.455
+          ],
+          "lowestVertexY": 0.001004189,
+          "tessellationGapMm": 1.004204
+        }
+      },
+      "maxMatrixDiffVsAdapterContract": 0
+    },
+    "right": {
+      "input": {
+        "gas": true,
+        "steer": 1
+      },
+      "simulated": {
+        "speed": 21.228666422,
+        "vS": 20.694574209,
+        "vL": 4.731899869,
+        "yaw": 0.273189954,
+        "spin": 0.388841153,
+        "roadSteer": 0.041292804,
+        "roadSteerDeg": 2.365903,
+        "steeringNormalised": 1,
+        "wheelSpin": -51.444411593,
+        "fixtureTime": 1
+      },
+      "pose": {
+        "steer": 0.04129280423913438,
+        "wheelSpin": -51.444411592946125,
+        "roll": -0.0636859992663056,
+        "bob": -0.007971228874484456
+      },
+      "nodes": {
+        "body": {
+          "action": "body-roll-x_bob-y",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "local": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0.997972727,
+            -0.063642956,
+            0,
+            0,
+            0.063642956,
+            0.997972727,
+            0,
+            0,
+            -0.007971229,
+            0,
+            1
+          ],
+          "yCoupling": [
+            0,
+            -0.063642956,
+            0,
+            0.063642956
+          ]
+        },
+        "wheel-back-right": {
+          "action": "roll-z",
+          "pivot": [
+            -0.8579999571,
+            0.39,
+            0.39
+          ],
+          "local": [
+            0.381914735,
+            -0.924197555,
+            0,
+            0,
+            0.924197555,
+            0.381914735,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            -0.85799998,
+            0.389999986,
+            0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-back-left": {
+          "action": "roll-z",
+          "pivot": [
+            -0.8579999571,
+            0.39,
+            -0.39
+          ],
+          "local": [
+            0.381914735,
+            -0.924197555,
+            0,
+            0,
+            0.924197555,
+            0.381914735,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            -0.85799998,
+            0.389999986,
+            -0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-front-left": {
+          "action": "front-steer-y_then-roll-z",
+          "pivot": [
+            0.8579999571,
+            0.39,
+            -0.39
+          ],
+          "local": [
+            0.381589174,
+            -0.924197555,
+            0.01576585,
+            0,
+            0.92340976,
+            0.381914735,
+            0.038151864,
+            0,
+            -0.041281071,
+            0,
+            0.999147594,
+            0,
+            0.85799998,
+            0.389999986,
+            -0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0.01576585,
+            0.038151864,
+            -0.041281071,
+            0
+          ]
+        },
+        "wheel-front-right": {
+          "action": "front-steer-y_then-roll-z",
+          "pivot": [
+            0.8579999571,
+            0.39,
+            0.39
+          ],
+          "local": [
+            0.381589174,
+            -0.924197555,
+            0.01576585,
+            0,
+            0.92340976,
+            0.381914735,
+            0.038151864,
+            0,
+            -0.041281071,
+            0,
+            0.999147594,
+            0,
+            0.85799998,
+            0.389999986,
+            0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0.01576585,
+            0.038151864,
+            -0.041281071,
+            0
+          ]
+        }
+      },
+      "contacts": {
+        "wheel-back-right": {
+          "analyticContact": [
+            -0.858,
+            -1.4e-8,
+            0.5525
+          ],
+          "lowestVertex": [
+            -0.807416,
+            0.003294,
+            0.65
+          ],
+          "lowestVertexY": 0.003294283,
+          "tessellationGapMm": 3.294297
+        },
+        "wheel-back-left": {
+          "analyticContact": [
+            -0.858,
+            -1.4e-8,
+            -0.5525
+          ],
+          "lowestVertex": [
+            -0.807416,
+            0.003294,
+            -0.455
+          ],
+          "lowestVertexY": 0.003294283,
+          "tessellationGapMm": 3.294297
+        },
+        "wheel-front-left": {
+          "analyticContact": [
+            0.8647082,
+            -1.4e-8,
+            -0.5523615
+          ],
+          "lowestVertex": [
+            0.911224,
+            0.003294,
+            -0.452856
+          ],
+          "lowestVertexY": 0.003294283,
+          "tessellationGapMm": 3.294297
+        },
+        "wheel-front-right": {
+          "analyticContact": [
+            0.8512918,
+            -1.4e-8,
+            0.5523615
+          ],
+          "lowestVertex": [
+            0.897807,
+            0.003294,
+            0.651866
+          ],
+          "lowestVertexY": 0.003294283,
+          "tessellationGapMm": 3.294297
+        }
+      },
+      "maxMatrixDiffVsAdapterContract": 0
+    },
+    "left": {
+      "input": {
+        "gas": true,
+        "steer": -1
+      },
+      "simulated": {
+        "speed": 21.228666422,
+        "vS": 20.694574209,
+        "vL": -4.731899869,
+        "yaw": -0.273189954,
+        "spin": -0.388841153,
+        "roadSteer": -0.041292804,
+        "roadSteerDeg": -2.365903,
+        "steeringNormalised": -1,
+        "wheelSpin": -51.444411593,
+        "fixtureTime": 1
+      },
+      "pose": {
+        "steer": -0.04129280423913438,
+        "wheelSpin": -51.444411592946125,
+        "roll": 0.0636859992663056,
+        "bob": -0.007971228874484456
+      },
+      "nodes": {
+        "body": {
+          "action": "body-roll-x_bob-y",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "local": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0.997972727,
+            0.063642956,
+            0,
+            0,
+            -0.063642956,
+            0.997972727,
+            0,
+            0,
+            -0.007971229,
+            0,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0.063642956,
+            0,
+            -0.063642956
+          ]
+        },
+        "wheel-back-right": {
+          "action": "roll-z",
+          "pivot": [
+            -0.8579999571,
+            0.39,
+            0.39
+          ],
+          "local": [
+            0.381914735,
+            -0.924197555,
+            0,
+            0,
+            0.924197555,
+            0.381914735,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            -0.85799998,
+            0.389999986,
+            0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-back-left": {
+          "action": "roll-z",
+          "pivot": [
+            -0.8579999571,
+            0.39,
+            -0.39
+          ],
+          "local": [
+            0.381914735,
+            -0.924197555,
+            0,
+            0,
+            0.924197555,
+            0.381914735,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            -0.85799998,
+            0.389999986,
+            -0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-front-left": {
+          "action": "front-steer-y_then-roll-z",
+          "pivot": [
+            0.8579999571,
+            0.39,
+            -0.39
+          ],
+          "local": [
+            0.381589174,
+            -0.924197555,
+            -0.01576585,
+            0,
+            0.92340976,
+            0.381914735,
+            -0.038151864,
+            0,
+            0.041281071,
+            0,
+            0.999147594,
+            0,
+            0.85799998,
+            0.389999986,
+            -0.389999986,
+            1
+          ],
+          "yCoupling": [
+            -0.01576585,
+            -0.038151864,
+            0.041281071,
+            0
+          ]
+        },
+        "wheel-front-right": {
+          "action": "front-steer-y_then-roll-z",
+          "pivot": [
+            0.8579999571,
+            0.39,
+            0.39
+          ],
+          "local": [
+            0.381589174,
+            -0.924197555,
+            -0.01576585,
+            0,
+            0.92340976,
+            0.381914735,
+            -0.038151864,
+            0,
+            0.041281071,
+            0,
+            0.999147594,
+            0,
+            0.85799998,
+            0.389999986,
+            0.389999986,
+            1
+          ],
+          "yCoupling": [
+            -0.01576585,
+            -0.038151864,
+            0.041281071,
+            0
+          ]
+        }
+      },
+      "contacts": {
+        "wheel-back-right": {
+          "analyticContact": [
+            -0.858,
+            -1.4e-8,
+            0.5525
+          ],
+          "lowestVertex": [
+            -0.807416,
+            0.003294,
+            0.65
+          ],
+          "lowestVertexY": 0.003294283,
+          "tessellationGapMm": 3.294297
+        },
+        "wheel-back-left": {
+          "analyticContact": [
+            -0.858,
+            -1.4e-8,
+            -0.5525
+          ],
+          "lowestVertex": [
+            -0.807416,
+            0.003294,
+            -0.455
+          ],
+          "lowestVertexY": 0.003294283,
+          "tessellationGapMm": 3.294297
+        },
+        "wheel-front-left": {
+          "analyticContact": [
+            0.8512918,
+            -1.4e-8,
+            -0.5523615
+          ],
+          "lowestVertex": [
+            0.905857,
+            0.003294,
+            -0.457033
+          ],
+          "lowestVertexY": 0.003294283,
+          "tessellationGapMm": 3.294297
+        },
+        "wheel-front-right": {
+          "analyticContact": [
+            0.8647082,
+            -1.4e-8,
+            0.5523615
+          ],
+          "lowestVertex": [
+            0.919273,
+            0.003294,
+            0.64769
+          ],
+          "lowestVertexY": 0.003294283,
+          "tessellationGapMm": 3.294297
+        }
+      },
+      "maxMatrixDiffVsAdapterContract": 0
+    },
+    "reset": {
+      "input": null,
+      "simulated": {
+        "speed": 0,
+        "vS": 0,
+        "vL": 0,
+        "yaw": 0,
+        "spin": 0,
+        "roadSteer": 0,
+        "roadSteerDeg": 0,
+        "steeringNormalised": 0,
+        "wheelSpin": 0,
+        "fixtureTime": 0
+      },
+      "pose": {
+        "steer": 0,
+        "wheelSpin": 0,
+        "roll": 0,
+        "bob": 0
+      },
+      "nodes": {
+        "body": {
+          "action": "body-roll-x_bob-y",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "local": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-back-right": {
+          "action": "roll-z",
+          "pivot": [
+            -0.8579999571,
+            0.39,
+            0.39
+          ],
+          "local": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            -0.85799998,
+            0.389999986,
+            0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-back-left": {
+          "action": "roll-z",
+          "pivot": [
+            -0.8579999571,
+            0.39,
+            -0.39
+          ],
+          "local": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            -0.85799998,
+            0.389999986,
+            -0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-front-left": {
+          "action": "front-steer-y_then-roll-z",
+          "pivot": [
+            0.8579999571,
+            0.39,
+            -0.39
+          ],
+          "local": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.85799998,
+            0.389999986,
+            -0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "wheel-front-right": {
+          "action": "front-steer-y_then-roll-z",
+          "pivot": [
+            0.8579999571,
+            0.39,
+            0.39
+          ],
+          "local": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.85799998,
+            0.389999986,
+            0.389999986,
+            1
+          ],
+          "yCoupling": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "contacts": {
+        "wheel-back-right": {
+          "analyticContact": [
+            -0.858,
+            -1.4e-8,
+            0.5525
+          ],
+          "lowestVertex": [
+            -0.858,
+            0,
+            0.455
+          ],
+          "lowestVertexY": -3e-8,
+          "tessellationGapMm": -0.000015
+        },
+        "wheel-back-left": {
+          "analyticContact": [
+            -0.858,
+            -1.4e-8,
+            -0.5525
+          ],
+          "lowestVertex": [
+            -0.858,
+            0,
+            -0.455
+          ],
+          "lowestVertexY": -3e-8,
+          "tessellationGapMm": -0.000015
+        },
+        "wheel-front-left": {
+          "analyticContact": [
+            0.858,
+            -1.4e-8,
+            -0.5525
+          ],
+          "lowestVertex": [
+            0.858,
+            0,
+            -0.455
+          ],
+          "lowestVertexY": -3e-8,
+          "tessellationGapMm": -0.000015
+        },
+        "wheel-front-right": {
+          "analyticContact": [
+            0.858,
+            -1.4e-8,
+            0.5525
+          ],
+          "lowestVertex": [
+            0.858,
+            0,
+            0.455
+          ],
+          "lowestVertexY": -3e-8,
+          "tessellationGapMm": -0.000015
+        }
+      },
+      "maxMatrixDiffVsAdapterContract": 0
+    }
+  },
+  "checks": {
+    "straight": {
+      "matricesMatchContract": true,
+      "analyticContactsOnGround": true,
+      "maxVertexTessellationGapMm": 1.004204,
+      "rearWheelsDoNotSteer": true
+    },
+    "right": {
+      "matricesMatchContract": true,
+      "analyticContactsOnGround": true,
+      "maxVertexTessellationGapMm": 3.294297,
+      "rearWheelsDoNotSteer": true
+    },
+    "left": {
+      "matricesMatchContract": true,
+      "analyticContactsOnGround": true,
+      "maxVertexTessellationGapMm": 3.294297,
+      "rearWheelsDoNotSteer": true
+    },
+    "reset": {
+      "matricesMatchContract": true,
+      "analyticContactsOnGround": true,
+      "maxVertexTessellationGapMm": -0.000015,
+      "rearWheelsDoNotSteer": true
+    },
+    "resetRestTRS": {
+      "bodyIsIdentity": true,
+      "wheelsArePivotTranslations": true,
+      "maxDiff": 0
+    },
+    "frontOnlySteer": {
+      "frontLeftDiffersFromRollOnly": true,
+      "rearYawCoupling": 0
+    }
+  },
+  "currentVehicle": {
+    "x": [
+      -1.02,
+      1.06
+    ],
+    "z": 0.83,
+    "centreY": 0.41,
+    "tyreOuterRadius": 0.41000000000000003,
+    "torusRadius": 0.315,
+    "torusTube": 0.095,
+    "contactY": 0,
+    "wheelbase": 2.08,
+    "track": 1.66
+  },
+  "comparison": {
+    "physics": {
+      "frontAxle": 1.06,
+      "rearAxleMagnitude": 1.02,
+      "rearAxleCoordinate": -1.02,
+      "wheelbase": 2.08,
+      "collisionHalfLength": 1.57,
+      "collisionHalfWidth": 0.91
+    },
+    "currentRender": {
+      "x": [
+        -1.02,
+        1.06
+      ],
+      "z": 0.83,
+      "centreY": 0.41,
+      "tyreOuterRadius": 0.41000000000000003,
+      "torusRadius": 0.315,
+      "torusTube": 0.095,
+      "contactY": 0,
+      "wheelbase": 2.08,
+      "track": 1.66
+    },
+    "standardRender": {
+      "frontAxle": 0.857999957,
+      "rearAxle": -0.857999957,
+      "wheelbase": 1.715999914,
+      "wheelRadius": 0.39,
+      "wheelPivotY": 0.39,
+      "wheelCentreZ": 0.5525,
+      "trackAtWheelCentre": 1.105,
+      "wheelHalfWidth": 0.2275,
+      "wheelOuterZ": 0.78
+    },
+    "deltas": {
+      "frontAxlePhysicsMinusStandard": 0.202000043,
+      "rearAxlePhysicsMinusStandard": -0.162000043,
+      "wheelbasePhysicsMinusStandard": 0.364000086,
+      "wheelbaseRatio": 1.212121,
+      "wheelRadiusCurrentMinusStandard": 0.02,
+      "trackCurrentMinusStandard": 0.555,
+      "reuseCurrentWheelYHover": 0.02,
+      "reuseCurrentRadiusSink": -0.02
+    }
+  }
+}
