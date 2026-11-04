@@ -1,0 +1,115 @@
+{
+  "note": "Sanitized command and process record. Absolute executable paths and private logs are omitted. The capture's argv was not obtained via Browser.getBrowserCommandLine; the diagnostic probes' full launch command lines exist only in the private logs, which are omitted here. Launch arguments are recorded only as the configured flags.",
+  "timelineUtc": {
+    "buildAttempt1Started": "2026-11-04T08:56:48Z",
+    "buildAttempt1Finished": "2026-11-04T08:56:52Z",
+    "buildAttempt2Started": "2026-11-04T08:57:04Z",
+    "buildAttempt2Finished": "2026-11-04T08:57:08Z",
+    "captureStarted": "2026-11-04T08:57:27Z",
+    "captureFinished": "2026-11-04T08:57:36Z",
+    "previewStopped": "2026-11-04T08:59:44Z",
+    "previewPortClosedVerified": "2026-11-04T08:59:53Z"
+  },
+  "steps": [
+    {
+      "step": "build",
+      "attempt": 1,
+      "command": "npm run build",
+      "exitCode": 1,
+      "result": "failed before the game bundle was emitted: the isolated Rapier experiment dependency tree matching its own package-lock.json was not linked in this fresh worktree",
+      "recovery": "reused the already-installed dependency tree whose package-lock.json hashes match both lock files; no packages were installed, upgraded or modified",
+      "wasCaptureAttempt": false
+    },
+    {
+      "step": "build",
+      "attempt": 2,
+      "command": "npm run build",
+      "exitCode": 0,
+      "result": "default build configuration; tracked tree clean before and after; worker and road bundle SHA-256 recorded in manifest.json",
+      "wasCaptureAttempt": false
+    },
+    {
+      "step": "preview",
+      "command": "node tests/smoke-server.mjs",
+      "exitCode": null,
+      "result": "exactly one preview process owned by this run; printed STAR_SMOKE_LOOPBACK=http://127.0.0.1:6519",
+      "wasCaptureAttempt": false
+    },
+    {
+      "step": "capture",
+      "command": "npm run capture -- http://127.0.0.1:6519/road outputs/B-STAR-FIXED-CAPTURE-20261104/0bd62df9-swiftshader/coast-chase coast-chase --seed 73121 --t 28 --frames 1 --input road-tour --repeat --software",
+      "exitCode": 1,
+      "result": "report.passed=false; runs=[]; no PNG; failed at the actual-argv CDP validation before navigation. The capture never reached page.goto, so the served bundle was not fetched or verified and report.servedBundleSha256 is absent",
+      "wasCaptureAttempt": true
+    }
+  ],
+  "diagnostics": [
+    {
+      "kind": "diagnostic",
+      "wasCaptureAttempt": false,
+      "tool": "probe-args.mjs",
+      "startedUtc": "2026-11-04T08:58:20Z",
+      "finishedUtc": "2026-11-04T08:58:26Z",
+      "browserClass": "Chrome for Testing (Playwright Chromium) chrome.exe",
+      "argumentDiff": "same required launch args as the capture (--no-sandbox, --enable-unsafe-swiftshader, --use-angle=swiftshader), headless; no additional --enable-automation",
+      "pid": 79960,
+      "exitCode": 0,
+      "cdpResult": "CMDLINE_ERR: Command line not returned because --enable-automation not set.",
+      "navigation": "none",
+      "ownership": "launched by this run and closed with browser.close(); observed exit recorded in logs/probe.log",
+      "evidence": "outputs/B-STAR-FIXED-CAPTURE-20261104/logs/probe.log (local, not part of the public copy)"
+    },
+    {
+      "kind": "diagnostic",
+      "wasCaptureAttempt": false,
+      "tool": "probe-args.mjs (same script, different executable)",
+      "startedUtc": "2026-11-04T08:58:42Z",
+      "finishedUtc": "2026-11-04T08:58:42Z",
+      "browserClass": "Chrome headless shell (chrome-headless-shell.exe)",
+      "argumentDiff": "same required launch args as the capture, headless; no additional --enable-automation. Different browser binary used only to localize the cause; never used for capture.",
+      "pid": 83760,
+      "exitCode": 0,
+      "cdpResult": "CMDLINE_ERR: Command line not returned because --enable-automation not set.",
+      "navigation": "none",
+      "ownership": "launched by this run and closed with browser.close(); observed exit recorded in logs/probe-headless-shell.log",
+      "evidence": "outputs/B-STAR-FIXED-CAPTURE-20261104/logs/probe-headless-shell.log (local, not part of the public copy)"
+    },
+    {
+      "kind": "diagnostic",
+      "wasCaptureAttempt": false,
+      "tool": "probe-args2.mjs",
+      "scriptWrittenUtc": "2026-11-04T08:59:26Z",
+      "browserClass": "Chrome for Testing, per script",
+      "argumentDiff": "required launch args plus --enable-automation",
+      "pid": null,
+      "exitCode": null,
+      "cdpResult": "no stdout or exit record retained; execution and CDP success are unverified, so no success claim is made",
+      "navigation": "none (no record)",
+      "ownership": "script prepared by this run; no process record retained",
+      "evidence": "script only: outputs/B-STAR-FIXED-CAPTURE-20261104/logs/probe-args2.mjs (local, not part of the public copy)"
+    }
+  ],
+  "cleanup": {
+    "previewProcess": {
+      "ownedByThisRun": true,
+      "stopRequestedUtc": "2026-11-04T08:59:44Z",
+      "portClosedVerifiedUtc": "2026-11-04T08:59:53Z",
+      "pidPresentAfterStop": false,
+      "loopbackPortListeningAfterStop": false
+    },
+    "captureChromiumProcess": {
+      "ownedByThisRun": true,
+      "launchedBy": "the capture process through Playwright chromium.launch",
+      "pid": null,
+      "exitObserved": false,
+      "shutdown": "browser.close() was invoked in the capture try/finally after the CDP failure; its return is not treated as proof of full process exit",
+      "note": "No standalone PID or exit event was captured for the capture browser, so residual Chromium processes are unknown and were not inspected or terminated"
+    },
+    "otherProcesses": "No unknown processes, locks or worktrees were touched. No second capture browser and no retry capture were launched; two headless diagnostic browsers were launched after the failure to localize the cause and were closed, and a third diagnostic script has no retained process record. See diagnostics.",
+    "gameTree": "No source, configuration or lock file was modified. The capture did not reach navigation, so the served bundle was neither fetched nor verified; report.servedBundleSha256 is absent."
+  },
+  "unknowns": [
+    "WebGL2 backend, renderer/vendor string, scene pixels and repeat determinism were not reached, so none are verified.",
+    "Node 24 is required by AGENTS.md, but only Node 22.23.2 was installed; all commands above ran on Node 22.23.2."
+  ]
+}

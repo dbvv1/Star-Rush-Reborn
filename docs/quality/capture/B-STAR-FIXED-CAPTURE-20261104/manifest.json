@@ -1,0 +1,137 @@
+{
+  "task": "B-STAR-FIXED-CAPTURE-20261104",
+  "status": "blocked",
+  "blockedAt": "first camera, before any frame was captured",
+  "reason": "tests/capture.mjs validates the real Chromium argv through CDP Browser.getBrowserCommandLine, but Playwright 1.64.1 (the locked version) no longer passes --enable-automation, so Chromium 156.0.8078.4 refuses that CDP command. No PNG was produced; remaining cameras were not started.",
+  "commit": "0bd62df9be7528cc9da643ebde089063d6166da8",
+  "tree": "f1dd5ca84c725b78bd9b8d5163368708eaae8e95",
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "trackedCleanAfterBuild": true,
+    "workerSha256": "3773376e17375f2361aace3b93610b0f19b9b6425fad3adf0c09bfced5db2f46",
+    "roadBundleSha256": "7e82cffce610c18afaa7399814553ea9a4d970621f417f8d5c4e53c377cc7544",
+    "note": "Both hashes were identical before and after the successful default build."
+  },
+  "renderProfile": {
+    "backendExpected": "webgl2",
+    "rendererMode": "software",
+    "requiredArgs": [
+      "--no-sandbox",
+      "--enable-unsafe-swiftshader",
+      "--use-angle=swiftshader"
+    ],
+    "argConfigNote": "These are the args passed in launchOptions; the capture failed while reading the real argv through Browser.getBrowserCommandLine, so no actual argv was obtained.",
+    "actualArgvVerified": false,
+    "actualArgv": null,
+    "headless": true,
+    "viewport": {
+      "width": 1280,
+      "height": 720,
+      "deviceScaleFactor": 1
+    },
+    "renderer": null,
+    "vendor": null,
+    "classification": null
+  },
+  "browser": {
+    "product": "Chrome for Testing (Playwright Chromium)",
+    "version": "156.0.8078.4",
+    "playwright": "1.64.1"
+  },
+  "diagnostics": {
+    "summary": "After the capture failure, two headless diagnostic browsers were launched and one further diagnostic script was prepared, only to localize the cause; none is capture or baseline evidence. The second probe used the headless-shell binary instead, solely for localization. No success output was retained for the --enable-automation variant, so its execution is unverified.",
+    "record": "command-log.json diagnostics"
+  },
+  "environment": {
+    "node": "22.23.2",
+    "expectedNode": "24",
+    "python": "3.13.5",
+    "note": "Only Node 22.23.2 is installed in the execution environment; no software was installed or upgraded."
+  },
+  "preview": {
+    "command": "node tests/smoke-server.mjs",
+    "loopback": "http://127.0.0.1:6519",
+    "processOwnedByThisRun": true,
+    "stopped": true,
+    "portClosed": true
+  },
+  "timelineUtc": {
+    "buildStarted": "2026-11-04T08:57:04Z",
+    "buildFinished": "2026-11-04T08:57:08Z",
+    "previewStarted": "2026-11-04T08:57:14Z",
+    "captureStarted": "2026-11-04T08:57:27Z",
+    "captureFinished": "2026-11-04T08:57:36Z",
+    "previewStopped": "2026-11-04T08:59:44Z",
+    "previewPortClosedVerified": "2026-11-04T08:59:53Z"
+  },
+  "cameras": [
+    {
+      "order": 1,
+      "shot": "coast-chase",
+      "url": "http://127.0.0.1:6519/road?shot=coast-chase&seed=73121&t=28&frames=1&input=road-tour",
+      "outputDirectory": "coast-chase",
+      "seed": 73121,
+      "t": 28,
+      "tick": 1680,
+      "frames": 1,
+      "input": "road-tour",
+      "status": "failed",
+      "commandExitCode": 1,
+      "passed": false,
+      "runs": 0,
+      "png": null,
+      "pngSha256": null,
+      "renderer": null,
+      "vendor": null,
+      "classification": null,
+      "report": "coast-chase/report.json"
+    },
+    {
+      "order": 2,
+      "shot": "coast-full-bend",
+      "url": "http://127.0.0.1:6519/road?shot=coast-full-bend&seed=73121&t=28&frames=1&input=road-tour",
+      "outputDirectory": "coast-full-bend",
+      "seed": 73121,
+      "t": 28,
+      "tick": 1680,
+      "frames": 1,
+      "input": "road-tour",
+      "status": "not_started",
+      "commandExitCode": null,
+      "passed": false,
+      "runs": 0,
+      "png": null,
+      "pngSha256": null,
+      "renderer": null,
+      "vendor": null,
+      "classification": null,
+      "report": null
+    },
+    {
+      "order": 3,
+      "shot": "academy-depth",
+      "url": "http://127.0.0.1:6519/road?shot=academy-depth&seed=95276&t=14&frames=1&input=road-tour",
+      "outputDirectory": "academy-depth",
+      "seed": 95276,
+      "t": 14,
+      "tick": 840,
+      "frames": 1,
+      "input": "road-tour",
+      "status": "not_started",
+      "commandExitCode": null,
+      "passed": false,
+      "runs": 0,
+      "png": null,
+      "pngSha256": null,
+      "renderer": null,
+      "vendor": null,
+      "classification": null,
+      "report": null
+    }
+  ],
+  "artifacts": {
+    "pngCount": 0,
+    "note": "No scene PNG exists; renderer, vendor and software classification stay null rather than being inferred."
+  }
+}

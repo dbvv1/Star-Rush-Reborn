@@ -1,0 +1,44 @@
+{
+  "publicCopy": "sanitized from the local capture report; not an unmodified raw log",
+  "sanitizedFields": [
+    "launchOptions.executablePath value (replaced with a placeholder)",
+    "errors[0] stack trace (replaced by the error message; stack frames and their absolute paths removed)"
+  ],
+  "sanitizationNotes": "The local report.json contained no absolute output directory field; that absolute directory was printed only to the capture console log and is not reproduced in the public copy. launchOptions.args is presented as requiredArgs/extraArgs with all six values unchanged, and launchOptions.timeout as timeoutMs. Actual browser argv was never obtained for this capture attempt because Browser.getBrowserCommandLine failed, so no actual argv was removed or sanitized. The diagnostic probes' full launch command lines exist only in the omitted private logs; no diagnostic argv is reproduced in the public copy.",
+  "passed": false,
+  "scope": "deterministic-scene-only",
+  "shot": "coast-chase",
+  "options": {
+    "shot": "coast-chase",
+    "seed": 73121,
+    "input": "road-tour",
+    "ticks": 1680,
+    "t": 28,
+    "requestedTime": 28,
+    "frames": 1,
+    "dt": 0.016666666666666666
+  },
+  "launchConfig": {
+    "headless": true,
+    "chromiumSandbox": false,
+    "requiredArgs": [
+      "--no-sandbox",
+      "--enable-unsafe-swiftshader",
+      "--use-angle=swiftshader"
+    ],
+    "extraArgs": [
+      "--disable-background-timer-throttling",
+      "--disable-renderer-backgrounding",
+      "--disable-backgrounding-occluded-windows"
+    ],
+    "timeoutMs": 30000,
+    "executablePath": "[sanitized local path to installed Chrome for Testing]"
+  },
+  "runs": [],
+  "errors": [
+    "cdpSession.send: Protocol error (Browser.getBrowserCommandLine): Command line not returned because --enable-automation not set."
+  ],
+  "commit": "0bd62df9be7528cc9da643ebde089063d6166da8",
+  "dirty": false,
+  "browser": "156.0.8078.4"
+}
