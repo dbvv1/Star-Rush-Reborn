@@ -1,0 +1,2926 @@
+{
+  "schema": "star-outer-bank-sideband@1",
+  "sourceCommit": "ab2655930996b9d81f5fb35469669c72b7be28e1",
+  "source": {
+    "buildPy": {
+      "path": "asset-pipeline/content-set/build.py",
+      "sha256": "945c4ce2fa1958a6f1baed8bf88619834c388e3ed781a2daacb7164f4c3bb714"
+    },
+    "recipe": {
+      "path": "asset-pipeline/content-set/recipe.json",
+      "sha256": "16becba2cf71feb780927cf8d9f097785922e5b81226de8a7a3f7f8b7246280a"
+    },
+    "adapter": {
+      "path": "asset-pipeline/content-set/adapter.mjs",
+      "sha256": "31a9e59f476ba705382731b4d91a1d51bea252f00a05590b20ebd9c76b363299"
+    },
+    "roadSourceGlb": {
+      "path": "asset-pipeline/content-set/source/racing/roadStraight.glb",
+      "sha256": "6b1f92e5859d417951f259e52c9c9eadad5bfceb3b545e074049bbc17d02f00d"
+    },
+    "roadOutputGlb": {
+      "path": "asset-pipeline/content-set/outputs/base/road.glb",
+      "sha256": "9eb6a584f5dfc625680e7dadfaa7c8a66ff155f7c90c95a07de4f1b43feebd9a",
+      "bytes": 276056,
+      "triangles": 2202
+    }
+  },
+  "replay": {
+    "byteIdentical": true,
+    "roadGlbSha256": "9eb6a584f5dfc625680e7dadfaa7c8a66ff155f7c90c95a07de4f1b43feebd9a",
+    "bytes": 276056
+  },
+  "part": "road-and-graded-shoulder",
+  "partTriangleCount": 1658,
+  "triangleCount": 192,
+  "families": {
+    "foliage": 96,
+    "soil": 96
+  },
+  "triangles": [
+    486,
+    487,
+    488,
+    489,
+    1562,
+    1563,
+    1564,
+    1565,
+    490,
+    491,
+    492,
+    493,
+    1566,
+    1567,
+    1568,
+    1569,
+    494,
+    495,
+    496,
+    497,
+    1570,
+    1571,
+    1572,
+    1573,
+    498,
+    499,
+    500,
+    501,
+    1574,
+    1575,
+    1576,
+    1577,
+    502,
+    503,
+    504,
+    505,
+    1578,
+    1579,
+    1580,
+    1581,
+    506,
+    507,
+    508,
+    509,
+    1582,
+    1583,
+    1584,
+    1585,
+    510,
+    511,
+    512,
+    513,
+    1586,
+    1587,
+    1588,
+    1589,
+    514,
+    515,
+    516,
+    517,
+    1590,
+    1591,
+    1592,
+    1593,
+    518,
+    519,
+    520,
+    521,
+    1594,
+    1595,
+    1596,
+    1597,
+    522,
+    523,
+    524,
+    525,
+    1598,
+    1599,
+    1600,
+    1601,
+    526,
+    527,
+    528,
+    529,
+    1602,
+    1603,
+    1604,
+    1605,
+    530,
+    531,
+    532,
+    533,
+    1606,
+    1607,
+    1608,
+    1609,
+    534,
+    535,
+    536,
+    537,
+    1610,
+    1611,
+    1612,
+    1613,
+    538,
+    539,
+    540,
+    541,
+    1614,
+    1615,
+    1616,
+    1617,
+    542,
+    543,
+    544,
+    545,
+    1618,
+    1619,
+    1620,
+    1621,
+    546,
+    547,
+    548,
+    549,
+    1622,
+    1623,
+    1624,
+    1625,
+    550,
+    551,
+    552,
+    553,
+    1626,
+    1627,
+    1628,
+    1629,
+    554,
+    555,
+    556,
+    557,
+    1630,
+    1631,
+    1632,
+    1633,
+    558,
+    559,
+    560,
+    561,
+    1634,
+    1635,
+    1636,
+    1637,
+    562,
+    563,
+    564,
+    565,
+    1638,
+    1639,
+    1640,
+    1641,
+    566,
+    567,
+    568,
+    569,
+    1642,
+    1643,
+    1644,
+    1645,
+    570,
+    571,
+    572,
+    573,
+    1646,
+    1647,
+    1648,
+    1649,
+    574,
+    575,
+    576,
+    577,
+    1650,
+    1651,
+    1652,
+    1653,
+    578,
+    579,
+    580,
+    581,
+    1654,
+    1655,
+    1656,
+    1657
+  ],
+  "records": [
+    {
+      "id": "bank:-1:0:0:0",
+      "triangle": 486,
+      "vertices": [
+        1458,
+        1459,
+        1460
+      ],
+      "family": "foliage",
+      "familyTriangle": 324,
+      "side": -1,
+      "segment": 0,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:0:0:1",
+      "triangle": 487,
+      "vertices": [
+        1461,
+        1462,
+        1463
+      ],
+      "family": "foliage",
+      "familyTriangle": 325,
+      "side": -1,
+      "segment": 0,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:0:1:0",
+      "triangle": 488,
+      "vertices": [
+        1464,
+        1465,
+        1466
+      ],
+      "family": "foliage",
+      "familyTriangle": 326,
+      "side": -1,
+      "segment": 0,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:0:1:1",
+      "triangle": 489,
+      "vertices": [
+        1467,
+        1468,
+        1469
+      ],
+      "family": "foliage",
+      "familyTriangle": 327,
+      "side": -1,
+      "segment": 0,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:0:2:0",
+      "triangle": 1562,
+      "vertices": [
+        4686,
+        4687,
+        4688
+      ],
+      "family": "soil",
+      "familyTriangle": 0,
+      "side": -1,
+      "segment": 0,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:0:2:1",
+      "triangle": 1563,
+      "vertices": [
+        4689,
+        4690,
+        4691
+      ],
+      "family": "soil",
+      "familyTriangle": 1,
+      "side": -1,
+      "segment": 0,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:0:3:0",
+      "triangle": 1564,
+      "vertices": [
+        4692,
+        4693,
+        4694
+      ],
+      "family": "soil",
+      "familyTriangle": 2,
+      "side": -1,
+      "segment": 0,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:0:3:1",
+      "triangle": 1565,
+      "vertices": [
+        4695,
+        4696,
+        4697
+      ],
+      "family": "soil",
+      "familyTriangle": 3,
+      "side": -1,
+      "segment": 0,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:1:0:0",
+      "triangle": 490,
+      "vertices": [
+        1470,
+        1471,
+        1472
+      ],
+      "family": "foliage",
+      "familyTriangle": 328,
+      "side": -1,
+      "segment": 1,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:1:0:1",
+      "triangle": 491,
+      "vertices": [
+        1473,
+        1474,
+        1475
+      ],
+      "family": "foliage",
+      "familyTriangle": 329,
+      "side": -1,
+      "segment": 1,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:1:1:0",
+      "triangle": 492,
+      "vertices": [
+        1476,
+        1477,
+        1478
+      ],
+      "family": "foliage",
+      "familyTriangle": 330,
+      "side": -1,
+      "segment": 1,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:1:1:1",
+      "triangle": 493,
+      "vertices": [
+        1479,
+        1480,
+        1481
+      ],
+      "family": "foliage",
+      "familyTriangle": 331,
+      "side": -1,
+      "segment": 1,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:1:2:0",
+      "triangle": 1566,
+      "vertices": [
+        4698,
+        4699,
+        4700
+      ],
+      "family": "soil",
+      "familyTriangle": 4,
+      "side": -1,
+      "segment": 1,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:1:2:1",
+      "triangle": 1567,
+      "vertices": [
+        4701,
+        4702,
+        4703
+      ],
+      "family": "soil",
+      "familyTriangle": 5,
+      "side": -1,
+      "segment": 1,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:1:3:0",
+      "triangle": 1568,
+      "vertices": [
+        4704,
+        4705,
+        4706
+      ],
+      "family": "soil",
+      "familyTriangle": 6,
+      "side": -1,
+      "segment": 1,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:1:3:1",
+      "triangle": 1569,
+      "vertices": [
+        4707,
+        4708,
+        4709
+      ],
+      "family": "soil",
+      "familyTriangle": 7,
+      "side": -1,
+      "segment": 1,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:2:0:0",
+      "triangle": 494,
+      "vertices": [
+        1482,
+        1483,
+        1484
+      ],
+      "family": "foliage",
+      "familyTriangle": 332,
+      "side": -1,
+      "segment": 2,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:2:0:1",
+      "triangle": 495,
+      "vertices": [
+        1485,
+        1486,
+        1487
+      ],
+      "family": "foliage",
+      "familyTriangle": 333,
+      "side": -1,
+      "segment": 2,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:2:1:0",
+      "triangle": 496,
+      "vertices": [
+        1488,
+        1489,
+        1490
+      ],
+      "family": "foliage",
+      "familyTriangle": 334,
+      "side": -1,
+      "segment": 2,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:2:1:1",
+      "triangle": 497,
+      "vertices": [
+        1491,
+        1492,
+        1493
+      ],
+      "family": "foliage",
+      "familyTriangle": 335,
+      "side": -1,
+      "segment": 2,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:2:2:0",
+      "triangle": 1570,
+      "vertices": [
+        4710,
+        4711,
+        4712
+      ],
+      "family": "soil",
+      "familyTriangle": 8,
+      "side": -1,
+      "segment": 2,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:2:2:1",
+      "triangle": 1571,
+      "vertices": [
+        4713,
+        4714,
+        4715
+      ],
+      "family": "soil",
+      "familyTriangle": 9,
+      "side": -1,
+      "segment": 2,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:2:3:0",
+      "triangle": 1572,
+      "vertices": [
+        4716,
+        4717,
+        4718
+      ],
+      "family": "soil",
+      "familyTriangle": 10,
+      "side": -1,
+      "segment": 2,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:2:3:1",
+      "triangle": 1573,
+      "vertices": [
+        4719,
+        4720,
+        4721
+      ],
+      "family": "soil",
+      "familyTriangle": 11,
+      "side": -1,
+      "segment": 2,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:3:0:0",
+      "triangle": 498,
+      "vertices": [
+        1494,
+        1495,
+        1496
+      ],
+      "family": "foliage",
+      "familyTriangle": 336,
+      "side": -1,
+      "segment": 3,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:3:0:1",
+      "triangle": 499,
+      "vertices": [
+        1497,
+        1498,
+        1499
+      ],
+      "family": "foliage",
+      "familyTriangle": 337,
+      "side": -1,
+      "segment": 3,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:3:1:0",
+      "triangle": 500,
+      "vertices": [
+        1500,
+        1501,
+        1502
+      ],
+      "family": "foliage",
+      "familyTriangle": 338,
+      "side": -1,
+      "segment": 3,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:3:1:1",
+      "triangle": 501,
+      "vertices": [
+        1503,
+        1504,
+        1505
+      ],
+      "family": "foliage",
+      "familyTriangle": 339,
+      "side": -1,
+      "segment": 3,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:3:2:0",
+      "triangle": 1574,
+      "vertices": [
+        4722,
+        4723,
+        4724
+      ],
+      "family": "soil",
+      "familyTriangle": 12,
+      "side": -1,
+      "segment": 3,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:3:2:1",
+      "triangle": 1575,
+      "vertices": [
+        4725,
+        4726,
+        4727
+      ],
+      "family": "soil",
+      "familyTriangle": 13,
+      "side": -1,
+      "segment": 3,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:3:3:0",
+      "triangle": 1576,
+      "vertices": [
+        4728,
+        4729,
+        4730
+      ],
+      "family": "soil",
+      "familyTriangle": 14,
+      "side": -1,
+      "segment": 3,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:3:3:1",
+      "triangle": 1577,
+      "vertices": [
+        4731,
+        4732,
+        4733
+      ],
+      "family": "soil",
+      "familyTriangle": 15,
+      "side": -1,
+      "segment": 3,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:4:0:0",
+      "triangle": 502,
+      "vertices": [
+        1506,
+        1507,
+        1508
+      ],
+      "family": "foliage",
+      "familyTriangle": 340,
+      "side": -1,
+      "segment": 4,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:4:0:1",
+      "triangle": 503,
+      "vertices": [
+        1509,
+        1510,
+        1511
+      ],
+      "family": "foliage",
+      "familyTriangle": 341,
+      "side": -1,
+      "segment": 4,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:4:1:0",
+      "triangle": 504,
+      "vertices": [
+        1512,
+        1513,
+        1514
+      ],
+      "family": "foliage",
+      "familyTriangle": 342,
+      "side": -1,
+      "segment": 4,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:4:1:1",
+      "triangle": 505,
+      "vertices": [
+        1515,
+        1516,
+        1517
+      ],
+      "family": "foliage",
+      "familyTriangle": 343,
+      "side": -1,
+      "segment": 4,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:4:2:0",
+      "triangle": 1578,
+      "vertices": [
+        4734,
+        4735,
+        4736
+      ],
+      "family": "soil",
+      "familyTriangle": 16,
+      "side": -1,
+      "segment": 4,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:4:2:1",
+      "triangle": 1579,
+      "vertices": [
+        4737,
+        4738,
+        4739
+      ],
+      "family": "soil",
+      "familyTriangle": 17,
+      "side": -1,
+      "segment": 4,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:4:3:0",
+      "triangle": 1580,
+      "vertices": [
+        4740,
+        4741,
+        4742
+      ],
+      "family": "soil",
+      "familyTriangle": 18,
+      "side": -1,
+      "segment": 4,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:4:3:1",
+      "triangle": 1581,
+      "vertices": [
+        4743,
+        4744,
+        4745
+      ],
+      "family": "soil",
+      "familyTriangle": 19,
+      "side": -1,
+      "segment": 4,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:5:0:0",
+      "triangle": 506,
+      "vertices": [
+        1518,
+        1519,
+        1520
+      ],
+      "family": "foliage",
+      "familyTriangle": 344,
+      "side": -1,
+      "segment": 5,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:5:0:1",
+      "triangle": 507,
+      "vertices": [
+        1521,
+        1522,
+        1523
+      ],
+      "family": "foliage",
+      "familyTriangle": 345,
+      "side": -1,
+      "segment": 5,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:5:1:0",
+      "triangle": 508,
+      "vertices": [
+        1524,
+        1525,
+        1526
+      ],
+      "family": "foliage",
+      "familyTriangle": 346,
+      "side": -1,
+      "segment": 5,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:5:1:1",
+      "triangle": 509,
+      "vertices": [
+        1527,
+        1528,
+        1529
+      ],
+      "family": "foliage",
+      "familyTriangle": 347,
+      "side": -1,
+      "segment": 5,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:5:2:0",
+      "triangle": 1582,
+      "vertices": [
+        4746,
+        4747,
+        4748
+      ],
+      "family": "soil",
+      "familyTriangle": 20,
+      "side": -1,
+      "segment": 5,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:5:2:1",
+      "triangle": 1583,
+      "vertices": [
+        4749,
+        4750,
+        4751
+      ],
+      "family": "soil",
+      "familyTriangle": 21,
+      "side": -1,
+      "segment": 5,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:5:3:0",
+      "triangle": 1584,
+      "vertices": [
+        4752,
+        4753,
+        4754
+      ],
+      "family": "soil",
+      "familyTriangle": 22,
+      "side": -1,
+      "segment": 5,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:5:3:1",
+      "triangle": 1585,
+      "vertices": [
+        4755,
+        4756,
+        4757
+      ],
+      "family": "soil",
+      "familyTriangle": 23,
+      "side": -1,
+      "segment": 5,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:6:0:0",
+      "triangle": 510,
+      "vertices": [
+        1530,
+        1531,
+        1532
+      ],
+      "family": "foliage",
+      "familyTriangle": 348,
+      "side": -1,
+      "segment": 6,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:6:0:1",
+      "triangle": 511,
+      "vertices": [
+        1533,
+        1534,
+        1535
+      ],
+      "family": "foliage",
+      "familyTriangle": 349,
+      "side": -1,
+      "segment": 6,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:6:1:0",
+      "triangle": 512,
+      "vertices": [
+        1536,
+        1537,
+        1538
+      ],
+      "family": "foliage",
+      "familyTriangle": 350,
+      "side": -1,
+      "segment": 6,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:6:1:1",
+      "triangle": 513,
+      "vertices": [
+        1539,
+        1540,
+        1541
+      ],
+      "family": "foliage",
+      "familyTriangle": 351,
+      "side": -1,
+      "segment": 6,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:6:2:0",
+      "triangle": 1586,
+      "vertices": [
+        4758,
+        4759,
+        4760
+      ],
+      "family": "soil",
+      "familyTriangle": 24,
+      "side": -1,
+      "segment": 6,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:6:2:1",
+      "triangle": 1587,
+      "vertices": [
+        4761,
+        4762,
+        4763
+      ],
+      "family": "soil",
+      "familyTriangle": 25,
+      "side": -1,
+      "segment": 6,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:6:3:0",
+      "triangle": 1588,
+      "vertices": [
+        4764,
+        4765,
+        4766
+      ],
+      "family": "soil",
+      "familyTriangle": 26,
+      "side": -1,
+      "segment": 6,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:6:3:1",
+      "triangle": 1589,
+      "vertices": [
+        4767,
+        4768,
+        4769
+      ],
+      "family": "soil",
+      "familyTriangle": 27,
+      "side": -1,
+      "segment": 6,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:7:0:0",
+      "triangle": 514,
+      "vertices": [
+        1542,
+        1543,
+        1544
+      ],
+      "family": "foliage",
+      "familyTriangle": 352,
+      "side": -1,
+      "segment": 7,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:7:0:1",
+      "triangle": 515,
+      "vertices": [
+        1545,
+        1546,
+        1547
+      ],
+      "family": "foliage",
+      "familyTriangle": 353,
+      "side": -1,
+      "segment": 7,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:7:1:0",
+      "triangle": 516,
+      "vertices": [
+        1548,
+        1549,
+        1550
+      ],
+      "family": "foliage",
+      "familyTriangle": 354,
+      "side": -1,
+      "segment": 7,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:7:1:1",
+      "triangle": 517,
+      "vertices": [
+        1551,
+        1552,
+        1553
+      ],
+      "family": "foliage",
+      "familyTriangle": 355,
+      "side": -1,
+      "segment": 7,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:7:2:0",
+      "triangle": 1590,
+      "vertices": [
+        4770,
+        4771,
+        4772
+      ],
+      "family": "soil",
+      "familyTriangle": 28,
+      "side": -1,
+      "segment": 7,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:7:2:1",
+      "triangle": 1591,
+      "vertices": [
+        4773,
+        4774,
+        4775
+      ],
+      "family": "soil",
+      "familyTriangle": 29,
+      "side": -1,
+      "segment": 7,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:7:3:0",
+      "triangle": 1592,
+      "vertices": [
+        4776,
+        4777,
+        4778
+      ],
+      "family": "soil",
+      "familyTriangle": 30,
+      "side": -1,
+      "segment": 7,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:7:3:1",
+      "triangle": 1593,
+      "vertices": [
+        4779,
+        4780,
+        4781
+      ],
+      "family": "soil",
+      "familyTriangle": 31,
+      "side": -1,
+      "segment": 7,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:8:0:0",
+      "triangle": 518,
+      "vertices": [
+        1554,
+        1555,
+        1556
+      ],
+      "family": "foliage",
+      "familyTriangle": 356,
+      "side": -1,
+      "segment": 8,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:8:0:1",
+      "triangle": 519,
+      "vertices": [
+        1557,
+        1558,
+        1559
+      ],
+      "family": "foliage",
+      "familyTriangle": 357,
+      "side": -1,
+      "segment": 8,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:8:1:0",
+      "triangle": 520,
+      "vertices": [
+        1560,
+        1561,
+        1562
+      ],
+      "family": "foliage",
+      "familyTriangle": 358,
+      "side": -1,
+      "segment": 8,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:8:1:1",
+      "triangle": 521,
+      "vertices": [
+        1563,
+        1564,
+        1565
+      ],
+      "family": "foliage",
+      "familyTriangle": 359,
+      "side": -1,
+      "segment": 8,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:8:2:0",
+      "triangle": 1594,
+      "vertices": [
+        4782,
+        4783,
+        4784
+      ],
+      "family": "soil",
+      "familyTriangle": 32,
+      "side": -1,
+      "segment": 8,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:8:2:1",
+      "triangle": 1595,
+      "vertices": [
+        4785,
+        4786,
+        4787
+      ],
+      "family": "soil",
+      "familyTriangle": 33,
+      "side": -1,
+      "segment": 8,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:8:3:0",
+      "triangle": 1596,
+      "vertices": [
+        4788,
+        4789,
+        4790
+      ],
+      "family": "soil",
+      "familyTriangle": 34,
+      "side": -1,
+      "segment": 8,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:8:3:1",
+      "triangle": 1597,
+      "vertices": [
+        4791,
+        4792,
+        4793
+      ],
+      "family": "soil",
+      "familyTriangle": 35,
+      "side": -1,
+      "segment": 8,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:9:0:0",
+      "triangle": 522,
+      "vertices": [
+        1566,
+        1567,
+        1568
+      ],
+      "family": "foliage",
+      "familyTriangle": 360,
+      "side": -1,
+      "segment": 9,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:9:0:1",
+      "triangle": 523,
+      "vertices": [
+        1569,
+        1570,
+        1571
+      ],
+      "family": "foliage",
+      "familyTriangle": 361,
+      "side": -1,
+      "segment": 9,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:9:1:0",
+      "triangle": 524,
+      "vertices": [
+        1572,
+        1573,
+        1574
+      ],
+      "family": "foliage",
+      "familyTriangle": 362,
+      "side": -1,
+      "segment": 9,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:9:1:1",
+      "triangle": 525,
+      "vertices": [
+        1575,
+        1576,
+        1577
+      ],
+      "family": "foliage",
+      "familyTriangle": 363,
+      "side": -1,
+      "segment": 9,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:9:2:0",
+      "triangle": 1598,
+      "vertices": [
+        4794,
+        4795,
+        4796
+      ],
+      "family": "soil",
+      "familyTriangle": 36,
+      "side": -1,
+      "segment": 9,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:9:2:1",
+      "triangle": 1599,
+      "vertices": [
+        4797,
+        4798,
+        4799
+      ],
+      "family": "soil",
+      "familyTriangle": 37,
+      "side": -1,
+      "segment": 9,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:9:3:0",
+      "triangle": 1600,
+      "vertices": [
+        4800,
+        4801,
+        4802
+      ],
+      "family": "soil",
+      "familyTriangle": 38,
+      "side": -1,
+      "segment": 9,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:9:3:1",
+      "triangle": 1601,
+      "vertices": [
+        4803,
+        4804,
+        4805
+      ],
+      "family": "soil",
+      "familyTriangle": 39,
+      "side": -1,
+      "segment": 9,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:10:0:0",
+      "triangle": 526,
+      "vertices": [
+        1578,
+        1579,
+        1580
+      ],
+      "family": "foliage",
+      "familyTriangle": 364,
+      "side": -1,
+      "segment": 10,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:10:0:1",
+      "triangle": 527,
+      "vertices": [
+        1581,
+        1582,
+        1583
+      ],
+      "family": "foliage",
+      "familyTriangle": 365,
+      "side": -1,
+      "segment": 10,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:10:1:0",
+      "triangle": 528,
+      "vertices": [
+        1584,
+        1585,
+        1586
+      ],
+      "family": "foliage",
+      "familyTriangle": 366,
+      "side": -1,
+      "segment": 10,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:10:1:1",
+      "triangle": 529,
+      "vertices": [
+        1587,
+        1588,
+        1589
+      ],
+      "family": "foliage",
+      "familyTriangle": 367,
+      "side": -1,
+      "segment": 10,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:10:2:0",
+      "triangle": 1602,
+      "vertices": [
+        4806,
+        4807,
+        4808
+      ],
+      "family": "soil",
+      "familyTriangle": 40,
+      "side": -1,
+      "segment": 10,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:10:2:1",
+      "triangle": 1603,
+      "vertices": [
+        4809,
+        4810,
+        4811
+      ],
+      "family": "soil",
+      "familyTriangle": 41,
+      "side": -1,
+      "segment": 10,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:10:3:0",
+      "triangle": 1604,
+      "vertices": [
+        4812,
+        4813,
+        4814
+      ],
+      "family": "soil",
+      "familyTriangle": 42,
+      "side": -1,
+      "segment": 10,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:10:3:1",
+      "triangle": 1605,
+      "vertices": [
+        4815,
+        4816,
+        4817
+      ],
+      "family": "soil",
+      "familyTriangle": 43,
+      "side": -1,
+      "segment": 10,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:11:0:0",
+      "triangle": 530,
+      "vertices": [
+        1590,
+        1591,
+        1592
+      ],
+      "family": "foliage",
+      "familyTriangle": 368,
+      "side": -1,
+      "segment": 11,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:11:0:1",
+      "triangle": 531,
+      "vertices": [
+        1593,
+        1594,
+        1595
+      ],
+      "family": "foliage",
+      "familyTriangle": 369,
+      "side": -1,
+      "segment": 11,
+      "strip": 0
+    },
+    {
+      "id": "bank:-1:11:1:0",
+      "triangle": 532,
+      "vertices": [
+        1596,
+        1597,
+        1598
+      ],
+      "family": "foliage",
+      "familyTriangle": 370,
+      "side": -1,
+      "segment": 11,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:11:1:1",
+      "triangle": 533,
+      "vertices": [
+        1599,
+        1600,
+        1601
+      ],
+      "family": "foliage",
+      "familyTriangle": 371,
+      "side": -1,
+      "segment": 11,
+      "strip": 1
+    },
+    {
+      "id": "bank:-1:11:2:0",
+      "triangle": 1606,
+      "vertices": [
+        4818,
+        4819,
+        4820
+      ],
+      "family": "soil",
+      "familyTriangle": 44,
+      "side": -1,
+      "segment": 11,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:11:2:1",
+      "triangle": 1607,
+      "vertices": [
+        4821,
+        4822,
+        4823
+      ],
+      "family": "soil",
+      "familyTriangle": 45,
+      "side": -1,
+      "segment": 11,
+      "strip": 2
+    },
+    {
+      "id": "bank:-1:11:3:0",
+      "triangle": 1608,
+      "vertices": [
+        4824,
+        4825,
+        4826
+      ],
+      "family": "soil",
+      "familyTriangle": 46,
+      "side": -1,
+      "segment": 11,
+      "strip": 3
+    },
+    {
+      "id": "bank:-1:11:3:1",
+      "triangle": 1609,
+      "vertices": [
+        4827,
+        4828,
+        4829
+      ],
+      "family": "soil",
+      "familyTriangle": 47,
+      "side": -1,
+      "segment": 11,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:0:0:0",
+      "triangle": 534,
+      "vertices": [
+        1602,
+        1603,
+        1604
+      ],
+      "family": "foliage",
+      "familyTriangle": 372,
+      "side": 1,
+      "segment": 0,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:0:0:1",
+      "triangle": 535,
+      "vertices": [
+        1605,
+        1606,
+        1607
+      ],
+      "family": "foliage",
+      "familyTriangle": 373,
+      "side": 1,
+      "segment": 0,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:0:1:0",
+      "triangle": 536,
+      "vertices": [
+        1608,
+        1609,
+        1610
+      ],
+      "family": "foliage",
+      "familyTriangle": 374,
+      "side": 1,
+      "segment": 0,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:0:1:1",
+      "triangle": 537,
+      "vertices": [
+        1611,
+        1612,
+        1613
+      ],
+      "family": "foliage",
+      "familyTriangle": 375,
+      "side": 1,
+      "segment": 0,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:0:2:0",
+      "triangle": 1610,
+      "vertices": [
+        4830,
+        4831,
+        4832
+      ],
+      "family": "soil",
+      "familyTriangle": 48,
+      "side": 1,
+      "segment": 0,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:0:2:1",
+      "triangle": 1611,
+      "vertices": [
+        4833,
+        4834,
+        4835
+      ],
+      "family": "soil",
+      "familyTriangle": 49,
+      "side": 1,
+      "segment": 0,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:0:3:0",
+      "triangle": 1612,
+      "vertices": [
+        4836,
+        4837,
+        4838
+      ],
+      "family": "soil",
+      "familyTriangle": 50,
+      "side": 1,
+      "segment": 0,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:0:3:1",
+      "triangle": 1613,
+      "vertices": [
+        4839,
+        4840,
+        4841
+      ],
+      "family": "soil",
+      "familyTriangle": 51,
+      "side": 1,
+      "segment": 0,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:1:0:0",
+      "triangle": 538,
+      "vertices": [
+        1614,
+        1615,
+        1616
+      ],
+      "family": "foliage",
+      "familyTriangle": 376,
+      "side": 1,
+      "segment": 1,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:1:0:1",
+      "triangle": 539,
+      "vertices": [
+        1617,
+        1618,
+        1619
+      ],
+      "family": "foliage",
+      "familyTriangle": 377,
+      "side": 1,
+      "segment": 1,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:1:1:0",
+      "triangle": 540,
+      "vertices": [
+        1620,
+        1621,
+        1622
+      ],
+      "family": "foliage",
+      "familyTriangle": 378,
+      "side": 1,
+      "segment": 1,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:1:1:1",
+      "triangle": 541,
+      "vertices": [
+        1623,
+        1624,
+        1625
+      ],
+      "family": "foliage",
+      "familyTriangle": 379,
+      "side": 1,
+      "segment": 1,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:1:2:0",
+      "triangle": 1614,
+      "vertices": [
+        4842,
+        4843,
+        4844
+      ],
+      "family": "soil",
+      "familyTriangle": 52,
+      "side": 1,
+      "segment": 1,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:1:2:1",
+      "triangle": 1615,
+      "vertices": [
+        4845,
+        4846,
+        4847
+      ],
+      "family": "soil",
+      "familyTriangle": 53,
+      "side": 1,
+      "segment": 1,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:1:3:0",
+      "triangle": 1616,
+      "vertices": [
+        4848,
+        4849,
+        4850
+      ],
+      "family": "soil",
+      "familyTriangle": 54,
+      "side": 1,
+      "segment": 1,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:1:3:1",
+      "triangle": 1617,
+      "vertices": [
+        4851,
+        4852,
+        4853
+      ],
+      "family": "soil",
+      "familyTriangle": 55,
+      "side": 1,
+      "segment": 1,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:2:0:0",
+      "triangle": 542,
+      "vertices": [
+        1626,
+        1627,
+        1628
+      ],
+      "family": "foliage",
+      "familyTriangle": 380,
+      "side": 1,
+      "segment": 2,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:2:0:1",
+      "triangle": 543,
+      "vertices": [
+        1629,
+        1630,
+        1631
+      ],
+      "family": "foliage",
+      "familyTriangle": 381,
+      "side": 1,
+      "segment": 2,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:2:1:0",
+      "triangle": 544,
+      "vertices": [
+        1632,
+        1633,
+        1634
+      ],
+      "family": "foliage",
+      "familyTriangle": 382,
+      "side": 1,
+      "segment": 2,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:2:1:1",
+      "triangle": 545,
+      "vertices": [
+        1635,
+        1636,
+        1637
+      ],
+      "family": "foliage",
+      "familyTriangle": 383,
+      "side": 1,
+      "segment": 2,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:2:2:0",
+      "triangle": 1618,
+      "vertices": [
+        4854,
+        4855,
+        4856
+      ],
+      "family": "soil",
+      "familyTriangle": 56,
+      "side": 1,
+      "segment": 2,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:2:2:1",
+      "triangle": 1619,
+      "vertices": [
+        4857,
+        4858,
+        4859
+      ],
+      "family": "soil",
+      "familyTriangle": 57,
+      "side": 1,
+      "segment": 2,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:2:3:0",
+      "triangle": 1620,
+      "vertices": [
+        4860,
+        4861,
+        4862
+      ],
+      "family": "soil",
+      "familyTriangle": 58,
+      "side": 1,
+      "segment": 2,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:2:3:1",
+      "triangle": 1621,
+      "vertices": [
+        4863,
+        4864,
+        4865
+      ],
+      "family": "soil",
+      "familyTriangle": 59,
+      "side": 1,
+      "segment": 2,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:3:0:0",
+      "triangle": 546,
+      "vertices": [
+        1638,
+        1639,
+        1640
+      ],
+      "family": "foliage",
+      "familyTriangle": 384,
+      "side": 1,
+      "segment": 3,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:3:0:1",
+      "triangle": 547,
+      "vertices": [
+        1641,
+        1642,
+        1643
+      ],
+      "family": "foliage",
+      "familyTriangle": 385,
+      "side": 1,
+      "segment": 3,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:3:1:0",
+      "triangle": 548,
+      "vertices": [
+        1644,
+        1645,
+        1646
+      ],
+      "family": "foliage",
+      "familyTriangle": 386,
+      "side": 1,
+      "segment": 3,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:3:1:1",
+      "triangle": 549,
+      "vertices": [
+        1647,
+        1648,
+        1649
+      ],
+      "family": "foliage",
+      "familyTriangle": 387,
+      "side": 1,
+      "segment": 3,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:3:2:0",
+      "triangle": 1622,
+      "vertices": [
+        4866,
+        4867,
+        4868
+      ],
+      "family": "soil",
+      "familyTriangle": 60,
+      "side": 1,
+      "segment": 3,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:3:2:1",
+      "triangle": 1623,
+      "vertices": [
+        4869,
+        4870,
+        4871
+      ],
+      "family": "soil",
+      "familyTriangle": 61,
+      "side": 1,
+      "segment": 3,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:3:3:0",
+      "triangle": 1624,
+      "vertices": [
+        4872,
+        4873,
+        4874
+      ],
+      "family": "soil",
+      "familyTriangle": 62,
+      "side": 1,
+      "segment": 3,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:3:3:1",
+      "triangle": 1625,
+      "vertices": [
+        4875,
+        4876,
+        4877
+      ],
+      "family": "soil",
+      "familyTriangle": 63,
+      "side": 1,
+      "segment": 3,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:4:0:0",
+      "triangle": 550,
+      "vertices": [
+        1650,
+        1651,
+        1652
+      ],
+      "family": "foliage",
+      "familyTriangle": 388,
+      "side": 1,
+      "segment": 4,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:4:0:1",
+      "triangle": 551,
+      "vertices": [
+        1653,
+        1654,
+        1655
+      ],
+      "family": "foliage",
+      "familyTriangle": 389,
+      "side": 1,
+      "segment": 4,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:4:1:0",
+      "triangle": 552,
+      "vertices": [
+        1656,
+        1657,
+        1658
+      ],
+      "family": "foliage",
+      "familyTriangle": 390,
+      "side": 1,
+      "segment": 4,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:4:1:1",
+      "triangle": 553,
+      "vertices": [
+        1659,
+        1660,
+        1661
+      ],
+      "family": "foliage",
+      "familyTriangle": 391,
+      "side": 1,
+      "segment": 4,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:4:2:0",
+      "triangle": 1626,
+      "vertices": [
+        4878,
+        4879,
+        4880
+      ],
+      "family": "soil",
+      "familyTriangle": 64,
+      "side": 1,
+      "segment": 4,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:4:2:1",
+      "triangle": 1627,
+      "vertices": [
+        4881,
+        4882,
+        4883
+      ],
+      "family": "soil",
+      "familyTriangle": 65,
+      "side": 1,
+      "segment": 4,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:4:3:0",
+      "triangle": 1628,
+      "vertices": [
+        4884,
+        4885,
+        4886
+      ],
+      "family": "soil",
+      "familyTriangle": 66,
+      "side": 1,
+      "segment": 4,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:4:3:1",
+      "triangle": 1629,
+      "vertices": [
+        4887,
+        4888,
+        4889
+      ],
+      "family": "soil",
+      "familyTriangle": 67,
+      "side": 1,
+      "segment": 4,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:5:0:0",
+      "triangle": 554,
+      "vertices": [
+        1662,
+        1663,
+        1664
+      ],
+      "family": "foliage",
+      "familyTriangle": 392,
+      "side": 1,
+      "segment": 5,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:5:0:1",
+      "triangle": 555,
+      "vertices": [
+        1665,
+        1666,
+        1667
+      ],
+      "family": "foliage",
+      "familyTriangle": 393,
+      "side": 1,
+      "segment": 5,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:5:1:0",
+      "triangle": 556,
+      "vertices": [
+        1668,
+        1669,
+        1670
+      ],
+      "family": "foliage",
+      "familyTriangle": 394,
+      "side": 1,
+      "segment": 5,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:5:1:1",
+      "triangle": 557,
+      "vertices": [
+        1671,
+        1672,
+        1673
+      ],
+      "family": "foliage",
+      "familyTriangle": 395,
+      "side": 1,
+      "segment": 5,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:5:2:0",
+      "triangle": 1630,
+      "vertices": [
+        4890,
+        4891,
+        4892
+      ],
+      "family": "soil",
+      "familyTriangle": 68,
+      "side": 1,
+      "segment": 5,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:5:2:1",
+      "triangle": 1631,
+      "vertices": [
+        4893,
+        4894,
+        4895
+      ],
+      "family": "soil",
+      "familyTriangle": 69,
+      "side": 1,
+      "segment": 5,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:5:3:0",
+      "triangle": 1632,
+      "vertices": [
+        4896,
+        4897,
+        4898
+      ],
+      "family": "soil",
+      "familyTriangle": 70,
+      "side": 1,
+      "segment": 5,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:5:3:1",
+      "triangle": 1633,
+      "vertices": [
+        4899,
+        4900,
+        4901
+      ],
+      "family": "soil",
+      "familyTriangle": 71,
+      "side": 1,
+      "segment": 5,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:6:0:0",
+      "triangle": 558,
+      "vertices": [
+        1674,
+        1675,
+        1676
+      ],
+      "family": "foliage",
+      "familyTriangle": 396,
+      "side": 1,
+      "segment": 6,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:6:0:1",
+      "triangle": 559,
+      "vertices": [
+        1677,
+        1678,
+        1679
+      ],
+      "family": "foliage",
+      "familyTriangle": 397,
+      "side": 1,
+      "segment": 6,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:6:1:0",
+      "triangle": 560,
+      "vertices": [
+        1680,
+        1681,
+        1682
+      ],
+      "family": "foliage",
+      "familyTriangle": 398,
+      "side": 1,
+      "segment": 6,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:6:1:1",
+      "triangle": 561,
+      "vertices": [
+        1683,
+        1684,
+        1685
+      ],
+      "family": "foliage",
+      "familyTriangle": 399,
+      "side": 1,
+      "segment": 6,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:6:2:0",
+      "triangle": 1634,
+      "vertices": [
+        4902,
+        4903,
+        4904
+      ],
+      "family": "soil",
+      "familyTriangle": 72,
+      "side": 1,
+      "segment": 6,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:6:2:1",
+      "triangle": 1635,
+      "vertices": [
+        4905,
+        4906,
+        4907
+      ],
+      "family": "soil",
+      "familyTriangle": 73,
+      "side": 1,
+      "segment": 6,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:6:3:0",
+      "triangle": 1636,
+      "vertices": [
+        4908,
+        4909,
+        4910
+      ],
+      "family": "soil",
+      "familyTriangle": 74,
+      "side": 1,
+      "segment": 6,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:6:3:1",
+      "triangle": 1637,
+      "vertices": [
+        4911,
+        4912,
+        4913
+      ],
+      "family": "soil",
+      "familyTriangle": 75,
+      "side": 1,
+      "segment": 6,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:7:0:0",
+      "triangle": 562,
+      "vertices": [
+        1686,
+        1687,
+        1688
+      ],
+      "family": "foliage",
+      "familyTriangle": 400,
+      "side": 1,
+      "segment": 7,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:7:0:1",
+      "triangle": 563,
+      "vertices": [
+        1689,
+        1690,
+        1691
+      ],
+      "family": "foliage",
+      "familyTriangle": 401,
+      "side": 1,
+      "segment": 7,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:7:1:0",
+      "triangle": 564,
+      "vertices": [
+        1692,
+        1693,
+        1694
+      ],
+      "family": "foliage",
+      "familyTriangle": 402,
+      "side": 1,
+      "segment": 7,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:7:1:1",
+      "triangle": 565,
+      "vertices": [
+        1695,
+        1696,
+        1697
+      ],
+      "family": "foliage",
+      "familyTriangle": 403,
+      "side": 1,
+      "segment": 7,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:7:2:0",
+      "triangle": 1638,
+      "vertices": [
+        4914,
+        4915,
+        4916
+      ],
+      "family": "soil",
+      "familyTriangle": 76,
+      "side": 1,
+      "segment": 7,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:7:2:1",
+      "triangle": 1639,
+      "vertices": [
+        4917,
+        4918,
+        4919
+      ],
+      "family": "soil",
+      "familyTriangle": 77,
+      "side": 1,
+      "segment": 7,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:7:3:0",
+      "triangle": 1640,
+      "vertices": [
+        4920,
+        4921,
+        4922
+      ],
+      "family": "soil",
+      "familyTriangle": 78,
+      "side": 1,
+      "segment": 7,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:7:3:1",
+      "triangle": 1641,
+      "vertices": [
+        4923,
+        4924,
+        4925
+      ],
+      "family": "soil",
+      "familyTriangle": 79,
+      "side": 1,
+      "segment": 7,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:8:0:0",
+      "triangle": 566,
+      "vertices": [
+        1698,
+        1699,
+        1700
+      ],
+      "family": "foliage",
+      "familyTriangle": 404,
+      "side": 1,
+      "segment": 8,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:8:0:1",
+      "triangle": 567,
+      "vertices": [
+        1701,
+        1702,
+        1703
+      ],
+      "family": "foliage",
+      "familyTriangle": 405,
+      "side": 1,
+      "segment": 8,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:8:1:0",
+      "triangle": 568,
+      "vertices": [
+        1704,
+        1705,
+        1706
+      ],
+      "family": "foliage",
+      "familyTriangle": 406,
+      "side": 1,
+      "segment": 8,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:8:1:1",
+      "triangle": 569,
+      "vertices": [
+        1707,
+        1708,
+        1709
+      ],
+      "family": "foliage",
+      "familyTriangle": 407,
+      "side": 1,
+      "segment": 8,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:8:2:0",
+      "triangle": 1642,
+      "vertices": [
+        4926,
+        4927,
+        4928
+      ],
+      "family": "soil",
+      "familyTriangle": 80,
+      "side": 1,
+      "segment": 8,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:8:2:1",
+      "triangle": 1643,
+      "vertices": [
+        4929,
+        4930,
+        4931
+      ],
+      "family": "soil",
+      "familyTriangle": 81,
+      "side": 1,
+      "segment": 8,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:8:3:0",
+      "triangle": 1644,
+      "vertices": [
+        4932,
+        4933,
+        4934
+      ],
+      "family": "soil",
+      "familyTriangle": 82,
+      "side": 1,
+      "segment": 8,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:8:3:1",
+      "triangle": 1645,
+      "vertices": [
+        4935,
+        4936,
+        4937
+      ],
+      "family": "soil",
+      "familyTriangle": 83,
+      "side": 1,
+      "segment": 8,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:9:0:0",
+      "triangle": 570,
+      "vertices": [
+        1710,
+        1711,
+        1712
+      ],
+      "family": "foliage",
+      "familyTriangle": 408,
+      "side": 1,
+      "segment": 9,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:9:0:1",
+      "triangle": 571,
+      "vertices": [
+        1713,
+        1714,
+        1715
+      ],
+      "family": "foliage",
+      "familyTriangle": 409,
+      "side": 1,
+      "segment": 9,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:9:1:0",
+      "triangle": 572,
+      "vertices": [
+        1716,
+        1717,
+        1718
+      ],
+      "family": "foliage",
+      "familyTriangle": 410,
+      "side": 1,
+      "segment": 9,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:9:1:1",
+      "triangle": 573,
+      "vertices": [
+        1719,
+        1720,
+        1721
+      ],
+      "family": "foliage",
+      "familyTriangle": 411,
+      "side": 1,
+      "segment": 9,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:9:2:0",
+      "triangle": 1646,
+      "vertices": [
+        4938,
+        4939,
+        4940
+      ],
+      "family": "soil",
+      "familyTriangle": 84,
+      "side": 1,
+      "segment": 9,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:9:2:1",
+      "triangle": 1647,
+      "vertices": [
+        4941,
+        4942,
+        4943
+      ],
+      "family": "soil",
+      "familyTriangle": 85,
+      "side": 1,
+      "segment": 9,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:9:3:0",
+      "triangle": 1648,
+      "vertices": [
+        4944,
+        4945,
+        4946
+      ],
+      "family": "soil",
+      "familyTriangle": 86,
+      "side": 1,
+      "segment": 9,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:9:3:1",
+      "triangle": 1649,
+      "vertices": [
+        4947,
+        4948,
+        4949
+      ],
+      "family": "soil",
+      "familyTriangle": 87,
+      "side": 1,
+      "segment": 9,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:10:0:0",
+      "triangle": 574,
+      "vertices": [
+        1722,
+        1723,
+        1724
+      ],
+      "family": "foliage",
+      "familyTriangle": 412,
+      "side": 1,
+      "segment": 10,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:10:0:1",
+      "triangle": 575,
+      "vertices": [
+        1725,
+        1726,
+        1727
+      ],
+      "family": "foliage",
+      "familyTriangle": 413,
+      "side": 1,
+      "segment": 10,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:10:1:0",
+      "triangle": 576,
+      "vertices": [
+        1728,
+        1729,
+        1730
+      ],
+      "family": "foliage",
+      "familyTriangle": 414,
+      "side": 1,
+      "segment": 10,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:10:1:1",
+      "triangle": 577,
+      "vertices": [
+        1731,
+        1732,
+        1733
+      ],
+      "family": "foliage",
+      "familyTriangle": 415,
+      "side": 1,
+      "segment": 10,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:10:2:0",
+      "triangle": 1650,
+      "vertices": [
+        4950,
+        4951,
+        4952
+      ],
+      "family": "soil",
+      "familyTriangle": 88,
+      "side": 1,
+      "segment": 10,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:10:2:1",
+      "triangle": 1651,
+      "vertices": [
+        4953,
+        4954,
+        4955
+      ],
+      "family": "soil",
+      "familyTriangle": 89,
+      "side": 1,
+      "segment": 10,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:10:3:0",
+      "triangle": 1652,
+      "vertices": [
+        4956,
+        4957,
+        4958
+      ],
+      "family": "soil",
+      "familyTriangle": 90,
+      "side": 1,
+      "segment": 10,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:10:3:1",
+      "triangle": 1653,
+      "vertices": [
+        4959,
+        4960,
+        4961
+      ],
+      "family": "soil",
+      "familyTriangle": 91,
+      "side": 1,
+      "segment": 10,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:11:0:0",
+      "triangle": 578,
+      "vertices": [
+        1734,
+        1735,
+        1736
+      ],
+      "family": "foliage",
+      "familyTriangle": 416,
+      "side": 1,
+      "segment": 11,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:11:0:1",
+      "triangle": 579,
+      "vertices": [
+        1737,
+        1738,
+        1739
+      ],
+      "family": "foliage",
+      "familyTriangle": 417,
+      "side": 1,
+      "segment": 11,
+      "strip": 0
+    },
+    {
+      "id": "bank:1:11:1:0",
+      "triangle": 580,
+      "vertices": [
+        1740,
+        1741,
+        1742
+      ],
+      "family": "foliage",
+      "familyTriangle": 418,
+      "side": 1,
+      "segment": 11,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:11:1:1",
+      "triangle": 581,
+      "vertices": [
+        1743,
+        1744,
+        1745
+      ],
+      "family": "foliage",
+      "familyTriangle": 419,
+      "side": 1,
+      "segment": 11,
+      "strip": 1
+    },
+    {
+      "id": "bank:1:11:2:0",
+      "triangle": 1654,
+      "vertices": [
+        4962,
+        4963,
+        4964
+      ],
+      "family": "soil",
+      "familyTriangle": 92,
+      "side": 1,
+      "segment": 11,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:11:2:1",
+      "triangle": 1655,
+      "vertices": [
+        4965,
+        4966,
+        4967
+      ],
+      "family": "soil",
+      "familyTriangle": 93,
+      "side": 1,
+      "segment": 11,
+      "strip": 2
+    },
+    {
+      "id": "bank:1:11:3:0",
+      "triangle": 1656,
+      "vertices": [
+        4968,
+        4969,
+        4970
+      ],
+      "family": "soil",
+      "familyTriangle": 94,
+      "side": 1,
+      "segment": 11,
+      "strip": 3
+    },
+    {
+      "id": "bank:1:11:3:1",
+      "triangle": 1657,
+      "vertices": [
+        4971,
+        4972,
+        4973
+      ],
+      "family": "soil",
+      "familyTriangle": 95,
+      "side": 1,
+      "segment": 11,
+      "strip": 3
+    }
+  ],
+  "vertexIndexSignature": "e515e78503acaeb8950c85e724d722f1be4af0e988a06574c991510a0b0858cb",
+  "mapping": "build.py::make_road levels-loop Producer.quad triangles, flattened in Producer.output sorted-family primitive order into per-part adapter triangle indices"
+}

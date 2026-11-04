@@ -1,0 +1,7 @@
+[
+  {
+    "id": "sample-hairpin-neighbor",
+    "points": [[-2, -14], [2, -14], [2, 14], [-2, 14]],
+    "halfWidth": 8
+  }
+]
