@@ -1,0 +1,121 @@
+{
+  "algorithm": "sha256",
+  "directory": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104",
+  "files": [
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/README.md",
+      "bytes": 6018,
+      "sha256": "a07b6cf78bc96f00f8dc291b0ffb7f42a6faafea0c0d7825f7bb094ea98c0dd0"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run1-00000-scene.png",
+      "bytes": 491516,
+      "sha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run1-00000.json",
+      "bytes": 1848,
+      "sha256": "63cd442b8512a177f911af2ab40308856652c9f25845fe2ec1f573d52a5af312"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run1-00000.png",
+      "bytes": 491516,
+      "sha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run2-00000-scene.png",
+      "bytes": 491516,
+      "sha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run2-00000.json",
+      "bytes": 1848,
+      "sha256": "d907e49f3f6288b05fc646fa04768b3654d883f66dedd0b456b2fed7848bd961"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run2-00000.png",
+      "bytes": 491516,
+      "sha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/report.json",
+      "bytes": 5799,
+      "sha256": "c0d81244213d47d3289378f142dfbf47539259fe7b0837944a0e92d1c7cf49e3"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run1-00000-scene.png",
+      "bytes": 528164,
+      "sha256": "92e998267457364cf312e0fae05c06005d48cfca2b9f90b51e4fc03a1e099f35"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run1-00000.json",
+      "bytes": 1838,
+      "sha256": "85e17a84937d1017e17a34e658db3e6837fe5d2d6dac4e9eda32b9d7c67827f9"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run1-00000.png",
+      "bytes": 528164,
+      "sha256": "92e998267457364cf312e0fae05c06005d48cfca2b9f90b51e4fc03a1e099f35"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run2-00000-scene.png",
+      "bytes": 528164,
+      "sha256": "92e998267457364cf312e0fae05c06005d48cfca2b9f90b51e4fc03a1e099f35"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run2-00000.json",
+      "bytes": 1838,
+      "sha256": "b66d991143fa781a6b70ea843127e5f44da86b5184e0a47f179dba90f358f66d"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run2-00000.png",
+      "bytes": 528164,
+      "sha256": "92e998267457364cf312e0fae05c06005d48cfca2b9f90b51e4fc03a1e099f35"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/report.json",
+      "bytes": 5776,
+      "sha256": "c8b2a31aef8f3bd23e5cfdb15e9806a0fe375ad9185b84ed4b7dd15f47aae560"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run1-00000-scene.png",
+      "bytes": 191438,
+      "sha256": "9947c3d8c2e8ff83b890a24c7247580b46cde4903ca6d68b11030b90ff57636f"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run1-00000.json",
+      "bytes": 1852,
+      "sha256": "b89345b59d4ae7f8029ef195c097076c24c4b8d3c957560c3de4bfbbf0c4c2f7"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run1-00000.png",
+      "bytes": 191438,
+      "sha256": "9947c3d8c2e8ff83b890a24c7247580b46cde4903ca6d68b11030b90ff57636f"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run2-00000-scene.png",
+      "bytes": 191438,
+      "sha256": "9947c3d8c2e8ff83b890a24c7247580b46cde4903ca6d68b11030b90ff57636f"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run2-00000.json",
+      "bytes": 1852,
+      "sha256": "dc00247f0e8e5751a9ac51403bc0e60181c2b8158f9e7874ce39f0c691e56e4b"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run2-00000.png",
+      "bytes": 191438,
+      "sha256": "9947c3d8c2e8ff83b890a24c7247580b46cde4903ca6d68b11030b90ff57636f"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/report.json",
+      "bytes": 5812,
+      "sha256": "4c863ca4a6a9093e5c1b367ae5d80f2a1e1a5c92e87303ec5a97426eaa030823"
+    },
+    {
+      "path": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/manifest.json",
+      "bytes": 20664,
+      "sha256": "7701146cb908cb5cd2ad49cf327bc8eb9ecd75868443bfe1809b7afcce510987"
+    }
+  ]
+}

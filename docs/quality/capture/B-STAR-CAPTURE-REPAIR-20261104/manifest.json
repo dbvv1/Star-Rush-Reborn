@@ -1,0 +1,521 @@
+{
+  "jobId": "B-STAR-CAPTURE-REPAIR-20261104",
+  "result": "passed",
+  "scope": "deterministic software-WebGL2 scene captures for three fixed shots only",
+  "completedUtc": "2026-11-04T18:56:51Z",
+  "source": {
+    "commit": "5962a43d851575220a0a67c6a17b5e7b218a4e9c",
+    "tree": "2892cc0b4ea668da902740845718781954cf74de",
+    "baseRef": "5962a43d851575220a0a67c6a17b5e7b218a4e9c",
+    "trackedCleanBeforeBuild": true,
+    "trackedCleanAfterBuild": true
+  },
+  "build": {
+    "command": "npm run build (assemble.py -> build.mjs)",
+    "switches": {
+      "STAR_RUSH_DRIVING_MODEL": "road",
+      "STAR_RUSH_COAST_FLOW": "baseline",
+      "STAR_RUSH_SIGNBOARD_VARIANT": "baseline",
+      "STAR_RUSH_SKY": "kenney",
+      "STAR_RUSH_COAST_AMBIENCE": "off",
+      "STAR_RUSH_RAIL_SOURCE": "kenney",
+      "STAR_RUSH_DRIVING_AUDIO": "procedural",
+      "STAR_RUSH_CANVAS_HOUSE_ANCHORS": "off"
+    },
+    "files": [
+      {
+        "path": "dist/server/index.js",
+        "sha256": "3773376e17375f2361aace3b93610b0f19b9b6425fad3adf0c09bfced5db2f46"
+      },
+      {
+        "path": "dist/client/road/game.js",
+        "sha256": "7e82cffce610c18afaa7399814553ea9a4d970621f417f8d5c4e53c377cc7544"
+      }
+    ]
+  },
+  "servedBundleSha256": "7e82cffce610c18afaa7399814553ea9a4d970621f417f8d5c4e53c377cc7544",
+  "servedBundleMatchesLocalBuild": true,
+  "environment": {
+    "node": "v24.22.1",
+    "npm": "10.9.8",
+    "python": "3.13.5",
+    "playwright": "1.64.1",
+    "platform": "Windows x64",
+    "dependencies": "preinstalled trees matching both lockfiles: package-lock.json (root) and experiments/rapier-road-comparison/package-lock.json"
+  },
+  "browser": {
+    "name": "Google Chrome for Testing",
+    "version": "156.0.8078.4",
+    "playwrightRevision": "1248",
+    "headless": true,
+    "chromiumSandboxRequested": false,
+    "requiredArgs": [
+      "--no-sandbox",
+      "--enable-unsafe-swiftshader",
+      "--use-angle=swiftshader",
+      "--enable-automation"
+    ],
+    "verifiedVia": "CDP Browser.getBrowserCommandLine; required args present in actual argv",
+    "note": "Full actual argv and executable path are intentionally omitted from the public copy."
+  },
+  "renderProfile": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1,
+    "quality": "high",
+    "backend": "webgl2",
+    "drivingRevision": "road-v2",
+    "audio": "disabled (browser launched with --mute-audio)",
+    "clock": "virtual 60 Hz",
+    "warmupFrames": 12,
+    "input": "road-tour (in-game automatic road-tour controller)",
+    "fixedCarAndMode": "fixed mint livery, practice mode, no ghost, per docs/capture.md",
+    "pngScope": "offscreen scene canvas only; DOM HUD not included"
+  },
+  "preview": {
+    "command": "node tests/smoke-server.mjs",
+    "origin": "http://127.0.0.1:4141",
+    "worker": "dist/server/index.js",
+    "database": "in-memory SQLite",
+    "startedAtUtc": "2026-11-04T18:54:42Z",
+    "stoppedAtUtc": "2026-11-04T18:57:24Z",
+    "processId": 88704,
+    "exitObserved": "process no longer present after stop",
+    "listenerClosed": true,
+    "productionUntouched": true
+  },
+  "serialExecution": {
+    "order": [
+      "coast-chase",
+      "coast-full-bend",
+      "academy-depth"
+    ],
+    "firstShotGate": "coast-chase completed, exit 0, report.passed=true, PNG decoded and repeat-identical before shots 2 and 3 were started",
+    "betweenShots": "each Playwright browser reported process exit code 0 before the next command started",
+    "failuresRetained": []
+  },
+  "shots": [
+    {
+      "order": 1,
+      "shot": "coast-chase",
+      "url": "http://127.0.0.1:4141/road?shot=coast-chase&seed=73121&t=28&frames=1&input=road-tour",
+      "outputDirectory": "outputs/B-STAR-CAPTURE-REPAIR-20261104/5962a43-swiftshader/coast-chase",
+      "seed": 73121,
+      "t": 28,
+      "tick": 1680,
+      "frames": 1,
+      "input": "road-tour",
+      "track": "coast-reborn",
+      "drivingRevision": "road-v2",
+      "camera": {
+        "mode": "gameplay chase (race.js camMode=0, 8.5 m back / 4.5 m up)",
+        "fov": 62,
+        "eye": [
+          0.6689043939862529,
+          4.556928185230477,
+          8.359866765853518
+        ],
+        "target": [
+          -0.6205476796857283,
+          1.0569281852304764,
+          -10.094461612412532
+        ],
+        "origin": [
+          201.65450367066845,
+          1.4055635534680389,
+          4.94991764810024
+        ],
+        "spline": null
+      },
+      "player": {
+        "s": 478.72079027936155,
+        "l": 0.08666762113166707,
+        "yaw": -0.005534896743900579,
+        "speed": 13.989942498383515
+      },
+      "state": "running",
+      "elapsed": 24.949999999999225,
+      "sky": "ready",
+      "runs": 2,
+      "framesPerRun": [
+        1,
+        1
+      ],
+      "reportPassed": true,
+      "reportErrors": [],
+      "commandExit": 0,
+      "backend": "webgl2",
+      "classification": "software",
+      "renderer": {
+        "api": "webgl2",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "maskedRenderer": "WebKit WebGL",
+        "vendor": "Google Inc. (Google)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "classification": "software"
+      },
+      "quality": "high",
+      "audio": "disabled",
+      "repeat": {
+        "pixelSha256Match": true,
+        "scenePixelSha256Match": true,
+        "cameraPlayerStateMatch": true,
+        "pixelSha256": "7cd76cda13ccfc0ad380a8d2c213523bfffd118d07c040ab2b2f43fa60daa2d1",
+        "scenePixelSha256": "7cd76cda13ccfc0ad380a8d2c213523bfffd118d07c040ab2b2f43fa60daa2d1"
+      },
+      "timing": {
+        "commandStartUtc": "2026-11-04T18:55:09Z",
+        "commandEndUtc": "2026-11-04T18:55:32Z",
+        "browserLaunchedUtc": "2026-11-04T18:55:12.516Z",
+        "browserPid": 99648,
+        "browserExit": {
+          "code": 0,
+          "signal": null,
+          "observedAtUtc": "2026-11-04T18:55:32.044Z",
+          "source": "Playwright DEBUG=pw:browser process exit event"
+        }
+      },
+      "publicFiles": {
+        "report": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/report.json",
+        "frameJson": [
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run1-00000.json",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run2-00000.json"
+        ],
+        "images": [
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run1-00000-scene.png",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run1-00000.png",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run2-00000-scene.png",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run2-00000.png"
+        ]
+      },
+      "images": [
+        {
+          "run": 1,
+          "png": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run1-00000.png",
+          "scenePng": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run1-00000-scene.png",
+          "bytes": 528164,
+          "sceneBytes": 528164,
+          "width": 1280,
+          "height": 720,
+          "decodedBytes": 3686400,
+          "colorBuckets": 1862,
+          "maxColorRatio": 0.3302,
+          "nonBackground": true,
+          "fileSha256": "92e998267457364cf312e0fae05c06005d48cfca2b9f90b51e4fc03a1e099f35",
+          "sceneFileSha256": "92e998267457364cf312e0fae05c06005d48cfca2b9f90b51e4fc03a1e099f35",
+          "decodedPixelSha256": "7cd76cda13ccfc0ad380a8d2c213523bfffd118d07c040ab2b2f43fa60daa2d1",
+          "scenePixelSha256": "7cd76cda13ccfc0ad380a8d2c213523bfffd118d07c040ab2b2f43fa60daa2d1"
+        },
+        {
+          "run": 2,
+          "png": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run2-00000.png",
+          "scenePng": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run2-00000-scene.png",
+          "bytes": 528164,
+          "sceneBytes": 528164,
+          "width": 1280,
+          "height": 720,
+          "decodedBytes": 3686400,
+          "colorBuckets": 1862,
+          "maxColorRatio": 0.3302,
+          "nonBackground": true,
+          "fileSha256": "92e998267457364cf312e0fae05c06005d48cfca2b9f90b51e4fc03a1e099f35",
+          "sceneFileSha256": "92e998267457364cf312e0fae05c06005d48cfca2b9f90b51e4fc03a1e099f35",
+          "decodedPixelSha256": "7cd76cda13ccfc0ad380a8d2c213523bfffd118d07c040ab2b2f43fa60daa2d1",
+          "scenePixelSha256": "7cd76cda13ccfc0ad380a8d2c213523bfffd118d07c040ab2b2f43fa60daa2d1"
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "shot": "coast-full-bend",
+      "url": "http://127.0.0.1:4141/road?shot=coast-full-bend&seed=73121&t=28&frames=1&input=road-tour",
+      "outputDirectory": "outputs/B-STAR-CAPTURE-REPAIR-20261104/5962a43-swiftshader/coast-full-bend",
+      "seed": 73121,
+      "t": 28,
+      "tick": 1680,
+      "frames": 1,
+      "input": "road-tour",
+      "track": "coast-reborn",
+      "drivingRevision": "road-v2",
+      "camera": {
+        "mode": "fixed road spline (road-fixed)",
+        "fov": 58,
+        "eye": [
+          129.03717396421868,
+          100.00649916803414,
+          -15.94413404641882
+        ],
+        "target": [
+          -54.77245339555995,
+          -0.08860519494654984,
+          12.105923053984473
+        ],
+        "origin": [
+          201.65450367066845,
+          1.4055635534680389,
+          4.94991764810024
+        ],
+        "spline": {
+          "eye": [
+            480,
+            130,
+            100
+          ],
+          "target": [
+            460,
+            -55,
+            0
+          ],
+          "units": "along-road m, lateral m, height above road m"
+        }
+      },
+      "player": {
+        "s": 478.72079027936155,
+        "l": 0.08666762113166707,
+        "yaw": -0.005534896743900579,
+        "speed": 13.989942498383515
+      },
+      "state": "running",
+      "elapsed": 24.949999999999225,
+      "sky": "ready",
+      "runs": 2,
+      "framesPerRun": [
+        1,
+        1
+      ],
+      "reportPassed": true,
+      "reportErrors": [],
+      "commandExit": 0,
+      "backend": "webgl2",
+      "classification": "software",
+      "renderer": {
+        "api": "webgl2",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "maskedRenderer": "WebKit WebGL",
+        "vendor": "Google Inc. (Google)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "classification": "software"
+      },
+      "quality": "high",
+      "audio": "disabled",
+      "repeat": {
+        "pixelSha256Match": true,
+        "scenePixelSha256Match": true,
+        "cameraPlayerStateMatch": true,
+        "pixelSha256": "fc2c4ecb08b12cdb481f4063437b89fa67c4380b95767f644bea08b8bb7399e5",
+        "scenePixelSha256": "fc2c4ecb08b12cdb481f4063437b89fa67c4380b95767f644bea08b8bb7399e5"
+      },
+      "timing": {
+        "commandStartUtc": "2026-11-04T18:55:55Z",
+        "commandEndUtc": "2026-11-04T18:56:18Z",
+        "browserLaunchedUtc": "2026-11-04T18:55:57.959Z",
+        "browserPid": 89012,
+        "browserExit": {
+          "code": 0,
+          "signal": null,
+          "observedAtUtc": "2026-11-04T18:56:18.427Z",
+          "source": "Playwright DEBUG=pw:browser process exit event"
+        }
+      },
+      "publicFiles": {
+        "report": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/report.json",
+        "frameJson": [
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run1-00000.json",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run2-00000.json"
+        ],
+        "images": [
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run1-00000-scene.png",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run1-00000.png",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run2-00000-scene.png",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run2-00000.png"
+        ]
+      },
+      "images": [
+        {
+          "run": 1,
+          "png": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run1-00000.png",
+          "scenePng": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run1-00000-scene.png",
+          "bytes": 191438,
+          "sceneBytes": 191438,
+          "width": 1280,
+          "height": 720,
+          "decodedBytes": 3686400,
+          "colorBuckets": 1108,
+          "maxColorRatio": 0.3403,
+          "nonBackground": true,
+          "fileSha256": "9947c3d8c2e8ff83b890a24c7247580b46cde4903ca6d68b11030b90ff57636f",
+          "sceneFileSha256": "9947c3d8c2e8ff83b890a24c7247580b46cde4903ca6d68b11030b90ff57636f",
+          "decodedPixelSha256": "fc2c4ecb08b12cdb481f4063437b89fa67c4380b95767f644bea08b8bb7399e5",
+          "scenePixelSha256": "fc2c4ecb08b12cdb481f4063437b89fa67c4380b95767f644bea08b8bb7399e5"
+        },
+        {
+          "run": 2,
+          "png": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run2-00000.png",
+          "scenePng": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run2-00000-scene.png",
+          "bytes": 191438,
+          "sceneBytes": 191438,
+          "width": 1280,
+          "height": 720,
+          "decodedBytes": 3686400,
+          "colorBuckets": 1108,
+          "maxColorRatio": 0.3403,
+          "nonBackground": true,
+          "fileSha256": "9947c3d8c2e8ff83b890a24c7247580b46cde4903ca6d68b11030b90ff57636f",
+          "sceneFileSha256": "9947c3d8c2e8ff83b890a24c7247580b46cde4903ca6d68b11030b90ff57636f",
+          "decodedPixelSha256": "fc2c4ecb08b12cdb481f4063437b89fa67c4380b95767f644bea08b8bb7399e5",
+          "scenePixelSha256": "fc2c4ecb08b12cdb481f4063437b89fa67c4380b95767f644bea08b8bb7399e5"
+        }
+      ]
+    },
+    {
+      "order": 3,
+      "shot": "academy-depth",
+      "url": "http://127.0.0.1:4141/road?shot=academy-depth&seed=95276&t=14&frames=1&input=road-tour",
+      "outputDirectory": "outputs/B-STAR-CAPTURE-REPAIR-20261104/5962a43-swiftshader/academy-depth",
+      "seed": 95276,
+      "t": 14,
+      "tick": 840,
+      "frames": 1,
+      "input": "road-tour",
+      "track": "academy-reborn",
+      "drivingRevision": "road-v2",
+      "camera": {
+        "mode": "gameplay chase (race.js camMode=0, 8.5 m back / 4.5 m up)",
+        "fov": 62,
+        "eye": [
+          -8.308420675181146,
+          4.560353304719018,
+          -0.45068190726253476
+        ],
+        "target": [
+          10.158796749782375,
+          1.060353304719018,
+          0.6499368636005443
+        ],
+        "origin": [
+          60.62912545766512,
+          -0.017678058277083582,
+          80.82848932433338
+        ],
+        "spline": null
+      },
+      "player": {
+        "s": 181.26010613592885,
+        "l": 0.04573824888011971,
+        "yaw": 0.0004543410511806165,
+        "speed": 22.635478736823867
+      },
+      "state": "running",
+      "elapsed": 10.950000000000019,
+      "sky": "ready",
+      "runs": 2,
+      "framesPerRun": [
+        1,
+        1
+      ],
+      "reportPassed": true,
+      "reportErrors": [],
+      "commandExit": 0,
+      "backend": "webgl2",
+      "classification": "software",
+      "renderer": {
+        "api": "webgl2",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "maskedRenderer": "WebKit WebGL",
+        "vendor": "Google Inc. (Google)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "classification": "software"
+      },
+      "quality": "high",
+      "audio": "disabled",
+      "repeat": {
+        "pixelSha256Match": true,
+        "scenePixelSha256Match": true,
+        "cameraPlayerStateMatch": true,
+        "pixelSha256": "76e92d00eaf64287de380af318adfba13f9f567d27dc09e12463d6457d6bcf15",
+        "scenePixelSha256": "76e92d00eaf64287de380af318adfba13f9f567d27dc09e12463d6457d6bcf15"
+      },
+      "timing": {
+        "commandStartUtc": "2026-11-04T18:56:30Z",
+        "commandEndUtc": "2026-11-04T18:56:51Z",
+        "browserLaunchedUtc": "2026-11-04T18:56:32.255Z",
+        "browserPid": 44912,
+        "browserExit": {
+          "code": 0,
+          "signal": null,
+          "observedAtUtc": "2026-11-04T18:56:51.380Z",
+          "source": "Playwright DEBUG=pw:browser process exit event"
+        }
+      },
+      "publicFiles": {
+        "report": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/report.json",
+        "frameJson": [
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run1-00000.json",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run2-00000.json"
+        ],
+        "images": [
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run1-00000-scene.png",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run1-00000.png",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run2-00000-scene.png",
+          "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run2-00000.png"
+        ]
+      },
+      "images": [
+        {
+          "run": 1,
+          "png": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run1-00000.png",
+          "scenePng": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run1-00000-scene.png",
+          "bytes": 491516,
+          "sceneBytes": 491516,
+          "width": 1280,
+          "height": 720,
+          "decodedBytes": 3686400,
+          "colorBuckets": 1931,
+          "maxColorRatio": 0.3362,
+          "nonBackground": true,
+          "fileSha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a",
+          "sceneFileSha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a",
+          "decodedPixelSha256": "76e92d00eaf64287de380af318adfba13f9f567d27dc09e12463d6457d6bcf15",
+          "scenePixelSha256": "76e92d00eaf64287de380af318adfba13f9f567d27dc09e12463d6457d6bcf15"
+        },
+        {
+          "run": 2,
+          "png": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run2-00000.png",
+          "scenePng": "docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run2-00000-scene.png",
+          "bytes": 491516,
+          "sceneBytes": 491516,
+          "width": 1280,
+          "height": 720,
+          "decodedBytes": 3686400,
+          "colorBuckets": 1931,
+          "maxColorRatio": 0.3362,
+          "nonBackground": true,
+          "fileSha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a",
+          "sceneFileSha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a",
+          "decodedPixelSha256": "76e92d00eaf64287de380af318adfba13f9f567d27dc09e12463d6457d6bcf15",
+          "scenePixelSha256": "76e92d00eaf64287de380af318adfba13f9f567d27dc09e12463d6457d6bcf15"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Software SwiftShader WebGL2 only; not a hardware-GPU baseline.",
+    "Does not validate a full race session, driving feel, audio, or aesthetic acceptance.",
+    "Single frame per shot (frames=1), repeated twice; deterministic scene comparison only.",
+    "Public files are sanitized derivatives, not unmodified private logs."
+  ],
+  "sanitization": {
+    "applied": [
+      "removed launch executable path",
+      "removed full launch argv (required args kept)",
+      "removed embedded base64 PNG data URLs from per-frame JSON and report"
+    ],
+    "preserved": [
+      "raw WEBGL_debug_renderer_info renderer and vendor strings",
+      "Chromium version and required browser args",
+      "relative file names, decoded pixel hashes and file SHA-256 values",
+      "camera and vehicle state per frame"
+    ],
+    "note": "公开副本为脱敏派生物，不声称是未修改原始日志。"
+  }
+}
