@@ -243,7 +243,9 @@ const {accepted, rejected} = planStreetRows(parts, road, [
 新测试覆盖：直线、440/680 左右弯、双侧、同排/相邻排/非相邻排、相交/相离/包含/
 仅接触、重复行、缺字段/NaN/Infinity、坏矩阵、`ok=false` 整行拒收、输入不被修改、
 排序稳定、真实 20 行非空接受集、接受行独立复算至少 0.5 m、网格/文件/manifest
-哈希不变、4 m→6 m 平移整批复查、510/-1 回归、报告确定性与已提交 JSON 一致。
+哈希不变、公开报告按运行时 homedir、路径/地址中的账户名、drive-letter 路径与
+POSIX 家目录路径（/Users、/home、/root）校验，4 m→6 m 平移整批复查、
+510/-1 回归、报告确定性与已提交 JSON 一致。
 0.5 m 门槛没有为凑接受集而放松。
 
 未运行：浏览器、截图、GPU、smoke、音频和任何场景接入；本目录是纯 CPU/文件合同。

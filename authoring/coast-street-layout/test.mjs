@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {
@@ -713,6 +714,19 @@ test('510/-1 is an independent road regression: 4 m passes, pure +2 m shift fail
 // Report
 // ---------------------------------------------------------------------------
 
+// Collect only string *values*, never object keys: JSON object keys such as
+// "ok" or "row" must not be mistaken for path segments or account names.
+function collectReportStrings(value, out = []) {
+  if (typeof value === 'string') {
+    out.push(value);
+  } else if (Array.isArray(value)) {
+    for (const item of value) collectReportStrings(item, out);
+  } else if (value && typeof value === 'object') {
+    for (const item of Object.values(value)) collectReportStrings(item, out);
+  }
+  return out;
+}
+
 test('report: deterministic build matches the checked-in public JSON', () => {
   const first = buildCoastLayoutReport();
   const second = buildCoastLayoutReport();
@@ -773,7 +787,7 @@ test('report: named 600/-1 and 640/680 +1 pairs are checked independently of acc
   }
 });
 
-test('report: 510/-1 regression and set comparison do not overclaim', () => {
+test('report: 510/-1 regression and set comparison do not overclaim; no home/root paths or account names in paths/addresses', () => {
   const report = buildCoastLayoutReport();
   assert.equal(report.roadRegression510.onGrid, false);
   assert.equal(report.roadRegression510.fixture.setback4.ok, true);
@@ -783,6 +797,29 @@ test('report: 510/-1 regression and set comparison do not overclaim', () => {
   assert.equal(report.summary.roadRegression510ShiftOk, false);
   assert.match(report.setComparison.note, /pure R translation/);
   assert.match(report.setComparison.note, /independent filters/);
-  assert.ok(!JSON.stringify(report).includes('dingbaiwei'));
-  assert.ok(!/[A-Za-z]:\\/.test(JSON.stringify(report)));
+  const reportValues = collectReportStrings(report);
+  assert.ok(
+    reportValues.every(value => !/(^|[^A-Za-z0-9])[A-Za-z]:[\\/]/.test(value)),
+    'report must not embed drive-letter paths',
+  );
+  assert.ok(
+    reportValues.every(value => !/(^|[^A-Za-z0-9_])\/(?:Users|home|root)\//.test(value)),
+    'report must not embed POSIX home paths',
+  );
+  const home = os.homedir();
+  if (home) {
+    assert.ok(
+      reportValues.every(value => !value.includes(home)),
+      'report must not embed the local home directory',
+    );
+  }
+  const localUser = os.userInfo().username;
+  if (localUser) {
+    const escapedUser = localUser.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const accountInPathLike = new RegExp(`(?:[\\\\/@])${escapedUser}|${escapedUser}(?:[\\\\/@])`);
+    assert.ok(
+      reportValues.every(value => !accountInPathLike.test(value)),
+      'report must not embed the local account name in a path or address',
+    );
+  }
 });
