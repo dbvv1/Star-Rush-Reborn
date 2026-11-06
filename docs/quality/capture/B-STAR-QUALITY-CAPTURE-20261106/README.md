@@ -44,10 +44,24 @@
 
 每张图的 `window.starSideStatus` 均为 `space=true`、`power=false`、`warnings=[]`、`backend=webgl2`，`ticks` 为实际推进计数（>0）。缺失或候选回退会使 capture 直接失败，URL 参数或 PNG 存在不作为替代证据。
 
+## 交付前独立核验
+
+交付给盲评前，本单元没有复用上一条命令的通过结论，另外执行了一次只读核对（Python 3.13.5 + Pillow 12.3.0；不启浏览器、不改文件）：
+
+- 12 张 PNG 逐张解码为 1280×720 RGBA8；文件 SHA-256 与 `rgbaSha256` 均与 `manifest.json` 及逐帧 JSON 逐图一致，逐帧 JSON 的 `sideStatus` 和 `ready`／`frame`／`done` 也一致。每张颜色数 20,026–31,298、单一主色占比 0.0944–0.3361，均为实际渲染场景，不是纯背景或错误页。
+- 同档同机位 run1／run2 的 PNG SHA-256 相同，即两份文件逐字节一致；下面的目视核对因此只打开每个 commit／机位的 run1，run2 是同一图像的重复。
+- 跨档同机位 `camera`、`player`、`seed`、`t`、`tick`、`input`、`renderer`、`quality`、`drivingRevision` 一致；`academy-depth` 两档 RGBA 相同，`coast-chase` 与 `coast-full-bend` 两档 RGBA 不同，与 `comparison.json` 的 `pixelsEqual` 逐项一致。
+- 6 份 `report.json` 的 `passed`／`capturePassed`／`cleanExitBaseline` 均为 true、`errors=[]`；6 份 `receiver-exit.json` 均为 `waited=true`、`exitCode=0`、`signal=null`。两条构建的真实退出为 0，bundle／Worker SHA-256 与冻结值一致，`sourceUnchanged=true`。
+- 目视打开前版与整层版各三个机位的图（均为正常追尾或固定俯瞰构图）：coast-chase 可见弯道、街道与灯塔；coast-full-bend 可见整弯、海岸线与街排；academy-depth 可见训练场道路与植被。没有空白图、加载失败页或错误提示。两版在 coast 两机位的可见差异只在地形／岸线轮廓，academy-depth 未见差异，与像素哈希结论一致。此处只记录可见事实，不评分、不判断哪版更好。
+- 公开扫描交付的 `.json`／`.md`：未发现本机绝对路径、用户名、回环 origin、调试端点或 pid 字段。
+- `capture-package-hashes.json` 的 7 个包文件 SHA-256 与 a1dbv 参考副本逐项一致；`node --import ./windows-hide.mjs --test contract.test.mjs` 6/6 通过，`node --check capture.mjs`、`node --check compare.mjs` 退出 0。该 CPU 检查使用 PATH 中的 Node v22.23.2；实际拍摄与构建按 `build-records.json` 使用 Node v24.22.1。`compare.test.mjs` 未运行：它要求带 pngjs 的冻结源目录，本 worktree 没有 `node_modules`，按本卡不安装依赖。
+
+以上是交付前核对，不是品质评分；`comparison.json` 的 `qualityScore` 仍为 `pending independent blind review`，盲评与记分由后台非作者完成。
+
 ## 限制
 
 - 本轮只证明固定 commit/tree 在 headless 软件 WebGL2（SwiftShader）下的固定机位双拍门槛，不是硬件 GPU、整局流程、驾驶手感、声音或画面判优的结论。
-- 每机位只有 1 帧、重复 2 次，不是完整序列；没有人工视觉验收。
+- 每机位只有 1 帧、重复 2 次，不是完整序列；没有人工视觉验收。上方目视核对是交付前检查，不等于人工验收或盲评。
 - `comparison.json` 的 `qualityScore` 仍为 `pending independent blind review`。盲评由后台非作者进行；在盲评前不写品质分、不改默认版。
 - 硬件画面、手感与听感仍属待人工验收项。
 - 未改游戏源码、配置、锁文件或正式素材；未部署、未触碰旧任务或旧失败目录。
