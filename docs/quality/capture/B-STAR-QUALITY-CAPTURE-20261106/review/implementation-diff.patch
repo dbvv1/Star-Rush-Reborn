@@ -1,0 +1,169 @@
+diff --git a/coastal-space.js b/coastal-space.js
+index aa74b10..76d3e96 100644
+--- a/coastal-space.js
++++ b/coastal-space.js
+@@ -34,0 +35,2 @@ function coastalSpaceModel(){
++ refineCoastalTerrain(model);
++ coastalTerrainAppearance(model);
+@@ -36,0 +39,48 @@ function coastalSpaceModel(){
++// Work inside the existing island, not by extending its footprint. Preserve
++// every sea-crossing triangle and every complete support cell before shaping
++// the few broad inland slopes. No RNG, new props, or simulation inputs.
++function refineCoastalTerrain(model){
++ const {bounds,vertices,triangles,street,props,nearest}=model,{step}=bounds;
++ const nx=Math.round((bounds.x1-bounds.x0)/step),nz=Math.round((bounds.z1-bounds.z0)/step);
++ // The water box is centred at -.9 with height .16: its top is -.82.
++ const waterTop=-.82,base=vertices.map(p=>p[1]),locked=new Set(),shore=new Set();
++ const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
++ for(const ids of triangles)if(ids.some(i=>base[i]<=waterTop))for(const i of ids){locked.add(i);shore.add(i);}
++ const supports=street.instances.map(e=>e.placement.bbox).concat(props.map(p=>({minX:p.x-p.radius,maxX:p.x+p.radius,minZ:p.z-p.radius,maxZ:p.z+p.radius})));
++ for(const b of supports){
++  const x0=Math.max(0,Math.floor((b.minX-bounds.x0)/step)),x1=Math.min(nx,Math.floor((b.maxX-bounds.x0)/step)+1);
++  const z0=Math.max(0,Math.floor((b.minZ-bounds.z0)/step)),z1=Math.min(nz,Math.floor((b.maxZ-bounds.z0)/step)+1);
++  for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++)locked.add(z*(nx+1)+x);
++ }
++ const distance=(p,b)=>Math.hypot(Math.max(b.minX-p[0],0,p[0]-b.maxX),Math.max(b.minZ-p[2],0,p[2]-b.maxZ));
++ // Only the landward edge of the frozen water triangles is needed here.
++ const shoreline=[...shore].filter(i=>base[i]>waterTop).map(i=>vertices[i]);
++ for(let i=0;i<vertices.length;i++){
++  const p=vertices[i];if(locked.has(i))continue;
++  const {r,d,side}=nearest(p[0],p[2]);if(d<=38)continue;
++  const coast=shoreline.reduce((v,q)=>Math.min(v,Math.hypot(p[0]-q[0],p[2]-q[2])),Infinity);
++  const support=supports.reduce((v,b)=>Math.min(v,distance(p,b)),Infinity);
++  const envelope=smooth(38,50,d)*smooth(0,18,coast)*smooth(step*Math.SQRT2,24,support);
++  const first=Math.exp(-(((r.s-390)/115)**2)),second=Math.exp(-(((r.s-625)/95)**2));
++  const shoulder=side>0?Math.exp(-(((d-55)/24)**2)):Math.exp(-(((d-43)/16)**2));
++  p[1]=base[i]+envelope*shoulder*(1.7*first+1.15*second);
++ }
++}
++function coastalTerrainAppearance(model){
++ const {vertices,triangles,nearest,street}=model;
++ const normals=vertices.map(()=>[0,0,0]);
++ for(const ids of triangles){const [a,b,c]=ids.map(i=>vertices[i]),n=cross(sub(b,a),sub(c,a));for(const i of ids)normals[i]=add(normals[i],n);}
++ model.normals=normals.map(norm);
++ const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
++ const grass=color('#91a079'),meadow=color('#a9b58b'),earth=color('#aaa186'),rock=color('#96968b'),shore=color('#c1b69d');
++ const blend=(a,b,t)=>a.map((v,i)=>mix(v,b[i],t));
++ model.colors=vertices.map((p,i)=>{
++  const broad=.5+.24*Math.sin(p[0]*.037+p[2]*.019)+.23*Math.cos(p[2]*.029-p[0]*.013);
++  const slope=1-model.normals[i][1],d=nearest(p[0],p[2]).d;
++  const yard=street.instances.reduce((v,{placement:{bbox:b}})=>Math.min(v,Math.hypot(Math.max(b.minX-p[0],0,p[0]-b.maxX),Math.max(b.minZ-p[2],0,p[2]-b.maxZ))),Infinity);
++  let col=blend(grass,meadow,clamp(broad,0,1));
++  col=blend(col,earth,.28*(1-smooth(2,12,yard))+.18*(1-smooth(12,26,d)));
++  col=blend(col,rock,smooth(.10,.45,slope)*.72);
++  return blend(shore,col,smooth(-.55,.65,p[1]));
++ });
++}
+@@ -39,3 +89,5 @@ function coastalSpaceTerrain(c){
+- for(const ids of model.triangles){const p=ids.map(i=>model.vertices[i]);if(p.every(v=>v[1]<-.9))continue;const n=norm(cross(sub(p[1],p[0]),sub(p[2],p[0]))),y=p.reduce((s,v)=>s+v[1],0)/3;
+-  const col=y<.15?'#d8c7aa':y>2.5?'#a6b493':'#bfcca8';c.add(shape(p.flat(),[...n,...n,...n],[0,1,2]),I,col,.02);
+- }
++ // Shared normals and low-frequency vertex colour remove the old per-triangle
++ // height stripes without changing the renderer, world light, or water.
++ const base=c.data.length/10;
++ for(let i=0;i<model.vertices.length;i++)c.data.push(...model.vertices[i],...model.normals[i],...model.colors[i],.02);
++ for(const ids of model.triangles)if(!ids.every(i=>model.vertices[i][1]<-.9))c.indices.push(...ids.map(i=>base+i));
+diff --git a/docs/brief.md b/docs/brief.md
+index 4ea6c8a..48c74c3 100644
+--- a/docs/brief.md
++++ b/docs/brief.md
+@@ -78,0 +79,2 @@
++
++本轮在同一旁置内完善[道路外连续地形与地表](coast-terrain-loop.md)：冻结既有海湾水陆交线、道路保护带和街屋/道具支承格，组织少量缓坡、连续地表色域与共享法线。固定机位前后图及非作者改善分到位前，不改默认，也不据工程测试改变品质评分。
+diff --git a/docs/coast-terrain-loop.md b/docs/coast-terrain-loop.md
+new file mode 100644
+index 0000000..2eb3e2a
+--- /dev/null
++++ b/docs/coast-terrain-loop.md
+@@ -0,0 +1,36 @@
++# 海岸连续地表：同机位品质闭环候选
++
++本轮从已发布源码 `811646e8a69bf9803a1de2218b882ab28b4b1f42` 的文件树继续，仍只作用于现有 `?environment=coast-space-v1`。默认入口、其它赛道、道路与车辆、相机、世界光、海面、驾驶模型和声音不变。没有新增公开候选或素材包。
++
++这是实际接入的整层候选，尚无本轮固定机位 WebGL2 前后图和非作者改善分。工程测试不代表画面改善；记分卡不能因本文件或测试通过而改分。
++
++## 修改的层
++
++原有海岛网格的 XZ 坐标和三角拓扑不变。在既有陆地内以少量低频缓坡衔接中景，不扩岛、不填海湾。共享顶点的面积加权法线和连续草、土、岩色域替代原逐三角形高度三色带。颜色是确定性的世界坐标场，不消耗游戏随机数、不增加纹理文件或沿路散件。
++
++实际渲染仍为原 Lambert、顶点色及既有主光/半球光；本轮没有改光照、雾、天空、海面或车辆材质。地形使用同一 renderer-neutral stride-10 数据布局与索引，合入现有场景地表。
++
++## 几何保护
++
++- 海面盒中心是 −0.9 m，高0.16 m，实际顶面是 **−0.82 m**。所有触及或位于此水线以下的三角形全部顶点原位冻结；其余只抬升既有陆地。不能拿水盒中心高度代替真实水线。
++- 既有5776顶点及11250三角的水平位置和连接不变；海湾、开口及原候选水陆交线不变。
++- 距任何最近道路样本不超过38 m的顶点冻结，保原道路/路肩保护和现有地形净空；保护外的坡面向道路、水线和支承边界平滑衰减。
++- 30栋街屋的固定源几何、矩阵、完整排接收/拒绝结果不变。先保存原计划，再冻结每个屋基AABB接触的完整地形格。最终地形重跑屋基验证，不只看采样点或中心。
++- 原灯塔和两棵旁置松树的支承整格同样冻结，位置、高度和基础底面不变；不抬道具掩盖地形穿插。
++- 关闭候选、旧街机及其它赛道不消费新地表；原失败回退和缓存释放仍适用。
++
++## 出图和评分
++
++先冻结本轮基线与改后源码、tree及构建SHA，在既有本机接收端单卡串行、纯无头出图，不恢复旧cancelled任务，不使用桌面窗口。实际当前槽位或旧调用终态不清楚时保持阻塞，不重放调用。
++
++主机位沿用 `coast-chase` 的1280×720、DPR1、高画质、seed73121、t28、FOV62、road-tour及原road-v2。比较前后保持相同浏览器、渲染器、候选开关和车辆/相机状态，各自两独立context重复。`coast-full-bend` 用于海湾/道路退步检查，`academy-depth` 用于其它赛道未改动的回归。
++
++已有capture脚本的BASE URL可包含 `/road?environment=coast-space-v1`。必须另存并核验 `window.starSideStatus`，确认海岸候选实际为space=true、power=false、warnings为空及backend=webgl2；候选退默认的PNG不得冒充改后图。Canvas兼容驾驶图不能替代固定WebGL2出图。
++
++图片齐备后由两名非作者分别查看匿名、标签互换的同机位图，保同一量表和原始评语。旧图重新评分产生的评委差异不是实现改善。缺少完整图像锚时继续标注探索性，不宣称正式品质达标。
++
++## 测试范围
++
++`tests/coastal-space.test.mjs` 固定已发布基线的水域三角、道路保护顶点、海岛拓扑、原道具与完整街屋/基础签名，并验证真实Collector消费共享顶点色/法线的stride和索引偏移。现有街屋测试继续核源模型、放置、整格净空、实际Three/Canvas消费者及失败回退。独立审查另以原始基线逐三角裁剪核水域交集并密采样道路净空。
++
++视觉改善、硬件表现、驾驶和声音均需各自实际证据，不由这些CPU门槛代替。
+diff --git a/tests/coastal-space.test.mjs b/tests/coastal-space.test.mjs
+index 43ac47a..0fc16b2 100644
+--- a/tests/coastal-space.test.mjs
++++ b/tests/coastal-space.test.mjs
+@@ -40,0 +41,50 @@ test('late decoration failure removes already committed candidate additions',()=
++
++// Exact geometry signatures from the published 811646e source tree (the same
++// tree as its reviewed local 99cfbd3). These are not visual quality scores.
++test('terrain refinement preserves every submerged and water-crossing triangle at the actual sea top',()=>{
++ const m=context().model();
++ const wet=m.triangles.filter(ids=>ids.some(i=>m.vertices[i][1]<=-.82)).map(ids=>ids.map(i=>m.vertices[i]));
++ assert.equal(wet.length,7576);
++ assert.equal(hash(JSON.stringify(wet)),'96992efb001d9cf28227a029d39264045b253fd1db0cf53da01e979c0a163fe0');
++ assert.equal(hash(JSON.stringify([m.vertices.map(p=>[p[0],p[2]]),m.triangles])),'429a17ee0c9d04db7e5094d592e0923f31db745bd203588b2269446ff92468ac');
++ const corridor=m.vertices.filter(p=>m.nearest(p[0],p[2]).d<=38);
++ assert.equal(corridor.length,2488);
++ assert.equal(hash(JSON.stringify(corridor)),'162b19beecdf1f851f68446d426f3a58546bcfabe912a38b9602d8b5ed7411da');
++ assert(m.vertices.reduce((sum,p)=>sum+p[1],0)>-3492.9833983498943+10,'a real inland relief change, not a no-op');
++});
++
++test('terrain refinement keeps all original prop anchors, street matrices and complete support cells',()=>{
++ const c=context(),m=c.model();
++ assert.equal(hash(JSON.stringify(m.props)),'82912127eabdc25901933355538b73aa285723679a9a9ee08e4f7493000051fa');
++ const street=m.street.instances.map(e=>({placement:e.placement,foundation:e.foundation,terrainRange:e.terrainRange}));
++ assert.equal(hash(JSON.stringify(street)),'15d348398bf70567ba25ed0720ca0ae4136cac14144743c65671c3f3ee65859d');
++ // Revalidate against the final mesh, not only the pre-refinement plan.
++ const final=createCoastStreetPlan(parts,c.run('circuitRoad'),m,c.run('circuitSamples'));
++ assert.equal(JSON.stringify(final.instances.map(e=>({placement:e.placement,foundation:e.foundation,terrainRange:e.terrainRange}))),JSON.stringify(street));
++});
++
++test('continuous ground uses finite unit normals and low-frequency linear vertex colours',()=>{
++ const m=context().model();assert.equal(m.normals.length,m.vertices.length);assert.equal(m.colors.length,m.vertices.length);
++ const colours=new Set();
++ for(let i=0;i<m.vertices.length;i++){
++  const n=m.normals[i],col=m.colors[i];
++  assert.equal(n.length,3);assert.equal(col.length,3);assert([...n,...col].every(Number.isFinite));
++  assert(Math.abs(Math.hypot(...n)-1)<1e-10);assert(n[1]>0);
++  assert(col.every(v=>v>=0&&v<=1));
++  if(m.vertices[i][1]>-.82)colours.add(col.map(v=>v.toFixed(3)).join(','));
++ }
++ assert(colours.size>100,'continuous broad colour field replaces three per-face colour bands');
++});
++
++test('actual terrain collector preserves stride, vertex colours and index offsets after existing geometry',()=>{
++ const c=context(),m=c.model();
++ const data=c.run("const collector=new Collector();collector.add(shape([0,0,0,1,0,0,0,0,1],[0,1,0,0,1,0,0,1,0],[0,2,1]),I,'#ffffff');coastalSpaceTerrain(collector);({data:collector.data,indices:collector.indices})");
++ assert.equal(data.data.length%10,0);assert.deepEqual(Array.from(data.indices.slice(0,3)),[0,2,1]);
++ for(let i=0;i<m.vertices.length;i++){
++  const actual=Array.from(data.data.slice((i+3)*10,(i+4)*10));
++  assert.deepEqual(actual,[...Array.from(m.vertices[i]),...Array.from(m.normals[i]),...Array.from(m.colors[i]),.02]);
++ }
++ const visible=m.triangles.filter(ids=>!ids.every(i=>m.vertices[i][1]<-.9)).flatMap(ids=>ids.map(i=>i+3));
++ assert.deepEqual(Array.from(data.indices.slice(3,3+visible.length)),Array.from(visible));
++ assert(data.indices.every(i=>Number.isInteger(i)&&i>=0&&i<data.data.length/10));
++});

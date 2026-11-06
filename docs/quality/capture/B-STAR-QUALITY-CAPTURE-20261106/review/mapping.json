@@ -1,0 +1,90 @@
+{
+  "disclosedAfterBothReviewsCompleted": true,
+  "method": "Two independent non-author visual reviews, source versions hidden; labels reversed across reviewers. Each reviewer inspected six unchanged run1 PNG copies. Run2 bytes independently verified identical.",
+  "images": [
+    {
+      "reviewer": "reviewer1",
+      "label": "A",
+      "source": "7e87d4c3/coast-chase/coast-chase-run1.png",
+      "file": "anonymous-reviewer1/A-coast-chase.png",
+      "sha256": "8f2976170748660d02db8d1680dcfa4b86116b88cdd9871899b5d499c913ee5b"
+    },
+    {
+      "reviewer": "reviewer1",
+      "label": "A",
+      "source": "7e87d4c3/coast-full-bend/coast-full-bend-run1.png",
+      "file": "anonymous-reviewer1/A-coast-full-bend.png",
+      "sha256": "e0f003f83897272b122a88ba2d683045d8946c1a25cb42c7cca7a4b49a702cd3"
+    },
+    {
+      "reviewer": "reviewer1",
+      "label": "A",
+      "source": "7e87d4c3/academy-depth/academy-depth-run1.png",
+      "file": "anonymous-reviewer1/A-academy-depth.png",
+      "sha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a"
+    },
+    {
+      "reviewer": "reviewer1",
+      "label": "B",
+      "source": "811646e8/coast-chase/coast-chase-run1.png",
+      "file": "anonymous-reviewer1/B-coast-chase.png",
+      "sha256": "003403b8b778f2e7e230caafe7c0d459f15308baf30c6fb37844146ef3eca7f8"
+    },
+    {
+      "reviewer": "reviewer1",
+      "label": "B",
+      "source": "811646e8/coast-full-bend/coast-full-bend-run1.png",
+      "file": "anonymous-reviewer1/B-coast-full-bend.png",
+      "sha256": "6c68f4771675d572aa0e1c9e3efd2b09d7db2ed65e77d0c1307ba9059028fef2"
+    },
+    {
+      "reviewer": "reviewer1",
+      "label": "B",
+      "source": "811646e8/academy-depth/academy-depth-run1.png",
+      "file": "anonymous-reviewer1/B-academy-depth.png",
+      "sha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a"
+    },
+    {
+      "reviewer": "reviewer2",
+      "label": "X",
+      "source": "811646e8/coast-chase/coast-chase-run1.png",
+      "file": "anonymous-reviewer2/X-coast-chase.png",
+      "sha256": "003403b8b778f2e7e230caafe7c0d459f15308baf30c6fb37844146ef3eca7f8"
+    },
+    {
+      "reviewer": "reviewer2",
+      "label": "X",
+      "source": "811646e8/coast-full-bend/coast-full-bend-run1.png",
+      "file": "anonymous-reviewer2/X-coast-full-bend.png",
+      "sha256": "6c68f4771675d572aa0e1c9e3efd2b09d7db2ed65e77d0c1307ba9059028fef2"
+    },
+    {
+      "reviewer": "reviewer2",
+      "label": "X",
+      "source": "811646e8/academy-depth/academy-depth-run1.png",
+      "file": "anonymous-reviewer2/X-academy-depth.png",
+      "sha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a"
+    },
+    {
+      "reviewer": "reviewer2",
+      "label": "Y",
+      "source": "7e87d4c3/coast-chase/coast-chase-run1.png",
+      "file": "anonymous-reviewer2/Y-coast-chase.png",
+      "sha256": "8f2976170748660d02db8d1680dcfa4b86116b88cdd9871899b5d499c913ee5b"
+    },
+    {
+      "reviewer": "reviewer2",
+      "label": "Y",
+      "source": "7e87d4c3/coast-full-bend/coast-full-bend-run1.png",
+      "file": "anonymous-reviewer2/Y-coast-full-bend.png",
+      "sha256": "e0f003f83897272b122a88ba2d683045d8946c1a25cb42c7cca7a4b49a702cd3"
+    },
+    {
+      "reviewer": "reviewer2",
+      "label": "Y",
+      "source": "7e87d4c3/academy-depth/academy-depth-run1.png",
+      "file": "anonymous-reviewer2/Y-academy-depth.png",
+      "sha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a"
+    }
+  ]
+}

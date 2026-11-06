@@ -1,0 +1,20 @@
+{
+  "reviewedAtUtc": "2026-11-06T14:40:00Z",
+  "resultCommit": "dfea2d75f37f5041f1c9aa004a112973517fbcb3",
+  "originalFiles": 41,
+  "originalPngFiles": 12,
+  "manifestImageAndFrameMatches": 12,
+  "manifestShotAndReceiptMatches": 6,
+  "buildSourceAndBundleIdentitiesMatch": true,
+  "serialCaptureIntervalsNonOverlapping": true,
+  "comparisonRerunPassed": true,
+  "comparisonRerunMatchesPublished": true,
+  "nodeExitAllZero": true,
+  "browserExitAllZero": true,
+  "previewAllClosed": true,
+  "outerReceiverWorkflowExit": "unknown",
+  "candidateFourRouteBrowserGate": "not established by this capture",
+  "formalTargetAnchors": "missing",
+  "formalScore": "unscored",
+  "qualityScoreDelta": 0
+}
