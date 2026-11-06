@@ -48,25 +48,86 @@ function softwareSignboards(items,meshes,project,w,h,eye){
  });
 }
 function drawSoftwareSign(ctx,sign){
- for(const {p,color} of sign.triangles){ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);ctx.lineTo(p[1][0],p[1][1]);ctx.lineTo(p[2][0],p[2][1]);ctx.closePath();ctx.fill()}
+ for(const {p,color} of sign.triangles){ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);for(let i=1;i<p.length;i++)ctx.lineTo(p[i][0],p[i][1]);ctx.closePath();ctx.fill()}
+}
+// Narrow candidate-only consumer of the same fixed street/foundation meshes
+// sent to Three. Unlike the compatibility house icons, these are real source
+// triangles, colors and scene matrices. Canvas still has no terrain/shadows.
+const softwareStreetColors=new WeakMap();
+function softwareCoastStreet(items,project,w,h,eye=null){
+ const faces=[];
+ for(const item of items){
+  if(!item.mesh.coastStreet)continue;
+  const q=project(transform(item.m,[0,2.5,0]));
+  if(!q||q[2]>210||q[0]<-q[3]*12||q[0]>w+q[3]*12||q[1]<-q[3]*12||q[1]>h+q[3]*12)continue;
+  const {sourceData:data,sourceIndices:indices}=item.mesh,points=[],worldPoints=[];
+  for(let j=0;j<data.length;j+=10){const p=transform(item.m,[data[j],data[j+1],data[j+2]]);worldPoints.push(p);points.push(project(p));}
+  let colors=softwareStreetColors.get(item.mesh);
+  if(!colors){colors=[];for(let j=0;j<indices.length;j+=3){const at=indices[j]*10+6;colors.push('rgb('+[0,1,2].map(k=>Math.round(Math.pow(data[at+k],1/2.2)*255)).join(',')+')')}softwareStreetColors.set(item.mesh,colors);}
+  for(let j=0;j<indices.length;j+=3){
+   // Visibility follows triangle winding, as Three FrontSide does. Source
+   // normals can be smoothed across edges and must not decide face visibility.
+   const a=worldPoints[indices[j]],b=worldPoints[indices[j+1]],c=worldPoints[indices[j+2]];
+   if(eye&&dot(cross(sub(b,a),sub(c,a)),sub(eye,a))<=0)continue;
+   const p=[points[indices[j]],points[indices[j+1]],points[indices[j+2]]];
+   if(p.some(v=>!v))continue;
+   if(p.every(v=>v[0]<0)||p.every(v=>v[0]>w)||p.every(v=>v[1]<0)||p.every(v=>v[1]>h))continue;
+   const depth=(p[0][2]+p[1][2]+p[2][2])/3;
+   faces.push({kind:'street',q:[0,0,depth],triangles:[{p,color:colors[j/3],depth}]});
+  }
+ }
+ return faces.sort((a,b)=>b.q[2]-a.q[2]);
+}
+// Keep the established complete road painter order, including around bends
+// whose sample depths fold back. Insert depth-sorted scenery between those
+// atomic road groups; never let a road shoulder reorder across its asphalt.
+function softwareDecorationOrder(decorations,roadGroups){
+ const sorted=decorations.sort((a,b)=>b.q[2]-a.q[2]);
+ if(!roadGroups.length)return sorted;
+ const ordered=[];let at=0;
+ for(const group of roadGroups){
+  while(at<sorted.length&&sorted[at].q[2]>=group.q[2])ordered.push(sorted[at++]);
+  ordered.push(group);
+ }
+ return ordered.concat(sorted.slice(at));
 }
 function drawSoftware(view){
  const ctx=softwareContext,w=canvas.width,h=canvas.height;ctx.setTransform(1,0,0,1,0,0);
  const gradient=ctx.createLinearGradient(0,0,0,h);gradient.addColorStop(0,'#96c8ee');gradient.addColorStop(.62,'#f2e6ee');gradient.addColorStop(.63,'#cbd8c1');gradient.addColorStop(1,'#bdcdb8');ctx.fillStyle=gradient;ctx.fillRect(0,0,w,h);
  const eye=view.eye,target=view.target,z=norm(sub(target,eye)),right=norm(cross(z,[0,1,0])),up=cross(right,z),f=h/(2*Math.tan(cameraFov*Math.PI/360));
  const project=p=>{const d=sub(p,eye),depth=dot(d,z);if(depth<.25)return null;return [w/2+dot(d,right)*f/depth,h/2-dot(d,up)*f/depth,depth,f/depth]};
- const surface=(pts,col)=>{const q=pts.map(project);if(q.some(x=>!x))return;ctx.fillStyle=col;ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fill()};
+ const streetActive=typeof coastalSpaceEnabled==='function'&&coastalSpaceEnabled();
+ const roadFaces=[];let pendingRoad=null;
+ const surface=(pts,col)=>{const q=pts.map(project);if(q.some(x=>!x))return;if(pendingRoad){pendingRoad.push({p:q,color:col});return;}ctx.fillStyle=col;ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fill()};
  const absolute=p=>sub(p,view.origin),quads=[];
  for(let ds=-40;ds<240;ds+=5){const ss=player.s+ds,r0=road(ss),r1=road(ss+5);quads.push({d:ds,a:r0,b:r1})}
- for(const q of quads.reverse()){const pt=(r,l,y)=>absolute(add(add(r.p,mul(r.R,l)),[0,y,0]));surface([pt(q.a,-10,.0),pt(q.a,10,0),pt(q.b,10,0),pt(q.b,-10,0)],'#e3dce5');surface([pt(q.a,-7,.05),pt(q.a,7,.05),pt(q.b,7,.05),pt(q.b,-7,.05)],'#7b829a');if(Math.floor(q.d/5)%2===0)for(const l of [-2.3,2.3])surface([pt(q.a,l-.04,.06),pt(q.a,l+.04,.06),pt(q.b,l+.04,.06),pt(q.b,l-.04,.06)],'#e9edf1');for(const side of [-1,1])surface([pt(q.a,side*8.1,.4),pt(q.a,side*8.1,.8),pt(q.b,side*8.1,.8),pt(q.b,side*8.1,.4)],'#c0cfe2')}
+ for(const q of quads.reverse()){
+  if(streetActive)pendingRoad=[];
+  const pt=(r,l,y)=>absolute(add(add(r.p,mul(r.R,l)),[0,y,0]));
+  surface([pt(q.a,-10,.0),pt(q.a,10,0),pt(q.b,10,0),pt(q.b,-10,0)],'#e3dce5');
+  surface([pt(q.a,-7,.05),pt(q.a,7,.05),pt(q.b,7,.05),pt(q.b,-7,.05)],'#7b829a');
+  if(Math.floor(q.d/5)%2===0)for(const l of [-2.3,2.3])surface([pt(q.a,l-.04,.06),pt(q.a,l+.04,.06),pt(q.b,l+.04,.06),pt(q.b,l-.04,.06)],'#e9edf1');
+  for(const side of [-1,1])surface([pt(q.a,side*8.1,.4),pt(q.a,side*8.1,.8),pt(q.b,side*8.1,.8),pt(q.b,side*8.1,.4)],'#c0cfe2');
+  if(pendingRoad?.length){
+   // Sort each 5 m segment as one group, preserving its exact original
+   // shoulder -> asphalt -> markings -> rails order and four-sided fills.
+   // Sorting its overlapping surfaces/triangles separately cuts zebra-like
+   // holes in the asphalt when a shoulder half paints after the road half.
+   const center=absolute(mul(add(q.a.p,q.b.p),.5)),depth=dot(sub(center,eye),z);
+   roadFaces.push({kind:'road',q:[0,0,depth],triangles:pendingRoad});
+  }
+  pendingRoad=null;
+ }
+ const replaced=s=>streetActive&&coastalStreetReplaces(((s%CIRCUIT_LENGTH)+CIRCUIT_LENGTH)%CIRCUIT_LENGTH);
+ const street=streetActive&&typeof drawList!=='undefined'?softwareCoastStreet(drawList,project,w,h,eye):[];
  const signs=typeof drawList!=='undefined'&&typeof scenicCache!=='undefined'?softwareSignboards(drawList,[scenicCache.get('left'),scenicCache.get('right')],project,w,h,eye):[];
  if(typeof softwareHouseAnchorsEnabled!=='undefined'&&softwareHouseAnchorsEnabled){
- const decorations=[...signs];for(let ds=0;ds<210;ds+=20)for(const side of [-1,1]){const pos=atRoad(Math.floor((player.s+ds)/20)*20,side*12,0),q=project(absolute(pos));if(q)decorations.push({q,side,ds,pos,kind:'tree'})}
- for(const anchor of softwareHouseAnchors(player.s,CIRCUIT_LENGTH,raceMode==='circuit'))for(const side of [-1,1]){const q=project(absolute(atRoad(anchor.s,side*20,0)));if(q)decorations.push({q,kind:'house'})}
- for(const x of decorations.sort((a,b)=>b.q[2]-a.q[2])){if(x.kind==='sign'){drawSoftwareSign(ctx,x);continue}const [px,py,,sc]=x.q;if(x.kind==='tree'){ctx.fillStyle='#a78a95';ctx.fillRect(px-sc*.12,py-sc*3.5,sc*.24,sc*3.5);for(let j=0;j<4;j++){ctx.fillStyle=j%2?'#ffdaeb':'#efbbd4';ctx.beginPath();ctx.ellipse(px+Math.sin(j*2)*sc,py-sc*(3.3+j*.3),sc*1.6,sc*1.1,0,0,TAU);ctx.fill()}}else{const p=x.q;ctx.fillStyle='#f3e9dc';ctx.fillRect(p[0]-p[3]*3,p[1]-p[3]*5,p[3]*6,p[3]*5);ctx.fillStyle='#90a1c2';ctx.beginPath();ctx.moveTo(p[0]-p[3]*3.5,p[1]-p[3]*5);ctx.lineTo(p[0],p[1]-p[3]*6.3);ctx.lineTo(p[0]+p[3]*3.5,p[1]-p[3]*5);ctx.fill();ctx.fillStyle='#b1d9e5';for(let j=0;j<3;j++)ctx.fillRect(p[0]+(j-1.2)*p[3]*1.5,p[1]-p[3]*3.9,p[3],p[3]*1.2)}}
+ const decorations=[...signs,...street];for(let ds=0;ds<210;ds+=20)for(const side of [-1,1]){if(replaced(Math.floor((player.s+ds)/20)*20))continue;const pos=atRoad(Math.floor((player.s+ds)/20)*20,side*12,0),q=project(absolute(pos));if(q)decorations.push({q,side,ds,pos,kind:'tree'})}
+ for(const anchor of softwareHouseAnchors(player.s,CIRCUIT_LENGTH,raceMode==='circuit'))for(const side of [-1,1]){if(replaced(anchor.s))continue;const q=project(absolute(atRoad(anchor.s,side*20,0)));if(q)decorations.push({q,kind:'house'})}
+ for(const x of softwareDecorationOrder(decorations,roadFaces)){if(x.kind==='sign'||x.kind==='street'||x.kind==='road'){drawSoftwareSign(ctx,x);continue}const [px,py,,sc]=x.q;if(x.kind==='tree'){ctx.fillStyle='#a78a95';ctx.fillRect(px-sc*.12,py-sc*3.5,sc*.24,sc*3.5);for(let j=0;j<4;j++){ctx.fillStyle=j%2?'#ffdaeb':'#efbbd4';ctx.beginPath();ctx.ellipse(px+Math.sin(j*2)*sc,py-sc*(3.3+j*.3),sc*1.6,sc*1.1,0,0,TAU);ctx.fill()}}else{const p=x.q;ctx.fillStyle='#f3e9dc';ctx.fillRect(p[0]-p[3]*3,p[1]-p[3]*5,p[3]*6,p[3]*5);ctx.fillStyle='#90a1c2';ctx.beginPath();ctx.moveTo(p[0]-p[3]*3.5,p[1]-p[3]*5);ctx.lineTo(p[0],p[1]-p[3]*6.3);ctx.lineTo(p[0]+p[3]*3.5,p[1]-p[3]*5);ctx.fill();ctx.fillStyle='#b1d9e5';for(let j=0;j<3;j++)ctx.fillRect(p[0]+(j-1.2)*p[3]*1.5,p[1]-p[3]*3.9,p[3],p[3]*1.2)}}
  }else{
- const decorations=[...signs];for(let ds=0;ds<210;ds+=20)for(const side of [-1,1]){const pos=atRoad(Math.floor((player.s+ds)/20)*20,side*12,0),q=project(absolute(pos));if(q)decorations.push({q,side,ds,pos})}
- for(const x of decorations.sort((a,b)=>b.q[2]-a.q[2])){if(x.kind==='sign'){drawSoftwareSign(ctx,x);continue}const [px,py,,sc]=x.q;ctx.fillStyle='#a78a95';ctx.fillRect(px-sc*.12,py-sc*3.5,sc*.24,sc*3.5);for(let j=0;j<4;j++){ctx.fillStyle=j%2?'#ffdaeb':'#efbbd4';ctx.beginPath();ctx.ellipse(px+Math.sin(j*2)*sc,py-sc*(3.3+j*.3),sc*1.6,sc*1.1,0,0,TAU);ctx.fill()}if(x.ds%40===0){const p=project(absolute(atRoad(player.s+x.ds,x.side*20,0)));if(p){ctx.fillStyle='#f3e9dc';ctx.fillRect(p[0]-p[3]*3,p[1]-p[3]*5,p[3]*6,p[3]*5);ctx.fillStyle='#90a1c2';ctx.beginPath();ctx.moveTo(p[0]-p[3]*3.5,p[1]-p[3]*5);ctx.lineTo(p[0],p[1]-p[3]*6.3);ctx.lineTo(p[0]+p[3]*3.5,p[1]-p[3]*5);ctx.fill();ctx.fillStyle='#b1d9e5';for(let j=0;j<3;j++)ctx.fillRect(p[0]+(j-1.2)*p[3]*1.5,p[1]-p[3]*3.9,p[3],p[3]*1.2)}}}
+ const decorations=[...signs,...street];for(let ds=0;ds<210;ds+=20)for(const side of [-1,1]){if(replaced(Math.floor((player.s+ds)/20)*20))continue;const pos=atRoad(Math.floor((player.s+ds)/20)*20,side*12,0),q=project(absolute(pos));if(q)decorations.push({q,side,ds,pos})}
+ for(const x of softwareDecorationOrder(decorations,roadFaces)){if(x.kind==='sign'||x.kind==='street'||x.kind==='road'){drawSoftwareSign(ctx,x);continue}const [px,py,,sc]=x.q;ctx.fillStyle='#a78a95';ctx.fillRect(px-sc*.12,py-sc*3.5,sc*.24,sc*3.5);for(let j=0;j<4;j++){ctx.fillStyle=j%2?'#ffdaeb':'#efbbd4';ctx.beginPath();ctx.ellipse(px+Math.sin(j*2)*sc,py-sc*(3.3+j*.3),sc*1.6,sc*1.1,0,0,TAU);ctx.fill()}if(x.ds%40===0&&!replaced(player.s+x.ds)){const p=project(absolute(atRoad(player.s+x.ds,x.side*20,0)));if(p){ctx.fillStyle='#f3e9dc';ctx.fillRect(p[0]-p[3]*3,p[1]-p[3]*5,p[3]*6,p[3]*5);ctx.fillStyle='#90a1c2';ctx.beginPath();ctx.moveTo(p[0]-p[3]*3.5,p[1]-p[3]*5);ctx.lineTo(p[0],p[1]-p[3]*6.3);ctx.lineTo(p[0]+p[3]*3.5,p[1]-p[3]*5);ctx.fill();ctx.fillStyle='#b1d9e5';for(let j=0;j<3;j++)ctx.fillRect(p[0]+(j-1.2)*p[3]*1.5,p[1]-p[3]*3.9,p[3],p[3]*1.2)}}}
  }
  for(const mark of skids)if(mark.life>0){const q=project(absolute(mark.p));if(q){ctx.fillStyle='#414957';ctx.fillRect(q[0],q[1],Math.max(1,q[3]*.12),Math.max(2,q[3]*mark.length))}}
  for(const ch of chunks.values())for(const e of ch.entities.concat(ch.roadsideProps||[])){if(Math.abs(courseDelta(e.s,player.s))>170)continue;const q=project(absolute(atRoad(e.s+(e.ds||0),e.l+(e.dl||0),.2)));if(!q||e.kind==='coin'&&e.hitLap===Math.max(0,Math.floor(player.s/CIRCUIT_LENGTH)))continue;const [x,y,,sc]=q;if(e.kind==='coin'){ctx.fillStyle='#ffe2a0';ctx.beginPath();ctx.ellipse(x,y-sc*.8,sc*.25,sc*.38,0,0,TAU);ctx.fill()}else if(e.kind==='pad'){const r=road(e.s),p=(ds,l)=>absolute(atRoad(e.s+ds,e.l+l,.07));surface([p(-1.2,-1.5),p(1.2,-1.5),p(1.2,1.5),p(-1.2,1.5)],'#92e3e5')}else if(e.kind==='ramp'){const p=(ds,l,y)=>absolute(atRoad(e.s+ds,e.l+l,y));surface([p(-1.4,-1.5,.08),p(1.4,-1.5,.85),p(1.4,1.5,.85),p(-1.4,1.5,.08)],'#bfa9e3')}else if(e.kind==='cone'){ctx.fillStyle='#eebd92';ctx.beginPath();ctx.moveTo(x,y-sc*.8);ctx.lineTo(x-sc*.35,y);ctx.lineTo(x+sc*.35,y);ctx.fill()}else if(e.kind==='barrier'){ctx.fillStyle='#edacbb';ctx.fillRect(x-sc,y-sc*.7,sc*2,sc*.7)}}

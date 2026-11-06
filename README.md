@@ -4,7 +4,7 @@
 
 ## 旁置试玩
 
-- [海岸连续道路空间](/road/?environment=coast-space-v1)：汐见海岸的地形、建筑与道路承接。
+- [海岸连续道路空间](/road/?environment=coast-space-v1)：汐见海岸的地形与道路承接，含 320–680 m 固定源街屋。
 - [动力与峰后轮胎](/road/?handling=power-tires-v1)：载荷转移与抓地到侧滑；成绩和幽灵使用独立档案。
 - [空间＋轮胎](/road/?environment=coast-space-v1&handling=power-tires-v1)：两项组合。
 - [Rapier 短段](/rapier/)：保留 170–740 m 的独立比较，不接正式比赛成绩。

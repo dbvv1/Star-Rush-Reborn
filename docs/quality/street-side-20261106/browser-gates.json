@@ -1,0 +1,127 @@
+{
+  "parent": "a9e8181c719a85cec72d5ced6fccfdcf7ab1c099",
+  "scope": "Minimum side-candidate browser gate; real menu starts and held W input in cloud Canvas2D. Not a fixed-camera capture, full race, WebGL2 or quality score.",
+  "frozenAt": "2026-11-06T02:33:27.465Z",
+  "runtimeSha256": "25b2ce33b6867bd75d098d84a9abc9f9655c52543dfc466e0021e62de2f72a94",
+  "routes": [
+    {
+      "route": "space",
+      "query": "environment=coast-space-v1",
+      "initial": {
+        "space": true,
+        "power": false,
+        "ticks": 0,
+        "backend": "canvas2d",
+        "warnings": [
+          "WebGL2 不可用，已使用 Canvas2D 兼容渲染（地形、光照与车辆简化）；旁置驾驶仍可试玩。"
+        ]
+      },
+      "final": {
+        "space": true,
+        "power": false,
+        "ticks": 1824,
+        "backend": "canvas2d",
+        "warnings": [
+          "WebGL2 不可用，已使用 Canvas2D 兼容渲染（地形、光照与车辆简化）；旁置驾驶仍可试玩。"
+        ]
+      },
+      "applicationErrors": [],
+      "checkedAt": "2026-11-06T02:34:22.072Z"
+    },
+    {
+      "route": "default",
+      "query": "",
+      "initial": {
+        "space": false,
+        "power": false,
+        "ticks": 0,
+        "backend": "canvas2d",
+        "warnings": []
+      },
+      "final": {
+        "space": false,
+        "power": false,
+        "ticks": 859,
+        "backend": "canvas2d",
+        "warnings": []
+      },
+      "applicationErrors": [],
+      "checkedAt": "2026-11-06T02:34:50.617Z"
+    },
+    {
+      "route": "power",
+      "query": "handling=power-tires-v1",
+      "initial": {
+        "space": false,
+        "power": true,
+        "ticks": 0,
+        "backend": "canvas2d",
+        "warnings": [
+          "WebGL2 不可用，已使用 Canvas2D 兼容渲染（地形、光照与车辆简化）；旁置驾驶仍可试玩。"
+        ]
+      },
+      "final": {
+        "space": false,
+        "power": true,
+        "ticks": 859,
+        "backend": "canvas2d",
+        "warnings": [
+          "WebGL2 不可用，已使用 Canvas2D 兼容渲染（地形、光照与车辆简化）；旁置驾驶仍可试玩。"
+        ]
+      },
+      "applicationErrors": [],
+      "checkedAt": "2026-11-06T02:35:15.181Z"
+    },
+    {
+      "route": "combined",
+      "query": "environment=coast-space-v1&handling=power-tires-v1",
+      "initial": {
+        "space": true,
+        "power": true,
+        "ticks": 0,
+        "backend": "canvas2d",
+        "warnings": [
+          "WebGL2 不可用，已使用 Canvas2D 兼容渲染（地形、光照与车辆简化）；旁置驾驶仍可试玩。"
+        ]
+      },
+      "final": {
+        "space": true,
+        "power": true,
+        "ticks": 1821,
+        "backend": "canvas2d",
+        "warnings": [
+          "WebGL2 不可用，已使用 Canvas2D 兼容渲染（地形、光照与车辆简化）；旁置驾驶仍可试玩。"
+        ]
+      },
+      "applicationErrors": [],
+      "checkedAt": "2026-11-06T02:35:49.038Z"
+    }
+  ],
+  "previewCleanup": {
+    "status": "stopped",
+    "startSessionExitCode": 0
+  },
+  "image": {
+    "path": "space-canvas.png",
+    "sha256": "da94cf41382d8277bed9d9c71c5096e9093b9bdadda01bc1a1afd9781aabf318"
+  },
+  "cpu": {
+    "unitTests": 188,
+    "authoringTests": 59,
+    "affectedTests": 23,
+    "parentReplayVariants": 6,
+    "ticksPerReplay": 600,
+    "allParentReplayHashesIdentical": true,
+    "roadCoverageSamples": 4449,
+    "roadCoverageErrors": 0,
+    "roadStreetOcclusionSamples": 7107,
+    "roadStreetOcclusionErrors": 0
+  },
+  "formalQuality": {
+    "visualScore": null,
+    "formallyEvaluatedViews": 0,
+    "requiredViews": 3,
+    "contentPassed": 0,
+    "contentTotal": 43
+  }
+}

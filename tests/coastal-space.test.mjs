@@ -3,9 +3,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {createHash} from 'node:crypto';
+import {createCoastStreetPlan} from '../coast-street-runtime.mjs';
+import {verifyFixedSource} from '../authoring/coast-street-placement/fixed-source-contract.mjs';
+const parts=verifyFixedSource().parts;
 const read=p=>fs.readFileSync(p,'utf8'),hash=x=>createHash('sha256').update(x).digest('hex');
 function context(enabled=true,id='coast-reborn',road=true){
- const ctx={};vm.runInNewContext(`const roadDriving=${road};let coastalSpaceCandidate=${enabled};${read('engine.js')}\n${read('race.js').split('\n').find(line=>line.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\n${read('scenery.js')}\nactiveTrackId=${JSON.stringify(id)};rebuildCircuit();function road(s){return circuitRoad(s)}function atRoad(s,l,y=0){const r=road(s);return add(r.p,add(mul(r.R,l),[0,y,0]))}function wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}this.model=coastalSpaceModel;this.active=coastalSpaceEnabled;this.run=s=>eval(s);`,ctx);return ctx;
+ const ctx={createCoastStreetPlan,coastStreetSource:()=>parts};vm.runInNewContext(`const roadDriving=${road};let coastalSpaceCandidate=${enabled};${read('engine.js')}\n${read('race.js').split('\n').find(line=>line.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\n${read('scenery.js')}\nactiveTrackId=${JSON.stringify(id)};rebuildCircuit();function road(s){return circuitRoad(s)}function atRoad(s,l,y=0){const r=road(s);return add(r.p,add(mul(r.R,l),[0,y,0]))}function wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}this.model=coastalSpaceModel;this.active=coastalSpaceEnabled;this.run=s=>eval(s);`,ctx);return ctx;
 }
 test('coastal grid is deterministic, bounded, upward and protects entire road corridor',()=>{
  const c=context(),a=c.model(),b=context().model();assert.equal(hash(JSON.stringify(a)),hash(JSON.stringify(b)));assert.equal(a.triangles.length,11250);
@@ -24,13 +27,14 @@ test('default, legacy and academy landscape bytes remain unchanged',()=>{
   if(id==='coast-reborn'&&road){assert.equal(off.active(),false);assert.equal(on.active(),true);assert.notEqual(hash(serialize(off)),hash(serialize(on)));}else{assert.equal(on.active(),false);assert.equal(hash(serialize(off)),hash(serialize(on)));}
  }
 });
-test('existing prop prefix and RNG consumption do not change when fixed additions are enabled',()=>{
- const code=`let draws=0;const rr=()=>{draws++;return .4};const root=decorateChunk(12,road(480).p,rr);({draws,items:root.children.map(n=>({matrix:Array.from(n.local),data:Array.from(n.mesh.sourceData),indices:Array.from(n.mesh.sourceIndices)}))})`;
- const a=context(false).run(code),b=context(true).run(code);assert.equal(a.draws,b.draws);assert.equal(JSON.stringify(a.items),JSON.stringify(b.items.slice(0,a.items.length)));assert(b.items.length>a.items.length);
+test('street replacement preserves RNG and every surviving original node, and records exact rollback order',()=>{
+ const code=`let draws=0;const rr=()=>{draws++;return .4};const root=decorateChunk(12,road(480).p,rr);const pack=nodes=>nodes.map(n=>({matrix:Array.from(n.local),data:Array.from(n.mesh.sourceData),indices:Array.from(n.mesh.sourceIndices)}));const record=coastalSpaceAdditions.get(root);({draws,items:pack(root.children),baseline:record?pack(record.baseline):null,survivors:record?pack(root.children.filter(n=>record.baseline.includes(n))):null,originalSurvivors:record?pack(record.baseline.filter(n=>root.children.includes(n))):null})`;
+ const a=context(false).run(code),b=context(true).run(code);assert.equal(a.draws,b.draws);assert.equal(JSON.stringify(a.items),JSON.stringify(b.baseline));assert.equal(JSON.stringify(b.survivors),JSON.stringify(b.originalSurvivors));assert(b.survivors.length<b.baseline.length,'old buildings/overlapping vegetation really removed');assert(b.items.length>b.survivors.length,'fixed street is actually attached');
 });
 
 test('late decoration failure removes already committed candidate additions',()=>{
  const c=context(true),base=context(false);
- const before=c.run("this.oldRoot=decorateChunk(11,road(440).p,()=>.4);oldRoot.children.length"),expected=base.run("decorateChunk(11,road(440).p,()=>.4).children.length");assert(before>expected);
- c.run("coastalSpaceDecorate=()=>{throw Error('late injected failure')};decorateChunk(12,road(480).p,()=>.4)");assert.equal(c.active(),false);assert.equal(c.run('oldRoot.children.length'),expected);
+ const pack="JSON.stringify(oldRoot.children.map(n=>({matrix:Array.from(n.local),data:Array.from(n.mesh.sourceData),indices:Array.from(n.mesh.sourceIndices)})))";
+ const before=c.run("this.oldRoot=decorateChunk(11,road(440).p,()=>.4);"+pack),expected=base.run("this.oldRoot=decorateChunk(11,road(440).p,()=>.4);"+pack);assert.notEqual(before,expected);
+ c.run("coastalSpaceDecorate=()=>{throw Error('late injected failure')};decorateChunk(12,road(480).p,()=>.4)");assert.equal(c.active(),false);assert.equal(c.run(pack),expected);
 });

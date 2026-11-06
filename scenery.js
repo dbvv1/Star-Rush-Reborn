@@ -76,8 +76,8 @@ function scenicProp(key){
 }
 function districtAt(s){const u=((s%CIRCUIT_LENGTH)+CIRCUIT_LENGTH)%CIRCUIT_LENGTH/CIRCUIT_LENGTH,sections=trackInfo().sectors;let result=sections[0];for(const section of sections)if(u>=section.at)result=section;return result}
 function decorateChunk(k,origin,rr){
- const root=new Node(),start=k*40;
- const place=(key,s,l,scale=1,rot=0)=>{if(raceMode==='circuit'&&s>=CIRCUIT_LENGTH||!sceneryClear(s,l))return null;const r=road(s),pos=atRoad(s,l,-.05),angle=-r.h+(l>0?PI:0)+rot,n=new Node(scenicProp(key),trs(sub(pos,origin),[scale,scale,scale],[0,angle,0]));root.add(n);return n};
+ const root=new Node(),start=k*40,placements=[];
+ const place=(key,s,l,scale=1,rot=0)=>{if(raceMode==='circuit'&&s>=CIRCUIT_LENGTH||!sceneryClear(s,l))return null;const r=road(s),pos=atRoad(s,l,-.05),angle=-r.h+(l>0?PI:0)+rot,n=new Node(scenicProp(key),trs(sub(pos,origin),[scale,scale,scale],[0,angle,0]));placements.push({node:n,key,s});root.add(n);return n};
  const sakura=raceMode==='circuit'&&trackInfo().biome===1;
  for(const side of [-1,1]){
   place('lamp',start+7,side*9.65);
@@ -97,7 +97,7 @@ function decorateChunk(k,origin,rr){
  }
  // Low plants are a separate deterministic mesh; original props and random draws stay unchanged.
  if(roadDriving&&raceMode==='circuit'&&activeTrackId==='academy-reborn')root.add(trainingVerge(k,origin));
- if(typeof coastalSpaceEnabled==='function'&&coastalSpaceEnabled())try{const additions=new Node();coastalSpaceDecorate(additions,k,origin);commitCoastalSpace(root,additions)}catch{disableCoastalSpace();}
+ if(typeof coastalSpaceEnabled==='function'&&coastalSpaceEnabled())try{const additions=new Node();coastalSpaceDecorate(additions,k,origin);commitCoastalSpace(root,additions,coastalStreetRemoved(placements,origin))}catch{disableCoastalSpace();}
  return root;
 }
 let landscapeNode=null,landscapeTrack=null,landscapeSkyReady=false,ambientPetals=[];
