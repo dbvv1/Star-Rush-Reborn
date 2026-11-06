@@ -1,0 +1,33 @@
+{
+  "comparisonPassed": true,
+  "pairs": [
+    {
+      "shot": "coast-chase",
+      "before": "811646e8a69bf9803a1de2218b882ab28b4b1f42",
+      "after": "7e87d4c32d5014612fcb7a8af8bc49d266d7238c",
+      "stateEqual": true,
+      "pixelsEqual": false,
+      "beforePng": "003403b8b778f2e7e230caafe7c0d459f15308baf30c6fb37844146ef3eca7f8",
+      "afterPng": "8f2976170748660d02db8d1680dcfa4b86116b88cdd9871899b5d499c913ee5b"
+    },
+    {
+      "shot": "coast-full-bend",
+      "before": "811646e8a69bf9803a1de2218b882ab28b4b1f42",
+      "after": "7e87d4c32d5014612fcb7a8af8bc49d266d7238c",
+      "stateEqual": true,
+      "pixelsEqual": false,
+      "beforePng": "6c68f4771675d572aa0e1c9e3efd2b09d7db2ed65e77d0c1307ba9059028fef2",
+      "afterPng": "e0f003f83897272b122a88ba2d683045d8946c1a25cb42c7cca7a4b49a702cd3"
+    },
+    {
+      "shot": "academy-depth",
+      "before": "811646e8a69bf9803a1de2218b882ab28b4b1f42",
+      "after": "7e87d4c32d5014612fcb7a8af8bc49d266d7238c",
+      "stateEqual": true,
+      "pixelsEqual": true,
+      "beforePng": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a",
+      "afterPng": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a"
+    }
+  ],
+  "qualityScore": "pending independent blind review"
+}

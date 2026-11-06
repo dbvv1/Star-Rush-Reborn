@@ -1,0 +1,93 @@
+{
+  "jobId": "B-STAR-QUALITY-CAPTURE-20261106",
+  "scope": "CPU rebuild of the two frozen source commits with the fixed default build environment; no browser and no capture in this step",
+  "node": "v24.22.1 (existing local runtime, path omitted)",
+  "python": "3.13.5",
+  "dependencies": {
+    "lockRoot": "4bfa549f6b3b5b17f4dce128a9b087660bd04210de9cfe9b9cc87c44dc06c83d",
+    "lockRapier": "d7ea6f76c6a71a38b03e75e89e7b7183928f28d496c733858af81b851e1cded4",
+    "playwright": "1.64.1",
+    "pngjs": "7.0.0",
+    "three": "0.186.0",
+    "esbuild": "0.25.12",
+    "note": "Existing preinstalled trees matching both lockfiles; no install, upgrade or lockfile change."
+  },
+  "command": "node --import TOOL/windows-hide.mjs build.mjs (TOOL path omitted)",
+  "note": "One earlier invocation passed a bare Windows path to --import and stopped before running the build with ERR_UNSUPPORTED_ESM_URL_SCHEME; the recorded build is the successful file-URL preload invocation. The failed log is retained in the local job scratch, not in this public copy.",
+  "environment": {
+    "STAR_RUSH_DRIVING_MODEL": "road",
+    "STAR_RUSH_COAST_FLOW": "baseline",
+    "STAR_RUSH_SIGNBOARD_VARIANT": "baseline",
+    "STAR_RUSH_SKY": "kenney",
+    "STAR_RUSH_COAST_AMBIENCE": "off",
+    "STAR_RUSH_RAIL_SOURCE": "kenney",
+    "STAR_RUSH_DRIVING_AUDIO": "procedural",
+    "STAR_RUSH_CANVAS_HOUSE_ANCHORS": "off",
+    "otherStarRushCandidateValues": "cleared from the process environment before the build"
+  },
+  "builds": {
+    "811646e8": {
+      "commit": "811646e8a69bf9803a1de2218b882ab28b4b1f42",
+      "tree": "f11e318d3fc19785db094fd18b4e3160f22c6827",
+      "exit": {
+        "waited": true,
+        "exitCode": 0,
+        "signal": null,
+        "startedAt": "2026-11-06T13:51:57.047Z",
+        "endedAt": "2026-11-06T13:51:58.901Z"
+      },
+      "expectedBundleSha256": "25b2ce33b6867bd75d098d84a9abc9f9655c52543dfc466e0021e62de2f72a94",
+      "actualBundleSha256": "25b2ce33b6867bd75d098d84a9abc9f9655c52543dfc466e0021e62de2f72a94",
+      "expectedWorkerSha256": "132dd430016081c3bfd176ffee4af082fa024d1b9aba38fbc8954f61b000e86f",
+      "actualWorkerSha256": "132dd430016081c3bfd176ffee4af082fa024d1b9aba38fbc8954f61b000e86f",
+      "sourceUnchanged": true,
+      "generatedChanged": [
+        "dist/client/game.js",
+        "dist/client/legacy/game.js",
+        "dist/client/road/game.js",
+        "dist/server/index.js",
+        "worker/index.js"
+      ],
+      "generatedUntracked": [],
+      "wholeTreeDirty": true,
+      "note": "Only the listed tracked build outputs changed; source bytes stayed at the frozen commit."
+    },
+    "7e87d4c3": {
+      "commit": "7e87d4c32d5014612fcb7a8af8bc49d266d7238c",
+      "tree": "66fe4f58e9c69e8a7a511ec888e4243e197d9681",
+      "exit": {
+        "waited": true,
+        "exitCode": 0,
+        "signal": null,
+        "startedAt": "2026-11-06T13:52:03.735Z",
+        "endedAt": "2026-11-06T13:52:05.686Z"
+      },
+      "expectedBundleSha256": "9768d3fd6dd9bc529c45c5c53d7ccca68b0204e9ad136ca8137d21a6e0125259",
+      "actualBundleSha256": "9768d3fd6dd9bc529c45c5c53d7ccca68b0204e9ad136ca8137d21a6e0125259",
+      "expectedWorkerSha256": "6be5af90f6c97b34c44f804e5e94ba3c4d53c335bf2398001d02842bac389132",
+      "actualWorkerSha256": "6be5af90f6c97b34c44f804e5e94ba3c4d53c335bf2398001d02842bac389132",
+      "sourceUnchanged": true,
+      "generatedChanged": [
+        "dist/client/game.js",
+        "dist/client/legacy/game.js",
+        "dist/client/road/game.js",
+        "dist/server/index.js",
+        "worker/index.js"
+      ],
+      "generatedUntracked": [],
+      "wholeTreeDirty": true,
+      "note": "Only the listed tracked build outputs changed; source bytes stayed at the frozen commit."
+    }
+  },
+  "chromium": {
+    "name": "Google Chrome for Testing",
+    "version": "156.0.8078.4",
+    "playwrightRevision": "1248",
+    "chromeExeSha256": "7f08161bbeb2853ffe1780a9ded4985087f52efb9725d7d8207aabdd42f7cfb9",
+    "versionManifestSha256": "1409ad8e48b201c60eb009d781f8e924250bdbc1df05b3b0125860e7589619f4",
+    "headless": true,
+    "softwareWebGL": "SwiftShader via --use-angle=swiftshader --enable-unsafe-swiftshader",
+    "versionSource": "Version manifest assemblyIdentity (156.0.8078.4) and the browser.version() value asserted by the capture script; no chrome --version command was run."
+  },
+  "redaction": "Local executable paths, full argv, process ids and the preview origin are omitted from this public record. Build command exit codes and UTC times are the real values from the supervising wait."
+}

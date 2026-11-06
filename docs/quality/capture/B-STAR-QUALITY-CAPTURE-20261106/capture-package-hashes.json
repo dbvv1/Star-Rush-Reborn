@@ -1,0 +1,13 @@
+{
+  "jobId": "B-STAR-QUALITY-CAPTURE-20261106",
+  "note": "SHA-256 of the capture package files actually copied to the local TOOL directory and used for this run. Paths omitted.",
+  "files": {
+    "README.md": "cd89fe6c3da46d64a1ba7628a65a91ee9c2bc9729bfa2abf857fd9aa2c85f3db",
+    "capture.mjs": "3ed4bb25766e35c2c3d87e077595ed1b68685a722d06f48535f7e7ca34ce7bcc",
+    "compare.mjs": "7cae8fd2644e6e352571bfc3f915fc10e808e58a2bdb9640a5cdf9a36ac6dec4",
+    "compare.test.mjs": "bc87e6d9cc44c04e7f7fe3e64ecc3abf1a3e786fc1af1b68b8a6b7ca2213fe20",
+    "contract.mjs": "a05d9b9b951eaafecc8c656cbb3aada8d3a2ce32d905b1f2bd4b73a92a3066a5",
+    "contract.test.mjs": "11fdc4de73f6d02612c2cb91106e9fcc15c15536e37bea12c766d066852d7edc",
+    "windows-hide.mjs": "e928701f6aebbff61fcffe7857242e51989f083ee0724b852b407b4dadfde262"
+  }
+}
