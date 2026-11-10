@@ -34,6 +34,7 @@ function coastalSpaceModel(){
  model.street=createCoastStreetPlan(coastStreetSource(),circuitRoad,model,circuitSamples);
  refineCoastalTerrain(model);
  coastalTerrainAppearance(model);
+ model.verge=createCoastVergePlan(coastVergeSource(),model,circuitRoad,circuitSamples);
  return coastalSpaceModelCache=model;
 }
 // Work inside the existing island, not by extending its footprint. Preserve
@@ -103,6 +104,7 @@ function coastalBeacon(c){
  for(let i=0;i<8;i++){const a=i*TAU/8;bar(c,[Math.cos(a)*1.75,10.9,Math.sin(a)*1.75],[Math.cos(a)*1.75,12.4,Math.sin(a)*1.75],.06,'#6e8194');}
  box(c,[0,.8,2.4],[1.1,1.6,.13],'#7c929e',.02);
 }
+const coastalVergeMeshes=new Map();
 const coastalStreetMeshes=new Map(),coastalStreetFoundations=new Map();
 function coastalStreetReplaces(s){return coastalSpaceEnabled()&&s>=300&&s<=710;}
 function coastalStreetRemoved(placements,origin){
@@ -116,7 +118,46 @@ function coastalStreetRemoved(placements,origin){
   return street.instances.some(({placement:{bbox:a}})=>b.minX<=a.maxX+.5&&b.maxX>=a.minX-.5&&b.minZ<=a.maxZ+.5&&b.maxZ>=a.minZ-.5);
  }).map(p=>p.node);
 }
-function coastalSpaceDecorate(root,k,origin){
+const coastalVergeObstacles=new Map();
+function coastVergeNeighborPlacements(k){
+ if(!coastalVergeObstacles.has(k)){
+  const saved=coastalSpaceCandidate,all=[];coastalSpaceCandidate=false;
+  try{
+   // A swept box contains every independent affine position/scale combination,
+   // not merely two disconnected endpoint boxes.
+   for(let q=k-1;q<=k+1;q++){
+    const boxes=[],o=road(q*40).p;
+    for(const position of [0,1])for(const scale of [0,1]){
+     let draw=0;const root=decorateChunk(q,o,()=>draw++%2===0?position:scale);
+     root.children.forEach((node,j)=>{
+      if(!node.mesh?.sourceData)return;
+      const a=boxes[j]??={minX:Infinity,maxX:-Infinity,minZ:Infinity,maxZ:-Infinity},d=node.mesh.sourceData;
+      for(let i=0;i<d.length;i+=10){const p=add(transform(node.local,[d[i],d[i+1],d[i+2]]),o);a.minX=Math.min(a.minX,p[0]);a.maxX=Math.max(a.maxX,p[0]);a.minZ=Math.min(a.minZ,p[2]);a.maxZ=Math.max(a.maxZ,p[2]);}
+     });
+    }
+    all.push(...boxes.filter(Boolean).map(worldBBox=>({worldBBox})));
+   }
+  }finally{coastalSpaceCandidate=saved;}
+  coastalVergeObstacles.set(k,all);
+ }
+ return coastalVergeObstacles.get(k);
+}
+function coastalSpaceDecorate(root,k,origin,placements=[]){
+ for(const entry of coastalSpaceModel().verge.instances){
+  if(Math.floor(entry.station/40)!==k)continue;
+  const b=entry.bbox;
+  const blocked=[...placements,...coastVergeNeighborPlacements(k,origin)].some(({node,worldBBox,worldOrigin=origin})=>{
+   if(worldBBox){const a=worldBBox;return b.minX<a.maxX+.5&&b.maxX>a.minX-.5&&b.minZ<a.maxZ+.5&&b.maxZ>a.minZ-.5;}
+   if(!node.mesh?.sourceData)return false;
+   const d=node.mesh.sourceData,a={minX:Infinity,maxX:-Infinity,minZ:Infinity,maxZ:-Infinity};
+   for(let i=0;i<d.length;i+=10){const p=add(transform(node.local,[d[i],d[i+1],d[i+2]]),worldOrigin);a.minX=Math.min(a.minX,p[0]);a.maxX=Math.max(a.maxX,p[0]);a.minZ=Math.min(a.minZ,p[2]);a.maxZ=Math.max(a.maxZ,p[2]);}
+   return b.minX<a.maxX+.5&&b.maxX>a.minX-.5&&b.minZ<a.maxZ+.5&&b.maxZ>a.minZ-.5;
+  });
+  if(blocked)continue;
+  if(!coastalVergeMeshes.has(entry.part.name))coastalVergeMeshes.set(entry.part.name,new Mesh(entry.part.sourceData,entry.part.sourceIndices));
+  root.add(new Node(coastalVergeMeshes.get(entry.part.name),translation(-origin[0],-origin[1],-origin[2])));
+ }
+
  for(const entry of coastalSpaceModel().street.instances){
   const {part,placement,foundation}=entry;if(Math.floor(placement.station/40)!==k)continue;
   if(!coastalStreetMeshes.has(part.name)){const mesh=new Mesh(coastWallData(part),part.sourceIndices);mesh.coastStreet=true;coastalStreetMeshes.set(part.name,mesh);}
@@ -142,8 +183,8 @@ function disableCoastalSpace(){
  coastalSpaceCandidate=false;
  for(const [root,{baseline,nodes}] of coastalSpaceAdditions){const extra=root.children.filter(node=>!nodes.includes(node)&&!baseline.includes(node));root.children=[...baseline,...extra];}
  coastalSpaceAdditions.clear();
- for(const mesh of [...coastalStreetMeshes.values(),...coastalStreetFoundations.values()])mesh.dispose();
- coastalStreetMeshes.clear();coastalStreetFoundations.clear();coastalSpaceModelCache=null;
+ for(const mesh of [...coastalVergeMeshes.values(),...coastalStreetMeshes.values(),...coastalStreetFoundations.values()])mesh.dispose();
+ coastalVergeObstacles.clear();coastalVergeMeshes.clear();coastalStreetMeshes.clear();coastalStreetFoundations.clear();coastalSpaceModelCache=null;
  if(typeof sideCandidates!=='undefined')sideCandidates.disable('space');
  if(coastalSpaceLandscapeActive){coastalSpaceLandscapeActive=false;buildLandscape();}
 }

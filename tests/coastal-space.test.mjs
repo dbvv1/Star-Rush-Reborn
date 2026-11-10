@@ -1,3 +1,4 @@
+import {createCoastVergePlan,decodeCoastVergeSource} from '../coast-verge-runtime.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -8,7 +9,7 @@ import {verifyFixedSource} from '../authoring/coast-street-placement/fixed-sourc
 const parts=decodeCoastStreetSource(fs.readFileSync('authoring/coast-street-placement/fixed-source/street.glb').toString('base64'));
 const read=p=>fs.readFileSync(p,'utf8'),hash=x=>createHash('sha256').update(x).digest('hex');
 function context(enabled=true,id='coast-reborn',road=true){
- const ctx={createCoastStreetPlan,coastWallData,coastStreetSource:()=>parts};vm.runInNewContext(`const roadDriving=${road};let coastalSpaceCandidate=${enabled};${read('engine.js')}\n${read('race.js').split('\n').find(line=>line.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\n${read('scenery.js')}\nactiveTrackId=${JSON.stringify(id)};rebuildCircuit();function road(s){return circuitRoad(s)}function atRoad(s,l,y=0){const r=road(s);return add(r.p,add(mul(r.R,l),[0,y,0]))}function wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}this.model=coastalSpaceModel;this.active=coastalSpaceEnabled;this.run=s=>eval(s);`,ctx);return ctx;
+ const ctx={createCoastVergePlan,coastVergeSource:()=>decodeCoastVergeSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64')),createCoastStreetPlan,coastWallData,coastStreetSource:()=>parts};vm.runInNewContext(`const roadDriving=${road};let coastalSpaceCandidate=${enabled};${read('engine.js')}\n${read('race.js').split('\n').find(line=>line.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\n${read('scenery.js')}\nactiveTrackId=${JSON.stringify(id)};rebuildCircuit();function road(s){return circuitRoad(s)}function atRoad(s,l,y=0){const r=road(s);return add(r.p,add(mul(r.R,l),[0,y,0]))}function wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}this.model=coastalSpaceModel;this.active=coastalSpaceEnabled;this.run=s=>eval(s);`,ctx);return ctx;
 }
 test('coastal grid is deterministic, bounded, upward and protects entire road corridor',()=>{
  const c=context(),a=c.model(),b=context().model();assert.equal(hash(JSON.stringify(a)),hash(JSON.stringify(b)));assert.equal(a.triangles.length,11250);
@@ -87,4 +88,42 @@ test('actual terrain collector preserves stride, vertex colours and index offset
  const visible=m.triangles.filter(ids=>!ids.every(i=>m.vertices[i][1]<-.9)).flatMap(ids=>ids.map(i=>i+3));
  assert.deepEqual(Array.from(data.indices.slice(3,3+visible.length)),Array.from(visible));
  assert(data.indices.every(i=>Number.isInteger(i)&&i>=0&&i<data.data.length/10));
+});
+
+test('verge uses actual six CC0 bushes, bounded feet and proper rotations, not fences',()=>{
+ const c=context(),m=c.model();assert(m.verge.instances.length>0);
+ const source=decodeCoastVergeSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64'));for(const p of source){assert.deepEqual(p.pivot,[0,0,0]);let minY=Infinity;for(let i=1;i<p.sourceData.length;i+=10)minY=Math.min(minY,p.sourceData[i]);assert.equal(minY,0);}
+ for(const e of m.verge.instances){assert.match(e.part.name,/^bush-/);assert(e.range.max-e.range.min<=.18);assert(e.range.min>=-.65);assert(e.part.sourceData.every(Number.isFinite));const ys=[];for(let i=1;i<e.part.sourceData.length;i+=10)ys.push(e.part.sourceData[i]);assert(Math.abs(Math.min(...ys)-(e.range.min-.02))<1e-6);}
+ const result=c.run('const root=decorateChunk(8,road(320).p,()=>.4);({nodes:root.children.filter(n=>[...coastalVergeMeshes.values()].includes(n.mesh)).length,meshes:coastalVergeMeshes.size})');
+ assert.equal(result.nodes,m.verge.instances.length);assert.equal(result.meshes,result.nodes);
+ c.run('disableCoastalSpace()');assert.equal(c.run('coastalVergeMeshes.size'),0);
+});
+
+test('verge rejects road, house, water and full-cell slope hazards',()=>{
+ const c=context(),m=c.model(),parts=decodeCoastVergeSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64')),road=c.run('circuitRoad'),samples=c.run('circuitSamples');
+ const make=(model=m,rs=samples)=>createCoastVergePlan(parts,model,road,rs);
+ const house={...m,street:{instances:[{placement:{bbox:{minX:-1000,maxX:1000,minZ:-1000,maxZ:1000}}}]}};assert(make(house).rejected.every(e=>e.reason==='house'));
+ const wet={...m,vertices:m.vertices.map(p=>[p[0],-1,p[2]])};assert(make(wet).rejected.every(e=>e.reason==='water'));
+ const slope={...m,vertices:m.vertices.map((p,i)=>[p[0],i%2?4:0,p[2]])};assert(make(slope).rejected.every(e=>e.reason==='slope'));
+ const r=road(340),mid=[r.p[0]-r.R[0]*24,0,r.p[2]-r.R[2]*24],rs=[{p:[mid[0]-30*r.T[0],0,mid[2]-30*r.T[2]]},{p:[mid[0]+30*r.T[0],0,mid[2]+30*r.T[2]]}];assert(make(m,rs).rejected.every(e=>e.reason==='road'));
+});
+
+test('existing prop bounds suppress verge instead of moving or removing the old prop',()=>{
+ const c=context();const result=c.run('const root=new Node(),prop=new Node();prop.mesh={sourceData:new Float32Array([-1000,0,-1000,0,0,0,0,0,0,0,1000,0,1000,0,0,0,0,0,0,0])};coastalSpaceDecorate(root,8,[0,0,0],[{node:prop}]);({count:coastalVergeMeshes.size,old:prop.mesh.sourceData.length})');assert.equal(result.count,0);assert.equal(result.old,20);
+});
+
+test('verge cached real chunk rolls back exactly and source failure restores default',()=>{
+ const base=context(false),off=base.run('const root=decorateChunk(8,road(320).p,()=>.4);JSON.stringify(root.children.map(n=>({m:n.local,d:Array.from(n.mesh.sourceData),i:Array.from(n.mesh.sourceIndices)})))');
+ const c=context();c.run('this.root=decorateChunk(8,road(320).p,()=>.4);this.verge=[...coastalVergeMeshes.values()]');assert(c.run('verge.length')>0);c.run('disableCoastalSpace()');assert.equal(c.run('JSON.stringify(root.children.map(n=>({m:n.local,d:Array.from(n.mesh.sourceData),i:Array.from(n.mesh.sourceIndices)})))'),off);assert.equal(c.run('coastalVergeMeshes.size+coastalVergeObstacles.size'),0);
+ const failed=context();failed.coastVergeSource=()=>{throw Error('broken source')};failed.run('buildLandscape()');assert.equal(failed.active(),false);
+});
+
+test('chosen verge patch has no foreign-chunk original prop overlap over whole circuit',()=>{
+ const c=context();const result=c.run(`const patch=coastalSpaceModel().verge.instances.map(e=>e.bbox),hits=[];coastalSpaceCandidate=false;
+ for(let q=0;q<Math.ceil(CIRCUIT_LENGTH/40);q++){
+  if(q>=7&&q<=9)continue;
+  const boxes=[],o=road(q*40).p;
+  for(const position of [0,1])for(const scale of [0,1]){let draw=0;const root=decorateChunk(q,o,()=>draw++%2===0?position:scale);root.children.forEach((node,j)=>{const a=boxes[j]??={minX:Infinity,maxX:-Infinity,minZ:Infinity,maxZ:-Infinity},d=node.mesh.sourceData;for(let i=0;i<d.length;i+=10){const p=add(transform(node.local,[d[i],d[i+1],d[i+2]]),o);a.minX=Math.min(a.minX,p[0]);a.maxX=Math.max(a.maxX,p[0]);a.minZ=Math.min(a.minZ,p[2]);a.maxZ=Math.max(a.maxZ,p[2]);}});}
+  for(const a of boxes)for(const b of patch)if(b.minX<a.maxX+.5&&b.maxX>a.minX-.5&&b.minZ<a.maxZ+.5&&b.maxZ>a.minZ-.5)hits.push(q);
+ }({hits,patch:patch.length,chunks:Math.ceil(CIRCUIT_LENGTH/40)})`);assert.equal(JSON.stringify(result.hits),'[]');assert(result.patch>0);console.log('verge whole-circuit swept-prop check',result);
 });
