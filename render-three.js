@@ -23,7 +23,7 @@ export function createThreeBackend(canvas,{shading='toon',hemisphereIntensity=2.
  function geometry(mesh,paint){
   if(!mesh.renderId)mesh.renderId=nextId++;const key=mesh.renderId+':'+(mesh.paintable&&paint?paint:'');if(geometries.has(key))return geometries.get(key);
   const data=mesh.sourceData,positions=[],normals=[],colors=[];const tint=paint?new THREE.Color(paint):null;
-  for(let i=0;i<data.length;i+=10){positions.push(data[i],data[i+1],data[i+2]);normals.push(data[i+3],data[i+4],data[i+5]);const r=data[i+6],g=data[i+7],b=data[i+8],isPaint=mesh.paintable&&tint&&g-r>.14&&b-r>.2;colors.push(isPaint?tint.r:r,isPaint?tint.g:g,isPaint?tint.b:b)}
+  for(let i=0;i<data.length;i+=10){positions.push(data[i],data[i+1],data[i+2]);normals.push(data[i+3],data[i+4],data[i+5]);const r=data[i+6],g=data[i+7],b=data[i+8],isPaint=mesh.paintable&&tint&&(mesh.paintMask?paint!=='#83cde4'&&mesh.paintMask[i/10]:g-r>.14&&b-r>.2);colors.push(isPaint?tint.r:r,isPaint?tint.g:g,isPaint?tint.b:b)}
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(normals,3));g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.setIndex(Array.from(mesh.sourceIndices));g.computeBoundingSphere();geometries.set(key,g);mesh.onDispose=()=>{for(const [id,geo] of geometries)if(id.startsWith(mesh.renderId+':')){for(const [bk,batch] of batches)if(batch.geometry===geo){scene.remove(batch);batch.dispose();batches.delete(bk)}geo.dispose();geometries.delete(id)}};return g;
  }
  function render(list,view,width,height,fov,options={},now=performance.now()){
