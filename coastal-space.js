@@ -194,6 +194,7 @@ function disableCoastalSpace(){
  coastalSpaceAdditions.clear();
  for(const mesh of [...coastalFenceMeshes.values(),...coastalVergeMeshes.values(),...coastalStreetMeshes.values(),...coastalStreetFoundations.values()])mesh.dispose();
  coastalFenceMeshes.clear();coastalVergeObstacles.clear();coastalVergeMeshes.clear();coastalStreetMeshes.clear();coastalStreetFoundations.clear();coastalSpaceModelCache=null;
+ if(typeof coastShoulderDisable==='function')coastShoulderDisable();
  if(typeof sideCandidates!=='undefined')sideCandidates.disable('space');
  if(coastalSpaceLandscapeActive){coastalSpaceLandscapeActive=false;buildLandscape();}
 }
