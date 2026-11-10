@@ -38,3 +38,53 @@ test('late decoration failure removes already committed candidate additions',()=
  const before=c.run("this.oldRoot=decorateChunk(11,road(440).p,()=>.4);"+pack),expected=base.run("this.oldRoot=decorateChunk(11,road(440).p,()=>.4);"+pack);assert.notEqual(before,expected);
  c.run("coastalSpaceDecorate=()=>{throw Error('late injected failure')};decorateChunk(12,road(480).p,()=>.4)");assert.equal(c.active(),false);assert.equal(c.run(pack),expected);
 });
+
+// Exact geometry signatures from the published 811646e source tree (the same
+// tree as its reviewed local 99cfbd3). These are not visual quality scores.
+test('terrain refinement preserves every submerged and water-crossing triangle at the actual sea top',()=>{
+ const m=context().model();
+ const wet=m.triangles.filter(ids=>ids.some(i=>m.vertices[i][1]<=-.82)).map(ids=>ids.map(i=>m.vertices[i]));
+ assert.equal(wet.length,7576);
+ assert.equal(hash(JSON.stringify(wet)),'96992efb001d9cf28227a029d39264045b253fd1db0cf53da01e979c0a163fe0');
+ assert.equal(hash(JSON.stringify([m.vertices.map(p=>[p[0],p[2]]),m.triangles])),'429a17ee0c9d04db7e5094d592e0923f31db745bd203588b2269446ff92468ac');
+ const corridor=m.vertices.filter(p=>m.nearest(p[0],p[2]).d<=38);
+ assert.equal(corridor.length,2488);
+ assert.equal(hash(JSON.stringify(corridor)),'162b19beecdf1f851f68446d426f3a58546bcfabe912a38b9602d8b5ed7411da');
+ assert(m.vertices.reduce((sum,p)=>sum+p[1],0)>-3492.9833983498943+10,'a real inland relief change, not a no-op');
+});
+
+test('terrain refinement keeps all original prop anchors, street matrices and complete support cells',()=>{
+ const c=context(),m=c.model();
+ assert.equal(hash(JSON.stringify(m.props)),'82912127eabdc25901933355538b73aa285723679a9a9ee08e4f7493000051fa');
+ const street=m.street.instances.map(e=>({placement:e.placement,foundation:e.foundation,terrainRange:e.terrainRange}));
+ assert.equal(hash(JSON.stringify(street)),'15d348398bf70567ba25ed0720ca0ae4136cac14144743c65671c3f3ee65859d');
+ // Revalidate against the final mesh, not only the pre-refinement plan.
+ const final=createCoastStreetPlan(parts,c.run('circuitRoad'),m,c.run('circuitSamples'));
+ assert.equal(JSON.stringify(final.instances.map(e=>({placement:e.placement,foundation:e.foundation,terrainRange:e.terrainRange}))),JSON.stringify(street));
+});
+
+test('continuous ground uses finite unit normals and low-frequency linear vertex colours',()=>{
+ const m=context().model();assert.equal(m.normals.length,m.vertices.length);assert.equal(m.colors.length,m.vertices.length);
+ const colours=new Set();
+ for(let i=0;i<m.vertices.length;i++){
+  const n=m.normals[i],col=m.colors[i];
+  assert.equal(n.length,3);assert.equal(col.length,3);assert([...n,...col].every(Number.isFinite));
+  assert(Math.abs(Math.hypot(...n)-1)<1e-10);assert(n[1]>0);
+  assert(col.every(v=>v>=0&&v<=1));
+  if(m.vertices[i][1]>-.82)colours.add(col.map(v=>v.toFixed(3)).join(','));
+ }
+ assert(colours.size>100,'continuous broad colour field replaces three per-face colour bands');
+});
+
+test('actual terrain collector preserves stride, vertex colours and index offsets after existing geometry',()=>{
+ const c=context(),m=c.model();
+ const data=c.run("const collector=new Collector();collector.add(shape([0,0,0,1,0,0,0,0,1],[0,1,0,0,1,0,0,1,0],[0,2,1]),I,'#ffffff');coastalSpaceTerrain(collector);({data:collector.data,indices:collector.indices})");
+ assert.equal(data.data.length%10,0);assert.deepEqual(Array.from(data.indices.slice(0,3)),[0,2,1]);
+ for(let i=0;i<m.vertices.length;i++){
+  const actual=Array.from(data.data.slice((i+3)*10,(i+4)*10));
+  assert.deepEqual(actual,[...Array.from(m.vertices[i]),...Array.from(m.normals[i]),...Array.from(m.colors[i]),.02]);
+ }
+ const visible=m.triangles.filter(ids=>!ids.every(i=>m.vertices[i][1]<-.9)).flatMap(ids=>ids.map(i=>i+3));
+ assert.deepEqual(Array.from(data.indices.slice(3,3+visible.length)),Array.from(visible));
+ assert(data.indices.every(i=>Number.isInteger(i)&&i>=0&&i<data.data.length/10));
+});

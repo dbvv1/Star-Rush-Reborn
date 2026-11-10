@@ -32,13 +32,65 @@ function coastalSpaceModel(){
  });
  const model={bounds,vertices,triangles,props,nearest,surface};
  model.street=createCoastStreetPlan(coastStreetSource(),circuitRoad,model,circuitSamples);
+ refineCoastalTerrain(model);
+ coastalTerrainAppearance(model);
  return coastalSpaceModelCache=model;
+}
+// Work inside the existing island, not by extending its footprint. Preserve
+// every sea-crossing triangle and every complete support cell before shaping
+// the few broad inland slopes. No RNG, new props, or simulation inputs.
+function refineCoastalTerrain(model){
+ const {bounds,vertices,triangles,street,props,nearest}=model,{step}=bounds;
+ const nx=Math.round((bounds.x1-bounds.x0)/step),nz=Math.round((bounds.z1-bounds.z0)/step);
+ // The water box is centred at -.9 with height .16: its top is -.82.
+ const waterTop=-.82,base=vertices.map(p=>p[1]),locked=new Set(),shore=new Set();
+ const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+ for(const ids of triangles)if(ids.some(i=>base[i]<=waterTop))for(const i of ids){locked.add(i);shore.add(i);}
+ const supports=street.instances.map(e=>e.placement.bbox).concat(props.map(p=>({minX:p.x-p.radius,maxX:p.x+p.radius,minZ:p.z-p.radius,maxZ:p.z+p.radius})));
+ for(const b of supports){
+  const x0=Math.max(0,Math.floor((b.minX-bounds.x0)/step)),x1=Math.min(nx,Math.floor((b.maxX-bounds.x0)/step)+1);
+  const z0=Math.max(0,Math.floor((b.minZ-bounds.z0)/step)),z1=Math.min(nz,Math.floor((b.maxZ-bounds.z0)/step)+1);
+  for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++)locked.add(z*(nx+1)+x);
+ }
+ const distance=(p,b)=>Math.hypot(Math.max(b.minX-p[0],0,p[0]-b.maxX),Math.max(b.minZ-p[2],0,p[2]-b.maxZ));
+ // Only the landward edge of the frozen water triangles is needed here.
+ const shoreline=[...shore].filter(i=>base[i]>waterTop).map(i=>vertices[i]);
+ for(let i=0;i<vertices.length;i++){
+  const p=vertices[i];if(locked.has(i))continue;
+  const {r,d,side}=nearest(p[0],p[2]);if(d<=38)continue;
+  const coast=shoreline.reduce((v,q)=>Math.min(v,Math.hypot(p[0]-q[0],p[2]-q[2])),Infinity);
+  const support=supports.reduce((v,b)=>Math.min(v,distance(p,b)),Infinity);
+  const envelope=smooth(38,50,d)*smooth(0,18,coast)*smooth(step*Math.SQRT2,24,support);
+  const first=Math.exp(-(((r.s-390)/115)**2)),second=Math.exp(-(((r.s-625)/95)**2));
+  const shoulder=side>0?Math.exp(-(((d-55)/24)**2)):Math.exp(-(((d-43)/16)**2));
+  p[1]=base[i]+envelope*shoulder*(1.7*first+1.15*second);
+ }
+}
+function coastalTerrainAppearance(model){
+ const {vertices,triangles,nearest,street}=model;
+ const normals=vertices.map(()=>[0,0,0]);
+ for(const ids of triangles){const [a,b,c]=ids.map(i=>vertices[i]),n=cross(sub(b,a),sub(c,a));for(const i of ids)normals[i]=add(normals[i],n);}
+ model.normals=normals.map(norm);
+ const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+ const grass=color('#a6b493'),meadow=color('#bfcca8'),earth=color('#a59f89'),rock=color('#aaa99c'),shore=color('#c4b99f');
+ const blend=(a,b,t)=>a.map((v,i)=>mix(v,b[i],t));
+ model.colors=vertices.map((p,i)=>{
+  const broad=.5+.24*Math.sin(p[0]*.037+p[2]*.019)+.23*Math.cos(p[2]*.029-p[0]*.013);
+  const slope=1-model.normals[i][1],d=nearest(p[0],p[2]).d;
+  const yard=street.instances.reduce((v,{placement:{bbox:b}})=>Math.min(v,Math.hypot(Math.max(b.minX-p[0],0,p[0]-b.maxX),Math.max(b.minZ-p[2],0,p[2]-b.maxZ))),Infinity);
+  let col=blend(grass,meadow,clamp(broad,0,1));
+  col=blend(col,earth,.28*(1-smooth(2,12,yard))+.18*(1-smooth(12,26,d)));
+  col=blend(col,rock,smooth(.10,.45,slope)*.72);
+  return blend(shore,col,smooth(-.55,.65,p[1]));
+ });
 }
 function coastalSpaceTerrain(c){
  const model=coastalSpaceModel();
- for(const ids of model.triangles){const p=ids.map(i=>model.vertices[i]);if(p.every(v=>v[1]<-.9))continue;const n=norm(cross(sub(p[1],p[0]),sub(p[2],p[0]))),y=p.reduce((s,v)=>s+v[1],0)/3;
-  const col=y<.15?'#d8c7aa':y>2.5?'#a6b493':'#bfcca8';c.add(shape(p.flat(),[...n,...n,...n],[0,1,2]),I,col,.02);
- }
+ // Shared normals and low-frequency vertex colour remove the old per-triangle
+ // height stripes without changing the renderer, world light, or water.
+ const base=c.data.length/10;
+ for(let i=0;i<model.vertices.length;i++)c.data.push(...model.vertices[i],...model.normals[i],...model.colors[i],.02);
+ for(const ids of model.triangles)if(!ids.every(i=>model.vertices[i][1]<-.9))c.indices.push(...ids.map(i=>base+i));
  for(const p of model.props)if(p.key!=='pine')box(c,[p.x,(p.y+p.foundationBottom)/2,p.z],[p.radius*2,p.y-p.foundationBottom,p.radius*2],'#b7b7aa',.08);
 }
 function coastalBeacon(c){
