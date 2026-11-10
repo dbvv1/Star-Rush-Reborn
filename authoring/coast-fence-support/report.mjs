@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {createHash} from 'node:crypto';
+import {decodeStandardPart} from '../coast-street-placement/fixed-source/upstream-adapter.mjs';
+import {createCoastVergePlan,decodeCoastVergeSource} from '../../coast-verge-runtime.mjs';
+import {createCoastStreetPlan,decodeCoastStreetSource,coastWallData} from '../../coast-street-runtime.mjs';
+import {planFenceSupports} from './plan.mjs';
+const read=p=>fs.readFileSync(p,'utf8'),source=fs.readFileSync('assets/coast-verge/verge.glb');
+const hash=createHash('sha256').update(source).digest('hex');
+if(hash!=='0479af55bd3bcc937739aa49648ce4ecc41d739279d548af28ead8df7b433d15')throw Error('Source mismatch');
+const scope={createCoastVergePlan,coastVergeSource:()=>decodeCoastVergeSource(source.toString('base64')),createCoastStreetPlan,coastWallData,coastStreetSource:()=>decodeCoastStreetSource(fs.readFileSync('authoring/coast-street-placement/fixed-source/street.glb').toString('base64'))};
+vm.runInNewContext(`const roadDriving=true;let coastalSpaceCandidate=true;${read('engine.js')}\n${read('race.js').split('\n').find(l=>l.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\nactiveTrackId='coast-reborn';rebuildCircuit();this.model=coastalSpaceModel();this.road=circuitRoad;this.samples=circuitSamples;`,scope);
+const rows=[];for(let s=320;s<=680;s+=40)for(const side of [-1,1])rows.push({s,side,setback:24});
+const run=()=>planFenceSupports(decodeStandardPart(source),scope.model,scope.road,scope.samples,rows);
+const result=run();if(JSON.stringify(result)!==JSON.stringify(run()))throw Error('Nondeterministic');
+const report={base:'409868b028a38006658a5202d952a1784ffce3ed',sourceSha256:hash,evidence:'CPU authoring only; original scenery swept bounds not certified; no runtime change',...result};
+fs.writeFileSync('authoring/coast-fence-support/report.json',JSON.stringify(report,null,2)+'\n');
+console.log(JSON.stringify({accepted:result.accepted.length,rejected:result.rejected.length,reasons:result.rejected.reduce((a,e)=>{for(const r of e.reasons)a[r]=(a[r]||0)+1;return a;},{})}));
