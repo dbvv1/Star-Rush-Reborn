@@ -144,6 +144,12 @@ function coastVergeNeighborPlacements(k){
  }
  return coastalVergeObstacles.get(k);
 }
+// A few broad material groups, never per-house RNG. All accepted rows and
+// protected support cells remain intact; this is not a new placement plan.
+function coastalStreetPalette(entry){
+ const s=entry.row.centerS;
+ return s>=440&&s<=480?'warm':s>=640&&s<=680?'cool':'plaster';
+}
 function coastalSpaceDecorate(root,k,origin,placements=[]){
  for(const entry of coastalSpaceModel().fence.instances){
   if(Math.floor(entry.row.s/40)!==k)continue;
@@ -169,12 +175,13 @@ function coastalSpaceDecorate(root,k,origin,placements=[]){
 
  for(const entry of coastalSpaceModel().street.instances){
   const {part,placement,foundation}=entry;if(Math.floor(placement.station/40)!==k)continue;
-  if(!coastalStreetMeshes.has(part.name)){const mesh=new Mesh(coastWallData(part),part.sourceIndices);mesh.coastStreet=true;coastalStreetMeshes.set(part.name,mesh);}
+  const palette=coastalStreetPalette(entry),meshKey=part.name+'|'+palette;
+  if(!coastalStreetMeshes.has(meshKey)){const mesh=new Mesh(coastWallData(part,palette),part.sourceIndices);mesh.coastStreet=true;coastalStreetMeshes.set(meshKey,mesh);}
   if(!coastalStreetFoundations.has(entry)){const c=new Collector();c.add(foundation,I,'#b7b7aa',.08);const mesh=c.finish();mesh.coastStreet=true;coastalStreetFoundations.set(entry,mesh);}
   // Do not apply source pivot again, rotate/re-scale, or snap height to terrain.
   const matrix=placement.matrix.slice();for(let j=0;j<3;j++)matrix[12+j]-=origin[j];
   root.add(new Node(coastalStreetFoundations.get(entry),matrix));
-  root.add(new Node(coastalStreetMeshes.get(part.name),matrix));
+  root.add(new Node(coastalStreetMeshes.get(meshKey),matrix));
  }
 
  for(const p of coastalSpaceModel().props){if(Math.floor(p.s/40)!==k)continue;

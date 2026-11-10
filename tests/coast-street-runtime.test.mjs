@@ -51,16 +51,18 @@ test('actual scene nodes retain raw source geometry and original matrices, with 
   assert.equal(houseNodes.length,expected.length);
   for(let j=0;j<expected.length;j++){
    const node=houseNodes[j],{part,placement}=expected[j];
-   assert.equal(meshDigest({sourceData:node.mesh.sourceData,sourceIndices:node.mesh.sourceIndices}),meshDigest({...part,sourceData:coastWallData(part)}));
+   assert.equal(meshDigest({sourceData:node.mesh.sourceData,sourceIndices:node.mesh.sourceIndices}),meshDigest({...part,sourceData:coastWallData(part,scene.run(`coastalStreetPalette(${JSON.stringify(expected[j])})`))}));
    const matrix=placement.matrix.slice();for(let axis=0;axis<3;axis++)matrix[12+axis]-=origin[axis];
    assert.deepEqual(Array.from(node.local),matrix);
    const world=scene.api.mm(scene.api.translation(...origin),node.local);
    for(let i=0;i<16;i++)assert(Math.abs(world[i]-placement.matrix[i])<.00002);
-   if(counts.has(part.name))assert.equal(counts.get(part.name).mesh,node.mesh,'same source mesh is shared');
-   counts.set(part.name,{mesh:node.mesh,count:(counts.get(part.name)?.count||0)+1});
+   const key=part.name+'|'+scene.run(`coastalStreetPalette(${JSON.stringify(expected[j])})`);
+   if(counts.has(key))assert.equal(counts.get(key).mesh,node.mesh,'same source and palette share a mesh');
+   counts.set(key,{mesh:node.mesh,count:(counts.get(key)?.count||0)+1});
   }
  }
- assert.deepEqual([...counts.values()].map(x=>x.count),[10,10,10]);
+ assert.equal(counts.size,9);
+ assert.deepEqual([...counts.values()].map(x=>x.count).sort((a,b)=>a-b),[2,2,2,2,2,2,6,6,6]);
 });
 
 test('separate foundations meet the original house base and contain terrain without expanding footprints',()=>{
@@ -93,7 +95,7 @@ test('candidate source failure and late replacement failure restore original cac
  const bad=context(true,'coast-reborn',true,{coastStreetSource(){throw Error('bad asset')}});bad.run('buildLandscape()');assert.equal(bad.run('coastalSpaceEnabled()'),false);assert.equal(bad.run(pack),baselineLandscape);
  const c=context();c.run('buildLandscape();this.roots=[];for(let k=7;k<=17;k++)roots.push(decorateChunk(k,road(k*40).p,()=>.4))');
  const baseline=Array.from({length:11},(_,i)=>serialize(base.api.decorateChunk(i+7,base.run(`road(${(i+7)*40}).p`),()=>.4).children));
- assert(c.run('coastalStreetMeshes.size')===3);
+ assert(c.run('coastalStreetMeshes.size')===9);
  c.run("coastalStreetRemoved=()=>{throw Error('late replacement failure')};decorateChunk(18,road(720).p,()=>.4)");
  assert.equal(c.run('coastalSpaceEnabled()'),false);assert.equal(c.run(pack),baselineLandscape);
  assert.deepEqual(Array.from(c.roots,r=>serialize(r.children)),baseline);
@@ -216,16 +218,47 @@ test('actual Canvas road interior stays continuously covered when street depth s
 });
 
 test('wall family changes only explicit wall RGB and never mutates pinned source',()=>{
- for(const part of parts){
-  const before=Array.from(part.sourceData), out=coastWallData(part);
+ for(const [paletteId,rgb] of Object.entries({plaster:[0xd9,0xd0,0xbc],warm:[0xd2,0xc5,0xad],cool:[0xc9,0xc9,0xbd]}))for(const part of parts){
+  const before=Array.from(part.sourceData), out=coastWallData(part,paletteId);
   const walls=part.materialRanges.filter(r=>r.name==='wall');assert(walls.length);
   let changed=0;
   for(let i=0;i<out.length;i++){
    const wall=walls.some(r=>Math.floor(i/10)>=r.start&&Math.floor(i/10)<r.start+r.count);
-   if(wall&&i%10>=6&&i%10<=8){assert.equal(out[i],Math.fround(Math.pow([0xd9,0xd0,0xbc][i%10-6]/255,2.2)));if(out[i]!==before[i])changed++;}
+   if(wall&&i%10>=6&&i%10<=8){assert.equal(out[i],Math.fround(Math.pow(rgb[i%10-6]/255,2.2)));if(out[i]!==before[i])changed++;}
    else assert.equal(out[i],before[i]);
   }
   assert(changed>0);assert.deepEqual(Array.from(part.sourceData),before);
  }
  assert.throws(()=>coastWallData({sourceData:new Float32Array(10)}),/classification/);
+});
+
+
+test('wall groups keep entire accepted rows and broad deterministic material rhythm',()=>{
+ const rows=model.street.plan.accepted.map(({row})=>[row.centerS,scene.run(`coastalStreetPalette(${JSON.stringify({row})})`)]);
+ assert.deepEqual(rows,[[320,'plaster'],[360,'plaster'],[400,'plaster'],[440,'warm'],[480,'warm'],[520,'plaster'],[560,'plaster'],[600,'plaster'],[640,'cool'],[680,'cool']]);
+ for(const palette of ['plaster','warm','cool']){
+  const out=coastWallData(parts[0],palette);
+  assert.deepEqual(out,coastWallData(parts[0],palette));
+ }
+ assert.throws(()=>coastWallData(parts[0],'__proto__'),/Unknown coastal wall palette/);
+ assert.throws(()=>coastWallData(parts[0],'toString'),/Unknown coastal wall palette/);
+ const digests=['plaster','warm','cool'].map(p=>meshDigest({...parts[0],sourceData:coastWallData(parts[0],p)}));
+ assert.equal(new Set(digests).size,3);
+});
+
+test('three wall variants remain distinct through real Three and Canvas consumers',()=>{
+ const b=backend(),palettes=['plaster','warm','cool'];
+ const items=palettes.map(palette=>{
+  const mesh=new scene.api.Mesh(coastWallData(parts[0],palette),parts[0].sourceIndices);mesh.coastStreet=true;
+  return {mesh,m:scene.api.translation(0,0,0),shadow:true};
+ });
+ b.render(items,{eye:[0,2,5],target:[0,0,0]},1280,720,62,{quality:'high'});
+ const batches=b.scene.children.filter(n=>n.isInstancedMesh);assert.equal(batches.length,3);
+ for(let j=0;j<items.length;j++){
+  assert.deepEqual(Array.from(batches[j].geometry.attributes.color.array),Array.from(items[j].mesh.sourceData).filter((_,i)=>i%10>=6&&i%10<9));
+  const faces=scene.api.softwareCoastStreet([items[j]],p=>[500+p[0]*5,300-p[1]*5,p[2]+100,5],1000,600);
+  assert(faces.some(f=>f.triangles[0].color===['rgb(217,208,188)','rgb(210,197,173)','rgb(201,201,189)'][j]));
+ }
+ for(const item of items)item.mesh.dispose();
+ assert.equal(b.scene.children.filter(n=>n.isInstancedMesh).length,0);
 });

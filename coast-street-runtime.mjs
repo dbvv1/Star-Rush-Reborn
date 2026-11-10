@@ -80,11 +80,13 @@ export function createCoastStreetPlan(parts,sampleRoad,terrain,roadSamples) {
 }
 
 // Candidate presentation only. Keep source buffers, topology, roof/glass and
-// gloss intact. Uniform warm plaster avoids introducing per-face noise.
-export function coastWallData(part) {
+// gloss intact. Broad street groups avoid per-face noise and random house colors.
+export function coastWallData(part, paletteId='plaster') {
+  const palettes={plaster:[0xd9,0xd0,0xbc],warm:[0xd2,0xc5,0xad],cool:[0xc9,0xc9,0xbd]};
+  if(!Object.hasOwn(palettes,paletteId))throw Error('Unknown coastal wall palette');
   const data=new Float32Array(part.sourceData);
   // Match engine.color: Mesh and fixed source consume linear RGB.
-  const wall=[0xd9,0xd0,0xbc].map(channel=>Math.pow(channel/255,2.2));
+  const wall=palettes[paletteId].map(channel=>Math.pow(channel/255,2.2));
   if(!part.materialRanges?.length)throw Error('Missing street material classification');
   for(const range of part.materialRanges){
     if(range.name!=='wall')continue;
