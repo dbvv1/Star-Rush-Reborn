@@ -5,14 +5,14 @@ import vm from 'node:vm';
 import {createHash} from 'node:crypto';
 import * as THREE from 'three';
 import {createSkyPanorama} from '../sky-panorama.js';
-import {createCoastStreetPlan,decodeCoastStreetSource,COAST_STREET_ROWS} from '../coast-street-runtime.mjs';
+import {createCoastStreetPlan,decodeCoastStreetSource,coastWallData,COAST_STREET_ROWS} from '../coast-street-runtime.mjs';
 import {verifyFixedSource,meshDigest,readFixedSource} from '../authoring/coast-street-placement/fixed-source-contract.mjs';
 import {placeStreet,boxSegmentDistance} from '../authoring/coast-street-placement/adapter.mjs';
 import {planStreetRows,inspectStreetRowPairs} from '../authoring/coast-street-layout/layout.mjs';
-const read=p=>fs.readFileSync(p,'utf8'),fixed=verifyFixedSource(),parts=fixed.parts;
+const read=p=>fs.readFileSync(p,'utf8'),fixed=verifyFixedSource(),parts=decodeCoastStreetSource(readFixedSource('street.glb').toString('base64'));
 const serialize=nodes=>JSON.stringify(nodes.map(n=>({m:Array.from(n.local),data:Array.from(n.mesh.sourceData),indices:Array.from(n.mesh.sourceIndices)})));
 function context(enabled=true,id='coast-reborn',road=true,extra={}){
- const scope={createCoastStreetPlan,coastStreetSource:()=>parts,...extra};
+ const scope={createCoastStreetPlan,coastWallData,coastStreetSource:()=>parts,...extra};
  vm.runInNewContext(`const roadDriving=${road};let coastalSpaceCandidate=${enabled};${read('engine.js')}\n${read('race.js').split('\n').find(line=>line.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\n${read('scenery.js')}\n${extra.softwareSource??read('software-renderer.js')}\nactiveTrackId=${JSON.stringify(id)};rebuildCircuit();function road(s){return circuitRoad(s)}function atRoad(s,l,y=0){const r=road(s);return add(r.p,add(mul(r.R,l),[0,y,0]))}function wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}this.run=s=>eval(s);this.api={Mesh,Node,mm,translation,transform,coastalSpaceModel,coastalSpaceDecorate,decorateChunk,disableCoastalSpace,softwareCoastStreet,drawSoftwareSign};`,scope);
  return scope;
 }
@@ -49,7 +49,7 @@ test('actual scene nodes retain raw source geometry and original matrices, with 
   assert.equal(houseNodes.length,expected.length);
   for(let j=0;j<expected.length;j++){
    const node=houseNodes[j],{part,placement}=expected[j];
-   assert.equal(meshDigest({sourceData:node.mesh.sourceData,sourceIndices:node.mesh.sourceIndices}),meshDigest(part));
+   assert.equal(meshDigest({sourceData:node.mesh.sourceData,sourceIndices:node.mesh.sourceIndices}),meshDigest({...part,sourceData:coastWallData(part)}));
    const matrix=placement.matrix.slice();for(let axis=0;axis<3;axis++)matrix[12+axis]-=origin[axis];
    assert.deepEqual(Array.from(node.local),matrix);
    const world=scene.api.mm(scene.api.translation(...origin),node.local);
@@ -211,4 +211,19 @@ test('actual Canvas road interior stays continuously covered when street depth s
   }
   assert(checked>400,`station ${station}: enough actual road-surface screen samples`);
  }
+});
+
+test('wall family changes only explicit wall RGB and never mutates pinned source',()=>{
+ for(const part of parts){
+  const before=Array.from(part.sourceData), out=coastWallData(part);
+  const walls=part.materialRanges.filter(r=>r.name==='wall');assert(walls.length);
+  let changed=0;
+  for(let i=0;i<out.length;i++){
+   const wall=walls.some(r=>Math.floor(i/10)>=r.start&&Math.floor(i/10)<r.start+r.count);
+   if(wall&&i%10>=6&&i%10<=8){assert.equal(out[i],Math.fround(Math.pow([0xd9,0xd0,0xbc][i%10-6]/255,2.2)));if(out[i]!==before[i])changed++;}
+   else assert.equal(out[i],before[i]);
+  }
+  assert(changed>0);assert.deepEqual(Array.from(part.sourceData),before);
+ }
+ assert.throws(()=>coastWallData({sourceData:new Float32Array(10)}),/classification/);
 });

@@ -7,7 +7,22 @@ export const COAST_STREET_ROWS = Object.freeze(Array.from({length:10},(_,i)=>
   [-1,1].map(side=>Object.freeze({centerS:320+i*40,side,setback:4}))).flat());
 
 export function decodeCoastStreetSource(base64) {
-  return parseStreetStandard(Uint8Array.from(atob(base64),c=>c.charCodeAt(0)));
+  const bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));
+  const parts=parseStreetStandard(bytes);
+  // The locked adapter retains source bytes; read explicit GLB material names
+  // separately, never infer walls from their color or surface direction.
+  const length=new DataView(bytes.buffer).getUint32(12,true);
+  const gltf=JSON.parse(new TextDecoder().decode(bytes.subarray(20,20+length)));
+  for(const part of parts){
+    const node=gltf.nodes.find(node=>node.name===part.name);
+    let start=0;
+    part.materialRanges=gltf.meshes[node.mesh].primitives.map(primitive=>{
+      const count=gltf.accessors[primitive.attributes.POSITION].count;
+      const range={start,count,name:gltf.materials?.[primitive.material]?.name};
+      start+=count;return range;
+    });
+  }
+  return parts;
 }
 
 // Bound the actual piecewise-linear terrain, not just five sampled points.
@@ -62,4 +77,19 @@ export function createCoastStreetPlan(parts,sampleRoad,terrain,roadSamples) {
       foundation:streetFoundation(localXZHull(part),range.min-.15-base)};
   }));
   return {parts,plan,instances};
+}
+
+// Candidate presentation only. Keep source buffers, topology, roof/glass and
+// gloss intact. Uniform warm plaster avoids introducing per-face noise.
+export function coastWallData(part) {
+  const data=new Float32Array(part.sourceData);
+  // Match engine.color: Mesh and fixed source consume linear RGB.
+  const wall=[0xd9,0xd0,0xbc].map(channel=>Math.pow(channel/255,2.2));
+  if(!part.materialRanges?.length)throw Error('Missing street material classification');
+  for(const range of part.materialRanges){
+    if(range.name!=='wall')continue;
+    if(!Number.isInteger(range.start)||!Number.isInteger(range.count)||range.start<0||range.count<1||(range.start+range.count)*10>data.length)throw Error('Invalid wall range');
+    for(let v=range.start;v<range.start+range.count;v++)data.set(wall,v*10+6);
+  }
+  return data;
 }

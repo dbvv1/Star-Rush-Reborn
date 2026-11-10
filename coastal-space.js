@@ -119,7 +119,7 @@ function coastalStreetRemoved(placements,origin){
 function coastalSpaceDecorate(root,k,origin){
  for(const entry of coastalSpaceModel().street.instances){
   const {part,placement,foundation}=entry;if(Math.floor(placement.station/40)!==k)continue;
-  if(!coastalStreetMeshes.has(part.name)){const mesh=new Mesh(part.sourceData,part.sourceIndices);mesh.coastStreet=true;coastalStreetMeshes.set(part.name,mesh);}
+  if(!coastalStreetMeshes.has(part.name)){const mesh=new Mesh(coastWallData(part),part.sourceIndices);mesh.coastStreet=true;coastalStreetMeshes.set(part.name,mesh);}
   if(!coastalStreetFoundations.has(entry)){const c=new Collector();c.add(foundation,I,'#b7b7aa',.08);const mesh=c.finish();mesh.coastStreet=true;coastalStreetFoundations.set(entry,mesh);}
   // Do not apply source pivot again, rotate/re-scale, or snap height to terrain.
   const matrix=placement.matrix.slice();for(let j=0;j<3;j++)matrix[12+j]-=origin[j];

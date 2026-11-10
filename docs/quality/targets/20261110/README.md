@@ -23,3 +23,7 @@ Next: freeze candidate SHA, capture original fixed camera at 1280×720 DPR1 on g
 ## Engineering review
 
 Nonauthor code review found no blocker to retaining this candidate, but highlighted silhouette faceting is not fixed by smooth normals; relief can form local humps; added initialization loops need browser timing; fixed historical hashes are engineering guards, not visual proof. Specialized tests: 9/9 pass. Build: exit 0 after installing the locked experimental dependencies with a writable npm cache. Full suite is tracked separately; no browser validation claimed.
+
+## Unified wall family
+
+The same coastal candidate now recolors only explicitly named `wall` primitives from the pinned street GLB to warm plaster `#d9d0bc`, converted once to the renderer's linear RGB convention. Roof/glass, geometry, placement, source buffers and legacy gloss remain unchanged. No additional switch or default change. Missing classification fails through the existing coastal fallback. This connects walls to the continuous ground/shoulder family; no visual acceptance or coverage credit is claimed. Uniform plaster removes original wall brightness variation, which must be checked in the same-camera review rather than assumed better.

@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {createHash} from 'node:crypto';
-import {createCoastStreetPlan} from '../coast-street-runtime.mjs';
+import {createCoastStreetPlan,decodeCoastStreetSource,coastWallData} from '../coast-street-runtime.mjs';
 import {verifyFixedSource} from '../authoring/coast-street-placement/fixed-source-contract.mjs';
-const parts=verifyFixedSource().parts;
+const parts=decodeCoastStreetSource(fs.readFileSync('authoring/coast-street-placement/fixed-source/street.glb').toString('base64'));
 const read=p=>fs.readFileSync(p,'utf8'),hash=x=>createHash('sha256').update(x).digest('hex');
 function context(enabled=true,id='coast-reborn',road=true){
- const ctx={createCoastStreetPlan,coastStreetSource:()=>parts};vm.runInNewContext(`const roadDriving=${road};let coastalSpaceCandidate=${enabled};${read('engine.js')}\n${read('race.js').split('\n').find(line=>line.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\n${read('scenery.js')}\nactiveTrackId=${JSON.stringify(id)};rebuildCircuit();function road(s){return circuitRoad(s)}function atRoad(s,l,y=0){const r=road(s);return add(r.p,add(mul(r.R,l),[0,y,0]))}function wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}this.model=coastalSpaceModel;this.active=coastalSpaceEnabled;this.run=s=>eval(s);`,ctx);return ctx;
+ const ctx={createCoastStreetPlan,coastWallData,coastStreetSource:()=>parts};vm.runInNewContext(`const roadDriving=${road};let coastalSpaceCandidate=${enabled};${read('engine.js')}\n${read('race.js').split('\n').find(line=>line.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\n${read('scenery.js')}\nactiveTrackId=${JSON.stringify(id)};rebuildCircuit();function road(s){return circuitRoad(s)}function atRoad(s,l,y=0){const r=road(s);return add(r.p,add(mul(r.R,l),[0,y,0]))}function wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}this.model=coastalSpaceModel;this.active=coastalSpaceEnabled;this.run=s=>eval(s);`,ctx);return ctx;
 }
 test('coastal grid is deterministic, bounded, upward and protects entire road corridor',()=>{
  const c=context(),a=c.model(),b=context().model();assert.equal(hash(JSON.stringify(a)),hash(JSON.stringify(b)));assert.equal(a.triangles.length,11250);
