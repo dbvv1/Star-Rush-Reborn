@@ -1,3 +1,4 @@
+import {createCoastFencePlan,decodeCoastFenceSource} from '../coast-fence-runtime.mjs';
 import {createCoastVergePlan,decodeCoastVergeSource} from '../coast-verge-runtime.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -13,7 +14,7 @@ import {planStreetRows,inspectStreetRowPairs} from '../authoring/coast-street-la
 const read=p=>fs.readFileSync(p,'utf8'),fixed=verifyFixedSource(),parts=decodeCoastStreetSource(readFixedSource('street.glb').toString('base64'));
 const serialize=nodes=>JSON.stringify(nodes.map(n=>({m:Array.from(n.local),data:Array.from(n.mesh.sourceData),indices:Array.from(n.mesh.sourceIndices)})));
 function context(enabled=true,id='coast-reborn',road=true,extra={}){
- const scope={createCoastVergePlan,coastVergeSource:()=>decodeCoastVergeSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64')),createCoastStreetPlan,coastWallData,coastStreetSource:()=>parts,...extra};
+ const scope={createCoastFencePlan,coastFenceSource:()=>decodeCoastFenceSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64')),createCoastVergePlan,coastVergeSource:()=>decodeCoastVergeSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64')),createCoastStreetPlan,coastWallData,coastStreetSource:()=>parts,...extra};
  vm.runInNewContext(`const roadDriving=${road};let coastalSpaceCandidate=${enabled};${read('engine.js')}\n${read('race.js').split('\n').find(line=>line.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\n${read('scenery.js')}\n${extra.softwareSource??read('software-renderer.js')}\nactiveTrackId=${JSON.stringify(id)};rebuildCircuit();function road(s){return circuitRoad(s)}function atRoad(s,l,y=0){const r=road(s);return add(r.p,add(mul(r.R,l),[0,y,0]))}function wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}this.run=s=>eval(s);this.api={Mesh,Node,mm,translation,transform,coastalSpaceModel,coastalSpaceDecorate,decorateChunk,disableCoastalSpace,softwareCoastStreet,drawSoftwareSign};`,scope);
  return scope;
 }

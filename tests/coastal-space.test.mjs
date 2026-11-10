@@ -1,3 +1,4 @@
+import {createCoastFencePlan,decodeCoastFenceSource} from '../coast-fence-runtime.mjs';
 import {createCoastVergePlan,decodeCoastVergeSource} from '../coast-verge-runtime.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -9,7 +10,7 @@ import {verifyFixedSource} from '../authoring/coast-street-placement/fixed-sourc
 const parts=decodeCoastStreetSource(fs.readFileSync('authoring/coast-street-placement/fixed-source/street.glb').toString('base64'));
 const read=p=>fs.readFileSync(p,'utf8'),hash=x=>createHash('sha256').update(x).digest('hex');
 function context(enabled=true,id='coast-reborn',road=true){
- const ctx={createCoastVergePlan,coastVergeSource:()=>decodeCoastVergeSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64')),createCoastStreetPlan,coastWallData,coastStreetSource:()=>parts};vm.runInNewContext(`const roadDriving=${road};let coastalSpaceCandidate=${enabled};${read('engine.js')}\n${read('race.js').split('\n').find(line=>line.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\n${read('scenery.js')}\nactiveTrackId=${JSON.stringify(id)};rebuildCircuit();function road(s){return circuitRoad(s)}function atRoad(s,l,y=0){const r=road(s);return add(r.p,add(mul(r.R,l),[0,y,0]))}function wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}this.model=coastalSpaceModel;this.active=coastalSpaceEnabled;this.run=s=>eval(s);`,ctx);return ctx;
+ const ctx={createCoastFencePlan,coastFenceSource:()=>decodeCoastFenceSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64')),createCoastVergePlan,coastVergeSource:()=>decodeCoastVergeSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64')),createCoastStreetPlan,coastWallData,coastStreetSource:()=>parts};vm.runInNewContext(`const roadDriving=${road};let coastalSpaceCandidate=${enabled};${read('engine.js')}\n${read('race.js').split('\n').find(line=>line.startsWith('function quad('))}\n${read('circuit.js')}\n${read('assets/landscape/coastal-rocks.js')}\n${read('coastal-space.js')}\n${read('scenery.js')}\nactiveTrackId=${JSON.stringify(id)};rebuildCircuit();function road(s){return circuitRoad(s)}function atRoad(s,l,y=0){const r=road(s);return add(r.p,add(mul(r.R,l),[0,y,0]))}function wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}this.model=coastalSpaceModel;this.active=coastalSpaceEnabled;this.run=s=>eval(s);`,ctx);return ctx;
 }
 test('coastal grid is deterministic, bounded, upward and protects entire road corridor',()=>{
  const c=context(),a=c.model(),b=context().model();assert.equal(hash(JSON.stringify(a)),hash(JSON.stringify(b)));assert.equal(a.triangles.length,11250);
@@ -126,4 +127,26 @@ test('chosen verge patch has no foreign-chunk original prop overlap over whole c
   for(const position of [0,1])for(const scale of [0,1]){let draw=0;const root=decorateChunk(q,o,()=>draw++%2===0?position:scale);root.children.forEach((node,j)=>{const a=boxes[j]??={minX:Infinity,maxX:-Infinity,minZ:Infinity,maxZ:-Infinity},d=node.mesh.sourceData;for(let i=0;i<d.length;i+=10){const p=add(transform(node.local,[d[i],d[i+1],d[i+2]]),o);a.minX=Math.min(a.minX,p[0]);a.maxX=Math.max(a.maxX,p[0]);a.minZ=Math.min(a.minZ,p[2]);a.maxZ=Math.max(a.maxZ,p[2]);}});}
   for(const a of boxes)for(const b of patch)if(b.minX<a.maxX+.5&&b.maxX>a.minX-.5&&b.minZ<a.maxZ+.5&&b.maxZ>a.minZ-.5)hits.push(q);
  }({hits,patch:patch.length,chunks:Math.ceil(CIRCUIT_LENGTH/40)})`);assert.equal(JSON.stringify(result.hits),'[]');assert(result.patch>0);console.log('verge whole-circuit swept-prop check',result);
+});
+
+test('fence consumer recalculates live supports and emits unchanged source matrices in streamed chunks',()=>{
+ const c=context(),model=c.model();assert.equal(model.fence.accepted.length,13);assert.equal(model.fence.rejected.length,27);
+ for(const entry of model.fence.instances){
+  const k=Math.floor(entry.row.s/40),root=c.run(`decorateChunk(${k},road(${k*40}).p,()=>.37)`),origin=c.run(`road(${k*40}).p`);
+  const node=root.children.find(n=>n.mesh===c.run(`coastalFenceMeshes.get(${JSON.stringify(entry.partId)})`)&&Math.abs(n.local[12]+origin[0]-entry.matrix[12])<.001&&Math.abs(n.local[14]+origin[2]-entry.matrix[14])<.001);
+  assert(node);assert.deepEqual(Array.from(node.mesh.sourceData),Array.from(entry.part.sourceData));assert.deepEqual(Array.from(node.mesh.sourceIndices),Array.from(entry.part.sourceIndices));
+  for(let i=0;i<16;i++)assert(Math.abs(node.local[i]-(entry.matrix[i]-([12,13,14].includes(i)?origin[i-12]:0)))<.001);
+ }
+});
+test('fence source failure restores original scene and disposal releases all fence meshes',()=>{
+ const c=context(),baseline=context(false);const serialize=x=>x.run('JSON.stringify(decorateChunk(8,road(320).p,()=>.4).children.map(n=>({m:Array.from(n.local),d:Array.from(n.mesh.sourceData)})))');
+ const old=serialize(baseline);c.run('this.root=decorateChunk(8,road(320).p,()=>.4);this.fences=[...coastalFenceMeshes.values()]');assert(c.run('fences.length')>0);
+ c.run('this.disposed=0;for(const mesh of fences){const original=mesh.dispose.bind(mesh);mesh.dispose=()=>{disposed++;original()}};disableCoastalSpace()');assert.equal(c.run('disposed'),c.run('fences.length'));assert.equal(c.run('coastalFenceMeshes.size'),0);
+ const bad=context();bad.coastFenceSource=()=>{throw Error('broken fence source')};assert.equal(serialize(bad),old);assert.equal(bad.active(),false);
+});
+test('fence decoding stays off on default, other tracks, legacy and endless',()=>{
+ for(const [enabled,id,road,endless] of [[false,'coast-reborn',true,false],[true,'academy-reborn',true,false],[true,'coast-reborn',false,false],[true,'coast-reborn',true,true]]){
+  const c=context(enabled,id,road);let calls=0;c.coastFenceSource=()=>{calls++;throw Error('must stay lazy')};if(endless)c.run("raceMode='endless'");
+  c.run('decorateChunk(8,road(320).p,()=>.4)');assert.equal(calls,0);assert.equal(c.run('coastalFenceMeshes.size'),0);
+ }
 });

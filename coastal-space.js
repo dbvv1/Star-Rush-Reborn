@@ -35,6 +35,7 @@ function coastalSpaceModel(){
  refineCoastalTerrain(model);
  coastalTerrainAppearance(model);
  model.verge=createCoastVergePlan(coastVergeSource(),model,circuitRoad,circuitSamples);
+ model.fence=createCoastFencePlan(coastFenceSource(),model,circuitRoad,circuitSamples);
  return coastalSpaceModelCache=model;
 }
 // Work inside the existing island, not by extending its footprint. Preserve
@@ -104,6 +105,7 @@ function coastalBeacon(c){
  for(let i=0;i<8;i++){const a=i*TAU/8;bar(c,[Math.cos(a)*1.75,10.9,Math.sin(a)*1.75],[Math.cos(a)*1.75,12.4,Math.sin(a)*1.75],.06,'#6e8194');}
  box(c,[0,.8,2.4],[1.1,1.6,.13],'#7c929e',.02);
 }
+const coastalFenceMeshes=new Map();
 const coastalVergeMeshes=new Map();
 const coastalStreetMeshes=new Map(),coastalStreetFoundations=new Map();
 function coastalStreetReplaces(s){return coastalSpaceEnabled()&&s>=300&&s<=710;}
@@ -143,6 +145,13 @@ function coastVergeNeighborPlacements(k){
  return coastalVergeObstacles.get(k);
 }
 function coastalSpaceDecorate(root,k,origin,placements=[]){
+ for(const entry of coastalSpaceModel().fence.instances){
+  if(Math.floor(entry.row.s/40)!==k)continue;
+  if(!coastalFenceMeshes.has(entry.partId))coastalFenceMeshes.set(entry.partId,new Mesh(entry.part.sourceData,entry.part.sourceIndices));
+  const matrix=entry.matrix.slice();for(let j=0;j<3;j++)matrix[12+j]-=origin[j];
+  root.add(new Node(coastalFenceMeshes.get(entry.partId),matrix));
+ }
+
  for(const entry of coastalSpaceModel().verge.instances){
   if(Math.floor(entry.station/40)!==k)continue;
   const b=entry.bbox;
@@ -183,8 +192,8 @@ function disableCoastalSpace(){
  coastalSpaceCandidate=false;
  for(const [root,{baseline,nodes}] of coastalSpaceAdditions){const extra=root.children.filter(node=>!nodes.includes(node)&&!baseline.includes(node));root.children=[...baseline,...extra];}
  coastalSpaceAdditions.clear();
- for(const mesh of [...coastalVergeMeshes.values(),...coastalStreetMeshes.values(),...coastalStreetFoundations.values()])mesh.dispose();
- coastalVergeObstacles.clear();coastalVergeMeshes.clear();coastalStreetMeshes.clear();coastalStreetFoundations.clear();coastalSpaceModelCache=null;
+ for(const mesh of [...coastalFenceMeshes.values(),...coastalVergeMeshes.values(),...coastalStreetMeshes.values(),...coastalStreetFoundations.values()])mesh.dispose();
+ coastalFenceMeshes.clear();coastalVergeObstacles.clear();coastalVergeMeshes.clear();coastalStreetMeshes.clear();coastalStreetFoundations.clear();coastalSpaceModelCache=null;
  if(typeof sideCandidates!=='undefined')sideCandidates.disable('space');
  if(coastalSpaceLandscapeActive){coastalSpaceLandscapeActive=false;buildLandscape();}
 }
