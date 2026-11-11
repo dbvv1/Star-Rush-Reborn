@@ -1,45 +1,33 @@
 // Use a dedicated case-only Chromium inside the execution sandbox. Never attach to a shared desktop browser.
 import assert from 'node:assert/strict';
 import {mkdir, writeFile, readFile} from 'node:fs/promises';
-import {resolve, isAbsolute, join} from 'node:path';
+import {resolve, join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-import {chromium} from 'playwright';
-import {smokeLaunchOptions,requiredBrowserArgs,assertArgv,assertCaseUrl,restrictCaseContext} from './smoke-launch.mjs';
-import {PNG} from 'pngjs';
+import {assertCaseUrl,restrictCaseContext} from './smoke-launch.mjs';
+import {parseCaptureArguments,captureLaunchOptions,assertCaptureArgv,assertCaptureEvidence,assertCaptureRenderer} from './capture-launch.mjs';
 import {CAPTURE_PRESETS} from '../capture-presets.mjs';
-import {parseCaptureOptions, classifyRenderer} from '../capture-mode.mjs';
+import {parseCaptureOptions} from '../capture-mode.mjs';
 
 const [base, output, shot='coast-chase', ...args]=process.argv.slice(2);
-if(!base||!output)throw Error('Usage: npm run capture -- <local-base-url> <new-output-directory> [shot] [--repeat] [--software] [--headful] [--seed n] [--t seconds] [--frames n] [--input name] [--hardware-evidence file]');
+if(!base||!output)throw Error('Usage: npm run capture -- <local-base-url> <new-output-directory> [shot] [--repeat] [--software | --hardware --hardware-evidence file] [--seed n] [--t seconds] [--frames n] [--input name]');
 const url=assertCaseUrl(base);url.searchParams.set('shot',shot);
-let repeat=false,software=true,headful=false,hardwareEvidencePath=null;
-for(let index=0;index<args.length;index++){
- const arg=args[index];
- if(arg==='--repeat')repeat=true;
- else if(arg==='--software')software=true;
- else if(arg==='--headful')headful=true;
- else if(['--seed','--t','--frames','--input','--hardware-evidence'].includes(arg)){
-  const value=args[++index];if(value===undefined)throw Error('Missing '+arg+' value');
-  if(arg==='--hardware-evidence')hardwareEvidencePath=value;else url.searchParams.set(arg.slice(2),value);
- }else throw Error('Unknown argument: '+arg);
-}
+const {profile,repeat,hardwareEvidencePath,query}=parseCaptureArguments(args);
+for(const [key,value] of Object.entries(query))url.searchParams.set(key,value);
 const options=parseCaptureOptions(url.search),preset=CAPTURE_PRESETS[shot];
 const evidence=hardwareEvidencePath?JSON.parse(await readFile(hardwareEvidencePath,'utf8')):null;
-if(evidence&&(!evidence.source||!evidence.renderer||evidence.hardwareAccelerated!==true))throw Error('Hardware evidence needs source, exact renderer, and hardwareAccelerated: true');
+assertCaptureEvidence(profile,evidence);
+const launchOptions=captureLaunchOptions({profile});
+const {chromium}=await import('playwright'),{PNG}=await import('pngjs');
 const directory=resolve(output);await mkdir(directory,{recursive:false}); // Never reuse a stale passing receipt.
-const executablePath=process.env.STAR_RUSH_CAPTURE_CHROMIUM;
-if(executablePath&&!isAbsolute(executablePath))throw Error('STAR_RUSH_CAPTURE_CHROMIUM must be absolute');
-const launchOptions={...smokeLaunchOptions({...process.env,STAR_RUSH_SMOKE_CHROMIUM:executablePath}),headless:!headful,
- args:[...requiredBrowserArgs,'--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows']};
-const report={passed:false,scope:'deterministic-scene-only',shot,options:{...options,preset:undefined},launchOptions,runs:[],errors:[]};
+const report={passed:false,scope:'deterministic-scene-only',shot,renderingProfile:profile,options:{...options,preset:undefined},launchOptions,runs:[],errors:[]};
 try{report.commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();report.dirty=Boolean(execFileSync('git',['status','--porcelain','--untracked-files=no'],{encoding:'utf8'}).trim());}catch{report.commit=null;}
 let browser;
 const save=()=>writeFile(join(directory,'report.json'),JSON.stringify(report,null,2)+'\n');
 await save();
 try{
  browser=await chromium.launch(launchOptions);report.browser=browser.version();
- const session=await browser.newBrowserCDPSession();const argv=(await session.send('Browser.getBrowserCommandLine')).arguments;assertArgv(argv,{headless:!headful});await session.detach();report.actualRequiredArgs=requiredBrowserArgs.filter(arg=>argv.includes(arg));
+ const session=await browser.newBrowserCDPSession();const argv=(await session.send('Browser.getBrowserCommandLine')).arguments;assertCaptureArgv(argv,profile);await session.detach();report.actualRequiredArgs=launchOptions.args.filter(arg=>argv.includes(arg));
  for(let run=0;run<(repeat?2:1);run++){
   const context=await browser.newContext({viewport:{width:preset.width,height:preset.height},deviceScaleFactor:1,locale:'en-US',timezoneId:'UTC',serviceWorkers:'block'});
   try{
@@ -63,10 +51,10 @@ try{
     const metadata=await page.evaluate(()=>window.__shot);
     assert(!metadata.error,metadata.error);assert.equal(metadata.frame,frame);
     assert.equal(metadata.viewport.width,preset.width);assert.equal(metadata.viewport.height,preset.height);assert.equal(metadata.viewport.dpr,1);
-    const hardwareVerified=Boolean(evidence&&evidence.renderer===metadata.renderer);
-    if(evidence)assert(hardwareVerified,'hardware evidence renderer must match the exact current raw renderer');
-    const classification=classifyRenderer(metadata.renderer||metadata.rendererInfo.maskedRenderer,{canvas:metadata.rendererInfo.api==='canvas2d',hardwareVerified});
-    if(software)assert.equal(classification,'software','software launch must not be labelled GPU');
+    report.lastRendererObservation={renderer:metadata.renderer,rendererInfo:metadata.rendererInfo,backend:metadata.backend};
+    await save(); // Preserve the actual failure observation before enforcing the selected profile.
+    const classification=assertCaptureRenderer(metadata,profile,evidence);
+    const hardwareVerified=classification==='gpu';
     const stem=`${shot}-${classification}-run${run+1}-${String(frame).padStart(5,'0')}`;
     assert.equal(await page.locator('#error').isVisible(),false,'visible game error');
     assert.equal(metadata.backend,'webgl2');assert.match(metadata.pngDataUrl,/^data:image\/png;base64,/);

@@ -49,17 +49,22 @@ npm run capture -- http://127.0.0.1:PORT outputs/academy-depth academy-depth --r
 npm run capture -- http://127.0.0.1:PORT outputs/sequence coast-chase --t 24 --frames 180
 ```
 
-`outputs/` 父目录须存在，具体输出目录须是新目录，不能复用旧通过结果。脚本运行独立的云端软件 Chromium：保留 Playwright 默认参数，`chromiumSandbox:false`，强制三项软件渲染参数，详见[启动与访问范围](browser-smoke.md)。`--software` 兼容保留，默认已使用 SwiftShader；`--headful` 只改变窗口模式。可用绝对路径变量 `STAR_RUSH_CAPTURE_CHROMIUM` 指定已安装 Chromium。浏览器仅访问本次已校验的案例源，拒绝重定向、跨源请求和 WebSocket；启动被拒即保留失败，不自动换浏览器或修改外层沙箱。
+`outputs/` 父目录须存在，具体输出目录须是新目录，不能复用旧结果。拍摄只允许独立 **headless** Chromium，不支持 `--headful`。保持 Playwright 默认参数和本次案例的访问范围，拒绝重定向、跨源请求和 WebSocket；启动拒绝或首次失败即保留结果，不换浏览器、后端或修改外层沙箱。
+
+- 缺省／`--software` 保留原 SwiftShader 三参数及既有软件档的 `chromiumSandbox:false`，用于同档像素比较；详见[启动与访问范围](browser-smoke.md)。可用 `STAR_RUSH_CAPTURE_CHROMIUM` 指定已安装 Chromium 的绝对路径。
+- 显式 `--hardware --hardware-evidence gpu-evidence.json` 仅用于既有 Windows 接收端，要求 `STAR_RUSH_CAPTURE_CHROMIUM` 指向已核二进制，使用 `--enable-gpu --use-angle=d3d11`，保持 `chromiumSandbox:true`。硬件档拒绝 no-sandbox 覆盖、软件／硬件混选与缺证据，不自动回退；真实启动参数必须保持 headless、D3D11 和沙箱。证据格式见下文，不能以显卡名或请求参数代替实际渲染结果。
+
+新增档仅完成 CPU 配置、拒绝路径及 CLI 预检测试，**未启动浏览器或证明本机 D3D11 可用**。旧 `B-STAR-QUALITY-CAPTURE-20261106` 冻结包与既有 SwiftShader 收据不改；本机外层原调用和拍摄槽尚未核清时，不运行此命令、不补拍，也不以新的输出目录重启原工作。恢复后须先由负责人冻结新一组相同档的源码／构建和拍摄规格，再串行执行。
 
 每帧直接从固定离屏 WebGL 画布导出 PNG、JSON；原 `-scene.png` 文件名保留为同一场景图，不再有整页截图；报告记录实际浏览器、请求参数、源码 commit／dirty 状态和服务端脚本 SHA-256，并要求服务脚本与本地所构建的 road bundle 一致。仅场景像素须非纯背景，HUD 文字不能冒充渲染成功。`--repeat` 创建两次独立上下文，从同一初始条件开局，对照每帧像素哈希与车辆／相机元数据。CSS 动画冻结、locale 与时区固定；跨浏览器、跨驱动、跨系统字体不保证逐像素一致。
 
-文件名只有三类：`software`、`unknown`、`gpu`。**不是 SwiftShader，不等于硬件 GPU。** 原始 `WEBGL_debug_renderer_info` renderer／vendor 和 masked renderer 不改写；无扩展时保留 null，默认 unknown。真 GPU 验证者另保存浏览器 GPU 诊断的独立证据，使用 `--hardware-evidence gpu-evidence.json`：
+渲染器元数据保留 `software`、`unknown`、`gpu` 三种分类；当前脚本只输出与选定档一致的 software／gpu 图。**不是 SwiftShader，不等于硬件 GPU。** 原始 `WEBGL_debug_renderer_info` renderer／vendor 和 masked renderer 不改写；无扩展时保留 null／unknown，不能据此通过硬件档。硬件档需已有的浏览器 GPU 诊断独立证据，同时传 `--hardware --hardware-evidence gpu-evidence.json`：
 
 ```json
 {"hardwareAccelerated": true, "renderer": "与当次原始 renderer 完全一致", "source": "本机浏览器 GPU 诊断截图或报告标识"}
 ```
 
-脚本要求证据 renderer 精确匹配；已识别的软件渲染不能被该标记改成 GPU。此文件必须来自实际核验，不能由“非软件字符串”推断。相同分类、同一浏览器／驱动、同版本／种子／时间／输入／机位才能比较。软件 WebGL2 图可用于本轮同机位视觉对照；硬件效果与性能需另验，不能把软件分类改成 GPU。商业游戏参照图只留本地。
+脚本要求证据与当次原始 unmasked renderer 精确匹配；缺少原始 renderer、软件回退或证据不符都失败，不能降为 unknown 后继续。软件档不能带硬件证据，也不能被该标记改成 GPU。此文件必须来自实际核验，不能由“非软件字符串”推断。相同分类、同一浏览器／驱动、同版本／种子／时间／输入／机位才能比较。软件 WebGL2 图可用于本轮同机位视觉对照；硬件效果与性能需另验，不能把软件分类改成 GPU。商业游戏参照图只留本地。
 
 ## 当前范围
 
