@@ -122,8 +122,9 @@ export function validateRaceCandidate(status,path) {
 export async function runFullRace(page,{timeoutMs,path='/'},report) {
   await page.locator('[data-track="coast-reborn"]').click();
   await page.locator('#eventType').selectOption('race');
-  // Existing settings UI handler; no modification of simulation or clock.
-  await page.locator('#qualitySetting').selectOption('high');
+  // Setup only, not player UI acceptance: the menu keeps settingsPanel hidden.
+  // Force skips actionability but still dispatches input/change to its real handler.
+  await page.locator('#qualitySetting').selectOption('high',{force:true});
   report.raceCandidateBefore=await page.evaluate(()=>window.starSideStatus);
   validateRaceCandidate(report.raceCandidateBefore,path);
   await page.evaluate(installRaceObserver);

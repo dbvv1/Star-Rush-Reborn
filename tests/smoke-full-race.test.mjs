@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+import {Window} from 'happy-dom';
 import {parseSmokeArgs,installRaceObserver,validateFullRace,runFullRace,validateRaceCandidate,verifyRaceRestart} from './smoke-full-race.mjs';
 const result=()=>({event:'已完赛',time:'01:30.00',label:'1 圈用时',lap:'LAP 1 / 1 · 剩余 0 m',position:'POS 4 / 4',rows:[{name:'1. Bot A',time:'01:29.00'},{name:'2. Bot B',time:'01:29.50'},{name:'3. Bot C',time:'01:29.80'},{name:'4. Driver（你）',time:'01:30.00'}],saves:[{track:'coast-reborn',mode:'circuit',seed:73121,timeMs:90000,distance:2000}]});
 const receipt=()=>({started:true,finished:true,violations:[],startMs:10,endMs:100,initialLap:'LAP 1 / 1 · 剩余 2000 m',frames:[{fromMs:10,toMs:30,phase:'countdown'},{fromMs:30,toMs:70,phase:'running'},{fromMs:70,toMs:100,phase:'finished'}],result:result()});
@@ -64,4 +66,50 @@ test('restart requires movement and changing time, and releases input on failure
   else {await verifyRaceRestart(page,report);assert.equal(report.fullRace.restartAndReturn,true);}
   assert.ok(calls.includes('up KeyW'));
  }
+});
+
+// CPU contract, not browser acceptance: the real DOM and settings handler are used,
+// while the adapter models Playwright selectOption's visible/enabled prerequisite.
+test('full-race setup selects high quality through the hidden real settings control',async()=>{
+ const window=new Window({url:'http://localhost/'});
+ try {
+  const {document,localStorage}=window;
+  document.write(readFileSync(new URL('../game-shell.html',import.meta.url),'utf8'));
+  const source=readFileSync(new URL('../ui.js',import.meta.url),'utf8');
+  const context=vm.createContext({document,localStorage,$:id=>document.getElementById(id),
+   captureRuntime:{random:()=>.5},roadDriving:true,drivingRevision:'road-v2'});
+  // Execute the production settings declarations and handlers, before garage setup.
+  const end=source.indexOf('for(const [name,paint,chinese] of garagePaints)');
+  assert.ok(end>0,'settings initialization boundary required');
+  vm.runInContext(source.slice(0,end),context);
+  const select=document.getElementById('qualitySetting');
+  assert.equal(document.getElementById('settingsPanel').hidden,true);
+  assert.equal(select.closest('[hidden]').id,'settingsPanel');
+  assert.equal(select.value,'auto');
+  const selectOption=async(value,options={})=>{
+   if(!options.force && (select.closest('[hidden]')||select.disabled)) throw Error('hidden select is not actionable');
+   select.value=value;
+   select.dispatchEvent(new window.Event('input',{bubbles:true}));
+   select.dispatchEvent(new window.Event('change',{bubbles:true}));
+  };
+  await assert.rejects(selectOption('high'),/hidden select/);
+  assert.equal(vm.runInContext('settings.quality',context),'auto');
+  let demoStarted=false;
+  const partial={started:false,finished:false,frames:[]},report={};
+  const page={
+   locator:id=>({selectOption:id==='#qualitySetting'?selectOption:async()=>{},click:async()=>{
+    if(id==='#demoBtn'){
+     assert.equal(vm.runInContext('settings.quality',context),'high');
+     assert.equal(JSON.parse(localStorage.getItem('star-rush-settings-road-v2')).quality,'high');
+     demoStarted=true;
+    }
+   }}),
+   evaluate:async fn=>fn===installRaceObserver?undefined:fn.toString().includes('starSideStatus')?{space:false,power:false,backend:'webgl2',warnings:[],ticks:0}:partial,
+   waitForFunction:async()=>{throw Error('stop before browser race')}
+  };
+  await assert.rejects(runFullRace(page,{timeoutMs:1000},report),/stop before browser race/);
+  assert.equal(demoStarted,true);
+  assert.equal(document.getElementById('settingsPanel').hidden,true);
+  assert.equal(report.fullRace,partial);
+ } finally {await window.happyDOM.close();}
 });
