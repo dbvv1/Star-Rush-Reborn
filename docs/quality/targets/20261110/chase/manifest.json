@@ -1,0 +1,36 @@
+{
+  "kind": "generated-design-reference",
+  "generatedDate": "2026-11-10",
+  "tool": "built-in imagegen",
+  "transparent_background": false,
+  "source": {
+    "repository": "dbvv1/Star-Rush-Reborn",
+    "path": "docs/quality/capture/B-STAR-QUALITY-CAPTURE-20261106/7e87d4c3/coast-chase/coast-chase-run1.png",
+    "sha256": "8f2976170748660d02db8d1680dcfa4b86116b88cdd9871899b5d499c913ee5b",
+    "width": 1280,
+    "height": 720,
+    "captureCommit": "7e87d4c32d5014612fcb7a8af8bc49d266d7238c",
+    "archiveCommit": "ce7b87083f48c8e8b3bf538148bfa1349d7efa29"
+  },
+  "variants": [
+    {
+      "file": "target-a.png",
+      "selected": true,
+      "gitBlob": "85f9795b3be598acc0d2c240093342be4beec33e",
+      "sha256": "d399e32aaf1f99bb6ebe3168b417ef9b9567549e41c02f8aa8e35ee2a59245af",
+      "width": 1672,
+      "height": 941,
+      "prompt": "Use case: precise-object-edit. Produce one 16:9 game art-direction target based on this OWN game's screenshot. Keep EXACT chase-camera position, projection, car/driver size and shape, road bend, road width, guardrails, houses, lighthouse, trees and their positions unchanged. Improve ONLY coherent coastal material family: restrained sandy gray shoulders, warm pale plaster house walls (keep roof/glass dark), subtle organic low-frequency muted grass colors beyond pavement. Preserve flat-shaded stylized affordable Web game appearance, existing sunny lighting, untextured readable road, crisp silhouette and no additional clutter. Target achievable coherent 3/5 finish, not photoreal/cinematic 5/5. No additional assets, no UI, no text, no changed sky, no magical detail. This is generated design reference not actual game capture. Variant A: sandy limestone and sage grass, very restrained broad color variation."
+    },
+    {
+      "file": "target-b.png",
+      "selected": false,
+      "gitBlob": "0bc25cc50042ad5ac6b06e2e7007680ac355babb",
+      "sha256": "246965359d00491aacfe19aa5f212a5bc631c28862b6497329cc97cc092f3b03",
+      "width": 1672,
+      "height": 941,
+      "prompt": "Use case: precise-object-edit. One 16:9 generated target for our low-poly Web racing game. Preserve EXACT source camera, entire car and driver geometry/pose/scale, road curve and width, guardrails, house/tree/light/lighthouse shapes and positions. No added objects. Change ONLY material palette: warm gray plaster walls, sand-gray shoulders, desaturated olive grass with very broad restrained natural color patches. Keep original roof/glass dark, original sky and sunlight, all road markings. Aim coherent achievable 3/5 game finish not photographic rendering. Variant B slightly cooler coastal stone with restrained pale sage ground. Do not add windows/flowers/rocks or change foundation shapes. No UI/text. Design reference only; composition must remain comparable."
+    }
+  ],
+  "qualification": "Material reference only. Prompt requests are not proof of geometric preservation or an achieved score."
+}
