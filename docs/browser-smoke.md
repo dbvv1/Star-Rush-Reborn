@@ -36,3 +36,17 @@ smoke 与 capture 的共享启动参数显式包含 `--enable-automation`，这�
 2026-11-04 的一次云端 Star 实拍尝试在导航前失败：实际启动行已含三项参数，Chromium 的进程单例 socket 返回 `EPERM`，随后 `SIGABRT`；Node 非零退出、预览已关闭，没有 PNG。此项是执行环境限制，不是 WebGL2 或像素通过证据。未重试或修改外层沙箱。
 
 本机固定机位失败后的这项参数修复仅完成 CPU 参数组装回归；真实 CDP、WebGL2 与 PNG 尚待验证，原调用退出与 Node 24 前置仍须先核清。协议依据：[Browser.getBrowserCommandLine](https://github.com/ChromeDevTools/devtools-protocol/blob/master/pdl/domains/Browser.pdl)（2026-11-04 核实）。
+
+## 完整公路比赛与全程帧耗
+
+原 `npm run smoke` 继续只验开局。完整入口为 `npm run smoke -- --full-race --path /road --timeout-ms 900000`，可用 `--path '/road?environment=coast-space-v1'` 指定已有整层候选，其他 query 拒绝；构建开关沿用调用环境。只接受公路入口，不接受拍摄模式、虚拟时钟或 `/legacy`。需要 WebGL2 的运行仍按游戏细则 §7 串行安排；本入口不会解决未知占用、桌面离线或浏览器启动限制。
+
+该入口使用现有菜单选择汐见海岸、竞速、high 固定画质，点击自动试驾，按真实时间运行至结果。浏览器新上下文固定 1280×720／DPR 1；不注入终点、不跳 tick、不修改 AI。报告核对实际服务 bundle 的 SHA256 与本地生产公路产物，记录入口、renderer 原始字符串与 Chromium 版本；开局与结束均核 starSideStatus 的实际候选状态、WebGL2、warnings 和 tick 推进，静默回退不通过。比较不同构建需分别保留 outputs/smoke，不能覆盖前一轮。
+
+`report.json.fullRace` 保存从首次倒计时观察到结果观察之间的完整逐帧 `fromMs/toMs/phase`，包括慢帧；`frameCadence` 给出全程 mean、p50、p95、p99、max 和超过 50ms 的样本数。它测量真实浏览器 rAF 调度间隔，不是 GPU timer 或纯渲染 CPU 耗时，也不将软件渲染结果称为硬件性能。样本必须首尾覆盖、相邻连续；隐藏页面、暂停、返回菜单、改画质和错误覆盖层均失败。超时仍保留已收集样本与未完成状态；失败不产出通过结论。
+
+当前观察器以玩家冲线、四条最终名次与 HUD 一致、玩家时间与本机新记录一致、对手收尾有证据作为支持的完整通过路径，随后验证重开、暂停与返回菜单。当前版本只有玩家冲线时的结果快照，没有可观测的对手截止收尾：若三名对手均已完赛，可证明收尾；若存在 DNF，入口报告“缺少对手收尾证据”，不报整局通过。玩家或对手 DNF 本身都是合法结果，并非新增品质失败标准；当前观察器未采集玩家自然截止的完整证据，玩家 DNF 同样报告缺截止证据，不能仅凭终局标签验收。未来运行时若提供实际截止、推进与最终结算证据，应按其结束合同接入观察器，合法到截止的 DNF 可通过流程；不以流程通过代替 AI 品质判断。
+
+同档、同 viewport、同赛道、同起止区间和同 renderer 的新旧运行才能比较帧耗。保留原始长帧并核 p95/p99/max 与错误状态，平均 FPS 不能代替尾延迟。工具只给出整局功能与帧耗证据，不自动决定“无明显劣化”或换默认。自动试驾不代表真人驾驶手感、听感或视觉盲选。
+
+CPU 回归：`node --test tests/smoke-full-race.test.mjs tests/smoke-run.test.mjs`。覆盖正常结果、缺参数、非法/虚拟拍摄入口、缺终点、采样断裂/非法时值、DNF、名次/存档不符、超时部分收据及真实序列化观察器；通过不等于浏览器整局已运行。
