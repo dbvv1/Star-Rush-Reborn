@@ -150,3 +150,21 @@ test('fence decoding stays off on default, other tracks, legacy and endless',()=
   c.run('decorateChunk(8,road(320).p,()=>.4)');assert.equal(calls,0);assert.equal(c.run('coastalFenceMeshes.size'),0);
  }
 });
+
+test('inland bank relaxation reduces grid height curvature without moving protected geometry',()=>{
+ const before=context();before.run('smoothCoastalSlopes=()=>{}');const a=before.model(),b=context().model(),stride=Math.round((a.bounds.x1-a.bounds.x0)/a.bounds.step)+1;
+ let changed=0,oldBend=0,newBend=0;
+ for(let i=stride;i<a.vertices.length-stride;i++){
+  if(i%stride===0||i%stride===stride-1)continue;
+  const bend=m=>Math.abs(4*m.vertices[i][1]-[i-1,i+1,i-stride,i+stride].reduce((v,j)=>v+m.vertices[j][1],0));
+  oldBend+=bend(a);newBend+=bend(b);
+  if(a.vertices[i][1]!==b.vertices[i][1]){
+   changed++;assert(a.nearest(a.vertices[i][0],a.vertices[i][2]).d>38);
+   assert(b.vertices[i][1]>-.82,'no new water crossings');
+   assert(Math.abs(b.vertices[i][1]-a.vertices[i][1])<1,'bounded slope adjustment');
+  }
+ }
+ assert(changed>50,'whole inland bank, not a single decorative patch');
+ assert(newBend<oldBend,'less discrete height curvature, not a visual quality score');
+ console.log('inland bank relaxation',{changed,oldBend,newBend});
+});

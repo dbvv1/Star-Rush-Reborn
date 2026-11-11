@@ -45,7 +45,7 @@ function refineCoastalTerrain(model){
  const {bounds,vertices,triangles,street,props,nearest}=model,{step}=bounds;
  const nx=Math.round((bounds.x1-bounds.x0)/step),nz=Math.round((bounds.z1-bounds.z0)/step);
  // The water box is centred at -.9 with height .16: its top is -.82.
- const waterTop=-.82,base=vertices.map(p=>p[1]),locked=new Set(),shore=new Set();
+ const waterTop=-.82,base=vertices.map(p=>p[1]),locked=new Set(),shore=new Set(),relax=vertices.map(()=>0);
  const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
  for(const ids of triangles)if(ids.some(i=>base[i]<=waterTop))for(const i of ids){locked.add(i);shore.add(i);}
  const supports=street.instances.map(e=>e.placement.bbox).concat(props.map(p=>({minX:p.x-p.radius,maxX:p.x+p.radius,minZ:p.z-p.radius,maxZ:p.z+p.radius})));
@@ -66,6 +66,22 @@ function refineCoastalTerrain(model){
   const first=Math.exp(-(((r.s-390)/115)**2)),second=Math.exp(-(((r.s-625)/95)**2));
   const shoulder=side>0?Math.exp(-(((d-55)/24)**2)):Math.exp(-(((d-43)/16)**2));
   p[1]=base[i]+envelope*shoulder*(1.7*first+1.15*second);
+  relax[i]=envelope;
+ }
+ // Relax the whole unprotected slope, not its lighting normals. Jacobi passes
+ // read one frozen height array, so traversal direction cannot bias the bank.
+ // The same envelope keeps shoreline, road and complete support cells exact.
+ smoothCoastalSlopes(vertices,relax,nx);
+}
+function smoothCoastalSlopes(vertices,weights,nx){
+ const stride=nx+1;
+ for(let pass=0;pass<2;pass++){
+  const heights=vertices.map(p=>p[1]);
+  for(let i=0;i<vertices.length;i++){
+   if(!weights[i])continue;
+   const mean=(heights[i-1]+heights[i+1]+heights[i-stride]+heights[i+stride])/4;
+   vertices[i][1]=mix(heights[i],mean,.5*weights[i]);
+  }
  }
 }
 function coastalTerrainAppearance(model){
