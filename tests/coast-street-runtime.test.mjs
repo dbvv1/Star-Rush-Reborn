@@ -46,7 +46,7 @@ test('actual scene nodes retain raw source geometry and original matrices, with 
  const {Node,coastalSpaceDecorate}=scene.api,counts=new Map(),origin=[123.25,-2.125,-74.5];
  for(let k=7;k<=17;k++){
   const root=new Node();coastalSpaceDecorate(root,k,origin);
-  const expected=model.street.instances.filter(e=>Math.floor(e.placement.station/40)===k);
+  const expected=model.street.instances.filter(e=>Math.floor(e.placement.station/40)===k&&![520,560].includes(e.row.centerS));
   const houseNodes=root.children.filter(n=>parts.some(p=>p.sourceIndices.length===n.mesh.sourceIndices.length));
   assert.equal(houseNodes.length,expected.length);
   for(let j=0;j<expected.length;j++){
@@ -62,7 +62,7 @@ test('actual scene nodes retain raw source geometry and original matrices, with 
   }
  }
  assert.equal(counts.size,9);
- assert.deepEqual([...counts.values()].map(x=>x.count).sort((a,b)=>a-b),[2,2,2,2,2,2,6,6,6]);
+ assert.deepEqual([...counts.values()].map(x=>x.count).sort((a,b)=>a-b),[2,2,2,2,2,2,4,4,4]);
 });
 
 test('separate foundations meet the original house base and contain terrain without expanding footprints',()=>{

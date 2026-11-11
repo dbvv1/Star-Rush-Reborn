@@ -137,6 +137,12 @@ function coastalBeacon(c){
 const coastalFenceMeshes=new Map();
 const coastalVergeMeshes=new Map();
 const coastalStreetMeshes=new Map(),coastalStreetFoundations=new Map();
+// Keep the existing validated houses and support cells; open only the two
+// repeated rows on the headland beside the beacon. No new placement, jitter,
+// rescaling or terrain edit. This is a composition candidate, not acceptance.
+function coastalStreetVisible(entry){
+ return entry.row.centerS!==520&&entry.row.centerS!==560;
+}
 function coastalStreetReplaces(s){return coastalSpaceEnabled()&&s>=300&&s<=710;}
 function coastalStreetRemoved(placements,origin){
  const street=coastalSpaceModel().street;
@@ -146,7 +152,7 @@ function coastalStreetRemoved(placements,origin){
   const data=node.mesh.sourceData,b={minX:Infinity,maxX:-Infinity,minZ:Infinity,maxZ:-Infinity};
   for(let i=0;i<data.length;i+=10){const p=add(transform(node.local,[data[i],data[i+1],data[i+2]]),origin);b.minX=Math.min(b.minX,p[0]);b.maxX=Math.max(b.maxX,p[0]);b.minZ=Math.min(b.minZ,p[2]);b.maxZ=Math.max(b.maxZ,p[2]);}
   // Conservative actual mesh AABB, with a half-metre vegetation margin.
-  return street.instances.some(({placement:{bbox:a}})=>b.minX<=a.maxX+.5&&b.maxX>=a.minX-.5&&b.minZ<=a.maxZ+.5&&b.maxZ>=a.minZ-.5);
+  return street.instances.filter(coastalStreetVisible).some(({placement:{bbox:a}})=>b.minX<=a.maxX+.5&&b.maxX>=a.minX-.5&&b.minZ<=a.maxZ+.5&&b.maxZ>=a.minZ-.5);
  }).map(p=>p.node);
 }
 const coastalVergeObstacles=new Map();
@@ -203,6 +209,7 @@ function coastalSpaceDecorate(root,k,origin,placements=[]){
  }
 
  for(const entry of coastalSpaceModel().street.instances){
+  if(!coastalStreetVisible(entry))continue;
   const {part,placement,foundation}=entry;if(Math.floor(placement.station/40)!==k)continue;
   const palette=coastalStreetPalette(entry),meshKey=part.name+'|'+palette;
   if(!coastalStreetMeshes.has(meshKey)){const mesh=new Mesh(coastWallData(part,palette),part.sourceIndices);mesh.coastStreet=true;coastalStreetMeshes.set(meshKey,mesh);}

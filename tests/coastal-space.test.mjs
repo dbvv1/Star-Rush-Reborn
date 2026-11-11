@@ -168,3 +168,38 @@ test('inland bank relaxation reduces grid height curvature without moving protec
  assert(newBend<oldBend,'less discrete height curvature, not a visual quality score');
  console.log('inland bank relaxation',{changed,oldBend,newBend});
 });
+
+
+test('coastal settlements replace the periodic row with an authored headland opening in real chunks',()=>{
+ const c=context(),model=c.model();
+ const selected=c.run('coastalSpaceModel().street.instances.filter(coastalStreetVisible)');
+ assert.equal(model.street.instances.length,30,'retain all validated source placements and support cells');
+ assert.equal(selected.length,24);
+ assert.deepEqual(Array.from(new Set(selected.map(e=>e.row.centerS))),[320,360,400,440,480,600,640,680]);
+ const ids=selected.map(e=>`${e.row.centerS}/${e.row.side}/${e.part.name}`);
+ assert.equal(new Set(ids).size,24);
+ assert.equal(selected.filter(e=>e.row.centerS>=520&&e.row.centerS<=560).length,0,'open headland has no repeated housing rows');
+ assert.equal(new Set(selected.map(e=>e.part.name)).size,3,'all original standard models remain in use');
+ const actual=c.run(`
+  const counts=[];
+  for(let k=7;k<=18;k++){
+   const root=decorateChunk(k,road(k*40).p,()=>.4);
+   const meshes=[...coastalStreetMeshes.values()],bases=[...coastalStreetFoundations.values()];
+   counts.push({k,houses:root.children.filter(n=>meshes.includes(n.mesh)).length,bases:root.children.filter(n=>bases.includes(n.mesh)).length});
+  }
+  counts`);
+ assert.equal(actual.reduce((sum,e)=>sum+e.houses,0),24,'actual streamed scene consumes selected layout');
+ for(const e of actual)assert.equal(e.houses,e.bases,'no orphan foundations in open spans');
+ assert.equal(c.run('coastalStreetFoundations.size'),24,'hidden rows allocate no runtime foundation mesh');
+ // The source placement and all support-cell signatures are covered above;
+ // additionally verify retained bottoms against the final piecewise surface.
+ for(const e of selected){assert(e.terrainRange.max<e.placement.matrix[13]-.02);assert(e.terrainRange.min>e.placement.matrix[13]+Math.min(...e.foundation.p.filter((_,i)=>i%3===1)));}
+});
+
+test('settlement editing does not erase original vegetation in vacant house footprints',()=>{
+ const c=context();
+ const result=c.run(`const m=coastalSpaceModel(),hidden=m.street.instances.find(e=>!coastalStreetVisible(e)),b=hidden.placement.bbox;
+ const node={mesh:{sourceData:[b.minX,0,b.minZ,0,1,0,0,0,0,0,b.maxX,0,b.maxZ,0,1,0,0,0,0,0]},local:I};
+ coastalStreetRemoved([{node,key:'pine',s:hidden.placement.station}],[0,0,0]).length`);
+ assert.equal(result,0,'vacant lots must not retain invisible building exclusion zones');
+});

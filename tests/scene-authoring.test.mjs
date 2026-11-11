@@ -20,10 +20,15 @@ test('fixed inputs and missing/modified source fail before execution',()=>{
  for(const f of Object.keys(SOURCE_HASHES))cpSync(join(root,f),join(fixture,f));
  writeFileSync(join(fixture,'handling.js'),readFileSync(join(fixture,'handling.js'),'utf8')+'\n// mutation\n');
  assert.throws(()=>validateSources(fixture),/Pinned source mismatch: handling.js/);
+ cpSync(join(root,'handling.js'),join(fixture,'handling.js'));
+ writeFileSync(join(fixture,'racer.js'),readFileSync(join(fixture,'racer.js'),'utf8')+'\n// mutation\n');
+ assert.throws(()=>validateSources(fixture),/Pinned source mismatch: racer.js/);
  const unknown=spawnSync(process.execPath,['tests/scene-authoring.mjs','unknown',out],{cwd:root,encoding:'utf8'});assert.equal(unknown.status,1);assert.match(unknown.stderr,/Unknown authoring mode/);
 });
 test('untagged vs identity annotation preserve original geometry/camera; repeat deterministic',()=>{
  const a=extract('raw',out),b=extract('baseline',out),c=extract('baseline',out);
+ // Extracted with the pre-rider 4e6008c racer source: the authoring scene must not drift.
+ assert.equal(a.geometryHash,'4493050ca70ee600b1d74670224e7d93fff0d292860b100a8a82f5bb432f7279');
  assert.equal(a.geometryHash,b.geometryHash);assert.deepEqual(b,c);
  assert.equal(b.objects,60);assert.equal(b.taggedObjects,54);baseline=read('baseline.json');
 });
