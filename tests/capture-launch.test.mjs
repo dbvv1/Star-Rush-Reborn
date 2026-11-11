@@ -1,10 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
+import {Window} from 'happy-dom';
+import {createSideCandidates} from '../side-candidates.mjs';
 import {mkdtempSync,existsSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {parseCaptureArguments,captureLaunchOptions,hardwareArgs,assertCaptureArgv,assertCaptureEvidence,assertCaptureRenderer} from './capture-launch.mjs';
+import {parseCaptureArguments,captureLaunchOptions,hardwareArgs,assertCaptureArgv,assertCaptureEvidence,assertCaptureRenderer,captureSideExpectation,assertCaptureSideStatus} from './capture-launch.mjs';
 
 test('default remains software; hardware is explicit and needs independent evidence',()=>{
  assert.deepEqual(parseCaptureArguments([]),{profile:'software',repeat:false,hardwareEvidencePath:null,query:{}});
@@ -52,4 +54,35 @@ test('real CLI rejects unsafe or missing inputs before output creation or browse
    assert.match(result.stderr,/headless|requires|ENOENT|Select one/);
   }
  }finally{rmSync(root,{recursive:true,force:true});}
+});
+
+
+test('capture side expectations distinguish default, space, power and combined on both road entries',()=>{
+ for(const path of ['/', '/road', '/road/'])for(const [query,space,power] of [['',false,false],['environment=coast-space-v1',true,false],['handling=power-tires-v1',false,true],['environment=coast-space-v1&handling=power-tires-v1',true,true]]){
+  const url=new URL('http://127.0.0.1:4173'+path+'?'+query+'&shot=academy-depth');
+  const expected=captureSideExpectation(url);assert.deepEqual(expected,{space,power});
+  assertCaptureSideStatus({space,power,backend:'webgl2',warnings:[],ticks:0},expected);
+  assertCaptureSideStatus({space,power,backend:'webgl2',warnings:[],ticks:1680},expected);
+ }
+ for(const path of ['/legacy','/rapier/','/unknown'])assert.throws(()=>captureSideExpectation(new URL('http://127.0.0.1'+path)));
+ for(const query of ['environment=','environment=typo','handling=typo','environment=coast-space-v1&environment=coast-space-v1','handling=power-tires-v1&handling=power-tires-v1'])assert.throws(()=>captureSideExpectation(new URL('http://127.0.0.1/?'+query)));
+});
+
+test('missing diagnostics, fallback, warnings and switch mismatch fail for every requested combination',()=>{
+ for(const space of [false,true])for(const power of [false,true]){
+  const expected={space,power},valid={space,power,backend:'webgl2',warnings:[],ticks:1680};
+  for(const invalid of [null,undefined,{}, {...valid,space:!space},{...valid,power:!power},{...valid,warnings:['fallback']},{...valid,warnings:undefined},{...valid,backend:'canvas2d'},{...valid,ticks:-1},{...valid,ticks:NaN},{...valid,ticks:1.5}])assert.throws(()=>assertCaptureSideStatus(invalid,expected));
+ }
+});
+
+
+test('capture checks consume the real diagnostic getter and reject its actual rollback',async()=>{
+ const w=new Window({url:'http://127.0.0.1:4173/road?environment=coast-space-v1&shot=academy-depth'});
+ try{
+  const expected=captureSideExpectation(new URL(w.location.href));
+  const side=createSideCandidates(w,true,{step(){}});side.renderer('webgl2');side.tick();
+  assertCaptureSideStatus(w.starSideStatus,expected);
+  side.disable('space');assert.throws(()=>assertCaptureSideStatus(w.starSideStatus,expected),/fallback/);
+  assert.equal(w.starSideStatus.space,false);assert.equal(w.starSideStatus.warnings.length,1);
+ }finally{await w.happyDOM.close();}
 });

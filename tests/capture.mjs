@@ -5,7 +5,7 @@ import {resolve, join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {assertCaseUrl,restrictCaseContext} from './smoke-launch.mjs';
-import {parseCaptureArguments,captureLaunchOptions,assertCaptureArgv,assertCaptureEvidence,assertCaptureRenderer} from './capture-launch.mjs';
+import {parseCaptureArguments,captureLaunchOptions,assertCaptureArgv,assertCaptureEvidence,assertCaptureRenderer,captureSideExpectation,assertCaptureSideStatus} from './capture-launch.mjs';
 import {CAPTURE_PRESETS} from '../capture-presets.mjs';
 import {parseCaptureOptions} from '../capture-mode.mjs';
 
@@ -15,12 +15,13 @@ const url=assertCaseUrl(base);url.searchParams.set('shot',shot);
 const {profile,repeat,hardwareEvidencePath,query}=parseCaptureArguments(args);
 for(const [key,value] of Object.entries(query))url.searchParams.set(key,value);
 const options=parseCaptureOptions(url.search),preset=CAPTURE_PRESETS[shot];
+const expectedSideStatus=captureSideExpectation(url);
 const evidence=hardwareEvidencePath?JSON.parse(await readFile(hardwareEvidencePath,'utf8')):null;
 assertCaptureEvidence(profile,evidence);
 const launchOptions=captureLaunchOptions({profile});
 const {chromium}=await import('playwright'),{PNG}=await import('pngjs');
 const directory=resolve(output);await mkdir(directory,{recursive:false}); // Never reuse a stale passing receipt.
-const report={passed:false,scope:'deterministic-scene-only',shot,renderingProfile:profile,options:{...options,preset:undefined},launchOptions,runs:[],errors:[]};
+const report={passed:false,scope:'deterministic-scene-only',shot,renderingProfile:profile,expectedSideStatus,options:{...options,preset:undefined},launchOptions,runs:[],errors:[]};
 try{report.commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();report.dirty=Boolean(execFileSync('git',['status','--porcelain','--untracked-files=no'],{encoding:'utf8'}).trim());}catch{report.commit=null;}
 let browser;
 const save=()=>writeFile(join(directory,'report.json'),JSON.stringify(report,null,2)+'\n');
@@ -48,11 +49,16 @@ try{
    const captured=[];
    for(let frame=0;frame<options.frames;frame++){
     await page.waitForFunction(()=>window.__shot?.ready||window.__shot?.error,null,{polling:100,timeout:120000});
-    const metadata=await page.evaluate(()=>window.__shot);
+    const {metadata,sideStatus}=await page.evaluate(()=>({metadata:window.__shot,sideStatus:window.starSideStatus??null}));
+    // Save this same observation before any acceptance assertion; never retain
+    // a previous frame's renderer as the apparent cause of a candidate failure.
+    report.lastObservation={run:run+1,frame,metadata:metadata?{...metadata,pngDataUrl:undefined}:null,sideStatus};
+    report.lastSideStatus=sideStatus;
+    report.lastRendererObservation={renderer:metadata?.renderer,rendererInfo:metadata?.rendererInfo,backend:metadata?.backend};
+    await save();
+    assertCaptureSideStatus(sideStatus,expectedSideStatus);
     assert(!metadata.error,metadata.error);assert.equal(metadata.frame,frame);
     assert.equal(metadata.viewport.width,preset.width);assert.equal(metadata.viewport.height,preset.height);assert.equal(metadata.viewport.dpr,1);
-    report.lastRendererObservation={renderer:metadata.renderer,rendererInfo:metadata.rendererInfo,backend:metadata.backend};
-    await save(); // Preserve the actual failure observation before enforcing the selected profile.
     const classification=assertCaptureRenderer(metadata,profile,evidence);
     const hardwareVerified=classification==='gpu';
     const stem=`${shot}-${classification}-run${run+1}-${String(frame).padStart(5,'0')}`;
@@ -66,7 +72,7 @@ try{
     assert(colors.size>100&&Math.max(...colors.values())/(scene.width*scene.height)<.99,'scene must contain non-background pixels, not only a HUD');
     const bytes=sceneBytes;await writeFile(join(directory,stem+'.png'),bytes);
     const png=PNG.sync.read(bytes),hash=createHash('sha256').update(png.data).digest('hex');
-    const record={...metadata,classification,hardwareEvidence:hardwareVerified?evidence:null,file:stem+'.png',sceneFile:stem+'-scene.png',scenePixelSha256:createHash('sha256').update(scene.data).digest('hex'),pixelSha256:hash};
+    const record={...metadata,sideStatus,classification,hardwareEvidence:hardwareVerified?evidence:null,file:stem+'.png',sceneFile:stem+'-scene.png',scenePixelSha256:createHash('sha256').update(scene.data).digest('hex'),pixelSha256:hash};
     await writeFile(join(directory,stem+'.json'),JSON.stringify(record,null,2)+'\n');captured.push(record);
     if(frame+1<options.frames)await page.evaluate(()=>window.__shotNext());
    }
@@ -77,7 +83,7 @@ try{
   for(let frame=0;frame<options.frames;frame++){
    assert.equal(report.runs[0][frame].pixelSha256,report.runs[1][frame].pixelSha256,'repeat pixels differ at frame '+frame);
    assert.equal(report.runs[0][frame].scenePixelSha256,report.runs[1][frame].scenePixelSha256,'repeat scene pixels differ at frame '+frame);
-   for(const key of ['player','camera','t','tick','seed','state','elapsed','rendererInfo'])assert.deepEqual(report.runs[0][frame][key],report.runs[1][frame][key],key+' differs at frame '+frame);
+   for(const key of ['player','camera','t','tick','seed','state','elapsed','rendererInfo','sideStatus'])assert.deepEqual(report.runs[0][frame][key],report.runs[1][frame][key],key+' differs at frame '+frame);
   }
  }
  report.passed=true;

@@ -71,3 +71,24 @@ export function assertCaptureRenderer(metadata,profile,evidence){
  assert.equal(classification,profile==='hardware'?'gpu':'software','Renderer does not match the selected capture profile');
  return classification;
 }
+
+// Derive expectations before launch; a typo must not silently request default.
+// Academy keeps the requested space flag even though its scenery is unchanged.
+export function captureSideExpectation(url){
+ assert(['/', '/road', '/road/'].includes(url.pathname),'Capture requires the default or road entry');
+ const expected={space:false,power:false};
+ for(const [key,value,flag] of [['environment','coast-space-v1','space'],['handling','power-tires-v1','power']]){
+  const values=url.searchParams.getAll(key);
+  assert(values.length<=1,'Duplicate candidate parameter: '+key);
+  if(values.length){assert.equal(values[0],value,'Unknown candidate parameter: '+key);expected[flag]=true;}
+ }
+ return expected;
+}
+export function assertCaptureSideStatus(status,expected){
+ assert(status&&typeof status==='object','Missing starSideStatus');
+ assert.equal(status.space,expected.space,'Space candidate mismatch or fallback');
+ assert.equal(status.power,expected.power,'Power candidate mismatch or fallback');
+ assert.deepEqual(status.warnings,[],'Candidate warnings');
+ assert.equal(status.backend,'webgl2','Candidate backend mismatch');
+ assert(Number.isSafeInteger(status.ticks)&&status.ticks>=0,'Invalid candidate ticks');
+}

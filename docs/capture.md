@@ -56,6 +56,8 @@ npm run capture -- http://127.0.0.1:PORT outputs/sequence coast-chase --t 24 --f
 
 新增档仅完成 CPU 配置、拒绝路径及 CLI 预检测试，**未启动浏览器或证明本机 D3D11 可用**。旧 `B-STAR-QUALITY-CAPTURE-20261106` 冻结包与既有 SwiftShader 收据不改；本机外层原调用和拍摄槽尚未核清时，不运行此命令、不补拍，也不以新的输出目录重启原工作。恢复后须先由负责人冻结新一组相同档的源码／构建和拍摄规格，再串行执行。
 
+每帧同时读取 `window.__shot` 和 `window.starSideStatus`，按 URL 核对实际空间/轮胎开关、空 warnings、WebGL2 与非负整数 tick。仅支持 `/`、`/road`、`/road/`；缺省两开关关闭，`environment=coast-space-v1` 与 `handling=power-tires-v1` 分别启用，拼错或重复参数在启动前拒绝。训练场沿用请求的空间标记，地形仍不应用于训练场。状态先保存到报告再校验，缺失或回退不产出通过帧；逐帧 JSON 与双拍比较保留状态。
+
 每帧直接从固定离屏 WebGL 画布导出 PNG、JSON；原 `-scene.png` 文件名保留为同一场景图，不再有整页截图；报告记录实际浏览器、请求参数、源码 commit／dirty 状态和服务端脚本 SHA-256，并要求服务脚本与本地所构建的 road bundle 一致。仅场景像素须非纯背景，HUD 文字不能冒充渲染成功。`--repeat` 创建两次独立上下文，从同一初始条件开局，对照每帧像素哈希与车辆／相机元数据。CSS 动画冻结、locale 与时区固定；跨浏览器、跨驱动、跨系统字体不保证逐像素一致。
 
 渲染器元数据保留 `software`、`unknown`、`gpu` 三种分类；当前脚本只输出与选定档一致的 software／gpu 图。**不是 SwiftShader，不等于硬件 GPU。** 原始 `WEBGL_debug_renderer_info` renderer／vendor 和 masked renderer 不改写；无扩展时保留 null／unknown，不能据此通过硬件档。硬件档需已有的浏览器 GPU 诊断独立证据，同时传 `--hardware --hardware-evidence gpu-evidence.json`：
