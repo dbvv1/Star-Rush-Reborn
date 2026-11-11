@@ -1,5 +1,30 @@
 # 固定机位接收与双非作者盲评
 
+## 2026-11-11：与当前默认的静态盲选
+
+**两位非作者都整体偏好整层空间版，未判其整体更差；静态盲选通过，完整整局 smoke 与帧耗仍未通过。** 本次比较不是下文两版空间旁置的旧评审，也没有提高正式评分或内容覆盖。没有重新拍摄、改默认或部署。
+
+前图复用固定 `5962a43` 的[默认捕获原件](https://github.com/dbvv1/Star-Rush-Reborn/tree/2b7f948d7c9a8253e5aeb5159821cee736337318/docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104)，后图仍为本目录的 `7e87d4c3` 整层原件。与当前 `6d7cb5b` 核对后，前图只取得**固定 Three 捕获的视觉路径等同**资格：捕获器、预设、相机、模拟、赛道、车辆、Three 渲染器、HTML、资产与锁文件未变；无 environment 参数时空间开关为 false，新增街屋／地形分支不执行。scenery 默认分支只增加位置记录，原节点、矩阵、随机调用及顺序保持；新增模块顶层无场景或随机副作用，Canvas 改动不进入 Three。天空加载就绪后仍按同一虚拟时钟推进。当前整层运行源码与 `7e87d4c3` 相同。
+
+三个机位的全部候选捕获 metadata 与默认逐字段相等，包括相机、车辆、seed、tick、t、画质、天空就绪、分辨率和 renderer；PNG 原字节复制后匿名发给两名未参与实现、未见版本或源码的评审，双方不见彼此意见。评审1的 M=默认、R=整层；评审2的 M=整层、R=默认，全部意见返回后揭盲。
+
+| 机位 | 评审1：整层相对默认 | 评审2：整层相对默认 | 共同可见判断 |
+|---|---|---|---|
+| coast-chase | 持平 | 更好 | 道路与弯向仍清楚；整层中远景更完整，但房屋重复、深色屋顶较抢眼 |
+| coast-full-bend | 更好 | 更好 | 陆地、岸线与内湾承接道路，减少默认悬浮底板感；规则底板接缝仍明显 |
+| academy-depth | 持平 | 持平 | 未见可辨差异，不计提升 |
+
+两人整体均偏好整层。仍需改善机械排列的小屋、未融合的灯塔底座、空地与远山过渡；没有观察到新增物体实质遮挡驾驶路线。这里是相对静态判断，不是操作、声音、运动稳定性或正式等级验收。
+
+**复用范围止于静态图。** 新旧 bundle 不同，加载、解析与分配成本没有证明等同；不能用旧 dist 或 clean tree 推断新构建身份。默认原捕获和整层捕获都只有固定帧，不是整局；旧 Canvas 启动记录和六路600tick CPU 回归也不补这项。唯一原执行边界核清且设备可用后，仍须冻结拟发布构建、跑完整比赛 smoke 并记帧耗；无明显劣化再换默认与更新网站。硬件 GPU、升档、目标图与人工试听不是前置。
+
+前后图：
+- coast-chase：[默认](https://github.com/dbvv1/Star-Rush-Reborn/blob/2b7f948d7c9a8253e5aeb5159821cee736337318/docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-chase/coast-chase-software-run1-00000-scene.png)／[整层](../7e87d4c3/coast-chase/coast-chase-run1.png)。
+- coast-full-bend：[默认](https://github.com/dbvv1/Star-Rush-Reborn/blob/2b7f948d7c9a8253e5aeb5159821cee736337318/docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/coast-full-bend/coast-full-bend-software-run1-00000-scene.png)／[整层](../7e87d4c3/coast-full-bend/coast-full-bend-run1.png)。
+- academy-depth：[默认](https://github.com/dbvv1/Star-Rush-Reborn/blob/2b7f948d7c9a8253e5aeb5159821cee736337318/docs/quality/capture/B-STAR-CAPTURE-REPAIR-20261104/academy-depth/academy-depth-software-run1-00000-scene.png)／[整层](../7e87d4c3/academy-depth/academy-depth-run1.png)。
+
+## 2026-11-06：两版空间旁置的历史比较
+
 **接收这批真实图像和回执，保留整层地形版作为下一轮迭代起点；不换默认、不认定品质升档。** 两名非作者均偏好整层版的全弯地表连续性，但三个机位的前后探索性分数均为 **2 → 2**。正式目标与 1–5 锚图仍缺，正式分仍未建立，内容仍 **0/43（0%）**。本轮没有达到“带同机位图的分数变化”完成条件。
 
 上级 README 与 comparison 的 pending 状态保留拍摄交回时点；完成后的评审以本页及两份原始意见为准。
