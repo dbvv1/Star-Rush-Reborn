@@ -1,0 +1,49 @@
+{
+  "type": "AI-generated design reference; not engine capture, hardware evidence, or score evidence",
+  "tool": "built-in image_gen.imagegen",
+  "source": {
+    "path": "../../capture/B-STAR-QUALITY-CAPTURE-20261106/7e87d4c3/academy-depth/academy-depth-run1.png",
+    "renderer": "ANGLE SwiftShader software WebGL2; archived capture JSON independently checked",
+    "seed": 95276,
+    "t": 14,
+    "tick": 840,
+    "FOV": 62,
+    "sha256": "dccde987e46690022df7649825731d26a19f048c99a945f9510abcf2a495053a",
+    "bytes": 491516,
+    "dimensions": [
+      1280,
+      720
+    ]
+  },
+  "outputs": [
+    {
+      "path": "academy-depth-target-A.png",
+      "prompt": "Use case: style-transfer. Asset type: Star academy-depth generated visual target A, NOT an engine screenshot or evaluation evidence. Input image 1 is the exact edit target. Edit this existing stylized Japanese academy road game image, preserving camera pose, focal length, 16:9 framing, road geometry, lane markings, road bend, rails, every existing building/tree/light location, cyan road arrows, and the exact main kart/rider silhouette, position and scale. Preserve any existing HUD/text without adding HUD. Change ONLY environmental presentation across a coherent whole layer: replace the isolated triangular distant mountain appearance with a continuous restrained layered mountain silhouette in the SAME distant background area; unify bare ground into simple flat-color warm stone/earth and muted sage grass material families; articulate existing road shoulders as readable nested curb, walkway and earth bands without moving road edges or adding objects. Use tasteful stylized Japanese road art direction, simple clean color blocks, soft directional daylight, restrained warm/cool value separation and subtle atmospheric depth. Preserve original sky/weather and all foreground subjects. No new buildings, vehicles, people, signs, foliage objects, lanes, roads or functional features. No photorealism, no decorative text, no cropped/reframed image. Output one edited image only.",
+      "sha256": "1eca21fcd8a73efb5956ee0920e9724412283bb3643fc4b4e6c0459e3345e16c",
+      "bytes": 1709882,
+      "dimensions": [
+        1672,
+        941
+      ]
+    },
+    {
+      "path": "academy-depth-target-B.png",
+      "prompt": "Use case: style-transfer. Asset type: Star academy-depth generated visual target B, a conservative material-and-lighting design reference, NOT an engine capture or quality-score evidence. Input image 1 is the exact edit target. Keep the original image composition exactly: central mint kart and purple driver, their shapes and size, broad left-curving road, cyan arrows and lane markings, rails, cherry trees and all existing houses and streetlights at their original positions. Keep original isolated low-poly triangular distant mountains unchanged in shape and location; do NOT redesign silhouettes or add scenery. There is no HUD in the source; do not add any HUD or text. Change ONLY the colors/material response and received daylight on existing environment surfaces: cohesive restrained Japanese stylized-road palette, muted sage ground, warm pale stone sidewalks, slightly darker neutral asphalt, clean low-frequency surface colors, soft warm sun and cool fill, improved legibility of current curbs/shoulders by value separation only. Keep low-poly geometry, sky/weather, camera angle/focal length/vanishing point, original road edges and layout. Do not add new buildings, vehicles, people, trees, objects or road features. Do not remodel or reposition anything; no photorealism; no crop/reframe. Keep kart itself unchanged. Output one edited image only.",
+      "sha256": "f7b317e2e81af7486161d96a0089c59909928673f407028dd9bc0c3e39be7801",
+      "bytes": 1852888,
+      "dimensions": [
+        1672,
+        941
+      ]
+    }
+  ],
+  "review": {
+    "status": "Independent reviewer selected B as material/lighting reference only",
+    "selected": "academy-depth-target-B.png",
+    "gameScoreChanged": false,
+    "limitations": [
+      "Generated geometry/camera-detail drift; not exact reprojection",
+      "No real new gameplay, GPU capture or content coverage acceptance"
+    ]
+  }
+}
