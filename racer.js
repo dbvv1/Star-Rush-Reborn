@@ -29,11 +29,14 @@ box(carBody,[.28,.94,0],[.075,.26,.91],'#bedde9',.025,[0,0,-.33],.6);
 for(const z of [-.75,.75]){bar(carBody,[.22,.91,z*.84],[.31,1.04,z*1.1],.018,carbon);ball(carBody,[.31,1.04,z*1.11],[.13,.055,.09],pearl,true,.6)}
 bar(carBody,[.35,.82,0],[.10,1.08,0],.035,carbon);carBody.add(torus(.16,.025,28,8),trs([.10,1.08,0],[1,1,1],[0,PI/2,-.35]),carbon,.2);
 for(const z of [-.34,.34])carBody.add(CY,trs([-1.64,.43,z],[.085,.20,.085],[0,0,PI/2]),'#9babc2',.75);
+// Preserve the driver as a reusable child without changing the legacy root slots.
+const driverBody=new Collector();
 // Q-proportioned seated driver: oversized head, violet jacket and white gloves.
-ball(carBody,[-.42,1.04,0],[.24,.29,.22],violet);ball(carBody,[-.36,1.29,0],[.095,.10,.09],skin,true);
-for(const side of [-1,1]){const shoulder=[-.38,1.17,side*.22],elbow=[-.13,1.02,side*.29],hand=[.09,1.09,side*.14];bar(carBody,shoulder,elbow,.075,violet,.14,true);bar(carBody,elbow,hand,.06,violet,.14,true);ball(carBody,hand,[.085,.065,.065],pearl,true)}
-box(carBody,[-.18,1.08,0],[.05,.31,.08],pearl,.01);
+ball(driverBody,[-.42,1.04,0],[.24,.29,.22],violet);ball(driverBody,[-.36,1.29,0],[.095,.10,.09],skin,true);
+for(const side of [-1,1]){const shoulder=[-.38,1.17,side*.22],elbow=[-.13,1.02,side*.29],hand=[.09,1.09,side*.14];bar(driverBody,shoulder,elbow,.075,violet,.14,true);bar(driverBody,elbow,hand,.06,violet,.14,true);ball(driverBody,hand,[.085,.065,.065],pearl,true)}
+box(driverBody,[-.18,1.08,0],[.05,.31,.08],pearl,.01);
 const bodyNode=car.add(new Node(carBody.finish()));bodyNode.mesh.paintable=true;
+const driverBodyNode=bodyNode.add(new Node(driverBody.finish()));driverBodyNode.mesh.paintable=true;
 const headCol=new Collector();ball(headCol,[0,0,0],[.335,.355,.30],skin);
 ball(headCol,[-.19,-.01,0],[.20,.35,.32],hairDark);ball(headCol,[-.025,.19,0],[.37,.255,.33],hair);
 for(const side of [-1,1]){
