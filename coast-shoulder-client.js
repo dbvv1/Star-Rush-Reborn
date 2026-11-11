@@ -1,4 +1,4 @@
-// Coastal shoulder palette consumer. It extends the existing coastal-space
+// Coastal shoulder and terrace palette consumer. It extends the existing coastal-space
 // switch; surface identity comes from the original shoulder draw statements,
 // never from sampling the final vertex RGB. Only cached source colors change.
 const COAST_SHOULDER_MIN=300,COAST_SHOULDER_MAX=710;
@@ -11,13 +11,27 @@ function coastShoulderActive(s){
 // `draw` is the unchanged original quad statement, so positions, normals,
 // indices and the random stream are untouched. The pre-change color range is
 // retained per collector for an exact cached-chunk rollback.
-function coastShoulderQuad(c,surface,s,base,draw){
+function coastShoulderQuad(c,surface,s,base,draw,origin){
  if(!coastShoulderActive(s)){draw(base);return}
- const after=surface==='wall'?COAST_SHOULDER_WALL:COAST_SHOULDER_SURFACE,offset=c.data.length/10;
- draw(after);
+ const offset=c.data.length/10;
+ draw(base);
  const count=c.data.length/10-offset,ranges=coastShoulderPending.get(c)||[];
  ranges.push({offset,count,from:new Float32Array(color(base))});
  coastShoulderPending.set(c,ranges);
+ try{
+  const model=surface==='ground'?coastalSpaceModel():null;
+  const uniform=color(surface==='wall'?COAST_SHOULDER_WALL:COAST_SHOULDER_SURFACE),original=color(base);
+  for(let v=offset;v<offset+count;v++){
+   const at=v*10,col=model?(coastalTerrainColorAt(model,c.data[at]+origin[0],c.data[at+2]+origin[2])??original):uniform;
+   for(let i=0;i<3;i++)c.data[at+6+i]=col[i];
+  }
+ }catch{
+  // A terrain-source failure can happen before this chunk is committed.
+  // Restore its pending colours as well as the already cached chunks.
+  for(const {offset,count,from} of ranges)for(let v=offset;v<offset+count;v++)for(let i=0;i<3;i++)c.data[v*10+6+i]=from[i];
+  coastShoulderPending.delete(c);
+  disableCoastalSpace();
+ }
 }
 function coastShoulderCommit(mesh,c){
  const ranges=coastShoulderPending.get(c);if(!ranges)return;

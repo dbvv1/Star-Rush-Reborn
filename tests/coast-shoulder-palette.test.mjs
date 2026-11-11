@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {createHash} from 'node:crypto';
+import {createCoastStreetPlan,decodeCoastStreetSource} from '../coast-street-runtime.mjs';
+import {createCoastVergePlan,decodeCoastVergeSource} from '../coast-verge-runtime.mjs';
+import {createCoastFencePlan,decodeCoastFenceSource} from '../coast-fence-runtime.mjs';
 
 const read=p=>fs.readFileSync(p,'utf8'),hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const race=read('race.js'),engine=read('engine.js'),circuit=read('circuit.js'),coastal=read('coastal-space.js'),helper=read('coast-shoulder-client.js');
@@ -19,7 +22,10 @@ const linear=hex=>[1,3,5].map(o=>Math.fround(Math.pow(parseInt(hex.slice(o,o+2),
 // Real Collector/Mesh, real chunkMesh text and real circuit samples. The scene
 // decorator is a minimal stand-in for the existing coastal catch/disable path.
 function context({enabled=true,road=true,id='coast-reborn',mode='circuit',withHelper=true}={}){
- const scope={};
+ const scope={createCoastStreetPlan,createCoastVergePlan,createCoastFencePlan,
+  coastStreetSource:()=>decodeCoastStreetSource(fs.readFileSync('authoring/coast-street-placement/fixed-source/street.glb').toString('base64')),
+  coastVergeSource:()=>decodeCoastVergeSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64')),
+  coastFenceSource:()=>decodeCoastFenceSource(fs.readFileSync('assets/coast-verge/verge.glb').toString('base64'))};
  const source=`const roadDriving=${road},coastFlowCandidate=false;\nlet coastalSpaceCandidate=${enabled};\nlet routeSeed=73121;\n${biomes}\n${localRand}\n${quad}\n${engine}\n${chunkSource}\n${circuit}\n${coastal}\n${withHelper?helper:''}\nlet decorateFail=-1;\nfunction decorateChunk(k,origin,rr){const node=new Node();if(k===decorateFail)disableCoastalSpace();return node}\nconst coinMesh=new Mesh(new Float32Array(0),new Uint32Array(0)),padMesh=coinMesh,rampMesh=coinMesh,coneMesh=coinMesh,obstacleMesh=coinMesh,violet='#9c8ad5';\nfunction road(s){return circuitRoad(s)}\nfunction atRoad(s,l=0,y=0){const r=road(s);return add(add(r.p,mul(r.R,l)),[0,y,0])}\nfunction wrapAngle(a){return Math.atan2(Math.sin(a),Math.cos(a))}\nraceMode=${JSON.stringify(mode)};activeTrackId=${JSON.stringify(id)};rebuildCircuit();\nthis.run=s=>eval(s);this.api={chunkMesh,disableCoastalSpace,coastalSpaceEnabled,Mesh,color,road};`;
  vm.runInNewContext(source,scope);
  return scope;
@@ -30,12 +36,31 @@ const bytes=mesh=>Buffer.concat([
 ]);
 const digests=(c,ks)=>[...c.run(`(${JSON.stringify(ks)}).map(k=>chunkMesh(k).node.mesh)`)].map(m=>hash(bytes(m)));
 
+// Independent barycentric reference over the actual terrain triangles, rather
+// than reusing the production grid lookup or converting its linear RGB again.
+function referenceGround(model,x,z){
+ for(const ids of model.triangles){
+  const [a,b,c]=ids.map(i=>model.vertices[i]);
+  if(x<Math.min(a[0],b[0],c[0])-1e-9||x>Math.max(a[0],b[0],c[0])+1e-9||z<Math.min(a[2],b[2],c[2])-1e-9||z>Math.max(a[2],b[2],c[2])+1e-9)continue;
+  const det=(b[2]-c[2])*(a[0]-c[0])+(c[0]-b[0])*(a[2]-c[2]);
+  const u=((b[2]-c[2])*(x-c[0])+(c[0]-b[0])*(z-c[2]))/det;
+  const v=((c[2]-a[2])*(x-c[0])+(a[0]-c[0])*(z-c[2]))/det,w=1-u-v;
+  if(Math.min(u,v,w)>=-1e-9)return [0,1,2].map(k=>model.colors[ids[0]][k]*u+model.colors[ids[1]][k]*v+model.colors[ids[2]][k]*w);
+ }
+ return null;
+}
 function expectedShoulder(c,start){
- const data=c.run(`(()=>{const start=${start},origin=road(start).p,starts=[],quads=[];const pt=(r,l,y)=>sub(add(add(r.p,mul(r.R,l)),[0,y,0]),origin);for(let j=0;j<10;j++){const s=start+j*4;if(s>=CIRCUIT_LENGTH)break;if(s>=${MIN_S}&&s<=${MAX_S})starts.push(s)}for(const s of starts){const r0=road(s),r1=road(Math.min(s+4,CIRCUIT_LENGTH));for(const side of [-1,1]){quads.push({kind:'surface',p:[pt(r0,side*7.65,-.02),pt(r0,side*11,-.08),pt(r1,side*11,-.08),pt(r1,side*7.65,-.02)]});quads.push({kind:'surface',p:[pt(r0,side*8.6,.06),pt(r0,side*11,.06),pt(r1,side*11,.06),pt(r1,side*8.6,.06)]});quads.push({kind:'wall',p:[pt(r0,side*11,.06),pt(r0,side*11,-1.25-r0.p[1]),pt(r1,side*11,-1.25-r1.p[1]),pt(r1,side*11,.06)]})}}return {starts,quads}})()`);
- const counts=new Map();
- for(const quad of data.quads){const col=linear(quad.kind==='wall'?WALL:SURFACE),key=p=>p.map(Math.fround).join(',')+'|'+col.join(',');
-  for(const p of quad.p)counts.set(key(p),(counts.get(key(p))||0)+1);}
- return {starts:[...data.starts],counts};
+ const data=c.run(`(()=>{const start=${start},origin=road(start).p,starts=[],quads=[];const pt=(r,l,y)=>sub(add(add(r.p,mul(r.R,l)),[0,y,0]),origin);for(let j=0;j<10;j++){const s=start+j*4;if(s>=CIRCUIT_LENGTH)break;if(s>=${MIN_S}&&s<=${MAX_S})starts.push(s)}for(const s of starts){const r0=road(s),r1=road(Math.min(s+4,CIRCUIT_LENGTH));for(const side of [-1,1]){quads.push({kind:'surface',p:[pt(r0,side*7.65,-.02),pt(r0,side*11,-.08),pt(r1,side*11,-.08),pt(r1,side*7.65,-.02)]});quads.push({kind:'surface',p:[pt(r0,side*8.6,.06),pt(r0,side*11,.06),pt(r1,side*11,.06),pt(r1,side*8.6,.06)]});quads.push({kind:'wall',p:[pt(r0,side*11,.06),pt(r0,side*11,-1.25-r0.p[1]),pt(r1,side*11,-1.25-r1.p[1]),pt(r1,side*11,.06)]});if(sceneryClear(s+2,side*20)){quads.push({kind:'ground',p:[pt(r0,side*11,-.12),pt(r0,side*28,-.12),pt(r1,side*28,-.12),pt(r1,side*11,-.12)]});quads.push({kind:'wall',p:[pt(r0,side*28,-.12),pt(r0,side*28,-1.25-r0.p[1]),pt(r1,side*28,-1.25-r1.p[1]),pt(r1,side*28,-.12)]})}}}return {starts,quads,origin}})()`);
+ const counts=new Map(),model=c.run('coastalSpaceModel()');let groundQuads=0;
+ for(const quad of data.quads){
+  if(quad.kind==='ground')groundQuads++;
+  for(const p of quad.p){
+   const col=quad.kind==='ground'?referenceGround(model,p[0]+data.origin[0],p[2]+data.origin[2])?.map(Math.fround):linear(quad.kind==='wall'?WALL:SURFACE);
+   assert(col,'every real target-band terrace corner lies within the terrain');
+   const key=p.map(Math.fround).join(',')+'|'+col.join(',');counts.set(key,(counts.get(key)||0)+1);
+  }
+ }
+ return {starts:[...data.starts],counts,groundQuads};
 }
 function actualChanged(reference,colored){
  const counts=new Map();let changed=0;
@@ -70,17 +95,21 @@ test('off, legacy, other tracks, endless and out-of-range chunks keep the pre-ch
  for(const [k,expected] of Object.entries(BASE_DIGESTS))assert.equal(digests(defaultOff,[+k])[0],expected,'default/off chunk '+k+' matches base commit 7fc22e8 byte-for-byte');
 });
 
-test('active chunks change only the two shoulder RGBs on the three original shoulder surfaces',()=>{
+test('actual chunks share terrain colours on terraces and only recolour the named ground/shoulder/wall faces',()=>{
  const reference=context({withHelper:false}),candidate=context({withHelper:true});
- for(const start of [280,320,480,640,680]){
+ let terraceQuads=0;
+ for(let start=280;start<=680;start+=40){
   const base=reference.run(`chunkMesh(${start/40}).node.mesh`);
   const colored=candidate.run(`chunkMesh(${start/40}).node.mesh`);
   const expected=expectedShoulder(candidate,start),actual=actualChanged(base,colored);
   assert.equal(colored.sourceData.length,base.sourceData.length);assert.deepEqual(Array.from(colored.sourceIndices),Array.from(base.sourceIndices));
   for(let i=0;i<colored.sourceData.length;i++)if(i%10<6||i%10===9)assert.equal(colored.sourceData[i],base.sourceData[i],'position/normal/gloss byte '+i+' at '+start);
-  assert.deepEqual(sorted(actual.counts),sorted(expected.counts),'exact shoulder vertex set and its two palette colors at '+start);
-  assert.equal(actual.changed,expected.starts.length*24,'24 shoulder vertices per active 4 m segment at '+start);
+  assert.deepEqual(sorted(actual.counts),sorted(expected.counts),'exact source face vertices and linear palette colours at '+start);
+  assert.equal(actual.changed,expected.starts.length*24+expected.groundQuads*8,'original shoulders plus four ground and four wall vertices per eligible side at '+start);
+  terraceQuads+=expected.groundQuads;
  }
+ console.log('Actual target-band terraces sharing the ground field:',terraceQuads,'quads /',terraceQuads*2,'triangles');
+ assert(terraceQuads>150,'the full visible terrace layer is consumed, not one demonstration tile');
  const expected7=expectedShoulder(candidate,280);
  assert.deepEqual(expected7.starts,[300,304,308,312,316],'start boundary uses the original 4 m segment start and does not split geometry');
  const expected17=expectedShoulder(candidate,680);
@@ -135,4 +164,45 @@ test('early failure and a late failure after two chunks restore every committed 
  assert.equal(late.run('coastShoulderMeshes.size'),0);
  for(const [k,mesh] of [[7,late.m7],[8,late.m8],[9,late.m9]])assert.equal(hash(bytes(mesh)),digests(reference,[k])[0],'late failure restores chunk '+k);
  assert.equal(hash(bytes(late.run('chunkMesh(10).node.mesh'))),digests(reference,[10])[0],'post-failure chunks use the original colors');
+});
+
+
+test('terrain sampler covers both true triangle diagonals, grid edges and linear RGB without changing its source',()=>{
+ const c=context();
+ c.fixture={bounds:{x0:10,x1:12,z0:20,z1:22,step:2},colors:[[.1,.2,.3],[.5,.3,.2],[.2,.6,.1],[.9,.8,.7]]};
+ const before=JSON.stringify(c.fixture);
+ for(const [x,z,expected] of [[10,20,[.1,.2,.3]],[12,22,[.9,.8,.7]],[10.5,20.5,[.225,.325,.225]],[11.5,21.5,[.625,.625,.425]],[11,21,[.35,.45,.15]]]){
+  c.point=[x,z];const actual=c.run('coastalTerrainColorAt(fixture,...point)');
+  for(let k=0;k<3;k++)assert(Math.abs(actual[k]-expected[k])<1e-12);
+ }
+ for(const point of [[9.99,21],[12.01,21],[11,19.99],[11,22.01],[NaN,21],[11,Infinity]]){c.point=point;assert.equal(c.run('coastalTerrainColorAt(fixture,...point)'),null,'outside/nonfinite must not clamp to a border colour');}
+ assert.equal(JSON.stringify(c.fixture),before);
+});
+
+test('real ground draw keeps original RGB outside the colour field and rebases local vertices only once',()=>{
+ const c=context();
+ const result=c.run(`coastalSpaceModelCache={bounds:{x0:10,x1:12,z0:20,z1:22,step:2},colors:[[.1,.2,.3],[.5,.3,.2],[.2,.6,.1],[.9,.8,.7]]};
+ const collector=new Collector(),origin=[10,0,20],points=[[-1,0,0],[0,0,0],[2,0,2],[3,0,2]];
+ coastShoulderQuad(collector,'ground',320,'#cbdcbd',col=>quad(collector,...points,col),origin);
+ const mesh=collector.finish();coastShoulderCommit(mesh,collector);this.savedMesh=mesh;({data:Array.from(mesh.sourceData),indices:Array.from(mesh.sourceIndices),active:coastalSpaceEnabled()})`);
+ assert(result.active);
+ const cols=Array.from({length:4},(_,i)=>Array.from(result.data.slice(i*10+6,i*10+9)));
+ assert.deepEqual(cols[0],linear('#cbdcbd'));assert.deepEqual(cols[3],linear('#cbdcbd'));
+ assert.deepEqual(cols[1],[.1,.2,.3].map(Math.fround));assert.deepEqual(cols[2],[.9,.8,.7].map(Math.fround));
+ c.run('disableCoastalSpace()');
+ assert.deepEqual(Array.from(c.run('savedMesh.sourceData')).filter((_,i)=>i%10>=6&&i%10<9),Array(4).fill(linear('#cbdcbd')).flat());
+});
+
+test('missing terrain source and a late invalid colour restore both cached and currently collected chunk colours',()=>{
+ const baseline=context({withHelper:false}),first=context();
+ first.coastStreetSource=()=>{throw Error('source unavailable')};
+ const failed=first.run('chunkMesh(7).node.mesh');
+ assert.equal(first.run('coastalSpaceEnabled()'),false);
+ assert.equal(hash(bytes(failed)),digests(baseline,[7])[0]);
+ assert.equal(first.run('coastShoulderMeshes.size'),0);
+ const late=context();late.run('this.cached=chunkMesh(7).node.mesh;coastalSpaceModelCache.colors=coastalSpaceModelCache.colors.map(()=>[NaN,0,0]);this.current=chunkMesh(8).node.mesh');
+ assert.equal(late.run('coastalSpaceEnabled()'),false);
+ assert.equal(hash(bytes(late.cached)),digests(baseline,[7])[0]);
+ assert.equal(hash(bytes(late.current)),digests(baseline,[8])[0]);
+ assert.equal(late.run('coastShoulderMeshes.size'),0);
 });

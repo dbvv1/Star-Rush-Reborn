@@ -86,6 +86,19 @@ function coastalTerrainAppearance(model){
   return blend(shore,col,smooth(-.55,.65,p[1]));
  });
 }
+// Sample the existing triangle colour field for the road-side terraces that
+// cover this ground. World XZ, the same diagonal and linear RGB as the terrain;
+// no extra colour noise, geometry, road width or placement changes.
+function coastalTerrainColorAt(model,x,z){
+ const {bounds,colors}=model,{x0,x1,z0,z1,step}=bounds;
+ if(!Number.isFinite(x)||!Number.isFinite(z)||x<x0||x>x1||z<z0||z>z1)return null;
+ const nx=Math.round((x1-x0)/step),nz=Math.round((z1-z0)/step);
+ const gx=(x-x0)/step,gz=(z-z0)/step,ix=Math.min(nx-1,Math.floor(gx)),iz=Math.min(nz-1,Math.floor(gz)),u=gx-ix,v=gz-iz,a=iz*(nx+1)+ix;
+ const ids=u+v<=1?[a,a+1,a+nx+1]:[a+nx+2,a+nx+1,a+1],weights=u+v<=1?[1-u-v,u,v]:[u+v-1,1-u,1-v];
+ const result=[0,1,2].map(k=>ids.reduce((sum,i,j)=>sum+colors[i][k]*weights[j],0));
+ if(!result.every(c=>Number.isFinite(c)&&c>=0&&c<=1))throw Error('Invalid coastal ground colour');
+ return result;
+}
 function coastalSpaceTerrain(c){
  const model=coastalSpaceModel();
  // Shared normals and low-frequency vertex colour remove the old per-triangle

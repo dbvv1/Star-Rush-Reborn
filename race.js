@@ -26,14 +26,14 @@ function atRoad(s,l=0,y=0){const r=road(s);return add(add(r.p,mul(r.R,l)),[0,y,0
 // Vertical faces retain their authored order; this is not an all-faces-up rewrite.
 function quad(c,a,b,cc,d,col){let n=norm(cross(sub(b,a),sub(d,a)));const flip=n[1]<0;if(flip)n=mul(n,-1);c.add(shape([...a,...b,...cc,...d],[...n,...n,...n,...n],flip?[0,2,1,0,3,2]:[0,1,2,0,2,3]),I,col,.06)}
 function chunkMesh(k){const start=k*40,origin=road(start).p,c=new Collector(),rr=localRand(k),biome=raceMode==='circuit'?BIOMES[trackInfo().biome]:BIOMES[((Math.floor(Math.max(0,start)/1000))%3+3)%3],L=p=>sub(p,origin);
- for(let j=0;j<10;j++){const s=start+j*4;if(raceMode==='circuit'&&s>=CIRCUIT_LENGTH)break;const r0=road(s),r1=road(raceMode==='circuit'?Math.min(s+4,CIRCUIT_LENGTH):s+4);const pt=(r,l,y)=>L(add(add(r.p,mul(r.R,l)),[0,y,0]));const paintShoulder=(kind,base,draw)=>typeof coastShoulderQuad==='function'?coastShoulderQuad(c,kind,s,base,draw):draw(base);
+ for(let j=0;j<10;j++){const s=start+j*4;if(raceMode==='circuit'&&s>=CIRCUIT_LENGTH)break;const r0=road(s),r1=road(raceMode==='circuit'?Math.min(s+4,CIRCUIT_LENGTH):s+4);const pt=(r,l,y)=>L(add(add(r.p,mul(r.R,l)),[0,y,0]));const paintShoulder=(kind,base,draw)=>typeof coastShoulderQuad==='function'?coastShoulderQuad(c,kind,s,base,draw,origin):draw(base);
   quad(c,pt(r0,-7,.04),pt(r0,7,.04),pt(r1,7,.04),pt(r1,-7,.04),'#69728e');
   for(const side of [-1,1]){
    quad(c,pt(r0,side*7,.06),pt(r0,side*7.65,.06),pt(r1,side*7.65,.06),pt(r1,side*7,.06),(k*10+j)%2?'#d1b5e0':'#f4eced');
    paintShoulder('surface',biome.ground,col=>quad(c,pt(r0,side*7.65,-.02),pt(r0,side*(raceMode==='circuit'?11:64),-.08),pt(r1,side*(raceMode==='circuit'?11:64),-.08),pt(r1,side*7.65,-.02),col));
   }
   if(raceMode==='circuit')for(const side of [-1,1]){paintShoulder('surface','#d9d9e4',col=>quad(c,pt(r0,side*8.6,.06),pt(r0,side*11,.06),pt(r1,side*11,.06),pt(r1,side*8.6,.06),col));paintShoulder('wall','#b5bbcb',col=>quad(c,pt(r0,side*11,.06),pt(r0,side*11,-1.25-r0.p[1]),pt(r1,side*11,-1.25-r1.p[1]),pt(r1,side*11,.06),col))}
-  if(raceMode==='circuit')for(const side of [-1,1])if(sceneryClear(s+2,side*20)){quad(c,pt(r0,side*11,-.12),pt(r0,side*28,-.12),pt(r1,side*28,-.12),pt(r1,side*11,-.12),biome.ground);quad(c,pt(r0,side*28,-.12),pt(r0,side*28,-1.25-r0.p[1]),pt(r1,side*28,-1.25-r1.p[1]),pt(r1,side*28,-.12),'#bdc4c7')}
+  if(raceMode==='circuit')for(const side of [-1,1])if(sceneryClear(s+2,side*20)){paintShoulder('ground',biome.ground,col=>quad(c,pt(r0,side*11,-.12),pt(r0,side*28,-.12),pt(r1,side*28,-.12),pt(r1,side*11,-.12),col));paintShoulder('wall','#bdc4c7',col=>quad(c,pt(r0,side*28,-.12),pt(r0,side*28,-1.25-r0.p[1]),pt(r1,side*28,-1.25-r1.p[1]),pt(r1,side*28,-.12),col))}
   if(j%3===0)for(const l of [-2.33,2.33]){const p=atRoad(s+1.5,l,.061);c.add(rounded(2.2,.015,.07,.004),trs(L(p),[1,1,1],[0,-r0.h,0]),'#e0e4e8')}
  }
  // A solid curb, two rail beams and reflectors define the drivable boundary.
