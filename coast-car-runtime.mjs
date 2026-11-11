@@ -10,7 +10,7 @@ export function decodeCoastCarSource(base64){
 }
 // Presentation-only, lazy, transactional replacement of the existing car.
 // Keep the original nodes alive: track changes and failures restore them verbatim.
-export function createCoastCarConsumer(car,source,api,onFailure){
+export function createCoastCarConsumer(car,source,api,onFailure,retainedNodes=[]){
  const baseline=car.children.slice();let instance=null,failed=false;
  function dispose(){if(instance){for(const {mesh} of instance.byName.values())mesh.dispose();instance=null;}}
  return {update(enabled,pose){
@@ -26,7 +26,7 @@ export function createCoastCarConsumer(car,source,api,onFailure){
     for(const part of parts){const mesh=new api.Mesh(part.sourceData,part.sourceIndices);mesh.paintMask=part.paintMask;mesh.paintable=true;const entry={part,mesh,node:null};instance.byName.set(part.name,entry);entry.node=new api.Node(mesh);}
    }
    poseCar(instance,pose,api);
-   car.children=Array.from(instance.byName.values(),entry=>entry.node);
+   car.children=[...Array.from(instance.byName.values(),entry=>entry.node),...retainedNodes];
    return true;
   }catch(error){car.children=baseline;dispose();failed=true;onFailure(error);return false;}
  },dispose(){car.children=baseline;dispose();}};
