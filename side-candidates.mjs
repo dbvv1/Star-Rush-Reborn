@@ -1,9 +1,9 @@
 // Candidate selection/failure reporting only; never mutates a live simulation.
 export function createSideCandidates(host,road,model){
  const p=new URLSearchParams(host.location.search),one=(key,value)=>road&&p.getAll(key).length===1&&p.get(key)===value;
- const state={space:one('environment','coast-space-v1'),power:one('handling','power-tires-v1'),ticks:0,backend:'initializing',warnings:[]};
+ const state={space:road&&(p.getAll('environment').length===0||one('environment','coast-space-v1')),power:one('handling','power-tires-v1'),ticks:0,backend:'initializing',warnings:[]};
  const panel=host.document.createElement('details');panel.id='side-diagnostics';panel.style.cssText='position:fixed;right:8px;bottom:8px;z-index:500;background:#172333;color:#fff;font:12px monospace;max-width:330px;padding:4px';
- const title=host.document.createElement('summary');title.textContent='运行状态';const diagnostic=host.document.createElement('pre');diagnostic.id='side-diagnostics-state';diagnostic.style.cssText='white-space:pre-wrap;margin:4px';panel.append(title,diagnostic);host.document.body.append(panel);
+ const title=host.document.createElement('summary');title.textContent='运行状态';const diagnostic=host.document.createElement('pre');diagnostic.id='side-diagnostics-state';diagnostic.style.cssText='white-space:pre-wrap;margin:4px';panel.append(title,diagnostic);panel.hidden=p.get('diagnostics')!=='1';host.document.body.append(panel);
  function publish(){diagnostic.textContent=JSON.stringify(state,null,2);}
  publish();
 
