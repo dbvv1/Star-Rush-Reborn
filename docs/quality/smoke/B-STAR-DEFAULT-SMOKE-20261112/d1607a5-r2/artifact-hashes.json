@@ -1,0 +1,60 @@
+{
+  "task": "B-STAR-DEFAULT-SMOKE-20261112",
+  "unit": 1,
+  "generatedUtc": "2026-11-12T20:45:21Z",
+  "source": {
+    "baseCommit": "d1607a57410c9bcdf1c0a9f24ece4ad238151485",
+    "baseTree": "131fc3f0fa8b3b1813df6bca3fe65f1b60b376ff",
+    "resultBranchTipBeforeUnit": "5257d5c089bda540aa1ad5c9ecd0a143a3991b94",
+    "sourcePathsEqualToBase": {
+      "tests/smoke-full-race.mjs": "e422a1a416eba9b6631d9b87cb5581efc1cdcce3",
+      "tests/smoke-full-race.test.mjs": "d7eef427d1aa01d82d55e9695efc61eabf445962",
+      "docs/browser-smoke.md": "701d24b6c6c09df6ecc51ed7182ddee1ac80116d",
+      "AGENTS.md": "fdc86a7ba98297cc6bb4495ff1d66dc2710ed86c",
+      "README.md": "0b2ca16febdca476bb6fe268d127bd2351a87616"
+    }
+  },
+  "dependencies": {
+    "reusedPreinstalledTrees": true,
+    "rootPackageLockSha256": "4bfa549f6b3b5b17f4dce128a9b087660bd04210de9cfe9b9cc87c44dc06c83d",
+    "rapierPackageLockSha256": "d7ea6f76c6a71a38b03e75e89e7b7183928f28d496c733858af81b851e1cded4",
+    "lockfileMatched": true
+  },
+  "runtime": {
+    "node": "v22.23.2",
+    "npm": "10.9.8",
+    "playwright": "1.64.1",
+    "chromium": "156.0.8078.4",
+    "executablePath": "playwright-bundled"
+  },
+  "servedBundleSha256": "9768d3fd6dd9bc529c45c5c53d7ccca68b0204e9ad136ca8137d21a6e0125259",
+  "summarySha256": "ace6ab00d796c2d9982a0aabb7647251d7d7acc0627bb1a10f0d923c3c27fdb4",
+  "entries": {
+    "default": {
+      "attempt-1": {
+        "node-exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "report.json": "77b2f84d730eea2e3c06132180e781fe83fd1c7e9e1a1b85cb8337b51385f723",
+        "returned-utc.txt": "2321254d403e859592a8be47e6106a02a09e54ff5bc8ca4c38afdbea34f6e815",
+        "started-utc.txt": "e801de670031b9c4637742078c70db5603d6922cdecfc355f4530d93ee0ad274"
+      },
+      "attempt-2": {
+        "canvas.png": "6f5013b1749656b1f38045b0ce09c15654fd44a57d01cde0c9b52c1715edc667",
+        "node-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "race.png": "ecaffd1e91f55dd0eba2c187158f2fad1e66527e1d707b3ddde428e9cbc70477",
+        "report.json": "23d3e7e0f16b222b50f6d556d6e44c0e741f91fb7fdcc7f91f1043d7aa02a220",
+        "returned-utc.txt": "412b76a4a863e414201d740e377f34316c8340e137a8796c49051fbc743621e4",
+        "started-utc.txt": "daf8e471c3d24e3fdd6a6056eecc1a599fb8c76f264aca44817916bf36c36f99"
+      }
+    },
+    "coast-space-v1": {
+      "attempt-1": {
+        "canvas.png": "dde3d16cdd6606baf1074f7b551684bd865e47ca6b1030d55f40752b1b80f867",
+        "node-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "race.png": "339d6147e5afe3d0b9f04633496a353032217d68d66a51fbf19137accd27ec3e",
+        "report.json": "a1915cb9e56c4f831a24aeff99cf33f33027eb59dc774a6769e6cbc5905ed555",
+        "returned-utc.txt": "72a916551c68e7696f96423e5308447d65696b510682c44e4a54cd3e4ec2d47a",
+        "started-utc.txt": "93f9c53f8622f98f9ff51811a1fe090b4042199f8bc175f0178b0b036ef4de5e"
+      }
+    }
+  }
+}
