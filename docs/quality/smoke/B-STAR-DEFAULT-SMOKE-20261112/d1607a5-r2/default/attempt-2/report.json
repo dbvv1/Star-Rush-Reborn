@@ -1,0 +1,7786 @@
+{
+  "startedAt": "2026-11-12T19:36:57.970Z",
+  "passed": true,
+  "browser": "Chromium",
+  "sandbox": false,
+  "args": [
+    "--no-sandbox",
+    "--enable-unsafe-swiftshader",
+    "--use-angle=swiftshader",
+    "--enable-automation"
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "requestFailures": [],
+  "httpErrors": [],
+  "warnings": [
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+  ],
+  "scope": "full-race",
+  "options": {
+    "fullRace": true,
+    "timeoutMs": 900000,
+    "path": "/road"
+  },
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "playwrightDefaultsPreserved": true,
+  "argumentScope": "requested launch options, not the full Chromium command line",
+  "executablePath": "playwright-bundled",
+  "browserVersion": "156.0.8078.4",
+  "actualArgvVerified": true,
+  "servedBundleSha256": "9768d3fd6dd9bc529c45c5c53d7ccca68b0204e9ad136ca8137d21a6e0125259",
+  "webgl2": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "rawRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "raceCandidateBefore": {
+    "space": false,
+    "power": false,
+    "ticks": 0,
+    "backend": "webgl2",
+    "warnings": []
+  },
+  "fullRace": {
+    "started": true,
+    "finished": true,
+    "frames": [
+      {
+        "fromMs": 15529.2,
+        "toMs": 17445.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17445.8,
+        "toMs": 17479.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17479.1,
+        "toMs": 17645.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17645.8,
+        "toMs": 17679.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17679.1,
+        "toMs": 17695.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17695.8,
+        "toMs": 17712.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17712.5,
+        "toMs": 17729.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17729.1,
+        "toMs": 17745.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17745.8,
+        "toMs": 17762.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17762.5,
+        "toMs": 17779.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17779.1,
+        "toMs": 17795.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17795.8,
+        "toMs": 17812.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17812.5,
+        "toMs": 17862.4,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17862.4,
+        "toMs": 17879.2,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17879.2,
+        "toMs": 17895.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17895.8,
+        "toMs": 17912.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17912.5,
+        "toMs": 17929.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17929.1,
+        "toMs": 17979.2,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 17979.2,
+        "toMs": 18112.4,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 18112.4,
+        "toMs": 18229.2,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 18229.2,
+        "toMs": 18245.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 18245.8,
+        "toMs": 18262.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 18262.5,
+        "toMs": 18512.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 18512.5,
+        "toMs": 18545.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 18545.8,
+        "toMs": 18662.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 18662.5,
+        "toMs": 18912.4,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 18912.4,
+        "toMs": 19245.7,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 19245.7,
+        "toMs": 19529.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 19529.1,
+        "toMs": 19779.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 19779.1,
+        "toMs": 20029,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 20029,
+        "toMs": 20279,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 20279,
+        "toMs": 20295.7,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 20295.7,
+        "toMs": 20779,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 20779,
+        "toMs": 21029,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 21029,
+        "toMs": 21295.6,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 21295.6,
+        "toMs": 21779,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 21779,
+        "toMs": 22029,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 22029,
+        "toMs": 22512.3,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 22512.3,
+        "toMs": 22778.9,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 22778.9,
+        "toMs": 22812.3,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 22812.3,
+        "toMs": 24062.2,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 24062.2,
+        "toMs": 26745.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 26745.5,
+        "toMs": 26778.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 26778.8,
+        "toMs": 26795.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 26795.5,
+        "toMs": 26812.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 26812.1,
+        "toMs": 26895.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 26895.5,
+        "toMs": 26928.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 26928.8,
+        "toMs": 26945.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 26945.5,
+        "toMs": 26962.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 26962.1,
+        "toMs": 26978.8,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 26978.8,
+        "toMs": 26995.5,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 26995.5,
+        "toMs": 27012.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 27012.1,
+        "toMs": 27028.7,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 27028.7,
+        "toMs": 27045.4,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 27045.4,
+        "toMs": 27062.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 27062.1,
+        "toMs": 27178.7,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 27178.7,
+        "toMs": 27212.1,
+        "phase": "countdown"
+      },
+      {
+        "fromMs": 27212.1,
+        "toMs": 27295.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 27295.4,
+        "toMs": 27628.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 27628.7,
+        "toMs": 27645.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 27645.4,
+        "toMs": 27662,
+        "phase": "running"
+      },
+      {
+        "fromMs": 27662,
+        "toMs": 27678.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 27678.7,
+        "toMs": 27695.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 27695.4,
+        "toMs": 27712,
+        "phase": "running"
+      },
+      {
+        "fromMs": 27712,
+        "toMs": 27962,
+        "phase": "running"
+      },
+      {
+        "fromMs": 27962,
+        "toMs": 28028.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 28028.7,
+        "toMs": 28078.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 28078.7,
+        "toMs": 28528.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 28528.7,
+        "toMs": 28995.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 28995.3,
+        "toMs": 29245.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 29245.3,
+        "toMs": 29495.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 29495.3,
+        "toMs": 29962,
+        "phase": "running"
+      },
+      {
+        "fromMs": 29962,
+        "toMs": 30195.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 30195.3,
+        "toMs": 32161.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 32161.9,
+        "toMs": 32195.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 32195.2,
+        "toMs": 32211.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 32211.9,
+        "toMs": 32228.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 32228.5,
+        "toMs": 32245.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 32245.2,
+        "toMs": 32261.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 32261.9,
+        "toMs": 32378.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 32378.5,
+        "toMs": 32495.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 32495.2,
+        "toMs": 32995.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 32995.2,
+        "toMs": 33261.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 33261.9,
+        "toMs": 33511.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 33511.9,
+        "toMs": 33761.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 33761.8,
+        "toMs": 34011.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 34011.8,
+        "toMs": 34261.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 34261.8,
+        "toMs": 34511.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 34511.8,
+        "toMs": 34761.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 34761.8,
+        "toMs": 35028.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 35028.5,
+        "toMs": 35295.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 35295.1,
+        "toMs": 35545.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 35545.1,
+        "toMs": 35861.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 35861.7,
+        "toMs": 36045.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 36045.1,
+        "toMs": 36311.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 36311.7,
+        "toMs": 36561.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 36561.8,
+        "toMs": 37061.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 37061.7,
+        "toMs": 41661.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 41661.5,
+        "toMs": 41678.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 41678.2,
+        "toMs": 42161.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 42161.5,
+        "toMs": 42411.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 42411.4,
+        "toMs": 42811.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 42811.4,
+        "toMs": 42828.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 42828.1,
+        "toMs": 43194.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 43194.8,
+        "toMs": 43461.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 43461.5,
+        "toMs": 43478.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 43478.1,
+        "toMs": 43544.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 43544.8,
+        "toMs": 44228.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44228.1,
+        "toMs": 44244.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44244.8,
+        "toMs": 44261.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44261.4,
+        "toMs": 44278.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44278.1,
+        "toMs": 44294.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44294.7,
+        "toMs": 44361.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44361.4,
+        "toMs": 44378.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44378.1,
+        "toMs": 44394.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44394.7,
+        "toMs": 44611.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44611.4,
+        "toMs": 44628,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44628,
+        "toMs": 44644.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44644.7,
+        "toMs": 44861.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44861.4,
+        "toMs": 44878,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44878,
+        "toMs": 44911.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44911.4,
+        "toMs": 44928,
+        "phase": "running"
+      },
+      {
+        "fromMs": 44928,
+        "toMs": 45628,
+        "phase": "running"
+      },
+      {
+        "fromMs": 45628,
+        "toMs": 45811.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 45811.3,
+        "toMs": 45878,
+        "phase": "running"
+      },
+      {
+        "fromMs": 45878,
+        "toMs": 45994.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 45994.7,
+        "toMs": 46028,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46028,
+        "toMs": 46128,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46128,
+        "toMs": 46144.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46144.7,
+        "toMs": 46378,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46378,
+        "toMs": 46494.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46494.7,
+        "toMs": 46611.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46611.4,
+        "toMs": 46661.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46661.3,
+        "toMs": 46761.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46761.3,
+        "toMs": 46844.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46844.6,
+        "toMs": 46894.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46894.6,
+        "toMs": 46911.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 46911.3,
+        "toMs": 47028,
+        "phase": "running"
+      },
+      {
+        "fromMs": 47028,
+        "toMs": 47061.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 47061.3,
+        "toMs": 47078,
+        "phase": "running"
+      },
+      {
+        "fromMs": 47078,
+        "toMs": 47094.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 47094.6,
+        "toMs": 47111.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 47111.3,
+        "toMs": 47128,
+        "phase": "running"
+      },
+      {
+        "fromMs": 47128,
+        "toMs": 47144.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 47144.6,
+        "toMs": 47361.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 47361.3,
+        "toMs": 47377.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 47377.9,
+        "toMs": 47611.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 47611.2,
+        "toMs": 48094.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 48094.6,
+        "toMs": 48377.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 48377.9,
+        "toMs": 48627.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 48627.9,
+        "toMs": 49111.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 49111.2,
+        "toMs": 49361.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 49361.2,
+        "toMs": 49861.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 49861.2,
+        "toMs": 50344.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 50344.5,
+        "toMs": 50594.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 50594.5,
+        "toMs": 51061.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 51061.2,
+        "toMs": 51561.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 51561.1,
+        "toMs": 51811.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 51811.1,
+        "toMs": 52094.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 52094.4,
+        "toMs": 52577.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 52577.8,
+        "toMs": 54744.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 54744.4,
+        "toMs": 54810.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 54810.9,
+        "toMs": 54827.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 54827.7,
+        "toMs": 54894.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 54894.3,
+        "toMs": 54911,
+        "phase": "running"
+      },
+      {
+        "fromMs": 54911,
+        "toMs": 54927.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 54927.6,
+        "toMs": 54961,
+        "phase": "running"
+      },
+      {
+        "fromMs": 54961,
+        "toMs": 54994.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 54994.3,
+        "toMs": 55011,
+        "phase": "running"
+      },
+      {
+        "fromMs": 55011,
+        "toMs": 55044.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 55044.3,
+        "toMs": 55161,
+        "phase": "running"
+      },
+      {
+        "fromMs": 55161,
+        "toMs": 55177.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 55177.7,
+        "toMs": 55194.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 55194.3,
+        "toMs": 55261,
+        "phase": "running"
+      },
+      {
+        "fromMs": 55261,
+        "toMs": 55511,
+        "phase": "running"
+      },
+      {
+        "fromMs": 55511,
+        "toMs": 55777.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 55777.6,
+        "toMs": 56027.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 56027.7,
+        "toMs": 56477.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 56477.6,
+        "toMs": 56644.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 56644.3,
+        "toMs": 56927.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 56927.6,
+        "toMs": 56944.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 56944.2,
+        "toMs": 57394.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 57394.2,
+        "toMs": 57410.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 57410.9,
+        "toMs": 57477.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 57477.5,
+        "toMs": 57744.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 57744.2,
+        "toMs": 57760.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 57760.8,
+        "toMs": 58227.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 58227.5,
+        "toMs": 58477.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 58477.5,
+        "toMs": 58927.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 58927.5,
+        "toMs": 59394.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 59394.1,
+        "toMs": 59644.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 59644.2,
+        "toMs": 60110.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 60110.8,
+        "toMs": 60594.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 60594.1,
+        "toMs": 60827.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 60827.4,
+        "toMs": 61060.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 61060.8,
+        "toMs": 61294.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 61294.1,
+        "toMs": 61744.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 61744.1,
+        "toMs": 62360.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 62360.7,
+        "toMs": 62544.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 62544.1,
+        "toMs": 62627.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 62627.3,
+        "toMs": 62694,
+        "phase": "running"
+      },
+      {
+        "fromMs": 62694,
+        "toMs": 62994,
+        "phase": "running"
+      },
+      {
+        "fromMs": 62994,
+        "toMs": 63543.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 63543.9,
+        "toMs": 63610.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 63610.7,
+        "toMs": 63894,
+        "phase": "running"
+      },
+      {
+        "fromMs": 63894,
+        "toMs": 63910.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 63910.6,
+        "toMs": 63943.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 63943.9,
+        "toMs": 63960.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 63960.7,
+        "toMs": 64127.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 64127.3,
+        "toMs": 64144,
+        "phase": "running"
+      },
+      {
+        "fromMs": 64144,
+        "toMs": 64160.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 64160.6,
+        "toMs": 64244,
+        "phase": "running"
+      },
+      {
+        "fromMs": 64244,
+        "toMs": 64493.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 64493.9,
+        "toMs": 64510.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 64510.6,
+        "toMs": 64744,
+        "phase": "running"
+      },
+      {
+        "fromMs": 64744,
+        "toMs": 64993.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 64993.9,
+        "toMs": 65260.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 65260.6,
+        "toMs": 65510.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 65510.6,
+        "toMs": 65760.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 65760.6,
+        "toMs": 66227.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 66227.2,
+        "toMs": 66477.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 66477.1,
+        "toMs": 66743.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 66743.9,
+        "toMs": 67227.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 67227.2,
+        "toMs": 67960.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 67960.4,
+        "toMs": 68110.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 68110.5,
+        "toMs": 68127.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 68127.1,
+        "toMs": 68227.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 68227.1,
+        "toMs": 68243.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 68243.8,
+        "toMs": 68477.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 68477.1,
+        "toMs": 68710.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 68710.4,
+        "toMs": 69160.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 69160.5,
+        "toMs": 69393.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 69393.7,
+        "toMs": 69627.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 69627.1,
+        "toMs": 69877.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 69877.1,
+        "toMs": 70110.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 70110.4,
+        "toMs": 70343.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 70343.7,
+        "toMs": 70593.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 70593.7,
+        "toMs": 70843.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 70843.6,
+        "toMs": 71093.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 71093.7,
+        "toMs": 71327,
+        "phase": "running"
+      },
+      {
+        "fromMs": 71327,
+        "toMs": 71560.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 71560.3,
+        "toMs": 71793.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 71793.6,
+        "toMs": 72027,
+        "phase": "running"
+      },
+      {
+        "fromMs": 72027,
+        "toMs": 72260.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 72260.3,
+        "toMs": 72726.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 72726.9,
+        "toMs": 72960.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 72960.2,
+        "toMs": 73193.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 73193.6,
+        "toMs": 73426.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 73426.9,
+        "toMs": 73643.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 73643.6,
+        "toMs": 73876.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 73876.9,
+        "toMs": 74110.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 74110.2,
+        "toMs": 74360.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 74360.2,
+        "toMs": 74610.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 74610.2,
+        "toMs": 74843.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 74843.5,
+        "toMs": 75093.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 75093.5,
+        "toMs": 75343.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 75343.5,
+        "toMs": 75576.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 75576.9,
+        "toMs": 75810.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 75810.1,
+        "toMs": 76043.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 76043.5,
+        "toMs": 76276.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 76276.8,
+        "toMs": 76510.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 76510.1,
+        "toMs": 76743.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 76743.4,
+        "toMs": 76976.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 76976.8,
+        "toMs": 77210.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 77210.1,
+        "toMs": 77443.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 77443.4,
+        "toMs": 77660.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 77660.1,
+        "toMs": 77893.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 77893.4,
+        "toMs": 78110.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 78110.1,
+        "toMs": 78343.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 78343.4,
+        "toMs": 78560,
+        "phase": "running"
+      },
+      {
+        "fromMs": 78560,
+        "toMs": 78776.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 78776.7,
+        "toMs": 78993.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 78993.4,
+        "toMs": 79193.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 79193.3,
+        "toMs": 79410.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 79410.1,
+        "toMs": 79626.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 79626.7,
+        "toMs": 79826.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 79826.6,
+        "toMs": 80043.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 80043.3,
+        "toMs": 80259.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 80259.9,
+        "toMs": 80476.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 80476.6,
+        "toMs": 80693.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 80693.3,
+        "toMs": 80893.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 80893.3,
+        "toMs": 81110,
+        "phase": "running"
+      },
+      {
+        "fromMs": 81110,
+        "toMs": 81326.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 81326.6,
+        "toMs": 81543.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 81543.3,
+        "toMs": 81743.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 81743.3,
+        "toMs": 81943.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 81943.3,
+        "toMs": 82143.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 82143.2,
+        "toMs": 82343.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 82343.2,
+        "toMs": 82559.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 82559.9,
+        "toMs": 82776.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 82776.6,
+        "toMs": 82976.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 82976.5,
+        "toMs": 83209.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 83209.8,
+        "toMs": 84793.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 84793.1,
+        "toMs": 84843.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 84843.1,
+        "toMs": 85643.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 85643.1,
+        "toMs": 86309.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 86309.8,
+        "toMs": 86493,
+        "phase": "running"
+      },
+      {
+        "fromMs": 86493,
+        "toMs": 86509.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 86509.7,
+        "toMs": 86759.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 86759.7,
+        "toMs": 87176.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 87176.3,
+        "toMs": 87359.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 87359.7,
+        "toMs": 87376.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 87376.4,
+        "toMs": 87393,
+        "phase": "running"
+      },
+      {
+        "fromMs": 87393,
+        "toMs": 88926.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 88926.3,
+        "toMs": 89076.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 89076.3,
+        "toMs": 89092.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 89092.9,
+        "toMs": 89109.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 89109.6,
+        "toMs": 89126.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 89126.3,
+        "toMs": 89142.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 89142.9,
+        "toMs": 89159.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 89159.6,
+        "toMs": 89176.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 89176.3,
+        "toMs": 89192.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 89192.9,
+        "toMs": 89559.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 89559.6,
+        "toMs": 91776.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 91776.1,
+        "toMs": 92026.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 92026.1,
+        "toMs": 92042.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 92042.9,
+        "toMs": 92192.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 92192.9,
+        "toMs": 92226.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 92226.2,
+        "toMs": 92242.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 92242.8,
+        "toMs": 92592.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 92592.8,
+        "toMs": 92826.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 92826.1,
+        "toMs": 93042.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93042.8,
+        "toMs": 93442.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93442.7,
+        "toMs": 93476.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93476.2,
+        "toMs": 93492.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93492.8,
+        "toMs": 93509.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93509.5,
+        "toMs": 93526.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93526.1,
+        "toMs": 93642.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93642.8,
+        "toMs": 93659.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93659.5,
+        "toMs": 93676.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93676.1,
+        "toMs": 93692.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93692.8,
+        "toMs": 93709.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 93709.5,
+        "toMs": 94142.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 94142.8,
+        "toMs": 95292.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95292.7,
+        "toMs": 95342.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95342.7,
+        "toMs": 95359.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95359.3,
+        "toMs": 95409.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95409.4,
+        "toMs": 95476,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95476,
+        "toMs": 95492.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95492.7,
+        "toMs": 95526.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95526.1,
+        "toMs": 95542.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95542.7,
+        "toMs": 95559.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95559.4,
+        "toMs": 95576,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95576,
+        "toMs": 95592.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95592.7,
+        "toMs": 95609.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95609.3,
+        "toMs": 95659.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95659.3,
+        "toMs": 95676,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95676,
+        "toMs": 95692.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95692.7,
+        "toMs": 95709.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95709.4,
+        "toMs": 95726,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95726,
+        "toMs": 95742.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95742.7,
+        "toMs": 95759.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95759.4,
+        "toMs": 95776,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95776,
+        "toMs": 95792.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95792.7,
+        "toMs": 95842.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95842.7,
+        "toMs": 95909.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95909.3,
+        "toMs": 95926,
+        "phase": "running"
+      },
+      {
+        "fromMs": 95926,
+        "toMs": 96109.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 96109.3,
+        "toMs": 96492.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 96492.7,
+        "toMs": 96692.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 96692.6,
+        "toMs": 96909.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 96909.3,
+        "toMs": 97092.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 97092.6,
+        "toMs": 97326,
+        "phase": "running"
+      },
+      {
+        "fromMs": 97326,
+        "toMs": 97692.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 97692.7,
+        "toMs": 98092.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 98092.6,
+        "toMs": 98475.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 98475.9,
+        "toMs": 98875.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 98875.9,
+        "toMs": 99092.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 99092.6,
+        "toMs": 99475.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 99475.8,
+        "toMs": 99875.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 99875.8,
+        "toMs": 100275.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 100275.8,
+        "toMs": 100475.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 100475.8,
+        "toMs": 100675.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 100675.9,
+        "toMs": 100859.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 100859.2,
+        "toMs": 101059.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 101059.2,
+        "toMs": 101425.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 101425.8,
+        "toMs": 101609.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 101609.1,
+        "toMs": 101625.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 101625.8,
+        "toMs": 101809.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 101809.1,
+        "toMs": 101975.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 101975.8,
+        "toMs": 102142.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 102142.5,
+        "toMs": 102342.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 102342.5,
+        "toMs": 102525.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 102525.7,
+        "toMs": 102725.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 102725.8,
+        "toMs": 102909,
+        "phase": "running"
+      },
+      {
+        "fromMs": 102909,
+        "toMs": 103275.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 103275.8,
+        "toMs": 103459,
+        "phase": "running"
+      },
+      {
+        "fromMs": 103459,
+        "toMs": 103592.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 103592.4,
+        "toMs": 103692.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 103692.3,
+        "toMs": 103909.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 103909.1,
+        "toMs": 104075.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 104075.7,
+        "toMs": 104259,
+        "phase": "running"
+      },
+      {
+        "fromMs": 104259,
+        "toMs": 104459,
+        "phase": "running"
+      },
+      {
+        "fromMs": 104459,
+        "toMs": 104825.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 104825.6,
+        "toMs": 104959,
+        "phase": "running"
+      },
+      {
+        "fromMs": 104959,
+        "toMs": 104975.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 104975.7,
+        "toMs": 105025.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 105025.6,
+        "toMs": 105042.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 105042.3,
+        "toMs": 105059,
+        "phase": "running"
+      },
+      {
+        "fromMs": 105059,
+        "toMs": 105075.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 105075.6,
+        "toMs": 105175.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 105175.6,
+        "toMs": 105375.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 105375.6,
+        "toMs": 105592.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 105592.3,
+        "toMs": 105808.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 105808.9,
+        "toMs": 106025.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 106025.6,
+        "toMs": 106225.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 106225.6,
+        "toMs": 106425.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 106425.6,
+        "toMs": 106625.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 106625.6,
+        "toMs": 106975.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 106975.6,
+        "toMs": 107358.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 107358.9,
+        "toMs": 107558.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 107558.9,
+        "toMs": 107742.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 107742.2,
+        "toMs": 107942.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 107942.2,
+        "toMs": 108125.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 108125.6,
+        "toMs": 108508.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 108508.8,
+        "toMs": 108708.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 108708.8,
+        "toMs": 109042.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 109042.2,
+        "toMs": 109392.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 109392.2,
+        "toMs": 109675.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 109675.5,
+        "toMs": 109842.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 109842.2,
+        "toMs": 109858.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 109858.7,
+        "toMs": 109875.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 109875.5,
+        "toMs": 110025.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 110025.4,
+        "toMs": 110158.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 110158.8,
+        "toMs": 110358.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 110358.8,
+        "toMs": 110408.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 110408.8,
+        "toMs": 110425.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 110425.4,
+        "toMs": 110558.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 110558.7,
+        "toMs": 110742.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 110742.1,
+        "toMs": 110925.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 110925.4,
+        "toMs": 111125.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 111125.4,
+        "toMs": 111308.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 111308.7,
+        "toMs": 111525.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 111525.3,
+        "toMs": 111725.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 111725.4,
+        "toMs": 111925.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 111925.4,
+        "toMs": 112125.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 112125.3,
+        "toMs": 112158.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 112158.7,
+        "toMs": 112325.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 112325.3,
+        "toMs": 112658.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 112658.7,
+        "toMs": 112875.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 112875.3,
+        "toMs": 115242,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115242,
+        "toMs": 115258.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115258.6,
+        "toMs": 115291.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115291.9,
+        "toMs": 115375.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115375.3,
+        "toMs": 115458.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115458.6,
+        "toMs": 115508.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115508.5,
+        "toMs": 115558.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115558.6,
+        "toMs": 115725.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115725.3,
+        "toMs": 115808.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115808.6,
+        "toMs": 115875.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115875.3,
+        "toMs": 115908.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115908.6,
+        "toMs": 115991.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 115991.8,
+        "toMs": 116008.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 116008.6,
+        "toMs": 116041.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 116041.8,
+        "toMs": 116058.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 116058.6,
+        "toMs": 116175.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 116175.2,
+        "toMs": 116408.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 116408.5,
+        "toMs": 117025.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 117025.1,
+        "toMs": 117541.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 117541.8,
+        "toMs": 117641.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 117641.9,
+        "toMs": 117675.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 117675.1,
+        "toMs": 117691.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 117691.8,
+        "toMs": 117708.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 117708.5,
+        "toMs": 117958.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 117958.5,
+        "toMs": 117975.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 117975.1,
+        "toMs": 118208.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 118208.5,
+        "toMs": 118425.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 118425.1,
+        "toMs": 118875.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 118875.1,
+        "toMs": 119041.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 119041.7,
+        "toMs": 119375.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 119375.1,
+        "toMs": 119608.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 119608.4,
+        "toMs": 119875,
+        "phase": "running"
+      },
+      {
+        "fromMs": 119875,
+        "toMs": 120091.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 120091.7,
+        "toMs": 120175.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 120175.1,
+        "toMs": 120558.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 120558.3,
+        "toMs": 120891.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 120891.6,
+        "toMs": 121108.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 121108.3,
+        "toMs": 121158.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 121158.3,
+        "toMs": 121191.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 121191.7,
+        "toMs": 121208.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 121208.4,
+        "toMs": 121441.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 121441.7,
+        "toMs": 121675,
+        "phase": "running"
+      },
+      {
+        "fromMs": 121675,
+        "toMs": 122024.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 122024.9,
+        "toMs": 122358.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 122358.3,
+        "toMs": 122375,
+        "phase": "running"
+      },
+      {
+        "fromMs": 122375,
+        "toMs": 122391.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 122391.6,
+        "toMs": 122591.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 122591.6,
+        "toMs": 122824.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 122824.9,
+        "toMs": 123041.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 123041.6,
+        "toMs": 123491.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 123491.6,
+        "toMs": 123741.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 123741.6,
+        "toMs": 123974.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 123974.9,
+        "toMs": 124441.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 124441.6,
+        "toMs": 124774.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 124774.8,
+        "toMs": 125108.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 125108.1,
+        "toMs": 125358.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 125358.2,
+        "toMs": 125808.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 125808.2,
+        "toMs": 126041.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 126041.5,
+        "toMs": 126291.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 126291.4,
+        "toMs": 126308.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 126308.1,
+        "toMs": 126524.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 126524.8,
+        "toMs": 126758.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 126758.1,
+        "toMs": 126991.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 126991.5,
+        "toMs": 127224.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 127224.8,
+        "toMs": 127674.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 127674.8,
+        "toMs": 127908.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 127908.1,
+        "toMs": 128108,
+        "phase": "running"
+      },
+      {
+        "fromMs": 128108,
+        "toMs": 128341.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 128341.4,
+        "toMs": 128558.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 128558.1,
+        "toMs": 128774.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 128774.7,
+        "toMs": 128991.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 128991.4,
+        "toMs": 129208,
+        "phase": "running"
+      },
+      {
+        "fromMs": 129208,
+        "toMs": 129441.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 129441.3,
+        "toMs": 129658,
+        "phase": "running"
+      },
+      {
+        "fromMs": 129658,
+        "toMs": 129874.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 129874.6,
+        "toMs": 130091.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 130091.3,
+        "toMs": 130324.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 130324.6,
+        "toMs": 130557.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 130557.9,
+        "toMs": 130774.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 130774.7,
+        "toMs": 130991.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 130991.3,
+        "toMs": 131208,
+        "phase": "running"
+      },
+      {
+        "fromMs": 131208,
+        "toMs": 131424.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 131424.6,
+        "toMs": 131657.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 131657.9,
+        "toMs": 131874.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 131874.6,
+        "toMs": 132074.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 132074.5,
+        "toMs": 132457.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 132457.9,
+        "toMs": 132674.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 132674.5,
+        "toMs": 132891.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 132891.2,
+        "toMs": 133107.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 133107.9,
+        "toMs": 133324.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 133324.5,
+        "toMs": 133741.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 133741.2,
+        "toMs": 133957.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 133957.8,
+        "toMs": 134174.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 134174.5,
+        "toMs": 134374.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 134374.4,
+        "toMs": 134591.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 134591.2,
+        "toMs": 134807.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 134807.8,
+        "toMs": 135007.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 135007.8,
+        "toMs": 135207.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 135207.8,
+        "toMs": 135391.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 135391.1,
+        "toMs": 135574.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 135574.4,
+        "toMs": 135741.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 135741.1,
+        "toMs": 135924.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 135924.4,
+        "toMs": 136107.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 136107.7,
+        "toMs": 136274.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 136274.4,
+        "toMs": 136457.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 136457.7,
+        "toMs": 136607.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 136607.7,
+        "toMs": 136791,
+        "phase": "running"
+      },
+      {
+        "fromMs": 136791,
+        "toMs": 136957.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 136957.7,
+        "toMs": 137124.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 137124.3,
+        "toMs": 137307.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 137307.7,
+        "toMs": 137474.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 137474.3,
+        "toMs": 137491,
+        "phase": "running"
+      },
+      {
+        "fromMs": 137491,
+        "toMs": 137674.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 137674.3,
+        "toMs": 137824.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 137824.3,
+        "toMs": 137991,
+        "phase": "running"
+      },
+      {
+        "fromMs": 137991,
+        "toMs": 138174.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 138174.4,
+        "toMs": 138324.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 138324.3,
+        "toMs": 138457.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 138457.7,
+        "toMs": 138607.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 138607.6,
+        "toMs": 138624.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 138624.3,
+        "toMs": 138774.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 138774.3,
+        "toMs": 138941,
+        "phase": "running"
+      },
+      {
+        "fromMs": 138941,
+        "toMs": 139074.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 139074.3,
+        "toMs": 139224.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 139224.3,
+        "toMs": 139540.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 139540.9,
+        "toMs": 139707.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 139707.6,
+        "toMs": 139907.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 139907.6,
+        "toMs": 140124.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 140124.2,
+        "toMs": 140307.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 140307.6,
+        "toMs": 140657.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 140657.6,
+        "toMs": 140840.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 140840.9,
+        "toMs": 141057.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 141057.5,
+        "toMs": 141257.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 141257.6,
+        "toMs": 141407.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 141407.5,
+        "toMs": 141607.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 141607.5,
+        "toMs": 141790.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 141790.8,
+        "toMs": 141974.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 141974.2,
+        "toMs": 142140.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 142140.8,
+        "toMs": 142307.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 142307.5,
+        "toMs": 142474.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 142474.1,
+        "toMs": 142640.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 142640.8,
+        "toMs": 142807.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 142807.5,
+        "toMs": 142990.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 142990.8,
+        "toMs": 143157.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 143157.5,
+        "toMs": 143324.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 143324.1,
+        "toMs": 143490.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 143490.8,
+        "toMs": 143590.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 143590.7,
+        "toMs": 143690.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 143690.8,
+        "toMs": 143857.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 143857.4,
+        "toMs": 144040.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 144040.8,
+        "toMs": 144357.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 144357.4,
+        "toMs": 144557.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 144557.4,
+        "toMs": 144740.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 144740.7,
+        "toMs": 145390.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 145390.7,
+        "toMs": 146224,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146224,
+        "toMs": 146257.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146257.3,
+        "toMs": 146274,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146274,
+        "toMs": 146290.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146290.7,
+        "toMs": 146307.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146307.3,
+        "toMs": 146324,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146324,
+        "toMs": 146357.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146357.3,
+        "toMs": 146390.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146390.7,
+        "toMs": 146407.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146407.4,
+        "toMs": 146424,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146424,
+        "toMs": 146540.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146540.6,
+        "toMs": 146874,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146874,
+        "toMs": 146907.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146907.3,
+        "toMs": 146924,
+        "phase": "running"
+      },
+      {
+        "fromMs": 146924,
+        "toMs": 147057.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 147057.3,
+        "toMs": 147223.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 147223.9,
+        "toMs": 147374,
+        "phase": "running"
+      },
+      {
+        "fromMs": 147374,
+        "toMs": 147524,
+        "phase": "running"
+      },
+      {
+        "fromMs": 147524,
+        "toMs": 147757.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 147757.3,
+        "toMs": 147874,
+        "phase": "running"
+      },
+      {
+        "fromMs": 147874,
+        "toMs": 147907.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 147907.3,
+        "toMs": 148157.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 148157.3,
+        "toMs": 148390.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 148390.6,
+        "toMs": 148523.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 148523.9,
+        "toMs": 148640.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 148640.6,
+        "toMs": 148873.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 148873.9,
+        "toMs": 149023.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 149023.9,
+        "toMs": 149140.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 149140.5,
+        "toMs": 149257.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 149257.2,
+        "toMs": 149490.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 149490.5,
+        "toMs": 149623.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 149623.9,
+        "toMs": 149640.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 149640.6,
+        "toMs": 149757.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 149757.2,
+        "toMs": 149873.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 149873.8,
+        "toMs": 150007.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 150007.2,
+        "toMs": 150140.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 150140.6,
+        "toMs": 150157.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 150157.2,
+        "toMs": 150307.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 150307.2,
+        "toMs": 150457.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 150457.2,
+        "toMs": 150607.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 150607.2,
+        "toMs": 150757.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 150757.1,
+        "toMs": 150773.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 150773.8,
+        "toMs": 150940.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 150940.5,
+        "toMs": 151123.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 151123.8,
+        "toMs": 151257.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 151257.1,
+        "toMs": 151323.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 151323.8,
+        "toMs": 151490.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 151490.4,
+        "toMs": 151673.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 151673.8,
+        "toMs": 151890.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 151890.5,
+        "toMs": 152073.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 152073.8,
+        "toMs": 152257.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 152257.1,
+        "toMs": 152640.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 152640.5,
+        "toMs": 152823.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 152823.7,
+        "toMs": 153023.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 153023.8,
+        "toMs": 153057,
+        "phase": "running"
+      },
+      {
+        "fromMs": 153057,
+        "toMs": 153240.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 153240.3,
+        "toMs": 153607.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 153607.1,
+        "toMs": 153623.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 153623.7,
+        "toMs": 153807.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 153807.1,
+        "toMs": 154007,
+        "phase": "running"
+      },
+      {
+        "fromMs": 154007,
+        "toMs": 154190.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 154190.3,
+        "toMs": 154390.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 154390.3,
+        "toMs": 154573.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 154573.7,
+        "toMs": 154773.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 154773.7,
+        "toMs": 154973.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 154973.7,
+        "toMs": 155173.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 155173.7,
+        "toMs": 155356.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 155356.9,
+        "toMs": 155557,
+        "phase": "running"
+      },
+      {
+        "fromMs": 155557,
+        "toMs": 155757,
+        "phase": "running"
+      },
+      {
+        "fromMs": 155757,
+        "toMs": 155957,
+        "phase": "running"
+      },
+      {
+        "fromMs": 155957,
+        "toMs": 156157,
+        "phase": "running"
+      },
+      {
+        "fromMs": 156157,
+        "toMs": 156357,
+        "phase": "running"
+      },
+      {
+        "fromMs": 156357,
+        "toMs": 156556.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 156556.9,
+        "toMs": 156757,
+        "phase": "running"
+      },
+      {
+        "fromMs": 156757,
+        "toMs": 157156.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 157156.9,
+        "toMs": 157373.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 157373.5,
+        "toMs": 157590.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 157590.2,
+        "toMs": 157806.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 157806.8,
+        "toMs": 158040.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 158040.2,
+        "toMs": 158256.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 158256.8,
+        "toMs": 158473.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 158473.5,
+        "toMs": 158690.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 158690.1,
+        "toMs": 158906.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 158906.8,
+        "toMs": 159123.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 159123.5,
+        "toMs": 159340.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 159340.1,
+        "toMs": 159556.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 159556.8,
+        "toMs": 159790.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 159790.2,
+        "toMs": 160023.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 160023.4,
+        "toMs": 160240.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 160240.1,
+        "toMs": 160473.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 160473.4,
+        "toMs": 160690.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 160690.1,
+        "toMs": 160923.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 160923.4,
+        "toMs": 161140.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 161140.1,
+        "toMs": 161356.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 161356.7,
+        "toMs": 161590,
+        "phase": "running"
+      },
+      {
+        "fromMs": 161590,
+        "toMs": 161806.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 161806.7,
+        "toMs": 162040,
+        "phase": "running"
+      },
+      {
+        "fromMs": 162040,
+        "toMs": 162273.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 162273.3,
+        "toMs": 162490,
+        "phase": "running"
+      },
+      {
+        "fromMs": 162490,
+        "toMs": 162723.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 162723.3,
+        "toMs": 162956.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 162956.7,
+        "toMs": 163390,
+        "phase": "running"
+      },
+      {
+        "fromMs": 163390,
+        "toMs": 163606.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 163606.7,
+        "toMs": 163823.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 163823.3,
+        "toMs": 164023.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 164023.3,
+        "toMs": 164239.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 164239.9,
+        "toMs": 164439.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 164439.9,
+        "toMs": 164639.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 164639.9,
+        "toMs": 164673.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 164673.3,
+        "toMs": 164873.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 164873.3,
+        "toMs": 165089.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 165089.9,
+        "toMs": 165289.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 165289.9,
+        "toMs": 165506.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 165506.5,
+        "toMs": 165723.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 165723.3,
+        "toMs": 165923.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 165923.3,
+        "toMs": 166139.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 166139.9,
+        "toMs": 166356.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 166356.5,
+        "toMs": 166556.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 166556.5,
+        "toMs": 166756.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 166756.5,
+        "toMs": 166973.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 166973.2,
+        "toMs": 167206.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 167206.5,
+        "toMs": 167423.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 167423.1,
+        "toMs": 167623.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 167623.2,
+        "toMs": 167839.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 167839.8,
+        "toMs": 168073.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 168073.1,
+        "toMs": 168273.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 168273.1,
+        "toMs": 168506.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 168506.5,
+        "toMs": 168706.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 168706.4,
+        "toMs": 168923.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 168923.1,
+        "toMs": 169139.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 169139.7,
+        "toMs": 169339.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 169339.8,
+        "toMs": 169573.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 169573.1,
+        "toMs": 169789.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 169789.7,
+        "toMs": 170206.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 170206.3,
+        "toMs": 170423,
+        "phase": "running"
+      },
+      {
+        "fromMs": 170423,
+        "toMs": 170623,
+        "phase": "running"
+      },
+      {
+        "fromMs": 170623,
+        "toMs": 170823,
+        "phase": "running"
+      },
+      {
+        "fromMs": 170823,
+        "toMs": 171023,
+        "phase": "running"
+      },
+      {
+        "fromMs": 171023,
+        "toMs": 171223,
+        "phase": "running"
+      },
+      {
+        "fromMs": 171223,
+        "toMs": 171423,
+        "phase": "running"
+      },
+      {
+        "fromMs": 171423,
+        "toMs": 171823,
+        "phase": "running"
+      },
+      {
+        "fromMs": 171823,
+        "toMs": 172006.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 172006.3,
+        "toMs": 172206.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 172206.3,
+        "toMs": 172406.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 172406.3,
+        "toMs": 172589.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 172589.6,
+        "toMs": 172789.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 172789.6,
+        "toMs": 172972.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 172972.9,
+        "toMs": 173306.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 173306.2,
+        "toMs": 173339.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 173339.6,
+        "toMs": 173506.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 173506.2,
+        "toMs": 173689.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 173689.6,
+        "toMs": 173872.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 173872.9,
+        "toMs": 174072.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 174072.9,
+        "toMs": 174239.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 174239.5,
+        "toMs": 174422.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 174422.9,
+        "toMs": 174472.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 174472.8,
+        "toMs": 174822.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 174822.9,
+        "toMs": 175022.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 175022.9,
+        "toMs": 175039.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 175039.5,
+        "toMs": 175056.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 175056.2,
+        "toMs": 175239.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 175239.5,
+        "toMs": 175439.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 175439.5,
+        "toMs": 175622.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 175622.8,
+        "toMs": 175806.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 175806.1,
+        "toMs": 175822.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 175822.8,
+        "toMs": 176156.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 176156.1,
+        "toMs": 176339.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 176339.5,
+        "toMs": 176522.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 176522.8,
+        "toMs": 176689.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 176689.5,
+        "toMs": 176806.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 176806.1,
+        "toMs": 176889.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 176889.5,
+        "toMs": 177106.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 177106.1,
+        "toMs": 177306.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 177306.1,
+        "toMs": 177506.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 177506.1,
+        "toMs": 177722.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 177722.8,
+        "toMs": 178089.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 178089.4,
+        "toMs": 178272.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 178272.7,
+        "toMs": 178689.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 178689.3,
+        "toMs": 178706.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 178706.1,
+        "toMs": 179022.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 179022.7,
+        "toMs": 179056,
+        "phase": "running"
+      },
+      {
+        "fromMs": 179056,
+        "toMs": 179222.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 179222.6,
+        "toMs": 179389.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 179389.3,
+        "toMs": 179556,
+        "phase": "running"
+      },
+      {
+        "fromMs": 179556,
+        "toMs": 179739.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 179739.3,
+        "toMs": 179905.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 179905.9,
+        "toMs": 180239.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 180239.3,
+        "toMs": 180256,
+        "phase": "running"
+      },
+      {
+        "fromMs": 180256,
+        "toMs": 180422.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 180422.6,
+        "toMs": 180606,
+        "phase": "running"
+      },
+      {
+        "fromMs": 180606,
+        "toMs": 180772.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 180772.6,
+        "toMs": 180939.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 180939.3,
+        "toMs": 181272.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 181272.6,
+        "toMs": 181439.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 181439.2,
+        "toMs": 181605.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 181605.9,
+        "toMs": 181622.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 181622.6,
+        "toMs": 181939.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 181939.2,
+        "toMs": 182139.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 182139.2,
+        "toMs": 182305.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 182305.9,
+        "toMs": 182489.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 182489.2,
+        "toMs": 182672.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 182672.6,
+        "toMs": 182839.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 182839.2,
+        "toMs": 183005.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 183005.8,
+        "toMs": 183189.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 183189.1,
+        "toMs": 183372.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 183372.5,
+        "toMs": 183555.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 183555.8,
+        "toMs": 183755.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 183755.8,
+        "toMs": 184955.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 184955.8,
+        "toMs": 184972.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 184972.5,
+        "toMs": 184989.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 184989.1,
+        "toMs": 185022.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 185022.4,
+        "toMs": 185039.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 185039.1,
+        "toMs": 185055.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 185055.8,
+        "toMs": 185189.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 185189.1,
+        "toMs": 185205.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 185205.8,
+        "toMs": 185305.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 185305.8,
+        "toMs": 185489.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 185489.1,
+        "toMs": 185689.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 185689.1,
+        "toMs": 185872.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 185872.4,
+        "toMs": 186255.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 186255.7,
+        "toMs": 186455.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 186455.7,
+        "toMs": 186539.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 186539.1,
+        "toMs": 186555.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 186555.8,
+        "toMs": 186689,
+        "phase": "running"
+      },
+      {
+        "fromMs": 186689,
+        "toMs": 186805.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 186805.7,
+        "toMs": 186822.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 186822.4,
+        "toMs": 187072.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 187072.3,
+        "toMs": 187222.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 187222.4,
+        "toMs": 187355.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 187355.7,
+        "toMs": 187472.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 187472.3,
+        "toMs": 187722.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 187722.3,
+        "toMs": 188105.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 188105.6,
+        "toMs": 188288.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 188288.9,
+        "toMs": 188305.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 188305.7,
+        "toMs": 189389,
+        "phase": "running"
+      },
+      {
+        "fromMs": 189389,
+        "toMs": 189505.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 189505.6,
+        "toMs": 189522.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 189522.2,
+        "toMs": 189538.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 189538.9,
+        "toMs": 189805.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 189805.6,
+        "toMs": 189822.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 189822.2,
+        "toMs": 189838.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 189838.9,
+        "toMs": 189872.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 189872.3,
+        "toMs": 189989,
+        "phase": "running"
+      },
+      {
+        "fromMs": 189989,
+        "toMs": 190138.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190138.9,
+        "toMs": 190205.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190205.5,
+        "toMs": 190338.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190338.9,
+        "toMs": 190555.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190555.6,
+        "toMs": 190705.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190705.5,
+        "toMs": 190722.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190722.3,
+        "toMs": 190738.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190738.9,
+        "toMs": 190755.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190755.5,
+        "toMs": 190772.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190772.2,
+        "toMs": 190788.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190788.9,
+        "toMs": 190905.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 190905.5,
+        "toMs": 191255.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 191255.5,
+        "toMs": 191605.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 191605.5,
+        "toMs": 191805.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 191805.5,
+        "toMs": 191888.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 191888.8,
+        "toMs": 192155.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 192155.5,
+        "toMs": 192588.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 192588.8,
+        "toMs": 192622.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 192622.1,
+        "toMs": 192705.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 192705.4,
+        "toMs": 192805.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 192805.5,
+        "toMs": 192838.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 192838.8,
+        "toMs": 192988.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 192988.8,
+        "toMs": 193388.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 193388.8,
+        "toMs": 193405.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 193405.5,
+        "toMs": 193655.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 193655.4,
+        "toMs": 194005.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 194005.4,
+        "toMs": 194038.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 194038.7,
+        "toMs": 194122.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 194122.1,
+        "toMs": 194172.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 194172.1,
+        "toMs": 194188.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 194188.7,
+        "toMs": 194222.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 194222.1,
+        "toMs": 194238.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 194238.8,
+        "toMs": 195055.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 195055.4,
+        "toMs": 195088.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 195088.7,
+        "toMs": 195122.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 195122.1,
+        "toMs": 195138.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 195138.7,
+        "toMs": 195238.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 195238.7,
+        "toMs": 195455.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 195455.4,
+        "toMs": 195688.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 195688.7,
+        "toMs": 195922,
+        "phase": "running"
+      },
+      {
+        "fromMs": 195922,
+        "toMs": 196355.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 196355.3,
+        "toMs": 196605.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 196605.4,
+        "toMs": 196822,
+        "phase": "running"
+      },
+      {
+        "fromMs": 196822,
+        "toMs": 197038.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 197038.6,
+        "toMs": 197472,
+        "phase": "running"
+      },
+      {
+        "fromMs": 197472,
+        "toMs": 197922,
+        "phase": "running"
+      },
+      {
+        "fromMs": 197922,
+        "toMs": 197938.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 197938.6,
+        "toMs": 197955.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 197955.2,
+        "toMs": 198355.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 198355.2,
+        "toMs": 198588.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 198588.6,
+        "toMs": 198805.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 198805.2,
+        "toMs": 199305.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 199305.2,
+        "toMs": 199488.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 199488.5,
+        "toMs": 199705.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 199705.2,
+        "toMs": 200355.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 200355.2,
+        "toMs": 200588.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 200588.5,
+        "toMs": 200605.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 200605.2,
+        "toMs": 200805.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 200805.2,
+        "toMs": 201005.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 201005.1,
+        "toMs": 201438.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 201438.5,
+        "toMs": 201455.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 201455.1,
+        "toMs": 201655.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 201655.1,
+        "toMs": 201871.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 201871.7,
+        "toMs": 202305.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 202305.1,
+        "toMs": 202521.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 202521.7,
+        "toMs": 205021.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 205021.7,
+        "toMs": 206654.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 206654.9,
+        "toMs": 206888.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 206888.3,
+        "toMs": 206904.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 206904.9,
+        "toMs": 207104.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 207104.9,
+        "toMs": 207188.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 207188.2,
+        "toMs": 207221.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 207221.5,
+        "toMs": 207238.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 207238.2,
+        "toMs": 207588.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 207588.2,
+        "toMs": 207638.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 207638.2,
+        "toMs": 207654.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 207654.9,
+        "toMs": 207704.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 207704.9,
+        "toMs": 209188.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 209188.2,
+        "toMs": 209238.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 209238.1,
+        "toMs": 209321.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 209321.5,
+        "toMs": 209338.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 209338.1,
+        "toMs": 209371.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 209371.4,
+        "toMs": 210438.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 210438.1,
+        "toMs": 210521.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 210521.4,
+        "toMs": 210754.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 210754.7,
+        "toMs": 210788.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 210788.1,
+        "toMs": 210804.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 210804.7,
+        "toMs": 210821.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 210821.4,
+        "toMs": 211121.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 211121.4,
+        "toMs": 211138.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 211138.1,
+        "toMs": 211188,
+        "phase": "running"
+      },
+      {
+        "fromMs": 211188,
+        "toMs": 211288.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 211288.1,
+        "toMs": 211588.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 211588.1,
+        "toMs": 211604.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 211604.7,
+        "toMs": 211638.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 211638.1,
+        "toMs": 211854.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 211854.7,
+        "toMs": 211954.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 211954.7,
+        "toMs": 212221.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 212221.3,
+        "toMs": 212538,
+        "phase": "running"
+      },
+      {
+        "fromMs": 212538,
+        "toMs": 213004.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 213004.7,
+        "toMs": 213088,
+        "phase": "running"
+      },
+      {
+        "fromMs": 213088,
+        "toMs": 213188,
+        "phase": "running"
+      },
+      {
+        "fromMs": 213188,
+        "toMs": 213204.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 213204.7,
+        "toMs": 213221.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 213221.3,
+        "toMs": 214471.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214471.3,
+        "toMs": 214504.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214504.6,
+        "toMs": 214521.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214521.2,
+        "toMs": 214537.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214537.9,
+        "toMs": 214588,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214588,
+        "toMs": 214604.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214604.6,
+        "toMs": 214621.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214621.3,
+        "toMs": 214637.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214637.9,
+        "toMs": 214687.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214687.9,
+        "toMs": 214704.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214704.6,
+        "toMs": 214721.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214721.3,
+        "toMs": 214771.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 214771.2,
+        "toMs": 215154.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 215154.6,
+        "toMs": 216604.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 216604.5,
+        "toMs": 216971.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 216971.2,
+        "toMs": 217254.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217254.5,
+        "toMs": 217587.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217587.8,
+        "toMs": 217604.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217604.5,
+        "toMs": 217621.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217621.2,
+        "toMs": 217637.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217637.9,
+        "toMs": 217654.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217654.5,
+        "toMs": 217704.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217704.5,
+        "toMs": 217737.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217737.8,
+        "toMs": 217754.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217754.5,
+        "toMs": 217771.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217771.1,
+        "toMs": 217787.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217787.8,
+        "toMs": 217837.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217837.8,
+        "toMs": 217937.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217937.8,
+        "toMs": 217954.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 217954.5,
+        "toMs": 218004.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218004.5,
+        "toMs": 218021.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218021.1,
+        "toMs": 218037.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218037.8,
+        "toMs": 218054.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218054.4,
+        "toMs": 218071.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218071.1,
+        "toMs": 218087.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218087.8,
+        "toMs": 218104.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218104.4,
+        "toMs": 218121.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218121.1,
+        "toMs": 218137.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218137.8,
+        "toMs": 218154.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218154.4,
+        "toMs": 218171.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218171.1,
+        "toMs": 218604.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 218604.4,
+        "toMs": 219104.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 219104.4,
+        "toMs": 219321.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 219321.1,
+        "toMs": 219604.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 219604.4,
+        "toMs": 219854.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 219854.4,
+        "toMs": 219871.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 219871.1,
+        "toMs": 219954.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 219954.4,
+        "toMs": 220187.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 220187.7,
+        "toMs": 220421.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 220421.1,
+        "toMs": 220854.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 220854.3,
+        "toMs": 221271,
+        "phase": "running"
+      },
+      {
+        "fromMs": 221271,
+        "toMs": 221521,
+        "phase": "running"
+      },
+      {
+        "fromMs": 221521,
+        "toMs": 221954.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 221954.3,
+        "toMs": 222171,
+        "phase": "running"
+      },
+      {
+        "fromMs": 222171,
+        "toMs": 222604.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 222604.2,
+        "toMs": 222820.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 222820.9,
+        "toMs": 223254.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 223254.2,
+        "toMs": 223471,
+        "phase": "running"
+      },
+      {
+        "fromMs": 223471,
+        "toMs": 223854.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 223854.2,
+        "toMs": 224120.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 224120.9,
+        "toMs": 224337.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 224337.5,
+        "toMs": 224587.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 224587.6,
+        "toMs": 224920.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 224920.9,
+        "toMs": 225070.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 225070.8,
+        "toMs": 225504.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 225504.2,
+        "toMs": 225720.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 225720.8,
+        "toMs": 225954.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 225954.1,
+        "toMs": 225970.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 225970.8,
+        "toMs": 226170.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 226170.8,
+        "toMs": 226420.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 226420.8,
+        "toMs": 226637.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 226637.5,
+        "toMs": 226870.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 226870.8,
+        "toMs": 227104.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 227104.1,
+        "toMs": 227354.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 227354.1,
+        "toMs": 227570.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 227570.8,
+        "toMs": 227787.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 227787.4,
+        "toMs": 228004.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 228004.1,
+        "toMs": 228220.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 228220.7,
+        "toMs": 228437.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 228437.4,
+        "toMs": 228670.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 228670.7,
+        "toMs": 229070.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 229070.6,
+        "toMs": 229087.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 229087.4,
+        "toMs": 229104.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 229104.1,
+        "toMs": 229304,
+        "phase": "running"
+      },
+      {
+        "fromMs": 229304,
+        "toMs": 229520.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 229520.7,
+        "toMs": 229954,
+        "phase": "running"
+      },
+      {
+        "fromMs": 229954,
+        "toMs": 230170.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 230170.6,
+        "toMs": 230653.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 230653.9,
+        "toMs": 230754,
+        "phase": "running"
+      },
+      {
+        "fromMs": 230754,
+        "toMs": 230787.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 230787.3,
+        "toMs": 230804,
+        "phase": "running"
+      },
+      {
+        "fromMs": 230804,
+        "toMs": 231020.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 231020.6,
+        "toMs": 231254,
+        "phase": "running"
+      },
+      {
+        "fromMs": 231254,
+        "toMs": 231487.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 231487.2,
+        "toMs": 231720.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 231720.6,
+        "toMs": 232170.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 232170.6,
+        "toMs": 232387.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 232387.3,
+        "toMs": 232603.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 232603.9,
+        "toMs": 232837.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 232837.2,
+        "toMs": 233287.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 233287.2,
+        "toMs": 233503.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 233503.8,
+        "toMs": 234387.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 234387.2,
+        "toMs": 237770.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 237770.3,
+        "toMs": 237803.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 237803.7,
+        "toMs": 238053.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238053.7,
+        "toMs": 238070.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238070.3,
+        "toMs": 238120.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238120.3,
+        "toMs": 238153.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238153.7,
+        "toMs": 238170.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238170.3,
+        "toMs": 238220.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238220.4,
+        "toMs": 238270.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238270.3,
+        "toMs": 238287,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238287,
+        "toMs": 238337,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238337,
+        "toMs": 238370.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238370.3,
+        "toMs": 238387,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238387,
+        "toMs": 238453.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 238453.6,
+        "toMs": 240203.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 240203.6,
+        "toMs": 240420.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 240420.2,
+        "toMs": 240453.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 240453.6,
+        "toMs": 240470.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 240470.2,
+        "toMs": 240486.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 240486.8,
+        "toMs": 240820.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 240820.2,
+        "toMs": 241036.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 241036.9,
+        "toMs": 241886.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 241886.9,
+        "toMs": 242253.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242253.5,
+        "toMs": 242470.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242470.1,
+        "toMs": 242486.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242486.8,
+        "toMs": 242570.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242570.2,
+        "toMs": 242586.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242586.8,
+        "toMs": 242603.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242603.4,
+        "toMs": 242620.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242620.2,
+        "toMs": 242653.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242653.4,
+        "toMs": 242686.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242686.8,
+        "toMs": 242736.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242736.8,
+        "toMs": 242770.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242770.1,
+        "toMs": 242786.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242786.8,
+        "toMs": 242803.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242803.5,
+        "toMs": 242836.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242836.8,
+        "toMs": 242853.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242853.5,
+        "toMs": 242953.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242953.4,
+        "toMs": 242970.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242970.2,
+        "toMs": 242986.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 242986.8,
+        "toMs": 243003.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243003.5,
+        "toMs": 243020.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243020.1,
+        "toMs": 243036.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243036.8,
+        "toMs": 243053.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243053.5,
+        "toMs": 243120.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243120.2,
+        "toMs": 243136.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243136.8,
+        "toMs": 243153.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243153.4,
+        "toMs": 243170.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243170.1,
+        "toMs": 243186.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243186.8,
+        "toMs": 243203.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243203.5,
+        "toMs": 243220.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243220.2,
+        "toMs": 243470.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243470.1,
+        "toMs": 243670.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243670.1,
+        "toMs": 243703.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 243703.5,
+        "toMs": 244053.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 244053.5,
+        "toMs": 244253.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 244253.4,
+        "toMs": 244453.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 244453.4,
+        "toMs": 244853.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 244853.4,
+        "toMs": 245220.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 245220.1,
+        "toMs": 245420,
+        "phase": "running"
+      },
+      {
+        "fromMs": 245420,
+        "toMs": 245636.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 245636.7,
+        "toMs": 246020,
+        "phase": "running"
+      },
+      {
+        "fromMs": 246020,
+        "toMs": 246203.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 246203.4,
+        "toMs": 246586.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 246586.7,
+        "toMs": 246986.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 246986.6,
+        "toMs": 247353.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 247353.3,
+        "toMs": 247553.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 247553.2,
+        "toMs": 247753.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 247753.2,
+        "toMs": 248136.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 248136.6,
+        "toMs": 248286.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 248286.6,
+        "toMs": 248336.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 248336.6,
+        "toMs": 248369.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 248369.9,
+        "toMs": 248736.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 248736.5,
+        "toMs": 248986.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 248986.6,
+        "toMs": 249153.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 249153.2,
+        "toMs": 249186.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 249186.5,
+        "toMs": 249353.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 249353.2,
+        "toMs": 249569.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 249569.9,
+        "toMs": 249769.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 249769.9,
+        "toMs": 249986.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 249986.5,
+        "toMs": 250186.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 250186.5,
+        "toMs": 250386.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 250386.5,
+        "toMs": 250619.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 250619.9,
+        "toMs": 250853.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 250853.2,
+        "toMs": 251086.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 251086.5,
+        "toMs": 251319.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 251319.8,
+        "toMs": 251553.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 251553.1,
+        "toMs": 251786.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 251786.4,
+        "toMs": 252019.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 252019.8,
+        "toMs": 252269.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 252269.8,
+        "toMs": 253169.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 253169.7,
+        "toMs": 253419.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 253419.7,
+        "toMs": 253519.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 253519.7,
+        "toMs": 254386.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 254386.4,
+        "toMs": 254769.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 254769.7,
+        "toMs": 254786.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 254786.3,
+        "toMs": 254819.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 254819.6,
+        "toMs": 254853,
+        "phase": "running"
+      },
+      {
+        "fromMs": 254853,
+        "toMs": 254869.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 254869.6,
+        "toMs": 254903,
+        "phase": "running"
+      },
+      {
+        "fromMs": 254903,
+        "toMs": 254919.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 254919.6,
+        "toMs": 254936.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 254936.3,
+        "toMs": 255253,
+        "phase": "running"
+      },
+      {
+        "fromMs": 255253,
+        "toMs": 255303,
+        "phase": "running"
+      },
+      {
+        "fromMs": 255303,
+        "toMs": 255336.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 255336.3,
+        "toMs": 255636.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 255636.3,
+        "toMs": 255869.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 255869.6,
+        "toMs": 256102.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 256102.9,
+        "toMs": 256119.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 256119.6,
+        "toMs": 256336.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 256336.2,
+        "toMs": 256669.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 256669.6,
+        "toMs": 256686.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 256686.3,
+        "toMs": 256819.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 256819.5,
+        "toMs": 257119.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 257119.5,
+        "toMs": 257236.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 257236.3,
+        "toMs": 257702.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 257702.9,
+        "toMs": 258102.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 258102.9,
+        "toMs": 258302.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 258302.9,
+        "toMs": 258536.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 258536.2,
+        "toMs": 258736.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 258736.1,
+        "toMs": 258952.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 258952.8,
+        "toMs": 259336.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 259336.2,
+        "toMs": 259552.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 259552.8,
+        "toMs": 259769.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 259769.5,
+        "toMs": 259986.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 259986.1,
+        "toMs": 260202.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 260202.7,
+        "toMs": 260619.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 260619.4,
+        "toMs": 260819.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 260819.4,
+        "toMs": 261019.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 261019.4,
+        "toMs": 261252.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 261252.7,
+        "toMs": 261452.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 261452.8,
+        "toMs": 261669.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 261669.4,
+        "toMs": 261886.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 261886.1,
+        "toMs": 262102.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 262102.7,
+        "toMs": 262302.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 262302.7,
+        "toMs": 262519.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 262519.3,
+        "toMs": 262719.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 262719.4,
+        "toMs": 263119.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 263119.3,
+        "toMs": 263336,
+        "phase": "running"
+      },
+      {
+        "fromMs": 263336,
+        "toMs": 263536,
+        "phase": "running"
+      },
+      {
+        "fromMs": 263536,
+        "toMs": 263736,
+        "phase": "running"
+      },
+      {
+        "fromMs": 263736,
+        "toMs": 263936,
+        "phase": "running"
+      },
+      {
+        "fromMs": 263936,
+        "toMs": 264152.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 264152.6,
+        "toMs": 264369.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 264369.3,
+        "toMs": 264569.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 264569.2,
+        "toMs": 264786,
+        "phase": "running"
+      },
+      {
+        "fromMs": 264786,
+        "toMs": 265002.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 265002.6,
+        "toMs": 268419.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 268419.1,
+        "toMs": 268635.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 268635.7,
+        "toMs": 268869.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 268869.1,
+        "toMs": 269085.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 269085.8,
+        "toMs": 269119.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 269119.1,
+        "toMs": 269135.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 269135.8,
+        "toMs": 269535.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 269535.7,
+        "toMs": 269569.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 269569.1,
+        "toMs": 269619.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 269619.1,
+        "toMs": 270252.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 270252.4,
+        "toMs": 270269.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 270269.1,
+        "toMs": 270669,
+        "phase": "running"
+      },
+      {
+        "fromMs": 270669,
+        "toMs": 270685.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 270685.7,
+        "toMs": 270702.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 270702.4,
+        "toMs": 270735.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 270735.7,
+        "toMs": 271485.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 271485.6,
+        "toMs": 271535.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 271535.7,
+        "toMs": 271585.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 271585.6,
+        "toMs": 271619,
+        "phase": "running"
+      },
+      {
+        "fromMs": 271619,
+        "toMs": 271802.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 271802.4,
+        "toMs": 272385.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 272385.6,
+        "toMs": 272669,
+        "phase": "running"
+      },
+      {
+        "fromMs": 272669,
+        "toMs": 272802.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 272802.2,
+        "toMs": 273218.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 273218.9,
+        "toMs": 273235.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 273235.6,
+        "toMs": 273252.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 273252.2,
+        "toMs": 273368.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 273368.9,
+        "toMs": 273535.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 273535.6,
+        "toMs": 273552.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 273552.3,
+        "toMs": 273602.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 273602.3,
+        "toMs": 273618.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 273618.9,
+        "toMs": 273635.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 273635.5,
+        "toMs": 274618.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274618.9,
+        "toMs": 274635.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274635.6,
+        "toMs": 274652.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274652.2,
+        "toMs": 274668.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274668.9,
+        "toMs": 274685.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274685.6,
+        "toMs": 274702.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274702.2,
+        "toMs": 274718.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274718.9,
+        "toMs": 274752.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274752.2,
+        "toMs": 274768.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274768.9,
+        "toMs": 274785.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274785.5,
+        "toMs": 274802.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274802.2,
+        "toMs": 274818.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274818.9,
+        "toMs": 274835.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274835.6,
+        "toMs": 274852.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274852.1,
+        "toMs": 274868.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274868.8,
+        "toMs": 274885.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274885.5,
+        "toMs": 274952.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274952.1,
+        "toMs": 274985.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 274985.5,
+        "toMs": 275035.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 275035.5,
+        "toMs": 275052.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 275052.2,
+        "toMs": 275068.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 275068.8,
+        "toMs": 275102.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 275102.1,
+        "toMs": 275118.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 275118.9,
+        "toMs": 275252.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 275252.2,
+        "toMs": 275285.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 275285.5,
+        "toMs": 275452.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 275452.2,
+        "toMs": 275668.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 275668.8,
+        "toMs": 275868.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 275868.8,
+        "toMs": 276285.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 276285.5,
+        "toMs": 276502.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 276502.2,
+        "toMs": 276918.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 276918.8,
+        "toMs": 277168.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 277168.8,
+        "toMs": 277585.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 277585.4,
+        "toMs": 277802,
+        "phase": "running"
+      },
+      {
+        "fromMs": 277802,
+        "toMs": 278218.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 278218.7,
+        "toMs": 278668.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 278668.7,
+        "toMs": 278802,
+        "phase": "running"
+      },
+      {
+        "fromMs": 278802,
+        "toMs": 278902,
+        "phase": "running"
+      },
+      {
+        "fromMs": 278902,
+        "toMs": 279352,
+        "phase": "running"
+      },
+      {
+        "fromMs": 279352,
+        "toMs": 279585.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 279585.3,
+        "toMs": 280002,
+        "phase": "running"
+      },
+      {
+        "fromMs": 280002,
+        "toMs": 280235.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 280235.3,
+        "toMs": 280451.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 280451.9,
+        "toMs": 280852,
+        "phase": "running"
+      },
+      {
+        "fromMs": 280852,
+        "toMs": 281068.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 281068.6,
+        "toMs": 281285.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 281285.3,
+        "toMs": 281485.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 281485.3,
+        "toMs": 281701.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 281701.9,
+        "toMs": 281901.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 281901.9,
+        "toMs": 282118.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 282118.6,
+        "toMs": 282318.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 282318.6,
+        "toMs": 282368.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 282368.6,
+        "toMs": 282551.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 282551.9,
+        "toMs": 282751.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 282751.9,
+        "toMs": 282951.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 282951.9,
+        "toMs": 283168.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 283168.5,
+        "toMs": 283385.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 283385.2,
+        "toMs": 283585.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 283585.1,
+        "toMs": 283785.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 283785.2,
+        "toMs": 284001.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 284001.8,
+        "toMs": 284201.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 284201.8,
+        "toMs": 284401.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 284401.8,
+        "toMs": 284635.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 284635.1,
+        "toMs": 284885.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 284885.2,
+        "toMs": 285135.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 285135.1,
+        "toMs": 285385.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 285385.1,
+        "toMs": 285618.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 285618.4,
+        "toMs": 285851.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 285851.8,
+        "toMs": 286085,
+        "phase": "running"
+      },
+      {
+        "fromMs": 286085,
+        "toMs": 286318.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 286318.4,
+        "toMs": 286535,
+        "phase": "running"
+      },
+      {
+        "fromMs": 286535,
+        "toMs": 286768.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 286768.4,
+        "toMs": 287001.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 287001.7,
+        "toMs": 287218.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 287218.3,
+        "toMs": 287451.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 287451.7,
+        "toMs": 287685,
+        "phase": "running"
+      },
+      {
+        "fromMs": 287685,
+        "toMs": 288118.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 288118.3,
+        "toMs": 288335,
+        "phase": "running"
+      },
+      {
+        "fromMs": 288335,
+        "toMs": 288568.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 288568.3,
+        "toMs": 288785,
+        "phase": "running"
+      },
+      {
+        "fromMs": 288785,
+        "toMs": 289034.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 289034.9,
+        "toMs": 289268.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 289268.3,
+        "toMs": 289485,
+        "phase": "running"
+      },
+      {
+        "fromMs": 289485,
+        "toMs": 289718.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 289718.3,
+        "toMs": 289951.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 289951.6,
+        "toMs": 290168.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 290168.3,
+        "toMs": 290384.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 290384.9,
+        "toMs": 290601.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 290601.5,
+        "toMs": 290818.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 290818.2,
+        "toMs": 291034.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 291034.8,
+        "toMs": 291051.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 291051.6,
+        "toMs": 291268.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 291268.2,
+        "toMs": 291484.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 291484.9,
+        "toMs": 291684.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 291684.8,
+        "toMs": 291901.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 291901.5,
+        "toMs": 292118.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 292118.1,
+        "toMs": 292318.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 292318.1,
+        "toMs": 292534.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 292534.8,
+        "toMs": 292751.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 292751.4,
+        "toMs": 292968.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 292968.1,
+        "toMs": 293184.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 293184.8,
+        "toMs": 293401.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 293401.5,
+        "toMs": 293618.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 293618.1,
+        "toMs": 293834.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 293834.8,
+        "toMs": 294051.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 294051.4,
+        "toMs": 294268.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 294268.1,
+        "toMs": 294501.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 294501.4,
+        "toMs": 294718.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 294718.1,
+        "toMs": 294951.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 294951.4,
+        "toMs": 295168,
+        "phase": "running"
+      },
+      {
+        "fromMs": 295168,
+        "toMs": 295384.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 295384.7,
+        "toMs": 295601.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 295601.3,
+        "toMs": 295801.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 295801.3,
+        "toMs": 296018,
+        "phase": "running"
+      },
+      {
+        "fromMs": 296018,
+        "toMs": 296251.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 296251.4,
+        "toMs": 296468,
+        "phase": "running"
+      },
+      {
+        "fromMs": 296468,
+        "toMs": 296684.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 296684.7,
+        "toMs": 297084.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 297084.7,
+        "toMs": 297301.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 297301.3,
+        "toMs": 297501.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 297501.3,
+        "toMs": 297717.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 297717.9,
+        "toMs": 297917.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 297917.9,
+        "toMs": 298118,
+        "phase": "running"
+      },
+      {
+        "fromMs": 298118,
+        "toMs": 298317.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 298317.9,
+        "toMs": 298517.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 298517.9,
+        "toMs": 298717.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 298717.9,
+        "toMs": 298934.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 298934.6,
+        "toMs": 299151.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 299151.2,
+        "toMs": 299367.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 299367.8,
+        "toMs": 299567.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 299567.9,
+        "toMs": 299784.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 299784.6,
+        "toMs": 300001.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 300001.2,
+        "toMs": 300201.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 300201.2,
+        "toMs": 300384.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 300384.5,
+        "toMs": 300567.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 300567.9,
+        "toMs": 300751.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 300751.2,
+        "toMs": 300951.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 300951.2,
+        "toMs": 301134.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 301134.4,
+        "toMs": 301334.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 301334.5,
+        "toMs": 301534.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 301534.5,
+        "toMs": 301884.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 301884.5,
+        "toMs": 302084.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 302084.5,
+        "toMs": 302284.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 302284.5,
+        "toMs": 302467.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 302467.7,
+        "toMs": 302667.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 302667.8,
+        "toMs": 302851.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 302851.1,
+        "toMs": 302867.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 302867.8,
+        "toMs": 303051.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 303051.1,
+        "toMs": 303401.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 303401.1,
+        "toMs": 303601,
+        "phase": "running"
+      },
+      {
+        "fromMs": 303601,
+        "toMs": 303617.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 303617.7,
+        "toMs": 303767.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 303767.7,
+        "toMs": 303951,
+        "phase": "running"
+      },
+      {
+        "fromMs": 303951,
+        "toMs": 304117.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 304117.7,
+        "toMs": 304301,
+        "phase": "running"
+      },
+      {
+        "fromMs": 304301,
+        "toMs": 304317.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 304317.7,
+        "toMs": 304484.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 304484.4,
+        "toMs": 304667.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 304667.7,
+        "toMs": 304851,
+        "phase": "running"
+      },
+      {
+        "fromMs": 304851,
+        "toMs": 305034.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 305034.3,
+        "toMs": 305217.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 305217.7,
+        "toMs": 305401,
+        "phase": "running"
+      },
+      {
+        "fromMs": 305401,
+        "toMs": 305767.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 305767.6,
+        "toMs": 305950.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 305950.9,
+        "toMs": 306134.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 306134.3,
+        "toMs": 306151,
+        "phase": "running"
+      },
+      {
+        "fromMs": 306151,
+        "toMs": 306484.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 306484.3,
+        "toMs": 306701,
+        "phase": "running"
+      },
+      {
+        "fromMs": 306701,
+        "toMs": 307034.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 307034.3,
+        "toMs": 307200.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 307200.9,
+        "toMs": 307384.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 307384.3,
+        "toMs": 307567.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 307567.6,
+        "toMs": 307734.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 307734.2,
+        "toMs": 307900.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 307900.9,
+        "toMs": 308067.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 308067.5,
+        "toMs": 308250.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 308250.9,
+        "toMs": 308417.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 308417.5,
+        "toMs": 308584.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 308584.2,
+        "toMs": 308750.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 308750.9,
+        "toMs": 308917.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 308917.5,
+        "toMs": 309084.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 309084.2,
+        "toMs": 309267.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 309267.5,
+        "toMs": 309417.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 309417.5,
+        "toMs": 309584.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 309584.1,
+        "toMs": 309750.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 309750.8,
+        "toMs": 309917.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 309917.5,
+        "toMs": 310084.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 310084.2,
+        "toMs": 310100.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 310100.8,
+        "toMs": 310267.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 310267.5,
+        "toMs": 310434.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 310434.1,
+        "toMs": 310584.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 310584.1,
+        "toMs": 310750.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 310750.8,
+        "toMs": 310917.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 310917.4,
+        "toMs": 311100.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 311100.7,
+        "toMs": 311250.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 311250.7,
+        "toMs": 311417.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 311417.4,
+        "toMs": 311584.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 311584.1,
+        "toMs": 311734.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 311734.1,
+        "toMs": 311900.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 311900.7,
+        "toMs": 311917.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 311917.3,
+        "toMs": 312084,
+        "phase": "running"
+      },
+      {
+        "fromMs": 312084,
+        "toMs": 312384,
+        "phase": "running"
+      },
+      {
+        "fromMs": 312384,
+        "toMs": 312400.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 312400.7,
+        "toMs": 312567.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 312567.4,
+        "toMs": 312717.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 312717.3,
+        "toMs": 312867.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 312867.4,
+        "toMs": 313017.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 313017.3,
+        "toMs": 313167.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 313167.4,
+        "toMs": 313184,
+        "phase": "running"
+      },
+      {
+        "fromMs": 313184,
+        "toMs": 313484,
+        "phase": "running"
+      },
+      {
+        "fromMs": 313484,
+        "toMs": 313633.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 313633.9,
+        "toMs": 313650.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 313650.7,
+        "toMs": 313817.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 313817.3,
+        "toMs": 314134,
+        "phase": "running"
+      },
+      {
+        "fromMs": 314134,
+        "toMs": 314150.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 314150.6,
+        "toMs": 314317.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 314317.2,
+        "toMs": 314633.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 314633.9,
+        "toMs": 314650.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 314650.6,
+        "toMs": 314800.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 314800.6,
+        "toMs": 314984,
+        "phase": "running"
+      },
+      {
+        "fromMs": 314984,
+        "toMs": 315133.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 315133.9,
+        "toMs": 315317.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 315317.2,
+        "toMs": 315650.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 315650.6,
+        "toMs": 315833.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 315833.8,
+        "toMs": 316033.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 316033.9,
+        "toMs": 316250.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 316250.5,
+        "toMs": 316483.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 316483.9,
+        "toMs": 316883.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 316883.9,
+        "toMs": 317117.2,
+        "phase": "running"
+      },
+      {
+        "fromMs": 317117.2,
+        "toMs": 317317.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 317317.1,
+        "toMs": 317533.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 317533.8,
+        "toMs": 317750.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 317750.5,
+        "toMs": 317967.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 317967.1,
+        "toMs": 318183.8,
+        "phase": "running"
+      },
+      {
+        "fromMs": 318183.8,
+        "toMs": 318400.5,
+        "phase": "running"
+      },
+      {
+        "fromMs": 318400.5,
+        "toMs": 318617.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 318617.1,
+        "toMs": 319017,
+        "phase": "running"
+      },
+      {
+        "fromMs": 319017,
+        "toMs": 319250.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 319250.4,
+        "toMs": 319267.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 319267.1,
+        "toMs": 319483.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 319483.7,
+        "toMs": 319700.4,
+        "phase": "running"
+      },
+      {
+        "fromMs": 319700.4,
+        "toMs": 319917.1,
+        "phase": "running"
+      },
+      {
+        "fromMs": 319917.1,
+        "toMs": 320117,
+        "phase": "running"
+      },
+      {
+        "fromMs": 320117,
+        "toMs": 320333.7,
+        "phase": "running"
+      },
+      {
+        "fromMs": 320333.7,
+        "toMs": 320350.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 320350.3,
+        "toMs": 320567,
+        "phase": "running"
+      },
+      {
+        "fromMs": 320567,
+        "toMs": 320783.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 320783.6,
+        "toMs": 321000.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 321000.3,
+        "toMs": 321267,
+        "phase": "running"
+      },
+      {
+        "fromMs": 321267,
+        "toMs": 321450.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 321450.3,
+        "toMs": 321683.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 321683.6,
+        "toMs": 321900.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 321900.3,
+        "toMs": 322116.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 322116.9,
+        "toMs": 322333.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 322333.6,
+        "toMs": 322550.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 322550.3,
+        "toMs": 322766.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 322766.9,
+        "toMs": 322983.6,
+        "phase": "running"
+      },
+      {
+        "fromMs": 322983.6,
+        "toMs": 323200.3,
+        "phase": "running"
+      },
+      {
+        "fromMs": 323200.3,
+        "toMs": 323416.9,
+        "phase": "running"
+      },
+      {
+        "fromMs": 323416.9,
+        "toMs": 323633.6,
+        "phase": "finished"
+      }
+    ],
+    "violations": [],
+    "startMs": 15529.2,
+    "endMs": 323633.6,
+    "phase": "finished",
+    "initialLap": "LAP 1 / 1 · 剩余 1877 m",
+    "result": {
+      "event": "已完赛",
+      "time": "01:53.63",
+      "label": "1 圈用时",
+      "lap": "LAP 1 / 1 · 剩余 0 m",
+      "position": "POS 2 / 4",
+      "rows": [
+        {
+          "name": "1. Aoi / AI",
+          "time": "01:52.91"
+        },
+        {
+          "name": "2. 车手927（你）",
+          "time": "01:53.63"
+        },
+        {
+          "name": "3. Haru / AI",
+          "time": "未完赛"
+        },
+        {
+          "name": "4. Rin / AI",
+          "time": "未完赛"
+        }
+      ],
+      "saves": [
+        {
+          "id": "1bbbbb1f-2a2a-43cf-80ea-a93925f5717f",
+          "mode": "circuit",
+          "track": "coast-reborn",
+          "seed": 73121,
+          "distance": 1876,
+          "timeMs": 113625,
+          "score": 0,
+          "name": "车手927"
+        }
+      ]
+    },
+    "closure": {
+      "kind": "player-finish-snapshot",
+      "startMs": 323633.6,
+      "samples": [
+        {
+          "atMs": 323633.6,
+          "ticks": 13635,
+          "result": {
+            "event": "已完赛",
+            "time": "01:53.63",
+            "label": "1 圈用时",
+            "lap": "LAP 1 / 1 · 剩余 0 m",
+            "position": "POS 2 / 4",
+            "rows": [
+              {
+                "name": "1. Aoi / AI",
+                "time": "01:52.91"
+              },
+              {
+                "name": "2. 车手927（你）",
+                "time": "01:53.63"
+              },
+              {
+                "name": "3. Haru / AI",
+                "time": "未完赛"
+              },
+              {
+                "name": "4. Rin / AI",
+                "time": "未完赛"
+              }
+            ],
+            "saves": [
+              {
+                "id": "1bbbbb1f-2a2a-43cf-80ea-a93925f5717f",
+                "mode": "circuit",
+                "track": "coast-reborn",
+                "seed": 73121,
+                "distance": 1876,
+                "timeMs": 113625,
+                "score": 0,
+                "name": "车手927"
+              }
+            ]
+          }
+        },
+        {
+          "atMs": 323850.2,
+          "ticks": 13635,
+          "result": {
+            "event": "已完赛",
+            "time": "01:53.63",
+            "label": "1 圈用时",
+            "lap": "LAP 1 / 1 · 剩余 0 m",
+            "position": "POS 2 / 4",
+            "rows": [
+              {
+                "name": "1. Aoi / AI",
+                "time": "01:52.91"
+              },
+              {
+                "name": "2. 车手927（你）",
+                "time": "01:53.63"
+              },
+              {
+                "name": "3. Haru / AI",
+                "time": "未完赛"
+              },
+              {
+                "name": "4. Rin / AI",
+                "time": "未完赛"
+              }
+            ],
+            "saves": [
+              {
+                "id": "1bbbbb1f-2a2a-43cf-80ea-a93925f5717f",
+                "mode": "circuit",
+                "track": "coast-reborn",
+                "seed": 73121,
+                "distance": 1876,
+                "timeMs": 113625,
+                "score": 0,
+                "name": "车手927"
+              }
+            ]
+          }
+        },
+        {
+          "atMs": 324100.2,
+          "ticks": 13635,
+          "result": {
+            "event": "已完赛",
+            "time": "01:53.63",
+            "label": "1 圈用时",
+            "lap": "LAP 1 / 1 · 剩余 0 m",
+            "position": "POS 2 / 4",
+            "rows": [
+              {
+                "name": "1. Aoi / AI",
+                "time": "01:52.91"
+              },
+              {
+                "name": "2. 车手927（你）",
+                "time": "01:53.63"
+              },
+              {
+                "name": "3. Haru / AI",
+                "time": "未完赛"
+              },
+              {
+                "name": "4. Rin / AI",
+                "time": "未完赛"
+              }
+            ],
+            "saves": [
+              {
+                "id": "1bbbbb1f-2a2a-43cf-80ea-a93925f5717f",
+                "mode": "circuit",
+                "track": "coast-reborn",
+                "seed": 73121,
+                "distance": 1876,
+                "timeMs": 113625,
+                "score": 0,
+                "name": "车手927"
+              }
+            ]
+          }
+        },
+        {
+          "atMs": 324316.9,
+          "ticks": 13635,
+          "result": {
+            "event": "已完赛",
+            "time": "01:53.63",
+            "label": "1 圈用时",
+            "lap": "LAP 1 / 1 · 剩余 0 m",
+            "position": "POS 2 / 4",
+            "rows": [
+              {
+                "name": "1. Aoi / AI",
+                "time": "01:52.91"
+              },
+              {
+                "name": "2. 车手927（你）",
+                "time": "01:53.63"
+              },
+              {
+                "name": "3. Haru / AI",
+                "time": "未完赛"
+              },
+              {
+                "name": "4. Rin / AI",
+                "time": "未完赛"
+              }
+            ],
+            "saves": [
+              {
+                "id": "1bbbbb1f-2a2a-43cf-80ea-a93925f5717f",
+                "mode": "circuit",
+                "track": "coast-reborn",
+                "seed": 73121,
+                "distance": 1876,
+                "timeMs": 113625,
+                "score": 0,
+                "name": "车手927"
+              }
+            ]
+          }
+        },
+        {
+          "atMs": 324533.5,
+          "ticks": 13635,
+          "result": {
+            "event": "已完赛",
+            "time": "01:53.63",
+            "label": "1 圈用时",
+            "lap": "LAP 1 / 1 · 剩余 0 m",
+            "position": "POS 2 / 4",
+            "rows": [
+              {
+                "name": "1. Aoi / AI",
+                "time": "01:52.91"
+              },
+              {
+                "name": "2. 车手927（你）",
+                "time": "01:53.63"
+              },
+              {
+                "name": "3. Haru / AI",
+                "time": "未完赛"
+              },
+              {
+                "name": "4. Rin / AI",
+                "time": "未完赛"
+              }
+            ],
+            "saves": [
+              {
+                "id": "1bbbbb1f-2a2a-43cf-80ea-a93925f5717f",
+                "mode": "circuit",
+                "track": "coast-reborn",
+                "seed": 73121,
+                "distance": 1876,
+                "timeMs": 113625,
+                "score": 0,
+                "name": "车手927"
+              }
+            ]
+          }
+        },
+        {
+          "atMs": 324750.2,
+          "ticks": 13635,
+          "result": {
+            "event": "已完赛",
+            "time": "01:53.63",
+            "label": "1 圈用时",
+            "lap": "LAP 1 / 1 · 剩余 0 m",
+            "position": "POS 2 / 4",
+            "rows": [
+              {
+                "name": "1. Aoi / AI",
+                "time": "01:52.91"
+              },
+              {
+                "name": "2. 车手927（你）",
+                "time": "01:53.63"
+              },
+              {
+                "name": "3. Haru / AI",
+                "time": "未完赛"
+              },
+              {
+                "name": "4. Rin / AI",
+                "time": "未完赛"
+              }
+            ],
+            "saves": [
+              {
+                "id": "1bbbbb1f-2a2a-43cf-80ea-a93925f5717f",
+                "mode": "circuit",
+                "track": "coast-reborn",
+                "seed": 73121,
+                "distance": 1876,
+                "timeMs": 113625,
+                "score": 0,
+                "name": "车手927"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "restartAndReturn": true
+  },
+  "raceCandidateAfter": {
+    "space": false,
+    "power": false,
+    "ticks": 13635,
+    "backend": "webgl2",
+    "warnings": []
+  },
+  "frameCadence": {
+    "scope": "real-time-browser-raf-cadence-countdown-through-result",
+    "samples": 1482,
+    "durationMs": 308104.39999999997,
+    "meanMs": 207.89770580296894,
+    "p50Ms": 200,
+    "p95Ms": 450,
+    "p99Ms": 1483.3000000000175,
+    "maxMs": 4599.800000000003,
+    "over50Ms": 1098,
+    "rivalDNF": 2
+  },
+  "pixels": {
+    "width": 1280,
+    "height": 720,
+    "quantizedColors": 1930,
+    "dominantFraction": 0.4078732638888889
+  },
+  "cleanupErrors": [],
+  "finishedAt": "2026-11-12T19:43:09.767Z"
+}

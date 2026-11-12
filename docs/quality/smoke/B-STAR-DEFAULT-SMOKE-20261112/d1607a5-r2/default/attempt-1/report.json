@@ -1,0 +1,17 @@
+{
+  "startedAt": "2026-11-12T19:36:29.558Z",
+  "passed": false,
+  "browser": "Chromium",
+  "sandbox": true,
+  "args": [
+    "--use-angle=swiftshader"
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "requestFailures": [],
+  "httpErrors": [],
+  "warnings": [],
+  "failure": "Error: path must be / or /road with optional query\n    at parseSmokeArgs (file:///<worktree>/tests/smoke-full-race.mjs:14:68)\n    at file:///<worktree>/tests/smoke.mjs:24:17",
+  "cleanupErrors": [],
+  "finishedAt": "2026-11-12T19:36:29.560Z"
+}

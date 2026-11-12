@@ -11,7 +11,7 @@
 
 ## 运行
 
-需要 Node.js 24 与 Python 3。
+本机 Node.js 22.23.2 可用，不要求升级到 24；另需 Python 3。
 
 ```bash
 npm ci

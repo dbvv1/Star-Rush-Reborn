@@ -30,6 +30,9 @@ export function installRaceObserver() {
   const receipt={started:false,finished:false,frames:[],violations:[],startMs:null,endMs:null,phase:'armed'};
   window.__fullRaceSmoke=receipt;
   let previous=null;
+  const snapshot=()=>({event:text('eventLabel'),time:text('resultDistance'),label:text('resultMainLabel'),lap:text('lapLabel'),position:text('localPosition'),
+    rows:[...document.querySelectorAll('#resultGrid .result-row')].map(row=>({name:row.querySelector('span')?.textContent,time:row.querySelector('b')?.textContent})),
+    saves:JSON.parse(localStorage.getItem('star-rush-runs-road-v2')||'[]')});
   const visibility=()=>{if(receipt.started&&!receipt.finished&&document.hidden)receipt.violations.push('document hidden');};
   document.addEventListener('visibilitychange',visibility);
   const observe=now=>{
@@ -39,19 +42,25 @@ export function installRaceObserver() {
     }
     if(receipt.started && !receipt.finished) {
       const phase=visible('finished')?'finished':visible('countdown')?'countdown':'running';
-      if(previous!==null) receipt.frames.push({fromMs:previous,toMs:now,phase});
+      if(previous!==null && receipt.endMs===null) receipt.frames.push({fromMs:previous,toMs:now,phase});
       previous=now;
       if(document.hidden) receipt.violations.push('document hidden');
       if(visible('paused') || visible('welcome')) receipt.violations.push('race interrupted');
       if(read('qualitySetting')?.value!=='high') receipt.violations.push('quality changed');
       if(visible('error')) receipt.violations.push('runtime overlay');
       receipt.phase=phase;
-      if(phase==='finished') {
-        receipt.finished=true;receipt.endMs=now;document.removeEventListener('visibilitychange',visibility);
-        receipt.result={event:text('eventLabel'),time:text('resultDistance'),label:text('resultMainLabel'),lap:text('lapLabel'),position:text('localPosition'),
-          rows:[...document.querySelectorAll('#resultGrid .result-row')].map(row=>({name:row.querySelector('span')?.textContent,time:row.querySelector('b')?.textContent})),
-          saves:JSON.parse(localStorage.getItem('star-rush-runs-road-v2')||'[]')};
-        return;
+      if(phase==='finished' && receipt.endMs===null) {
+        // The production loop stops physics at player finish; remaining rivals are
+        // final DNF rows, not opponents continuing toward a separate deadline.
+        receipt.endMs=now;receipt.result=snapshot();
+        receipt.closure={kind:'player-finish-snapshot',startMs:now,samples:[]};
+      }
+      if(receipt.closure) {
+        receipt.closure.samples.push({atMs:now,ticks:window.starSideStatus?.ticks,result:snapshot()});
+        if(phase!=='finished') receipt.violations.push('result left before closure');
+        if(now-receipt.endMs>=1000) {
+          receipt.finished=true;document.removeEventListener('visibilitychange',visibility);return;
+        }
       }
     }
     requestAnimationFrame(observe);
@@ -85,10 +94,21 @@ export function validateFullRace(receipt) {
     assert.ok(r.rows[i].name.startsWith(`${i+1}. `),'ordered result ranks required');
     assert.match(r.rows[i].time,/^(?:\d+:\d{2}\.\d{2}|未完赛)$/,'terminal rival result required');
   }
-  // This runtime exposes a player-finish snapshot, not an observed rival deadline.
-  // DNF is legal; without a cutoff observation it is not proof of complete closure.
-  assert.ok(r.rows.every(row=>row.time!=='未完赛'),'missing rival closure evidence: player-finish snapshot does not observe a rival deadline');
-  const timeSeconds=text=>{const [m,s]=text.split(':').map(Number);return m*60+s;};
+  const closure=receipt.closure;
+  assert.equal(closure?.kind,'player-finish-snapshot','observed terminal closure required');
+  assert.equal(closure.startMs,receipt.endMs,'closure must start at result boundary');
+  assert.ok(closure.samples?.length>=2,'post-result samples required');
+  let last=closure.startMs;
+  const finalTick=closure.samples[0].ticks;
+  assert.ok(Number.isSafeInteger(finalTick)&&finalTick>0,'terminal physics tick required');
+  for(const [index,sample] of closure.samples.entries()) {
+    assert.ok(Number.isFinite(sample.atMs)&&(index===0?sample.atMs===last:sample.atMs>last),'invalid closure time');
+    assert.equal(sample.ticks,finalTick,'physics continued after terminal result');
+    assert.deepEqual(sample.result,r,'terminal standings or saved result changed');
+    last=sample.atMs;
+  }
+  assert.ok(last-closure.startMs>=1000,'one second of observed terminal state required');
+  const timeSeconds=text=>{if(text==='未完赛')return Infinity;const [m,s]=text.split(':').map(Number);return m*60+s;};
   for(let i=1;i<r.rows.length;i++) assert.ok(timeSeconds(r.rows[i].time)>=timeSeconds(r.rows[i-1].time),'result times must match rank order');
   const playerIndex=r.rows.findIndex(row=>row.name.endsWith('（你）'));
   assert.ok(playerIndex>=0,'player row required');
