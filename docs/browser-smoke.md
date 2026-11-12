@@ -1,6 +1,6 @@
 # 浏览器烟测
 
-需要 Node.js 24、Python 3、已安装的 Playwright Chromium，以及允许该浏览器运行的隔离执行环境：
+本机 Node.js 22.23.2 可用，不要求升级到 24；另需 Python 3、已安装的 Playwright Chromium，以及允许该浏览器运行的隔离执行环境：
 
 ```sh
 npm ci
@@ -35,7 +35,7 @@ smoke 与 capture 的共享启动参数显式包含 `--enable-automation`，这�
 
 2026-11-04 的一次云端 Star 实拍尝试在导航前失败：实际启动行已含三项参数，Chromium 的进程单例 socket 返回 `EPERM`，随后 `SIGABRT`；Node 非零退出、预览已关闭，没有 PNG。此项是执行环境限制，不是 WebGL2 或像素通过证据。未重试或修改外层沙箱。
 
-本机固定机位失败后的这项参数修复仅完成 CPU 参数组装回归；真实 CDP、WebGL2 与 PNG 尚待验证，原调用退出与 Node 24 前置仍须先核清。协议依据：[Browser.getBrowserCommandLine](https://github.com/ChromeDevTools/devtools-protocol/blob/master/pdl/domains/Browser.pdl)（2026-11-04 核实）。
+本机固定机位失败后的这项参数修复仅完成 CPU 参数组装回归；真实 CDP、WebGL2 与 PNG 尚待验证，原调用退出与现成 Node／Chromium 版本仍须先核清。协议依据：[Browser.getBrowserCommandLine](https://github.com/ChromeDevTools/devtools-protocol/blob/master/pdl/domains/Browser.pdl)（2026-11-04 核实）。
 
 ## 完整公路比赛与全程帧耗
 
