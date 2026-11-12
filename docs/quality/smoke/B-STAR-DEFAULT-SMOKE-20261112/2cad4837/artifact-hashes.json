@@ -1,0 +1,36 @@
+{
+  "algorithm": "sha256",
+  "root": "B-STAR-DEFAULT-SMOKE-20261112/2cad4837",
+  "files": [
+    {
+      "path": "started-utc.txt",
+      "sha256": "972e95b2da5c1c5227823fc9e6ebd4f9b3444ae38aca8cb2a4c4a3c8cead7b7b",
+      "bytes": 25
+    },
+    {
+      "path": "default/node-exit.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "bytes": 2
+    },
+    {
+      "path": "default/report.json",
+      "sha256": "152439ecd4361413fba9a15d0620056917d9c0d050161316302428cf819ccc2d",
+      "bytes": 122322
+    },
+    {
+      "path": "default/returned-utc.txt",
+      "sha256": "a682a653161d61d6c94c5a90fe043481d8556fcefbf1f1f82eec5d6a252486fe",
+      "bytes": 25
+    },
+    {
+      "path": "coast-space-v1/status.txt",
+      "sha256": "e00afc2bbc5f771a06fccafdd4d1b15fcdea13dff88d3f5f569fc183dae3d02f",
+      "bytes": 49
+    },
+    {
+      "path": "summary.md",
+      "sha256": "137c2ec64ada0bd170f350589a0bf0450200657553571365a1db3d53a0b88deb",
+      "bytes": 10130
+    }
+  ]
+}
