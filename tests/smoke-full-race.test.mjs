@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs';
 import {Window} from 'happy-dom';
 import {parseSmokeArgs,installRaceObserver,validateFullRace,runFullRace,validateRaceCandidate,verifyRaceRestart} from './smoke-full-race.mjs';
 const result=()=>({event:'已完赛',time:'01:30.00',label:'1 圈用时',lap:'LAP 1 / 1 · 剩余 0 m',position:'POS 4 / 4',rows:[{name:'1. Bot A',time:'01:29.00'},{name:'2. Bot B',time:'01:29.50'},{name:'3. Bot C',time:'01:29.80'},{name:'4. Driver（你）',time:'01:30.00'}],saves:[{track:'coast-reborn',mode:'circuit',seed:73121,timeMs:90000,distance:2000}]});
-const receipt=()=>({started:true,finished:true,violations:[],startMs:10,endMs:100,initialLap:'LAP 1 / 1 · 剩余 2000 m',frames:[{fromMs:10,toMs:30,phase:'countdown'},{fromMs:30,toMs:70,phase:'running'},{fromMs:70,toMs:100,phase:'finished'}],result:result()});
+const receipt=()=>({closure:{kind:'player-finish-snapshot',startMs:100,samples:[{atMs:100,ticks:500,result:result()},{atMs:1100,ticks:500,result:result()}]},started:true,finished:true,violations:[],startMs:10,endMs:100,initialLap:'LAP 1 / 1 · 剩余 2000 m',frames:[{fromMs:10,toMs:30,phase:'countdown'},{fromMs:30,toMs:70,phase:'running'},{fromMs:70,toMs:100,phase:'finished'}],result:result()});
 test('options reject missing, invalid and virtual capture inputs',()=>{
  assert.deepEqual(parseSmokeArgs([]),{fullRace:false,timeoutMs:900000,path:'/'});
  assert.equal(parseSmokeArgs(['--full-race','--path','/road?environment=coast-space-v1','--timeout-ms','1234']).fullRace,true);
@@ -26,11 +26,11 @@ test('actual serialized observer captures every scheduled interval through resul
  elements.welcome.hidden=false;
  for(const [id,textContent] of Object.entries({lapLabel:'LAP 1 / 1 · 剩余 2000 m',eventLabel:r.event,resultDistance:r.time,resultMainLabel:r.label,localPosition:r.position})) elements[id]={textContent};
  elements.qualitySetting={value:'high'};
- const queue=[], context={window:{},document:{addEventListener(){},removeEventListener(){},hidden:false,getElementById:id=>elements[id],querySelectorAll:()=>r.rows.map(row=>({querySelector:tag=>({textContent:tag==='span'?row.name:row.time})}))},localStorage:{getItem:()=>JSON.stringify(r.saves)},requestAnimationFrame:fn=>queue.push(fn)};
+ const queue=[], context={window:{starSideStatus:{ticks:500}},document:{addEventListener(){},removeEventListener(){},hidden:false,getElementById:id=>elements[id],querySelectorAll:()=>r.rows.map(row=>({querySelector:tag=>({textContent:tag==='span'?row.name:row.time})}))},localStorage:{getItem:()=>JSON.stringify(r.saves)},requestAnimationFrame:fn=>queue.push(fn)};
  vm.runInNewContext(`(${installRaceObserver.toString()})()`,context);
  queue.shift()(0);assert.equal(context.window.__fullRaceSmoke.started,false);
  elements.welcome.hidden=true;elements.countdown.hidden=false;queue.shift()(10);queue.shift()(30);
- elements.countdown.hidden=true;queue.shift()(70);elements.finished.hidden=false;queue.shift()(100);
+ elements.countdown.hidden=true;queue.shift()(70);elements.finished.hidden=false;queue.shift()(100);queue.shift()(600);queue.shift()(1100);
  const observed=JSON.parse(JSON.stringify(context.window.__fullRaceSmoke));
  assert.equal(validateFullRace(observed).samples,3);assert.equal(queue.length,0);
 });
@@ -112,4 +112,14 @@ test('full-race setup selects high quality through the hidden real settings cont
   assert.equal(document.getElementById('settingsPanel').hidden,true);
   assert.equal(report.fullRace,partial);
  } finally {await window.happyDOM.close();}
+});
+
+test('final rival DNF follows production player-finish closure, never a synthetic deadline',()=>{
+ const r=receipt();r.result.rows[3].time='未完赛';r.result.rows[3].name='4. Bot C';
+ r.result.rows[2]={name:'3. Driver（你）',time:r.result.time};r.result.position='POS 3 / 4';
+ for(const sample of r.closure.samples)sample.result=structuredClone(r.result);
+ assert.equal(validateFullRace(r).rivalDNF,1);
+ for(const mutate of [x=>delete x.closure,x=>x.closure.samples.pop(),x=>x.closure.samples[1].ticks++,x=>x.closure.samples[1].atMs=1099,x=>x.closure.samples[1].result.rows[3].time='01:31.00',x=>x.closure.kind='rival-deadline']) {
+  const bad=structuredClone(r);mutate(bad);assert.throws(()=>validateFullRace(bad));
+ }
 });
