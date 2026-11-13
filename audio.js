@@ -9,8 +9,9 @@ function audioInit(){if(audio)return;try{
  const engine1=ctx.createOscillator(),engine2=ctx.createOscillator(),sub=ctx.createOscillator(),subGain=ctx.createGain(),synthGain=ctx.createGain();synthGain.gain.value=1;synthGain.connect(engineFilter);engine1.type='sawtooth';engine2.type='triangle';sub.type='sine';engine2.detune.value=9;subGain.gain.value=.6;for(const o of [engine1,engine2]){o.connect(synthGain);o.start()}sub.connect(subGain);subGain.connect(engineFilter);sub.start();
  const noise=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),data=noise.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;
  function noiseLayer(type,freq){const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();source.buffer=noise;source.loop=true;filter.type=type;filter.frequency.value=freq;gain.gain.value=0;source.connect(filter);filter.connect(gain);gain.connect(master);source.start();return {source,filter,gain}}
+ const surf=typeof renderingOptions!=='undefined'&&renderingOptions.coastalScene?noiseLayer('lowpass',330):null;
  const wind=noiseLayer('lowpass',1100),tire=noiseLayer('bandpass',1800),turbo=noiseLayer('highpass',2200);tire.filter.Q.value=3.5;
- audio={ctx,master,engine1,engine2,sub,engineGain,engineFilter,synthGain,subGain,noise,wind,tire,turbo,oldSpeed:0,oldBoost:false,gear:0};
+ audio={surf,ctx,master,engine1,engine2,sub,engineGain,engineFilter,synthGain,subGain,noise,wind,tire,turbo,oldSpeed:0,oldBoost:false,gear:0};
  if(typeof drivingAudioConfig!=='undefined'&&drivingAudioConfig.profile==='sample-v1'){audio.driving=createDrivingAudioProfile(ctx,master,engineFilter,drivingAudioConfig.urls);void audio.driving.load();}
  if(Object.keys(railImpactUrls).length){audio.rail=createRailImpactPlayer(ctx,master,railImpactUrls);void audio.rail.load();}
  if(typeof roadDriving!=='undefined'&&roadDriving&&isRoadEntry()&&typeof coastAmbienceConfig!=='undefined'&&coastAmbienceConfig.profile==='coast-v1')audio.coast=createCoastAmbience(ctx,master,coastAmbienceConfig);
@@ -20,6 +21,7 @@ function tone(freq=620,duration=.10){if(!sound||!audio||audio.ctx.state!=='runni
 // Persistent engine/music layers keep their separate lifecycle.
 function impactSound(kind,speed){if(!sound||!audio||audio.ctx.state!=='running')return;if(kind==='rail'&&audio.rail?.play(speed))return;const {ctx,master,noise}=audio,src=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),g=ctx.createGain(),t=ctx.currentTime;src.buffer=noise;filter.type='bandpass';filter.frequency.value=kind==='rail'?1400:kind==='cone'?450:700;filter.Q.value=kind==='rail'?1.5:.6;g.gain.setValueAtTime(Math.min(.3,.035+speed*.018),t);g.gain.exponentialRampToValueAtTime(.001,t+.16);src.connect(filter);filter.connect(g);g.connect(master);src.start();src.stop(t+.20);if(kind==='rail'){const o=ctx.createOscillator(),gain=ctx.createGain();o.type='triangle';o.frequency.setValueAtTime(330,t);o.frequency.exponentialRampToValueAtTime(140,t+.15);gain.gain.setValueAtTime(.07,t);gain.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(gain);gain.connect(master);o.start();o.stop(t+.21)}}
 function updateAudio(){if(!audio)return;const a=audio,t=a.ctx.currentTime,running=state==='running',speed=player.speed,gear=Math.min(5,Math.floor(speed/9)),rpm=48+speed*2.2+(speed%9)*5;
+ if(a.surf)a.surf.gain.gain.setTargetAtTime(coastalSurfMix(renderingOptions.coastalScene&&running&&sound&&musicSettings.sfxVolume>0&&typeof coastalSpaceEnabled==='function'&&coastalSpaceEnabled(),speed,gameTime),t,.3);
  if(!running||!sound||musicSettings.sfxVolume<=0)a.rail?.stop();
  a.master.gain.setTargetAtTime(sound?.48*musicSettings.sfxVolume:0,t,.05);
  // The coastal bed is fetched lazily: only after the /road entry actually
@@ -95,3 +97,6 @@ function createCoastAmbience(ctx,master,config,{fetchImpl=globalThis.fetch,timeo
  function dispose(){disposed=true;try{source?.stop()}catch(e){}source?.disconnect();gain?.disconnect();source=null;gain=null;state.status='disposed'}
  return {load,update,dispose,status:()=>({...state})};
 }
+
+// Presentation-only bed: bounded peak gain and speed ducking, no simulation RNG.
+function coastalSurfMix(active,speed,time){return active&&Number.isFinite(speed)&&Number.isFinite(time)?.025*(.65+.35*Math.sin(time*.52))/(1+Math.max(0,speed)/16):0}

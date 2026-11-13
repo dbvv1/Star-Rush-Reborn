@@ -133,7 +133,7 @@ window.addEventListener('keyup',e=>{if(['helpPanel','musicPanel','roomPanel','ra
 for(const b of document.querySelectorAll('[data-key]')){b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);touchPointers.set(e.pointerId,b.dataset.key);refreshControls();b.classList.add('held')});const up=e=>{touchPointers.delete(e.pointerId);refreshControls();b.classList.remove('held')};for(const e of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(e,up)}
 $('endRunBtn').onclick=()=>{if(raceMode==='endless'&&(state==='running'||state==='paused')){$('paused').hidden=true;finish()}};$('recoverBtn').onclick=()=>recoverCar(false);$('startBtn').onclick=()=>start(false);$('retryBtn').onclick=()=>start(false);$('newRouteBtn').onclick=()=>{if(typeof net!=='undefined'&&net.room){showRoom();return}state='ready';reset(true);$('finished').hidden=true;$('welcome').hidden=false};$('rerollBtn').onclick=()=>reset(true);$('pauseBtn').onclick=pauseGame;$('resumeBtn').onclick=pauseGame;$('restartPause').onclick=()=>start(false);$('viewBtn').onclick=()=>{camMode=(camMode+1)%3;announce('CAMERA '+(camMode+1),['追尾镜头','高位镜头','近景镜头'][camMode],1)};$('soundBtn').onclick=()=>{audioInit();sound=!sound;if(audio)audio.ctx.resume().catch(()=>{});$('soundBtn').textContent=sound?'♫':'♪';$('soundBtn').setAttribute('aria-label',sound?'关闭声音':'开启声音');$('soundBtn').title=sound?'声音已开启':'声音已关闭';if(sound)tone(600)};
 // Renderer-independent scene traversal. Three.js handles GPU rendering.
-const floorMeshes=['#a1cddd','#c2d4bc'].map(c=>new Collector().add(rounded(1100,.16,1100,.04),I,c,.02).finish()),floorNode=new Node();
+const floorMeshes=['#a1cddd','#c2d4bc'].map(c=>new Collector().add(rounded(1100,.16,1100,.04),I,c,.02).finish()),floorNode=new Node();floorMeshes[0].surfaceKind='sea';
 const drawList=[];function collect(n,p=I,cast=true,tint=null,opacity=1){n.world=mm(p,n.local);const shadow=cast&&n.shadow;const paint=n.tint||tint,alpha=n.opacity??opacity;if(n.mesh)drawList.push({mesh:n.mesh,m:n.world,shadow,tint:paint,opacity:alpha});for(const c of n.children)collect(c,n.world,shadow,paint,alpha)}
 let width=1,height=1;function resize(){width=captureRuntime.active?CAPTURE_SIZE.width:Math.max(1,canvas.clientWidth);height=captureRuntime.active?CAPTURE_SIZE.height:Math.max(1,canvas.clientHeight);const dpr=captureRuntime.active?1:Math.min(devicePixelRatio||1,1.5),w=Math.round(width*dpr),h=Math.round(height*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}}new ResizeObserver(resize).observe(canvas);resize();
 reset(false);
@@ -142,7 +142,7 @@ function renderCurrentFrame(){
  if(!currentView)throw Error('No scene frame prepared');
  const view=captureView(currentView);drawList.length=0;collect(world);const fov=captureRuntime.options?.preset.fov??cameraFov;
  const vp=mm(perspective(fov*PI/180,width/height,.12,850),lookAt(view.eye,view.target));projectPeerLabels(vp);
- if(software)drawSoftware(view);else renderStats=threeBackend.render(drawList,view,width,height,fov,settings,gameClock.now());
+ if(software)drawSoftware(view);else renderStats=threeBackend.render(drawList,view,width,height,fov,{...settings,coastalSceneActive:typeof coastalSpaceEnabled==='function'&&coastalSpaceEnabled()},gameClock.now());
 }
 function captureView(view){
  const preset=captureRuntime.options?.preset;if(preset?.camera!=='road-fixed')return view;

@@ -11,5 +11,5 @@ export function createSideCandidates(host,road,model){
  function disable(key){state[key]=false;warn('旁置候选初始化失败，已回退默认'+(key==='space'?'场景渲染。':'驾驶与渲染。'));}
  if(state.power)try{const body={vS:0,vL:0,speed:0,yaw:0,spin:0,roadSteer:0,velocityYaw:0};model.step(body,{},1/120,{powerTires:true});if(!Number.isFinite(body.speed))throw Error('Invalid model');}catch{disable('power');}
  Object.defineProperty(host,'starSideStatus',{configurable:true,get:()=>Object.freeze({...state,warnings:[...state.warnings]})});
- return {get space(){return state.space},get power(){return state.power},disable,tick(){state.ticks++;publish()},renderer(name){state.backend=name;publish();if(name==='canvas2d'&&(state.space||state.power))warn('WebGL2 不可用，已使用 Canvas2D 兼容渲染（地形、光照与车辆简化）；旁置驾驶仍可试玩。');}};
+ return {get space(){return state.space},get power(){return state.power},disable,warn,tick(){state.ticks++;publish()},renderer(name){state.backend=name;publish();if(name==='canvas2d'&&(state.space||state.power))warn('WebGL2 不可用，已使用 Canvas2D 兼容渲染（地形、光照与车辆简化）；旁置驾驶仍可试玩。');}};
 }

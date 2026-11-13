@@ -25,10 +25,10 @@ test('renderer construction failure is distinguished from context creation',t=>{
 });
 
 // Real scene/material/geometry code with only the GPU renderer stubbed; not visual QA.
-function sceneBackend(options,dpr=1){
+function sceneBackend(options,dpr=1,failShader=false){
  class Renderer {
-  constructor(){this.shadowMap={};this.info={render:{calls:0,triangles:0}}}
-  setPixelRatio(value){this.ratio=value;} setSize(width,height){this.size=[width,height];} render(){}
+  constructor(){this.debug={};this.shadowMap={};this.info={render:{calls:0,triangles:0}}}
+  setPixelRatio(value){this.ratio=value;} setSize(width,height){this.size=[width,height];} render(){if(failShader){failShader=false;this.debug.onShaderError();}}
  }
  const scope={createSkyPanorama,THREE:{...THREE,WebGLRenderer:Renderer},devicePixelRatio:dpr,performance};
  vm.runInNewContext(readFileSync(new URL('../render-three.js',import.meta.url),'utf8').replace("import * as THREE from 'three';",'').replace("import {createSkyPanorama} from './sky-panorama.js';",'').replace('export function','function'),scope);
@@ -73,4 +73,25 @@ test('actual Three backend fixes capture buffer and DPR independently of host an
  captured.render([],view,317,233,62,{quality:'high'});assert.deepEqual(captured.renderer.size,[1280,720]);assert.equal(captured.renderer.ratio,1);
  captured.render([],view,900,500,62,{quality:'medium'});assert.deepEqual(captured.renderer.size,[1280,720]);assert.equal(captured.renderer.ratio,1);
  normal.render([],view,317,233,62,{quality:'high'});assert.deepEqual(normal.renderer.size,[317,233]);assert.equal(normal.renderer.ratio,1.5);
+});
+
+test('afternoon scene scopes lights and world-locked surface shaders to eligible coast only',()=>{
+ const backend=sceneBackend({shading:'lambert',hemisphereIntensity:.7,coastalScene:true});
+ const sea=triangle();sea.surfaceKind='sea';const land=triangle();land.surfaceKind='landscape';const facade=triangle();facade.coastStreet=true;
+ const list=[sea,land,facade].map(mesh=>({mesh,m:identity,shadow:true}));
+ const draw=active=>backend.render(list,{...view,origin:[100,0,-50]},1280,720,60,{quality:'high',coastalSceneActive:active},12000);
+ draw(true);const sun=backend.scene.children.find(x=>x.isDirectionalLight);assert.equal(sun.intensity,2.7);assert.equal(backend.scene.fog.near,190);
+ const batches=backend.scene.children.filter(x=>x.isInstancedMesh);assert.equal(new Set(batches.map(x=>x.material)).size,3);
+ for(const b of batches){const shader={uniforms:{},vertexShader:'#include <worldpos_vertex>',fragmentShader:'#include <color_fragment>'};b.material.onBeforeCompile(shader);assert.equal(shader.uniforms.coastActive.value,1);assert.deepEqual(shader.uniforms.coastOrigin.value.toArray(),[100,0,-50]);assert.match(shader.vertexShader,/instanceMatrix\*coastWorld/);assert.match(shader.fragmentShader,/if\(coastActive>0.5\)/);}
+ draw(false);assert.equal(sun.intensity,2.4);assert.deepEqual(sun.position.toArray(),[-30,60,25]);assert.equal(backend.scene.fog.near,125);assert.equal(backend.renderer.toneMappingExposure,1);
+ const shader={uniforms:{},vertexShader:'',fragmentShader:''};batches[0].material.onBeforeCompile(shader);assert.equal(shader.uniforms.coastActive.value,0);
+});
+
+
+test('candidate shader failure restores baseline materials/lights and warns once',()=>{
+ const warnings=[];const backend=sceneBackend({shading:'lambert',coastalScene:true,onSceneFailure:message=>warnings.push(message)},1,true);
+ const mesh=triangle();mesh.surfaceKind='sea';const draw=()=>backend.render([{mesh,m:identity,shadow:true}],view,1280,720,60,{quality:'high',coastalSceneActive:true},1000);
+ draw();assert.equal(warnings.length,1);assert.equal(backend.renderer.debug.onShaderError,undefined);assert.match(warnings[0],/已回退/);assert.equal(backend.scene.fog.near,125);
+ const material=backend.scene.children.find(x=>x.isInstancedMesh).material;const shader={uniforms:{},vertexShader:'untouched',fragmentShader:'untouched'};material.onBeforeCompile(shader);assert.equal(shader.fragmentShader,'untouched');assert.equal(material.customProgramCacheKey(),'');
+ draw();assert.equal(warnings.length,1);
 });

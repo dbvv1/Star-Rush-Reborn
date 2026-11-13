@@ -172,7 +172,7 @@ function buildLandscape(){
  }
  // Keep the original clouds until the optional panorama actually decodes.
  if(!hasPanoramaSky())for(let i=0;i<10;i++){const a=i*TAU/10,pos=[center[0]+Math.cos(a)*260,57+(i%3)*14,center[2]+Math.sin(a)*250];for(let j=0;j<4;j++)ball(c,add(pos,[(j-1.5)*12,Math.sin(j*2)*4,0]),[17,7+(j%2)*3,10],'#fff5f3',true,.01)}
- landscapeNode=new Node(c.finish());landscapeNode.shadow=false;landscapeTrack=activeTrackId;landscapeSkyReady=hasPanoramaSky();
+ landscapeNode=new Node(c.finish());landscapeNode.shadow=false;landscapeNode.mesh.surfaceKind='landscape';landscapeTrack=activeTrackId;landscapeSkyReady=hasPanoramaSky();
  ambientPetals=Array.from({length:24},(_,i)=>({phase:i*2.399,node:new Node(petalMesh)}));for(const p of ambientPetals)p.node.shadow=false;
 }
 function addLandscape(origin,t){

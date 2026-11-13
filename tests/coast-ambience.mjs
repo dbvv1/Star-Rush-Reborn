@@ -136,3 +136,11 @@ test('mix wiring is limited to the /road coast corner and preserves existing lay
   assert.equal(mixAt(640), 0.5);
   assert.equal(mixAt(670), 0);
 });
+
+test('afternoon surf bed is bounded, speed-ducked and muted outside its scene',()=>{
+ const mix=new Function(source+';return coastalSurfMix')();
+ for(let t=0;t<100;t+=.13){assert(mix(true,0,t)>=0&&mix(true,0,t)<=.025);assert(mix(true,48,t)<=mix(true,0,t)*.251);assert.equal(mix(false,0,t),0);}
+ assert.equal(mix(true,NaN,0),0);assert.equal(mix(true,0,Infinity),0);
+ assert.match(source,/coastalScene\?noiseLayer\('lowpass',330\):null/);
+ assert.match(source,/coastalSurfMix\(renderingOptions.coastalScene&&running&&sound&&musicSettings.sfxVolume>0/);
+});
