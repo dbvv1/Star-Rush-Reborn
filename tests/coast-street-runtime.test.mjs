@@ -212,3 +212,35 @@ test('actual Canvas road interior stays continuously covered when street depth s
   assert(checked>400,`station ${station}: enough actual road-surface screen samples`);
  }
 });
+
+test('afternoon district changes silhouettes without altering source, hulls or foundations',()=>{
+ const scene=context(true,'coast-reborn',true,{renderingOptions:{coastalScene:true}}),{Node,coastalSpaceDecorate}=scene.api;
+ const m=scene.api.coastalSpaceModel(),before=parts.map(meshDigest),heights=new Set();let plants=0;
+ for(let k=7;k<=18;k++){
+  const root=new Node();coastalSpaceDecorate(root,k,[0,0,0]);
+  const entries=m.street.instances.filter(e=>Math.floor(e.placement.station/40)===k);
+  entries.forEach((entry,j)=>{
+   const data=root.children[j*2+1].mesh.sourceData,source=entry.part.sourceData;
+   assert.equal(data.length,source.length);let top=0,oldTop=0;
+   for(let i=0;i<data.length;i+=10){
+    assert.equal(data[i],source[i]);assert.equal(data[i+2],source[i+2]);
+    assert(Math.abs(Math.hypot(...data.slice(i+3,i+6))-1)<1e-5);
+    top=Math.max(top,data[i+1]);oldTop=Math.max(oldTop,source[i+1]);
+   }
+   heights.add(Math.round(top/oldTop*100));
+  });
+  for(const n of root.children)plants+=n.coastDistrictClusters||0;
+ }
+ assert.equal(heights.size,3);assert(plants>8&&plants<100,`cluster count ${plants}`);
+ assert.deepEqual(parts.map(meshDigest),before);
+ scene.run('rollbackCoastalDistrict()');
+ assert.equal(scene.run('coastalDistrictNodes.length'),0);
+});
+test('afternoon failure restores original meshes, including committed vegetation nodes',()=>{
+ const opts={coastalScene:true},scene=context(true,'coast-reborn',true,{renderingOptions:opts});
+ const root=scene.api.decorateChunk(12,scene.run('road(480).p'),()=>.4);
+ const changed=scene.run('coastalDistrictNodes.slice()');assert(changed.length>0);
+ opts.coastalScene=false;scene.run('rollbackCoastalDistrict()');
+ for(const item of changed)if(item.original)assert.equal(item.node.mesh,item.original);else assert.equal(item.node.mesh,null);
+ assert.equal(scene.run('coastalDistrictEnabled()'),false);
+});

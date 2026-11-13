@@ -104,6 +104,55 @@ function coastalBeacon(c){
  box(c,[0,.8,2.4],[1.1,1.6,.13],'#7c929e',.02);
 }
 const coastalStreetMeshes=new Map(),coastalStreetFoundations=new Map();
+// The scene recipe changes presentation only: fixed-source placements, XZ hulls,
+// foundations and gameplay remain untouched. Copies never mutate source GLB data.
+var coastalDistrictReady=true;
+const coastalDistrictNodes=[];
+function coastalDistrictEnabled(){return typeof renderingOptions!=='undefined'&&renderingOptions.coastalScene&&coastalSpaceEnabled();}
+function coastalDistrictMesh(part,entry){
+ const band=Math.floor((entry.row.centerS-320)/80),variant=(band+entry.row.side+3)%3;
+ const key=part.name+':district:'+variant;
+ if(!coastalStreetMeshes.has(key)){
+  const data=new Float32Array(part.sourceData),height=[.84,1.12,1][variant];
+  const tint=[[1.08,.98,.86],[.90,1.03,1.05],[1.06,.94,.92]][variant];
+  for(let i=0;i<data.length;i+=10){
+   data[i+1]*=height;
+   const n=norm([data[i+3],data[i+4]/height,data[i+5]]);data.set(n,i+3);
+   // Broad palette families, not random per-vertex speckle. Glass stays cool.
+   if(data[i+8]<data[i+6]*1.18)for(let j=0;j<3;j++)data[i+6+j]=clamp(data[i+6+j]*tint[j],0,1);
+  }
+  const mesh=new Mesh(data,part.sourceIndices);mesh.coastStreet=true;coastalStreetMeshes.set(key,mesh);
+ }
+ return coastalStreetMeshes.get(key);
+}
+function coastalDistrictPlanting(k,origin){
+ const model=coastalSpaceModel(),c=new Collector();let count=0;
+ // Clusters bridge the large empty lawn between street and shoreline. Keep
+ // broad open gaps around the beacon and protect every road segment/house.
+ for(let j=0;j<9;j++){
+  const s=k*40+4+j*4,side=(k%3===1?-1:1),l=side*(33+(j%3)*5);
+  if(s<280||s>735)continue;
+  const r=road(s),x=r.p[0]+r.R[0]*l,z=r.p[2]+r.R[2]*l,radius=2.1;
+  if(model.nearest(x,z).d<31||x-radius<model.bounds.x0||x+radius>model.bounds.x1||z-radius<model.bounds.z0||z+radius>model.bounds.z1)continue;
+  if(model.street.instances.some(({placement:{bbox:b}})=>x+radius>b.minX&&x-radius<b.maxX&&z+radius>b.minZ&&z-radius<b.maxZ))continue;
+  if(model.props.some(p=>Math.hypot(x-p.x,z-p.z)<p.radius+radius+2))continue;
+  const heights=[[-1,-1],[-1,1],[1,-1],[1,1],[0,0]].map(([a,b])=>model.surface(x+a*radius,z+b*radius));
+  if(Math.min(...heights)<-.45||Math.max(...heights)-Math.min(...heights)>.8)continue;
+  const y=model.surface(x,z),p=[x-origin[0],y-origin[1]-.18,z-origin[2]];
+  // Reuse the vendored CC0 detailed bush (104 triangles), not more spherical
+  // crowns. Merge three sizes/rotations per cluster into one chunk mesh.
+  const plant=trainingPlantShape();
+  c.add(plant,trs(add(p,[-.65,0,0]),[1.1,.85,1.1],[0,k*.73+j,0]),'#65886b',.02);
+  c.add(plant,trs(add(p,[.55,0,.2]),[1.35,1.15,1.25],[0,k*.73+j+1.9,0]),'#819a70',.02);
+  c.add(plant,trs(add(p,[0,0,-.65]),[.9,.65,.9],[0,k*.73+j+3.7,0]),'#a1ad7b',.02);count++;
+ }
+ if(!count)return null;const node=new Node(c.finish());node.coastDistrictClusters=count;return node;
+}
+function rollbackCoastalDistrict(){
+ for(const item of coastalDistrictNodes){if(item.original)item.node.mesh=item.original;else{item.node.mesh.dispose();item.node.mesh=null;}}
+ coastalDistrictNodes.length=0;
+}
+
 function coastalStreetReplaces(s){return coastalSpaceEnabled()&&s>=300&&s<=710;}
 function coastalStreetRemoved(placements,origin){
  const street=coastalSpaceModel().street;
@@ -124,9 +173,11 @@ function coastalSpaceDecorate(root,k,origin){
   // Do not apply source pivot again, rotate/re-scale, or snap height to terrain.
   const matrix=placement.matrix.slice();for(let j=0;j<3;j++)matrix[12+j]-=origin[j];
   root.add(new Node(coastalStreetFoundations.get(entry),matrix));
-  root.add(new Node(coastalStreetMeshes.get(part.name),matrix));
+  const original=coastalStreetMeshes.get(part.name),node=new Node(coastalDistrictEnabled()?coastalDistrictMesh(part,entry):original,matrix);
+  root.add(node);if(node.mesh!==original)coastalDistrictNodes.push({node,original});
  }
 
+ if(coastalDistrictEnabled()){const node=coastalDistrictPlanting(k,origin);if(node){root.add(node);coastalDistrictNodes.push({root,node});}}
  for(const p of coastalSpaceModel().props){if(Math.floor(p.s/40)!==k)continue;
   if(p.minRoadDistance-p.radius*Math.SQRT2<28)throw Error('Coastal prop intrudes into protected road margin');
   const r=road(p.s),mesh=p.key==='coast-beacon'?scenicMesh('coast-beacon',coastalBeacon):scenicProp(p.key);
@@ -139,7 +190,7 @@ const coastalSpaceAdditions=new Map();
 let coastalSpaceLandscapeActive=false;
 function commitCoastalSpace(root,additions,removed=[]){const baseline=[...root.children];root.children=root.children.filter(node=>!removed.includes(node));for(const node of additions.children)root.add(node);coastalSpaceAdditions.set(root,{baseline,nodes:[...additions.children]});}
 function disableCoastalSpace(){
- coastalSpaceCandidate=false;
+ rollbackCoastalDistrict();coastalSpaceCandidate=false;
  for(const [root,{baseline,nodes}] of coastalSpaceAdditions){const extra=root.children.filter(node=>!nodes.includes(node)&&!baseline.includes(node));root.children=[...baseline,...extra];}
  coastalSpaceAdditions.clear();
  for(const mesh of [...coastalStreetMeshes.values(),...coastalStreetFoundations.values()])mesh.dispose();
