@@ -33,7 +33,7 @@ for(const z of [-.34,.34])carBody.add(CY,trs([-1.64,.43,z],[.085,.20,.085],[0,0,
 ball(carBody,[-.42,1.04,0],[.24,.29,.22],violet);ball(carBody,[-.36,1.29,0],[.095,.10,.09],skin,true);
 for(const side of [-1,1]){const shoulder=[-.38,1.17,side*.22],elbow=[-.13,1.02,side*.29],hand=[.09,1.09,side*.14];bar(carBody,shoulder,elbow,.075,violet,.14,true);bar(carBody,elbow,hand,.06,violet,.14,true);ball(carBody,hand,[.085,.065,.065],pearl,true)}
 box(carBody,[-.18,1.08,0],[.05,.31,.08],pearl,.01);
-const bodyNode=car.add(new Node(carBody.finish()));bodyNode.mesh.paintable=true;
+const bodyNode=car.add(new Node(carBody.finish()));bodyNode.mesh.paintable=true;bodyNode.mesh.roughness=.24;
 const headCol=new Collector();ball(headCol,[0,0,0],[.335,.355,.30],skin);
 ball(headCol,[-.19,-.01,0],[.20,.35,.32],hairDark);ball(headCol,[-.025,.19,0],[.37,.255,.33],hair);
 for(const side of [-1,1]){
@@ -51,9 +51,9 @@ for(const side of [-1,1]){
 path(headCol,[[.317,-.148,-.037],[.326,-.16,0],[.317,-.148,.037]],.009,'#b77787');
 headCol.add(torus(.313,.020,40,7),trs([-.025,.225,0],[1.05,1,1],[PI/2,0,0]),carbon);
 cone(headCol,[.26,.17,-.04],[.10,.25,.08],hair,[0,0,PI+.25]);
-const headNode=car.add(new Node(headCol.finish()));
+const headNode=car.add(new Node(headCol.finish()));headNode.mesh.roughness=.48;
 // Four independent wheel assemblies; front wheels also steer.
-const tires=[];for(const x of [-1.02,1.06])for(const side of [-1,1]){const wc=new Collector();wc.add(torus(.315,.095,40,12),I,'#343b4c',.22);wc.add(torus(.255,.027,32,8),translation(0,0,side*.075),'#e4e6ef',.7);wc.add(CY,trs([0,0,side*.07],[.238,.07,.238],[PI/2,0,0]),'#4d5576',.35);for(let j=0;j<5;j++){const a=j*TAU/5;bar(wc,[0,0,side*.116],[.23*Math.cos(a),.23*Math.sin(a),side*.116],.025,pearl,.65)}ball(wc,[0,0,side*.14],[.075,.075,.022],violet,true,.6);const n=car.add(new Node(wc.finish()));tires.push({n,x,z:side*.83,front:x>0})}
+const tires=[];for(const x of [-1.02,1.06])for(const side of [-1,1]){const wc=new Collector();wc.add(torus(.315,.095,40,12),I,'#343b4c',.22);wc.add(torus(.255,.027,32,8),translation(0,0,side*.075),'#e4e6ef',.7);wc.add(CY,trs([0,0,side*.07],[.238,.07,.238],[PI/2,0,0]),'#4d5576',.35);for(let j=0;j<5;j++){const a=j*TAU/5;bar(wc,[0,0,side*.116],[.23*Math.cos(a),.23*Math.sin(a),side*.116],.025,pearl,.65)}ball(wc,[0,0,side*.14],[.075,.075,.022],violet,true,.6);const wheelMesh=wc.finish();wheelMesh.roughness=.68;const n=car.add(new Node(wheelMesh));tires.push({n,x,z:side*.83,front:x>0})}
 const flames=[];for(const side of [-1,1]){const fc=new Collector();ball(fc,[0,0,0],[.65,.105,.105],'#a6f4ff',true,.8);ball(fc,[-.3,0,0],[.35,.065,.065],'#e9d1ff',true,.7);const n=car.add(new Node(fc.finish()));n.shadow=false;flames.push({n,side})}
 // Reused shared geometry for pickups and traffic objects.
 const oc=new Collector();box(oc,[0,.36,0],[.60,.72,2.1],'#ef97aa',.08);box(oc,[0,.78,0],[.69,.16,2.20],pearl,.035);for(let k=0;k<5;k++)box(oc,[.312,.40,(k-2)*.38],[.018,.29,.16],'#fff0c7',.015,[.28,0,0]);for(const z of [-.85,.85])bar(oc,[0,.05,z],[0,.77,z],.045,'#636986');const obstacleMesh=oc.finish();

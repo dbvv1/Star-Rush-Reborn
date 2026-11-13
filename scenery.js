@@ -68,24 +68,110 @@ function vending(c){
  box(c,[0,1.25,0],[1.2,2.5,.82],'#f3a4ad',.09);box(c,[-.13,1.55,.43],[.82,1.35,.05],'#b6e0e9',.03);for(let j=0;j<3;j++)for(let i=0;i<3;i++){box(c,[-.4+i*.27,1.12+j*.4,.48],[.13,.23,.06],['#f9e2ad','#a3d2cc','#d3c5ec'][i],.025);box(c,[-.4+i*.27,.94+j*.4,.49],[.10,.04,.02],'#fff0c7',.005)}box(c,[0,.47,.44],[.75,.24,.055],'#738698',.03);box(c,[.43,1.3,.45],[.13,.18,.04],'#fff0b8',.02);
 }
 function lantern(c){bar(c,[0,0,0],[0,2.6,0],.08,'#8c7e8a');box(c,[0,2.55,0],[.55,.16,.55],'#877d92',.025);box(c,[0,2.22,0],[.41,.52,.41],'#ffe4ad',.04);box(c,[0,1.93,0],[.52,.12,.52],'#a19caa',.025);for(const x of [-.2,.2])for(const z of [-.2,.2])bar(c,[x,1.98,z],[x,2.49,z],.018,'#927f8d')}
+// Original coastal palm. The trunk leans seaward and the crown uses broad,
+// low-poly fronds so the silhouette survives at chase-camera distance.
+function palm(c){
+ const trunk=['#a47b5e','#b88c69','#c79d77'];
+ bar(c,[0,0,0],[.12,1.9,0],.25,trunk[0],.08);bar(c,[.12,1.86,0],[.36,3.72,0],.20,trunk[1],.08);bar(c,[.36,3.68,0],[.52,5.18,0],.145,trunk[2],.08);
+ for(let i=0;i<9;i++){const a=i*TAU/9,r=1.15;box(c,[.52+Math.cos(a)*r,5.25+Math.sin(a*2)*.12,Math.sin(a)*r],[3.1,.11,.58],['#4e9d65','#63b579','#3e8c5e'][i%3],.05,[0,a,-.20]);box(c,[.52+Math.cos(a+.35)*.82,5.02,Math.sin(a+.35)*.82],[2.15,.09,.44],['#5aac70','#46965f'][i%2],.05,[0,a+.35,-.52])}
+ for(const [x,z] of [[.38,.2],[.62,-.18],[.48,.02]])ball(c,[x,4.82,z],[.20,.19,.19],'#7d5a3c',true,.05);
+}
+// Reuse the two CC0 rock silhouettes as shore groups. A wide low slab carries
+// a second offset body so the cluster reads as a stepped headland, not a cone.
+function coastRock(c,variant=0){
+ const shapes=coastalShapes(),v=variant%shapes.length;
+ const bodies=variant===0
+  ?[[[0,0,0],[2.45,1.55,2.05],.35],[[1.15,-.04,.42],[1.35,1.15,1.18],1.25],[[-1.18,-.06,-.28],[.92,.78,.86],2.1]]
+  :[[[0,0,0],[1.55,2.35,1.48],-.35],[[.95,-.02,.35],[1.12,1.28,1.05],.85],[[-1.02,-.04,-.3],[.94,.88,.9],2.4]];
+ for(const [p,s,turn] of bodies){const m=trs(p,s,[0,turn,0]);c.add(shapes[v][0],m,'#78868c',.04);c.add(shapes[v][1],m,'#9fb98b',.03)}
+}
+function coastShrub(c){
+ const clumps=[[0,.28,0,.58,'#5f9a56'],[-.42,.20,.22,.42,'#79ae60'],[.40,.19,-.18,.46,'#6aa65c'],[.12,.16,.42,.36,'#8cbc6b'],[-.16,.15,-.38,.33,'#73ab59']];
+ for(const [x,y,z,r,col] of clumps)ball(c,[x,y,z],[r*1.25,r*.82,r],col,true,.03);
+ for(const [x,z,col] of [[-.3,.32,'#f0c65f'],[.34,.16,'#ef9aa3'],[.1,-.28,'#f5ead0']])ball(c,[x,.44,z],[.085,.085,.085],col,true,.02);
+}
+// A long box/cylinder arcade runs the shop row together without a new texture.
+function coastArcade(c){
+ c.add(rounded(13.2,.16,3.1,.06),trs([0,0,0],[1,1,1],[-.08,0,0]),'#fff4dd',.30);
+ for(let i=0;i<16;i++){const x=-6.18+i*.824;box(c,[x,-.24,1.52],[.82,.34,.09],i%2?'#e2684e':'#f7ecd6',.08,[-.08,0,0])}
+ for(const x of [-5.7,-1.9,1.9,5.7]){bar(c,[x,-2.02,.9],[x,-.06,.9],.085,'#8a9aa6',.18);ball(c,[x,-2.08,.9],[.10,.07,.10],'#c9d2d6',true,.1)}
+ for(const x of [-5.7,5.7])bar(c,[x,-.06,-1.0],[x,-.06,1.0],.06,'#d8d2c5',.12);
+ box(c,[0,.12,0],[13.6,.08,.22],'#f3e5c9',.06);
+ for(let i=0;i<5;i++)box(c,[-4.4+i*2.2,.30,-.05],[.55,.38,.32],['#e86f8d','#f2c14e','#eef4f1','#8ec9c5','#f0a88b'][i],.05);
+}
+
+// Large chevron board for corner entries. It is shared by every sign instance.
+function turnSign(c,right){
+ bar(c,[0,0,0],[0,2.25,0],.10,'#8ea0b3',.15);
+ box(c,[0,2.2,0],[3.0,1.25,.14],'#f6c744',.07);
+ box(c,[0,2.2,.09],[2.62,.95,.03],'#30455d',.10);
+ const sx=right?1:-1;
+ box(c,[-sx*.52,2.2,.115],[1.5,.20,.03],'#ffe27a',.03);
+ box(c,[sx*.34,2.44,.115],[.78,.20,.03],'#ffe27a',.03,[0,0,sx*.85]);
+ box(c,[sx*.34,1.96,.115],[.78,.20,.03],'#ffe27a',.03,[0,0,-sx*.85]);
+ for(const x of [-1.25,1.25])box(c,[x,2.2,.1],[.05,.28,.02],'#30455d',.02);
+}
+function coastAwning(key,stripes){
+ const mesh=scenicMesh('coast-awning-'+key,c=>{
+  c.add(rounded(6.6,.14,2.9,.07),trs([0,0,0],[1,1,1],[-.2,0,0]),'#ffffff',.55);
+  // The front skirt carries the code-generated stripe map and is tall enough to
+  // read from a chase camera; alternating scallops keep the silhouette soft.
+  for(let i=0;i<9;i++){const x=-2.88+i*.72;box(c,[x,-.16,1.42],[.72,.52,.08],'#ffffff',.12,[-.2,0,0])}
+  for(let i=0;i<9;i++){const x=-2.88+i*.72;box(c,[x,-.48,1.44],[.70,.20,.07],i%2?stripes[1]:stripes[0],.10,[-.2,0,0])}
+  for(const side of [-1,1])box(c,[side*3.25,-.06,0],[.10,.10,2.8],'#ffffff',.12,[-.2,0,0]);
+  for(const x of [-2.4,2.4])bar(c,[x,-.5,.1],[x,-.52,1.35],.035,'#8c7a65',.08);
+ });
+ if(!mesh.stripeTexture)mesh.stripeTexture=[stripes[0],stripes[1]];
+ return mesh;
+}
+function coastRoof(key,hex){
+ return scenicMesh('coast-roof-'+key,c=>{
+  box(c,[0,.16,0],[7.5,.32,6.3],'#f3e8d5',.04);
+  c.add(SC,trs([0,1.82,0],[4.15,3.1,3.45],[0,PI/4,0]),hex,.10);
+  box(c,[0,.32,0],[7.9,.16,6.7],hex,.04);
+ });
+}
+function coastDeck(){
+ return scenicMesh('coast-deck',c=>{box(c,[0,0,0],[1,.18,1],'#b98a58',.03);for(let i=0;i<9;i++)box(c,[0,.098,-.5+i/8],[1.01,.014,.018],'#8d613a',.01)});
+}
+function coastPlinth(){
+ return scenicMesh('coast-plinth',c=>box(c,[0,0,0],[1,1,1],'#c9c0ae',.03));
+}
+function coastPlanter(){
+ return scenicMesh('coast-planter',c=>{
+  box(c,[0,.35,0],[2.2,.70,.72],'#c68c58',.06);box(c,[0,.67,0],[1.96,.18,.58],'#58442f',.03);
+  for(let i=0;i<6;i++)ball(c,[-.76+i*.30,.88,(i%2?.17:-.17)],[.27,.30,.25],['#e86f8d','#f2c14e','#eef4f1'][i%3],true,.05);
+ });
+}
+function coastSign(){
+ return scenicMesh('coast-sign',c=>{
+  for(const x of [-1.35,1.35])bar(c,[x,0,0],[x,2.3,0],.07,'#8b9bae',.12);
+  box(c,[0,2.15,0],[3.25,.95,.16],'#f8f1e0',.05);box(c,[0,2.15,.1],[3.0,.72,.03],'#3f9fae',.08);
+  for(let i=0;i<4;i++)box(c,[-.95+i*.63,2.15,.13],[.20,.36,.03],'#ffe9a8',.02);
+  box(c,[0,2.7,0],[3.5,.12,.24],'#e2684e',.03);
+ });
+}
 function signBoard(c,kind){
  const side=kind==='left'?-1:1;bar(c,[0,0,0],[0,2.4,0],.055,'#8499b0');box(c,[0,2.28,0],[2.9,.78,.18],'#f3eacb',.04);for(let j=0;j<3;j++){const x=-.86+j*.86;bar(c,[x-side*.25,2.02,.12],[x+side*.15,2.28,.12],.055,'#bd8faf');bar(c,[x+side*.15,2.28,.12],[x-side*.25,2.54,.12],.055,'#bd8faf')}
 }
 function scenicProp(key){
- return scenicMesh(key,c=>{if(key.startsWith('house'))townhouse(c,Number(key.slice(-1)));else if(key.startsWith('shop'))shop(c,Number(key.slice(-1)));else if(key.startsWith('cherry'))cherry(c,Number(key.slice(-1)));else if(key==='pine')pine(c);else if(key==='lamp')streetLamp(c);else if(key==='torii')torii(c);else if(key==='station')station(c);else if(key==='tram')tram(c);else if(key==='vending')vending(c);else if(key==='school')school(c);else if(key==='lantern')lantern(c);else if(key==='left'||key==='right')signBoard(c,key)});
+ return scenicMesh(key,c=>{if(key.startsWith('house'))townhouse(c,Number(key.slice(-1)));else if(key.startsWith('shop'))shop(c,Number(key.slice(-1)));else if(key.startsWith('cherry'))cherry(c,Number(key.slice(-1)));else if(key==='pine')pine(c);else if(key==='palm')palm(c);else if(key==='coast-rock-a')coastRock(c,0);else if(key==='coast-rock-b')coastRock(c,1);else if(key==='coast-shrub')coastShrub(c);else if(key==='coast-arcade')coastArcade(c);else if(key==='lamp')streetLamp(c);else if(key==='torii')torii(c);else if(key==='station')station(c);else if(key==='tram')tram(c);else if(key==='vending')vending(c);else if(key==='school')school(c);else if(key==='lantern')lantern(c);else if(key==='left'||key==='right')signBoard(c,key)});
 }
 function districtAt(s){const u=((s%CIRCUIT_LENGTH)+CIRCUIT_LENGTH)%CIRCUIT_LENGTH/CIRCUIT_LENGTH,sections=trackInfo().sectors;let result=sections[0];for(const section of sections)if(u>=section.at)result=section;return result}
 function decorateChunk(k,origin,rr){
  const root=new Node(),start=k*40,placements=[];
  const place=(key,s,l,scale=1,rot=0)=>{if(raceMode==='circuit'&&s>=CIRCUIT_LENGTH||!sceneryClear(s,l))return null;const r=road(s),pos=atRoad(s,l,-.05),angle=-r.h+(l>0?PI:0)+rot,n=new Node(scenicProp(key),trs(sub(pos,origin),[scale,scale,scale],[0,angle,0]));placements.push({node:n,key,s});root.add(n);return n};
  const sakura=raceMode==='circuit'&&trackInfo().biome===1;
+ // The coastal district corridor is rebuilt as three harbour blocks below;
+ // its old even tree rows would read as a hedge, so leave those stations open.
+ const coastBlockCorridor=raceMode==='circuit'&&trackInfo().biome===0&&start>=280&&start<720;
  for(const side of [-1,1]){
   place('lamp',start+7,side*9.65);
-  for(let j=0;j<2;j++)place('cherry'+((k+j)%2),start+10+j*20,side*(sakura?11.3:12.5),sakura?1.12:.92);
+  if(!coastBlockCorridor)for(let j=0;j<2;j++)place('cherry'+((k+j)%2),start+10+j*20,side*(sakura?11.3:12.5),sakura?1.12:.92);
   if((k%2===0||sakura)&&k%3!==1&&!(k===2&&side<0)&&!(sakura&&k===0&&side>0)){place('house'+(k+(side>0?1:0))%4,start+19,side*(16.5+rr()*2),.90+rr()*.25)}
   if(k%3===1&&!(k===2&&side<0))place('shop'+(k%3),start+18,side*17.5);
   if(k%5===0)place('vending',start+9,side*10.1);
-  if(k%3===0)place('pine',start+32,side*22,1.5);
+  if(k%3===0&&!coastBlockCorridor)place('pine',start+32,side*22,1.5);
  }
  const turn=wrapAngle(road(start+37).h-road(start+7).h);
  if(Math.abs(turn)>.25)place(turn>0?'right':'left',start+5,(turn>0?-1:1)*9.4,1,turn>0?-PI/2:PI/2);
@@ -123,18 +209,34 @@ function coastalShapes(){
 }
 function coastalBackdrop(c,center){
  const shapes=coastalShapes();
- const island=(variant,a,w,h,d,turn,far)=>{
-  const rx=far?470:440,rz=far?415:340,foot=variant===0?-1-h*.3:-1.15;
-  const m=trs([center[0]+Math.cos(a)*rx,foot,center[2]+Math.sin(a)*rz],[w,h,d],[0,turn,0]);
-  c.add(shapes[variant][0],m,far?'#a3b8c3':'#8f9c9b',.02);
-  c.add(shapes[variant][1],m,far?'#a9bdbe':'#a6b995',.02);
+ // Offset, wide-based low-poly bodies build a layered headland ridge. Adjacent
+ // pieces overlap into steps while the deliberate angle gaps keep sea channels.
+ const piece=(variant,a,rx,rz,w,h,d,turn,far)=>{
+  const m=trs([center[0]+Math.cos(a)*rx,-1.85,center[2]+Math.sin(a)*rz],[w,h,d],[0,turn,0]);
+  c.add(shapes[variant][0],m,far?'#758d98':'#5f787b',.02);
+  c.add(shapes[variant][1],m,far?'#8ba094':'#78996b',.02);
  };
- // Uneven headlands leave sea gaps; a lower, cooler outer band gives depth.
- // Width/depth are full extents. Elliptical spacing fits this long coast;
- // the largeA underside bevel (up to y=.292) is submerged, not lit as a cave.
- for(const [a,w,h,d,variant] of [[.12,112,27,86,1],[1.02,155,26,100,0],[1.92,135,35,100,1],[2.77,150,27,105,0],[3.68,125,33,92,1],[4.51,163,24,106,0],[5.42,136,36,94,1]])island(variant,a,w,h,d,a+.4,false);
- for(const [a,w,h,d,variant] of [[.55,140,25,80,0],[1.62,150,32,90,1],[2.62,135,24,80,0],[3.72,150,31,88,1],[4.74,140,26,85,0],[5.75,145,29,86,1]])island(variant,a,w,h,d,a-.5,true);
+ const slab=(a,rx,rz,w,h,d,turn,far)=>{
+  const m=trs([center[0]+Math.cos(a)*rx,-2.25,center[2]+Math.sin(a)*rz],[w,h,d],[0,turn,0]);
+  c.add(shapes[0][0],m,far?'#7f959e':'#6b8285',.02);
+  c.add(shapes[0][1],m,far?'#92a69a':'#83a172',.02);
+ };
+ const near=[
+  [.06,104,20,70,1],[.32,126,25,84,0],[.58,110,19,68,1],[.84,134,27,90,0],
+  [1.54,118,22,78,1],[1.80,138,28,92,0],[2.06,112,20,72,1],[2.32,130,26,86,0],[2.58,104,19,66,1],[2.84,124,24,82,0],
+  [3.68,116,21,78,1],[3.94,136,27,88,0],[4.20,108,19,68,1],[4.46,128,25,84,0],[4.72,102,18,64,1],
+  [5.38,122,23,80,0],[5.64,106,19,68,1],[5.90,130,26,86,0]
+ ];
+ for(const [a,w,h,d,v] of near)if(Math.cos(a)<.5)piece(v,a,388,328,w,h,d,a+.55,false);
+ const far=[
+  [.18,126,31,94,0],[.50,140,35,102,1],[.86,120,29,88,0],[1.32,148,37,108,1],
+  [1.90,132,32,94,0],[2.40,142,36,102,1],[2.96,124,30,90,0],[3.55,150,38,110,1],
+  [4.10,134,33,96,0],[4.62,144,36,104,1],[5.20,126,30,92,0],[5.78,150,39,112,1]
+ ];
+ for(const [a,w,h,d,v] of far)if(Math.cos(a)<.5)piece(v,a,404,372,w,h,d,a-.42,true);
+ for(const [a,w,h,d] of [[.70,72,8,52],[1.92,80,9,58],[3.10,76,7,54],[4.34,84,9,60],[5.56,78,8,56]])if(Math.cos(a)<.5)slab(a,394,336,w,h,d,a+.2,false);
 }
+
 // Geometry-only CC0 plant source, reused without runtime model downloads.
 let trainingPlantCache=null;
 function trainingPlantShape(){
@@ -156,12 +258,90 @@ function trainingVerge(k,origin){
  }
  return new Node(c.finish());
 }
+// Contour the existing heightfield at the sea top and drape beach, wet sand and
+// two shallow shelves over the shoreline. Widths breathe along the coast and
+// widen into a readable sand bay on the seaward side of the harbour bend.
+function coastalShoreLayers(target,model){
+ const {bounds,vertices}=model,{x0,x1,z0,z1,step}=bounds,nx=Math.round((x1-x0)/step),nz=Math.round((z1-z0)/step),level=-.82;
+ const height=(ix,iz)=>vertices[iz*(nx+1)+ix][1];
+ const sand=color('#e2c17c'),sandWet=color('#cda963'),foamCol=color('#f7ffff'),shallowA=color('#93dcd1'),shallowB=color('#67c4c8'),shallowDeep=color('#3d9db6');
+ const addQuad=(mesh,p,cols,gloss=.04)=>{
+  let n=norm(cross(sub(p[1],p[0]),sub(p[3],p[0]))),pts=p,colors=cols;
+  if(n[1]<0){n=mul(n,-1);pts=[p[0],p[3],p[2],p[1]];colors=[cols[0],cols[3],cols[2],cols[1]]}
+  const base=mesh.data.length/10;
+  for(let i=0;i<4;i++)mesh.data.push(...pts[i],...n,...colors[i],gloss);
+  mesh.indices.push(base,base+1,base+2,base,base+2,base+3);
+ };
+ const key=p=>p[0].toFixed(3)+','+p[1].toFixed(3),edges=[],adj=new Map(),normalSum=new Map();
+ const addNormal=(p,n)=>{const k=key(p),v=normalSum.get(k)||[0,0];normalSum.set(k,[v[0]+n[0],v[1]+n[1]])};
+ for(let iz=0;iz<nz;iz++)for(let ix=0;ix<nx;ix++){
+  const h0=height(ix,iz),h1=height(ix+1,iz),h2=height(ix+1,iz+1),h3=height(ix,iz+1),points=[];
+  const edge=(ha,hb,ax,az,bx,bz)=>{if((ha<level)===(hb<level))return;const t=clamp((level-ha)/(hb-ha||1e-6),0,1);points.push([ax+(bx-ax)*t,az+(bz-az)*t])};
+  edge(h0,h1,x0+ix*step,z0+iz*step,x0+(ix+1)*step,z0+iz*step);
+  edge(h1,h2,x0+(ix+1)*step,z0+iz*step,x0+(ix+1)*step,z0+(iz+1)*step);
+  edge(h2,h3,x0+(ix+1)*step,z0+(iz+1)*step,x0+ix*step,z0+(iz+1)*step);
+  edge(h3,h0,x0+ix*step,z0+(iz+1)*step,x0+ix*step,z0+iz*step);
+  if(points.length<2)continue;
+  const gx=((h1+h2)-(h0+h3))/(step*2),gz=((h2+h3)-(h0+h1))/(step*2),gl=Math.hypot(gx,gz);
+  if(gl<1e-5)continue;
+  const n=[-gx/gl,-gz/gl];
+  for(let j=0;j<points.length;j+=2)if(points[j+1]){
+   const a=points[j],b=points[j+1],idx=edges.length,ka=key(a),kb=key(b);
+   edges.push({a,b,n,ka,kb});addNormal(a,n);addNormal(b,n);
+   if(!adj.has(ka))adj.set(ka,[]);if(!adj.has(kb))adj.set(kb,[]);
+   adj.get(ka).push({idx,side:0});adj.get(kb).push({idx,side:1});
+  }
+ }
+ // Join cell-sized contour fragments into continuous polylines so offset
+ // ribbons do not overlap into rectangular steps.
+ const used=new Uint8Array(edges.length),lines=[];
+ for(let i=0;i<edges.length;i++){
+  if(used[i])continue;used[i]=1;
+  const first=edges[i],chain=[first.a,first.b];
+  for(let guard=0;guard<edges.length;guard++){
+   const k=key(chain[chain.length-1]),next=(adj.get(k)||[]).find(ref=>!used[ref.idx]);
+   if(!next)break;used[next.idx]=1;const ed=edges[next.idx];chain.push(next.side===0?ed.b:ed.a);
+   if(key(chain[chain.length-1])===key(chain[0]))break;
+  }
+  for(let guard=0;guard<edges.length;guard++){
+   const k=key(chain[0]),next=(adj.get(k)||[]).find(ref=>!used[ref.idx]);
+   if(!next)break;used[next.idx]=1;const ed=edges[next.idx];chain.unshift(next.side===0?ed.b:ed.a);
+   if(key(chain[0])===key(chain[chain.length-1]))break;
+  }
+  if(chain.length>1)lines.push(chain);
+ }
+ const vertexNormal=p=>{const s=normalSum.get(key(p))||[0,-1],l=Math.hypot(...s);return l<1e-6?[0,-1]:[s[0]/l,s[1]/l]};
+ const band=(mesh,a,b,na,nb,innerA,innerB,outerA,outerB,y,colIn,colOut)=>{
+  addQuad(mesh,[
+   [a[0]+na[0]*innerA,y,a[1]+na[1]*innerA],[b[0]+nb[0]*innerB,y,b[1]+nb[1]*innerB],
+   [b[0]+nb[0]*outerB,y,b[1]+nb[1]*outerB],[a[0]+na[0]*outerA,y,a[1]+na[1]*outerA]
+  ],[colIn,colIn,colOut,colOut]);
+ };
+ const foam=new Collector();
+ for(const chain of lines){
+  const widths=chain.map(p=>{
+   const near=model.nearest(p[0],p[1]),bay=near.side>0?16*Math.exp(-(((near.r.s-545)/70)**2)):0,wob=.8*Math.sin(near.r.s*.17+p[0]*.06),sandOut=3.6+bay+wob;
+   return {sandOut,lightOut:sandOut+6+bay*.42,deepOut:sandOut+17+bay*.92,foamOut:3.4+bay*.42};
+  });
+  for(let j=0;j<chain.length-1;j++){
+   const a=chain[j],b=chain[j+1],na=vertexNormal(a),nb=vertexNormal(b),A=widths[j],B=widths[j+1];
+   // Shared per-vertex widths keep adjacent ribbons welded; only the seaward
+   // bands step upward so the depth buffer stays clean at survey distance.
+   band(target,a,b,na,nb,-1.4,-1.4,A.sandOut,B.sandOut,-.64,sand,sandWet);
+   band(target,a,b,na,nb,A.sandOut,B.sandOut,A.lightOut,B.lightOut,-.70,shallowA,shallowB);
+   band(target,a,b,na,nb,A.lightOut,B.lightOut,A.deepOut,B.deepOut,-.74,shallowB,shallowDeep);
+   band(foam,a,b,na,nb,.55,.55,A.foamOut,B.foamOut,-.58,foamCol,foamCol);
+  }
+ }
+ const foamMesh=foam.finish();foamMesh.foamTexture=true;foamMesh.uvScale=[.045,.11];foamMesh.roughness=.36;
+ return new Node(foamMesh);
+}
 function buildLandscape(){
  if(landscapeNode){landscapeNode.mesh.dispose();landscapeNode=null}
  let c=new Collector();const b=circuitBounds,center=[(b.minX+b.maxX)*.5,0,(b.minZ+b.maxZ)*.5],w=b.maxX-b.minX,d=b.maxZ-b.minZ;
  const coast=trackInfo().biome===0;
- let spaceReady=false;if(typeof coastalSpaceLandscapeActive!=='undefined')coastalSpaceLandscapeActive=false;
- if(typeof coastalSpaceEnabled==='function'&&coastalSpaceEnabled())try{coastalSpaceTerrain(c);spaceReady=true;coastalSpaceLandscapeActive=true}catch{c=new Collector();disableCoastalSpace();}
+ let spaceReady=false,shoreExtra=null;if(typeof coastalSpaceLandscapeActive!=='undefined')coastalSpaceLandscapeActive=false;
+ if(typeof coastalSpaceEnabled==='function'&&coastalSpaceEnabled())try{const model=coastalSpaceModel();coastalSpaceTerrain(c);shoreExtra=coastalShoreLayers(c,model);spaceReady=true;coastalSpaceLandscapeActive=true}catch{c=new Collector();disableCoastalSpace();}
  if(!spaceReady&&coast){for(const [rx,rz,y,col] of [[w*.82,d*.89,-.43,'#eadfce'],[w*.78,d*.85,-.30,'#c7d9b4']]){const verts=[center[0],y,center[2]],normals=[0,1,0],indices=[];for(let j=0;j<=96;j++){const a=j*TAU/96,r=1+.025*Math.sin(a*5);verts.push(center[0]+Math.cos(a)*rx*r,y,center[2]+Math.sin(a)*rz*r);normals.push(0,1,0);if(j)indices.push(0,j,j+1)}c.add(shape(verts,normals,indices),I,col,.02)}}
  if(roadDriving&&coast)coastalBackdrop(c,center);
  else for(let i=0;i<12;i++){
@@ -172,7 +352,8 @@ function buildLandscape(){
  }
  // Keep the original clouds until the optional panorama actually decodes.
  if(!hasPanoramaSky())for(let i=0;i<10;i++){const a=i*TAU/10,pos=[center[0]+Math.cos(a)*260,57+(i%3)*14,center[2]+Math.sin(a)*250];for(let j=0;j<4;j++)ball(c,add(pos,[(j-1.5)*12,Math.sin(j*2)*4,0]),[17,7+(j%2)*3,10],'#fff5f3',true,.01)}
- landscapeNode=new Node(c.finish());landscapeNode.shadow=false;landscapeTrack=activeTrackId;landscapeSkyReady=hasPanoramaSky();
+ const landscapeMesh=c.finish();landscapeMesh.roughness=coast?.94:.9;
+ landscapeNode=new Node(landscapeMesh);landscapeNode.shadow=false;if(shoreExtra)landscapeNode.add(shoreExtra);landscapeTrack=activeTrackId;landscapeSkyReady=hasPanoramaSky();
  ambientPetals=Array.from({length:24},(_,i)=>({phase:i*2.399,node:new Node(petalMesh)}));for(const p of ambientPetals)p.node.shadow=false;
 }
 function addLandscape(origin,t){

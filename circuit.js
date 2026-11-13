@@ -20,7 +20,20 @@ function rebuildCircuit(){
  const xs=circuitSamples.map(a=>a.p[0]),zs=circuitSamples.map(a=>a.p[2]);circuitBounds={minX:Math.min(...xs),maxX:Math.max(...xs),minZ:Math.min(...zs),maxZ:Math.max(...zs)};
 }
 rebuildCircuit();
-function circuitRoad(s){const u=((s%CIRCUIT_LENGTH)+CIRCUIT_LENGTH)%CIRCUIT_LENGTH;let lo=0,hi=circuitSamples.length-1;while(lo+1<hi){const m=(lo+hi)>>1;if(circuitSamples[m].s<=u)lo=m;else hi=m}const a=circuitSamples[lo],b=circuitSamples[hi],t=(u-a.s)/(b.s-a.s||1),dh=Math.atan2(Math.sin(b.h-a.h),Math.cos(b.h-a.h)),h=a.h+dh*t;return {p:a.p.map((v,i)=>mix(v,b.p[i],t)),h,T:[Math.cos(h),0,Math.sin(h)],R:[-Math.sin(h),0,Math.cos(h)],curv:dh/(b.s-a.s),slope:(b.p[1]-a.p[1])/(b.s-a.s)}}
+// The south-coast straight becomes an elevated boardwalk over the bay. One
+// smooth, zero-grade-at-the-ends profile feeds the road mesh, shoulders,
+// rails, collision surface and chase camera through circuitRoad itself.
+const COAST_BRIDGE={start:780,riseEnd:890,crestEnd:950,fallEnd:1070,height:7.4};
+function coastBridgeStep(a,b,x){const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)}
+function coastBridgeStepSlope(a,b,x){if(x<=a||x>=b)return 0;const t=(x-a)/(b-a);return 6*t*(1-t)/(b-a)}
+function coastBridgeLift(s){
+ if(activeTrackId!=='coast-reborn')return {lift:0,slope:0};
+ const up=coastBridgeStep(COAST_BRIDGE.start,COAST_BRIDGE.riseEnd,s),down=1-coastBridgeStep(COAST_BRIDGE.crestEnd,COAST_BRIDGE.fallEnd,s);
+ const dup=coastBridgeStepSlope(COAST_BRIDGE.start,COAST_BRIDGE.riseEnd,s),ddown=-coastBridgeStepSlope(COAST_BRIDGE.crestEnd,COAST_BRIDGE.fallEnd,s);
+ return {lift:COAST_BRIDGE.height*up*down,slope:COAST_BRIDGE.height*(dup*down+up*ddown)};
+}
+function coastBridgeSpan(s){return activeTrackId==='coast-reborn'&&s>=COAST_BRIDGE.start-2&&s<=COAST_BRIDGE.fallEnd+2}
+function circuitRoad(s){const u=((s%CIRCUIT_LENGTH)+CIRCUIT_LENGTH)%CIRCUIT_LENGTH;let lo=0,hi=circuitSamples.length-1;while(lo+1<hi){const m=(lo+hi)>>1;if(circuitSamples[m].s<=u)lo=m;else hi=m}const a=circuitSamples[lo],b=circuitSamples[hi],t=(u-a.s)/(b.s-a.s||1),dh=Math.atan2(Math.sin(b.h-a.h),Math.cos(b.h-a.h)),h=a.h+dh*t,deck=coastBridgeLift(u),p=a.p.map((v,i)=>mix(v,b.p[i],t));p[1]+=deck.lift;return {p,h,T:[Math.cos(h),0,Math.sin(h)],R:[-Math.sin(h),0,Math.cos(h)],curv:dh/(b.s-a.s),slope:(b.p[1]-a.p[1])/(b.s-a.s)+deck.slope}}
 function courseDelta(a,b){let d=a-b;if(raceMode==='circuit')d-=Math.round(d/CIRCUIT_LENGTH)*CIRCUIT_LENGTH;return d}
 function raceClock(){return elapsed+(player.timePenalty||0)}
 function formatTime(seconds){const cs=Math.round(seconds*100),m=Math.floor(cs/6000),s=Math.floor(cs%6000/100),fraction=cs%100;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+String(fraction).padStart(2,'0')}

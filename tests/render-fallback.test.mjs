@@ -51,9 +51,14 @@ for(const [name,options,type,intensity] of [['default',undefined,'MeshToonMateri
   const color=new THREE.Color('#bada55');assert(Math.abs(opaque.geometry.attributes.color.array[0]-color.r)<1e-6);
   if(type==='MeshToonMaterial')assert.deepEqual(Array.from(material.gradientMap.image.data),[95,145,195,245]);else assert.equal(material.gradientMap,undefined);
   const hemi=backend.scene.children.find(x=>x.isHemisphereLight),sun=backend.scene.children.find(x=>x.isDirectionalLight);
-  assert.equal(hemi.intensity,intensity);assert.equal(sun.intensity,2.4);assert.deepEqual(sun.position.toArray(),[-30,60,25]);assert.deepEqual(sun.shadow.mapSize.toArray(),[1024,1024]);assert.equal(sun.shadow.bias,-.0004);assert.equal(sun.shadow.normalBias,0);
-  assert.deepEqual(['left','right','top','bottom','near','far'].map(k=>sun.shadow.camera[k]),[-55,55,45,-45,1,160]);
-  assert.equal(backend.renderer.shadowMap.type,THREE.PCFSoftShadowMap);assert.equal(backend.renderer.toneMappingExposure,1);
+  assert.equal(hemi.intensity,intensity);assert.equal(sun.intensity,2.4);
+  // The key light rides the camera view from the left front and above, so the
+  // shadow frustum stays tight around the car instead of a fixed world point.
+  assert(sun.position.y>50&&sun.position.x<0&&sun.position.z<0);
+  assert(Math.hypot(...sun.target.position.toArray())>0);
+  assert.deepEqual(sun.shadow.mapSize.toArray(),[2048,2048]);assert.equal(sun.shadow.bias,-.00025);assert.equal(sun.shadow.normalBias,.035);
+  assert.deepEqual(['left','right','top','bottom','near','far'].map(k=>sun.shadow.camera[k]),[-42,42,30,-30,2,170]);
+  assert.equal(backend.renderer.shadowMap.type,THREE.PCFSoftShadowMap);assert.equal(backend.renderer.toneMappingExposure,1.04);
   assert.equal(backend.scene.children.filter(x=>x.material?.isShaderMaterial).length,1);
   let batchDisposed=0,geometryDisposed=0,materialDisposed=0;opaque.addEventListener('dispose',()=>batchDisposed++);opaque.geometry.addEventListener('dispose',()=>geometryDisposed++);material.addEventListener('dispose',()=>materialDisposed++);
   const grown=[...Array.from({length:12},()=>first[0]),first[1],first[2]];render(grown);

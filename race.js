@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id),game=$('game'),input={gas:false,brake:false,left:false,right:false,drift:false,boost:false,small:false};
 const heldCodes=new Set(),touchPointers=new Map(),controlEdges={drift:0,boost:0,small:0};
 function refreshControls(){const before={...input};for(const key in input)input[key]=false;for(const code of heldCodes)if(keyMap[code])input[keyMap[code]]=true;for(const key of touchPointers.values())input[key]=true;for(const key in controlEdges)if(input[key]&&!before[key])controlEdges[key]++}
-const BIOMES=[{name:'汐见海岸',ground:'#cbdcbd',tree:'#b9d5bb',accent:'#afc8e4',fog:'#c8deef'},{name:'花见坂',ground:'#d9d7c7',tree:'#f0bfd5',accent:'#c9c1e5',fog:'#dcdff1'},{name:'星光峡谷',ground:'#c4b8c3',tree:'#a7a5d3',accent:'#d8b4d8',fog:'#dbdce8'}];
+const BIOMES=[{name:'汐见海岸',ground:'#b2cf8d',tree:'#b9d5bb',accent:'#afc8e4',fog:'#c8deef'},{name:'花见坂',ground:'#d9d7c7',tree:'#f0bfd5',accent:'#c9c1e5',fog:'#dcdff1'},{name:'星光峡谷',ground:'#c4b8c3',tree:'#a7a5d3',accent:'#d8b4d8',fog:'#dbdce8'}];
 const player={s:0,l:0,speed:0,yaw:0,velocityYaw:0,energy:0,coins:0,score:0,inv:0,pad:0,mini:0,jump:0,vy:0,driftCharge:0,drifting:false,boostActive:false,checkpoint:500,driftSide:0,boostBlend:0,lateralSpeed:0,wallRecover:0,wallSide:0,stuckTime:0};
 const FIXED_STEP=1/120,WALL_LIMIT=7.02;
 const courseCache=new Map();let loadedCourse=null;
@@ -25,22 +25,46 @@ function atRoad(s,l=0,y=0){const r=road(s);return add(add(r.p,mul(r.R,l)),[0,y,0
 // Preserve the existing upward-facing surface convention in both normals and winding.
 // Vertical faces retain their authored order; this is not an all-faces-up rewrite.
 function quad(c,a,b,cc,d,col){let n=norm(cross(sub(b,a),sub(d,a)));const flip=n[1]<0;if(flip)n=mul(n,-1);c.add(shape([...a,...b,...cc,...d],[...n,...n,...n,...n],flip?[0,2,1,0,3,2]:[0,1,2,0,2,3]),I,col,.06)}
+// Same winding convention as quad, with one linear RGB colour per corner so the
+// asphalt can carry a low-contrast vertex noise field without extra materials.
+function varyQuad(c,a,b,cc,d,cols,gloss=.06){let n=norm(cross(sub(b,a),sub(d,a)));const flip=n[1]<0;if(flip){n=mul(n,-1);[b,cc]=[cc,b];[cols[1],cols[2]]=[cols[2],cols[1]]}const base=c.data.length/10;for(const [p,col] of [[a,cols[0]],[b,cols[1]],[cc,cols[2]],[d,cols[3]]])c.data.push(...p,...n,...col,gloss);for(const i of [0,1,2,0,2,3])c.indices.push(base+i)}
 function chunkMesh(k){const start=k*40,origin=road(start).p,c=new Collector(),rr=localRand(k),biome=raceMode==='circuit'?BIOMES[trackInfo().biome]:BIOMES[((Math.floor(Math.max(0,start)/1000))%3+3)%3],L=p=>sub(p,origin);
- for(let j=0;j<10;j++){const s=start+j*4;if(raceMode==='circuit'&&s>=CIRCUIT_LENGTH)break;const r0=road(s),r1=road(raceMode==='circuit'?Math.min(s+4,CIRCUIT_LENGTH):s+4);const pt=(r,l,y)=>L(add(add(r.p,mul(r.R,l)),[0,y,0]));
-  quad(c,pt(r0,-7,.04),pt(r0,7,.04),pt(r1,7,.04),pt(r1,-7,.04),'#69728e');
+ const stations=[];for(let j=0;j<=10;j++){const s=raceMode==='circuit'?Math.min(start+j*4,CIRCUIT_LENGTH):start+j*4;stations.push({s,r:road(s)})}
+ const asphalt=color('#617080'),drain=color('#333d4b'),coral=color('#e2684e'),cream=color('#f4e7cf'),walk=color('#d9d1c1'),groundCol=color(biome.ground);
+ const noise=(a,b)=>{const x=Math.sin(a*12.9898+b*78.233)*43758.5453;return (x-Math.floor(x))*2-1},asphaltAt=(s,l)=>1+noise(s*.137,l*1.71)*.055;
+ const pt=(r,l,y)=>L(add(add(r.p,mul(r.R,l)),[0,y,0])),signNodes=[];
+ for(let j=0;j<10;j++){const a0=stations[j],a1=stations[j+1],r0=a0.r,r1=a1.r,lats=[-7,-5.25,-3.5,-1.75,0,1.75,3.5,5.25,7];
+  // One shared cross-section per station: the asphalt, drainage, raised curb
+  // and walkway all read the same r0/r1 frame, so no band can drift apart.
+  for(let i=0;i<lats.length-1;i++){const l0=lats[i],l1=lats[i+1],f0=asphaltAt(a0.s,l0),f1=asphaltAt(a0.s,l1),f2=asphaltAt(a1.s,l1),f3=asphaltAt(a1.s,l0);
+   varyQuad(c,pt(r0,l0,.05),pt(r0,l1,.05),pt(r1,l1,.05),pt(r1,l0,.05),[asphalt.map(v=>v*f0),asphalt.map(v=>v*f1),asphalt.map(v=>v*f2),asphalt.map(v=>v*f3)],.05)}
+  const verge=raceMode==='circuit'?11:64;
   for(const side of [-1,1]){
-   quad(c,pt(r0,side*7,.06),pt(r0,side*7.65,.06),pt(r1,side*7.65,.06),pt(r1,side*7,.06),(k*10+j)%2?'#d1b5e0':'#f4eced');
-   quad(c,pt(r0,side*7.65,-.02),pt(r0,side*(raceMode==='circuit'?11:64),-.08),pt(r1,side*(raceMode==='circuit'?11:64),-.08),pt(r1,side*7.65,-.02),biome.ground);
+   // The curb cross-section is evaluated once per station and shared by both
+   // neighbouring segments, so width/height changes cannot open a seam.
+   const inner0=Math.sign(r0.curv)===side,inner1=Math.sign(r1.curv)===side;
+   const d0=side*7.02,d1=side*7.7,c10=side*(7.7+(inner0?.82:.56)),c11=side*(7.7+(inner1?.82:.56));
+   const h0=inner0?.125:.095,h1=inner1?.125:.095;
+   varyQuad(c,pt(r0,d0,.045),pt(r0,d1,.035),pt(r1,d1,.035),pt(r1,d0,.045),[drain,drain,drain,drain],.03);
+   varyQuad(c,pt(r0,d1,.035),pt(r0,d1,h0),pt(r1,d1,h1),pt(r1,d1,.035),[drain,drain,drain,drain],.08);
+   const cc=(j%2)?coral:cream,edge=cc.map(v=>v*.72);
+   varyQuad(c,pt(r0,d1,h0),pt(r0,c10,h0),pt(r1,c11,h1),pt(r1,d1,h1),[cc,cc,cc,cc],.14);
+   varyQuad(c,pt(r0,c10,h0),pt(r0,c10,0),pt(r1,c11,0),pt(r1,c11,h1),[edge,edge,edge,edge],.08);
+   varyQuad(c,pt(r0,c10,.01),pt(r0,side*verge,-.08),pt(r1,side*verge,-.08),pt(r1,c11,.01),[walk.map(v=>v*.96),groundCol,groundCol,walk.map(v=>v*.96)],.04);
   }
-  if(raceMode==='circuit')for(const side of [-1,1]){quad(c,pt(r0,side*8.6,.06),pt(r0,side*11,.06),pt(r1,side*11,.06),pt(r1,side*8.6,.06),'#d9d9e4');quad(c,pt(r0,side*11,.06),pt(r0,side*11,-1.25-r0.p[1]),pt(r1,side*11,-1.25-r1.p[1]),pt(r1,side*11,.06),'#b5bbcb')}
-  if(raceMode==='circuit')for(const side of [-1,1])if(sceneryClear(s+2,side*20)){quad(c,pt(r0,side*11,-.12),pt(r0,side*28,-.12),pt(r1,side*28,-.12),pt(r1,side*11,-.12),biome.ground);quad(c,pt(r0,side*28,-.12),pt(r0,side*28,-1.25-r0.p[1]),pt(r1,side*28,-1.25-r1.p[1]),pt(r1,side*28,-.12),'#bdc4c7')}
-  if(j%3===0)for(const l of [-2.33,2.33]){const p=atRoad(s+1.5,l,.061);c.add(rounded(2.2,.015,.07,.004),trs(L(p),[1,1,1],[0,-r0.h,0]),'#e0e4e8')}
+  const bridgeDeck=typeof coastBridgeSpan==='function'&&coastBridgeSpan(a0.s);
+  if(raceMode==='circuit'&&!bridgeDeck)for(const side of [-1,1]){quad(c,pt(r0,side*11,.02),pt(r0,side*11,-1.25-r0.p[1]),pt(r1,side*11,-1.25-r1.p[1]),pt(r1,side*11,.02),'#b5bbcb')}
+  if(raceMode==='circuit'&&!bridgeDeck)for(const side of [-1,1])if(sceneryClear(a0.s+2,side*20)){quad(c,pt(r0,side*11,-.12),pt(r0,side*28,-.12),pt(r1,side*28,-.12),pt(r1,side*11,-.12),biome.ground);quad(c,pt(r0,side*28,-.12),pt(r0,side*28,-1.25-r0.p[1]),pt(r1,side*28,-1.25-r1.p[1]),pt(r1,side*28,-.12),'#bdc4c7')}
+  if(j%3===0)for(const l of [-2.33,2.33]){const p=atRoad(Math.min(a0.s+1.5,CIRCUIT_LENGTH),l,.064);c.add(rounded(4.2,.02,.24,.012),trs(L(p),[1,1,1],[0,-r0.h,Math.atan(r0.slope)]),'#f7eedb',.12)}
+  if(raceMode==='circuit'&&k%2===0){const ss=Math.min(start+20,CIRCUIT_LENGTH),r=road(ss);if(Math.abs(r.curv)>.014){const sideOut=-Math.sign(r.curv),dir=r.curv>0?'right':'left';signNodes.push(new Node(scenicMesh('turn-sign-'+dir,c=>turnSign(c,dir==='right')),trs(L(atRoad(ss,sideOut*10.4,.08)),[1,1,1],[0,-r.h-PI/2,0])))}
+  }
  }
- // A solid curb, two rail beams and reflectors define the drivable boundary.
+ // A solid guardrail: cylindrical posts and two continuous horizontal beams.
  for(const side of [-1,1]){
-  const railPoints=Array.from({length:11},(_,i)=>L(atRoad(start+i*4,side*8.1,.72)));path(c,railPoints,.07,'#b7c6d9');
-  path(c,Array.from({length:11},(_,i)=>L(atRoad(start+i*4,side*8.1,.40))),.045,'#c7d5e2');
-  for(let j=0;j<5;j++){const ss=start+3+j*8;if(raceMode==='circuit'&&ss>CIRCUIT_LENGTH)break;const p=L(atRoad(ss,side*8.1,0));bar(c,p,add(p,[0,.84,0]),.055,'#9caec2');box(c,add(p,[0,.75,0]),[.12,.15,.19],j%2?'#f7bbcf':'#fff1b9',.02)}
+  const railL=side*8.75,railPoints=y=>Array.from({length:11},(_,i)=>L(atRoad(stations[i].s,railL,y)));
+  path(c,railPoints(1.0),.07,'#b9c6d4');
+  path(c,railPoints(.58),.052,'#c8d4df');
+  for(let j=0;j<=10;j+=2){const p=L(atRoad(stations[j].s,railL,.02));bar(c,p,add(p,[0,1.03,0]),.082,'#a3b2c2');box(c,add(p,[0,.92,0]),[.16,.17,.21],(j/2)%2?'#f4c25f':'#f8e8c6',.02)}
  }
  const entities=[],roadsideProps=[];function entity(kind,s,l){if(roadDriving&&['coin','pad','ramp'].includes(kind))return;if(raceMode==='circuit'&&s>CIRCUIT_LENGTH-20)return;
   // Fixed coast opening only: preserve road, props, random stream and physics.
@@ -58,7 +82,7 @@ function chunkMesh(k){const start=k*40,origin=road(start).p,c=new Collector(),rr
   entities.push({kind,s,l,node:new Node(mesh),hit:false,width:kind==='barrier'?1.5:kind==='cone'?.85:kind==='coin'?1.12:1.9})}
  if(k>=2){let freeLane=Math.floor(rr()*3),lanes=[-4.2,0,4.2];const chance=raceMode==='circuit'?(Math.abs(road(start+22).curv)<.013?.42:.12):(k<7?.55:.85);if(rr()<chance){const bad=(freeLane+1+Math.floor(rr()*2))%3;entity(rr()<.75?'cone':'barrier',start+22,raceMode==='circuit'?(bad===1?-5.5:Math.sign(lanes[bad])*5.5):lanes[bad]);if(raceMode==='endless'&&k>10&&rr()<.28)entity('cone',start+22,lanes[3-freeLane-bad])}for(let j=0;j<4;j++)entity('coin',start+7+j*7,lanes[freeLane]);if(k%4===0)entity('pad',start+14,lanes[freeLane]);else if(k>8&&k%7===0)entity('ramp',start+14,lanes[freeLane])}
  if(k===0){for(let j=0;j<12;j++){const a=atRoad(0,-7+j*1.16,.075),r=road(0);c.add(rounded(.9,.015,1.12,.003),trs(L(a),[1,1,1],[0,-r.h,0]),j%2?'#e8e7ed':'#424b66')}for(const side of [-1,1]){const p=L(atRoad(0,side*7.75,.0));bar(c,p,add(p,[0,5,0]),.12,violet)}const a=L(atRoad(0,-7.75,5)),b=L(atRoad(0,7.75,5));bar(c,a,b,.16,violet);for(let j=0;j<7;j++)ball(c,L(atRoad(0,-4.5+j*1.5,5)),[.24,.24,.24],j%2?'#f9d997':'#bfd9f4',true)}
- const node=new Node(c.finish());node.add(decorateChunk(k,origin,rr));for(const prop of roadsideProps)node.add(prop.node);return {k,origin,node,entities,roadsideProps};
+ const mesh=c.finish();mesh.roughness=.88;const node=new Node(mesh);for(const sign of signNodes)node.add(sign);node.add(decorateChunk(k,origin,rr));for(const prop of roadsideProps)node.add(prop.node);return {k,origin,node,entities,roadsideProps};
 }
 function stream(){if(raceMode==='circuit'){const n=Math.ceil(CIRCUIT_LENGTH/40);for(let k=0;k<n;k++)if(!chunks.has(k))chunks.set(k,chunkMesh(k));return}const low=Math.max(-2,Math.floor(player.s/40)-3),high=Math.floor(player.s/40)+9;ensureRoad((high+1)*40);for(let k=low;k<=high;k++)if(!chunks.has(k))chunks.set(k,chunkMesh(k));for(const [k,ch] of chunks)if(k<low){ch.node.mesh.dispose();chunks.delete(k)}const minIndex=Math.floor((player.s-210+80)/4);if(minIndex>pointStart){const n=Math.min(minIndex-pointStart,points.length-10);points.splice(0,n);pointStart+=n}}
 function clearKeys(){heldCodes.clear();touchPointers.clear();for(const k in controlEdges)controlEdges[k]=0;for(const k in input)input[k]=false;for(const b of document.querySelectorAll('.touch button'))b.classList.remove('held')}
@@ -133,8 +157,8 @@ window.addEventListener('keyup',e=>{if(['helpPanel','musicPanel','roomPanel','ra
 for(const b of document.querySelectorAll('[data-key]')){b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);touchPointers.set(e.pointerId,b.dataset.key);refreshControls();b.classList.add('held')});const up=e=>{touchPointers.delete(e.pointerId);refreshControls();b.classList.remove('held')};for(const e of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(e,up)}
 $('endRunBtn').onclick=()=>{if(raceMode==='endless'&&(state==='running'||state==='paused')){$('paused').hidden=true;finish()}};$('recoverBtn').onclick=()=>recoverCar(false);$('startBtn').onclick=()=>start(false);$('retryBtn').onclick=()=>start(false);$('newRouteBtn').onclick=()=>{if(typeof net!=='undefined'&&net.room){showRoom();return}state='ready';reset(true);$('finished').hidden=true;$('welcome').hidden=false};$('rerollBtn').onclick=()=>reset(true);$('pauseBtn').onclick=pauseGame;$('resumeBtn').onclick=pauseGame;$('restartPause').onclick=()=>start(false);$('viewBtn').onclick=()=>{camMode=(camMode+1)%3;announce('CAMERA '+(camMode+1),['追尾镜头','高位镜头','近景镜头'][camMode],1)};$('soundBtn').onclick=()=>{audioInit();sound=!sound;if(audio)audio.ctx.resume().catch(()=>{});$('soundBtn').textContent=sound?'♫':'♪';$('soundBtn').setAttribute('aria-label',sound?'关闭声音':'开启声音');$('soundBtn').title=sound?'声音已开启':'声音已关闭';if(sound)tone(600)};
 // Renderer-independent scene traversal. Three.js handles GPU rendering.
-const floorMeshes=['#a1cddd','#c2d4bc'].map(c=>new Collector().add(rounded(1100,.16,1100,.04),I,c,.02).finish()),floorNode=new Node();
-const drawList=[];function collect(n,p=I,cast=true,tint=null,opacity=1){n.world=mm(p,n.local);const shadow=cast&&n.shadow;const paint=n.tint||tint,alpha=n.opacity??opacity;if(n.mesh)drawList.push({mesh:n.mesh,m:n.world,shadow,tint:paint,opacity:alpha});for(const c of n.children)collect(c,n.world,shadow,paint,alpha)}
+const floorMeshes=['#2f86ab','#c2d4bc'].map(c=>new Collector().add(rounded(1100,.16,1100,.04),I,c,.02).finish()),floorNode=new Node();floorMeshes[0].roughness=.34;floorMeshes[1].roughness=.92;
+const drawList=[];function collect(n,p=I,cast=true,tint=null,opacity=1){if(n.hidden)return;n.world=mm(p,n.local);const shadow=cast&&n.shadow;const paint=n.tint||tint,alpha=n.opacity??opacity;if(n.mesh)drawList.push({mesh:n.mesh,m:n.world,shadow,tint:paint,opacity:alpha});for(const c of n.children)collect(c,n.world,shadow,paint,alpha)}
 let width=1,height=1;function resize(){width=captureRuntime.active?CAPTURE_SIZE.width:Math.max(1,canvas.clientWidth);height=captureRuntime.active?CAPTURE_SIZE.height:Math.max(1,canvas.clientHeight);const dpr=captureRuntime.active?1:Math.min(devicePixelRatio||1,1.5),w=Math.round(width*dpr),h=Math.round(height*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}}new ResizeObserver(resize).observe(canvas);resize();
 reset(false);
 let currentView=null;
@@ -143,6 +167,7 @@ function renderCurrentFrame(){
  const view=captureView(currentView);drawList.length=0;collect(world);const fov=captureRuntime.options?.preset.fov??cameraFov;
  const vp=mm(perspective(fov*PI/180,width/height,.12,850),lookAt(view.eye,view.target));projectPeerLabels(vp);
  if(software)drawSoftware(view);else renderStats=threeBackend.render(drawList,view,width,height,fov,settings,gameClock.now());
+ if(typeof globalThis!=='undefined')globalThis.__starDebug={world,road,player,view,chunks};
 }
 function captureView(view){
  const preset=captureRuntime.options?.preset;if(preset?.camera!=='road-fixed')return view;
