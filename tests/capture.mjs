@@ -3,28 +3,18 @@ import assert from 'node:assert/strict';
 import {mkdir, writeFile, readFile} from 'node:fs/promises';
 import {resolve, isAbsolute, join} from 'node:path';
 import {createHash} from 'node:crypto';
-import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {parseCaptureCli,captureSourceEvidence} from './capture-cli.mjs';
 import {chromium} from 'playwright';
 import {smokeLaunchOptions,requiredBrowserArgs,assertArgv,assertCaseUrl,restrictCaseContext} from './smoke-launch.mjs';
 import {PNG} from 'pngjs';
 import {CAPTURE_PRESETS} from '../capture-presets.mjs';
-import {parseCaptureOptions, classifyRenderer} from '../capture-mode.mjs';
+import {classifyRenderer} from '../capture-mode.mjs';
 
-const [base, output, shot='coast-chase', ...args]=process.argv.slice(2);
-if(!base||!output)throw Error('Usage: npm run capture -- <local-base-url> <new-output-directory> [shot] [--repeat] [--software] [--headful] [--seed n] [--t seconds] [--frames n] [--input name] [--hardware-evidence file]');
-const url=assertCaseUrl(base);url.searchParams.set('shot',shot);
-let repeat=false,software=true,headful=false,hardwareEvidencePath=null;
-for(let index=0;index<args.length;index++){
- const arg=args[index];
- if(arg==='--repeat')repeat=true;
- else if(arg==='--software')software=true;
- else if(arg==='--headful')headful=true;
- else if(['--seed','--t','--frames','--input','--hardware-evidence'].includes(arg)){
-  const value=args[++index];if(value===undefined)throw Error('Missing '+arg+' value');
-  if(arg==='--hardware-evidence')hardwareEvidencePath=value;else url.searchParams.set(arg.slice(2),value);
- }else throw Error('Unknown argument: '+arg);
-}
-const options=parseCaptureOptions(url.search),preset=CAPTURE_PRESETS[shot];
+const {url,output,shot,repeat,software,headful,hardwareEvidencePath,expectedCommit,options}=parseCaptureCli(process.argv.slice(2));
+const preset=CAPTURE_PRESETS[shot];
+// Resolve the game checkout, not whichever directory invoked this script. Fail before starting a browser.
+const source=captureSourceEvidence(fileURLToPath(new URL('..',import.meta.url)),expectedCommit);
 const evidence=hardwareEvidencePath?JSON.parse(await readFile(hardwareEvidencePath,'utf8')):null;
 if(evidence&&(!evidence.source||!evidence.renderer||evidence.hardwareAccelerated!==true))throw Error('Hardware evidence needs source, exact renderer, and hardwareAccelerated: true');
 const directory=resolve(output);await mkdir(directory,{recursive:false}); // Never reuse a stale passing receipt.
@@ -33,7 +23,7 @@ if(executablePath&&!isAbsolute(executablePath))throw Error('STAR_RUSH_CAPTURE_CH
 const launchOptions={...smokeLaunchOptions({...process.env,STAR_RUSH_SMOKE_CHROMIUM:executablePath}),headless:!headful,
  args:[...requiredBrowserArgs,'--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows']};
 const report={passed:false,scope:'deterministic-scene-only',shot,options:{...options,preset:undefined},launchOptions,runs:[],errors:[]};
-try{report.commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();report.dirty=Boolean(execFileSync('git',['status','--porcelain','--untracked-files=no'],{encoding:'utf8'}).trim());}catch{report.commit=null;}
+Object.assign(report,source,{expectedCommit,nodeVersion:process.version,url:url.href});
 let browser;
 const save=()=>writeFile(join(directory,'report.json'),JSON.stringify(report,null,2)+'\n');
 await save();
