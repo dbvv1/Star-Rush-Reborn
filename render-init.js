@@ -1,8 +1,9 @@
 import {createThreeBackend} from './render-three.js';
+import {createIslandThreeBackend} from './render-three-island.js';
 
 // Runs before game/input listeners bind to the canvas. A canvas whose WebGL
 // context was acquired cannot switch to 2D after renderer construction fails.
-export function initializeRendering(canvas, options={}, createBackend=createThreeBackend){
+export function initializeRendering(canvas, options={}, createBackend=options.look==='coast-island-v1'?createIslandThreeBackend:createThreeBackend){
  let threeBackend;
  try{threeBackend=createBackend(canvas,options)}catch{threeBackend=null;}
  if(threeBackend)return {canvas,threeBackend,software:false,softwareContext:null};

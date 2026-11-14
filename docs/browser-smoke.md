@@ -39,7 +39,7 @@ smoke 与 capture 的共享启动参数显式包含 `--enable-automation`，这�
 
 ## 完整公路比赛与全程帧耗
 
-原 `npm run smoke` 继续只验开局。完整入口为 `npm run smoke -- --full-race --path /road --timeout-ms 900000`，可用 `--path '/road?environment=coast-space-v1'` 指定已有整层候选，其他 query 拒绝；构建开关沿用调用环境。只接受公路入口，不接受拍摄模式、虚拟时钟或 `/legacy`。需要 WebGL2 的运行仍按游戏细则 §7 串行安排；本入口不会解决未知占用、桌面离线或浏览器启动限制。
+原 `npm run smoke` 继续只验开局。完整入口为 `npm run smoke -- --full-race --path /road --timeout-ms 900000`，可用 `--path '/road?environment=coast-space-v1'` 指定已有整层候选，`--path '/road?scene=coast-island-v1'` 指定海岛外观开关（报告要求 `starSideStatus.island` 实际生效），其他 query 拒绝；构建开关沿用调用环境。只接受公路入口，不接受拍摄模式、虚拟时钟或 `/legacy`。需要 WebGL2 的运行仍按游戏细则 §7 串行安排；本入口不会解决未知占用、桌面离线或浏览器启动限制。
 
 该入口使用现有菜单选择汐见海岸、竞速、high 固定画质，点击自动试驾，按真实时间运行至结果。浏览器新上下文固定 1280×720／DPR 1；不注入终点、不跳 tick、不修改 AI。报告核对实际服务 bundle 的 SHA256 与本地生产公路产物，记录入口、renderer 原始字符串与 Chromium 版本；开局与结束均核 starSideStatus 的实际候选状态、WebGL2、warnings 和 tick 推进，静默回退不通过。比较不同构建需分别保留 outputs/smoke，不能覆盖前一轮。
 
@@ -50,3 +50,7 @@ smoke 与 capture 的共享启动参数显式包含 `--enable-automation`，这�
 同档、同 viewport、同赛道、同起止区间和同 renderer 的新旧运行才能比较帧耗。保留原始长帧并核 p95/p99/max 与错误状态，平均 FPS 不能代替尾延迟。工具只给出整局功能与帧耗证据，不自动决定“无明显劣化”或换默认。自动试驾不代表真人驾驶手感、听感或视觉盲选。
 
 CPU 回归：`node --test tests/smoke-full-race.test.mjs tests/smoke-run.test.mjs`。覆盖正常结果、缺参数、非法/虚拟拍摄入口、缺终点、采样断裂/非法时值、DNF、名次/存档不符、超时部分收据及真实序列化观察器；通过不等于浏览器整局已运行。
+
+## 海岛外观开关 `scene=coast-island-v1`
+
+只改表现：海水与沙滩分层、港口商铺与看台、棕榈与岸礁、路面分道与排水沟、低路缘、转弯牌，以及 `render-three-island.js` 的 standard 材质、生成天空环境光和随视角的主光。赛道几何、碰撞、7.02 m 墙限、护栏位置（8.1 m）和存档不变；开关关闭时三个固定机位与现行默认逐像素一致，`npm test` 的默认景观字节检查照常通过。开关只在海岸空间启用时生效。

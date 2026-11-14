@@ -14,7 +14,8 @@ export function parseSmokeArgs(args) {
       if(!value || !/^\/(?:road\/?)?(?:\?.*)?$/.test(value)) throw Error('path must be / or /road with optional query');
       const url=new URL(value,'http://localhost');
       for(const [key,value] of url.searchParams) {
-        if(key!=='environment'||!['coast-space-v1','baseline'].includes(value)||url.searchParams.getAll(key).length!==1) throw Error('Only one environment=coast-space-v1 or baseline is supported');
+        const allowed=key==='environment'?['coast-space-v1','baseline']:key==='scene'?['coast-island-v1']:null;
+        if(!allowed||!allowed.includes(value)||url.searchParams.getAll(key).length!==1) throw Error('Only one environment=coast-space-v1|baseline and one scene=coast-island-v1 are supported');
       }
       result.path=value;
     } else throw Error('Unknown smoke argument: '+args[i]);
@@ -135,6 +136,8 @@ export function validateRaceCandidate(status,path) {
   assert.ok(status,'runtime candidate status missing');
   assert.equal(status.space,expected,'requested environment fell back or did not activate');
   assert.equal(status.power,false,'unexpected handling candidate');
+  // The island look is reported only when requested and requires the coast space.
+  assert.equal(status.island===true,expected&&params.get('scene')==='coast-island-v1','requested scene fell back or did not activate');
   assert.equal(status.backend,'webgl2');
   assert.deepEqual(status.warnings,[],'runtime fallback warning');
   assert.ok(Number.isFinite(status.ticks),'runtime tick count missing');

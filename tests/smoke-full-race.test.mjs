@@ -45,6 +45,10 @@ test('candidate activation and fallback are verified against the requested path'
  const status={space:true,power:false,backend:'webgl2',warnings:[],ticks:0};
  validateRaceCandidate(status,'/');
  validateRaceCandidate({...status,space:true},'/road?environment=coast-space-v1');
+ validateRaceCandidate({...status,space:true,island:true},'/road?scene=coast-island-v1');
+ assert.throws(()=>validateRaceCandidate({...status,space:true},'/road?scene=coast-island-v1'));
+ assert.throws(()=>validateRaceCandidate({...status,space:true,island:true},'/road'));
+ assert.equal(parseSmokeArgs(['--path','/road?scene=coast-island-v1']).path,'/road?scene=coast-island-v1');
  for(const bad of [undefined,{...status,space:false},{...status,power:true},{...status,backend:'canvas2d'},{...status,warnings:['fallback']}]) assert.throws(()=>validateRaceCandidate(bad,'/'));
  validateRaceCandidate({...status,space:false},'/road?environment=baseline');
  assert.throws(()=>validateRaceCandidate({...status,space:false},'/?environment=coast-space-v1'));
