@@ -94,7 +94,7 @@ function chunkMeshIsland(k){const start=k*40,origin=road(start).p,c=new Collecto
   if(raceMode==='circuit')for(const side of [-1,1]){quad(c,pt(r0,side*11,.02),pt(r0,side*11,-1.25-r0.p[1]),pt(r1,side*11,-1.25-r1.p[1]),pt(r1,side*11,.02),'#b5bbcb')}
   if(raceMode==='circuit')for(const side of [-1,1])if(sceneryClear(a0.s+2,side*20)){quad(c,pt(r0,side*11,-.12),pt(r0,side*28,-.12),pt(r1,side*28,-.12),pt(r1,side*11,-.12),biome.ground);quad(c,pt(r0,side*28,-.12),pt(r0,side*28,-1.25-r0.p[1]),pt(r1,side*28,-1.25-r1.p[1]),pt(r1,side*28,-.12),'#bdc4c7')}
   if(j%3===0)for(const l of [-2.33,2.33]){const p=atRoad(Math.min(a0.s+1.5,CIRCUIT_LENGTH),l,.064);c.add(rounded(4.2,.02,.24,.012),trs(L(p),[1,1,1],[0,-r0.h,Math.atan(r0.slope)]),'#f7eedb',.12)}
-  if(raceMode==='circuit'&&k%2===0){const ss=Math.min(start+20,CIRCUIT_LENGTH),r=road(ss);if(Math.abs(r.curv)>.014){const sideOut=-Math.sign(r.curv),dir=r.curv>0?'right':'left';signNodes.push(new Node(scenicMesh('turn-sign-'+dir,c=>turnSign(c,dir==='right')),trs(L(atRoad(ss,sideOut*10.4,.08)),[1,1,1],[0,-r.h-PI/2,0])))}
+  if(raceMode==='circuit'&&k%2===0){const ss=Math.min(start+20,CIRCUIT_LENGTH),r=road(ss);if(Math.abs(r.curv)>.014){const sideOut=-Math.sign(r.curv),dir=r.curv>0?'right':'left';signNodes.push(new Node(scenicMesh('turn-sign-'+dir,c=>turnSign(c,dir!=='right')),trs(L(atRoad(ss,sideOut*10.4,.08)),[1,1,1],[0,-r.h-PI/2,0])))}
   }
  }
  // A solid guardrail: cylindrical posts and two continuous horizontal beams.

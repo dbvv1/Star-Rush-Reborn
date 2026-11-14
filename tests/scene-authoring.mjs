@@ -15,8 +15,8 @@ export const SOURCE_HASHES={
   "engine.js": "baa90e01c1eee30ba88ee1316a7a390a168415826208f379b2b608c4b89d505a",
   "racer.js": "4e6008c7fcce64342078cd06051a931edc4153f23756bbb4498abdd9022d7d39",
   "circuit.js": "3ffe538eb89f13ca2373d001ce152658e52155db8a172ebe75d0e283f16e4147",
-  "scenery.js": "f1b2370f67d2e3c26693a3911ad1d87b4bc73f4785f0af67400f64fa86216304",
-  "race.js": "c958580175773545c6179f35935c8a297d2519ad84b9ef7dc8d16ba406a039b8",
+  "scenery.js": "3fab7957bb0c205aa824b81098563bfdec189bfaa772e8d0edcdc0719c51d9d3",
+  "race.js": "cd0d79b1e68d096a54179aa7aee9dacf8b91549956f73a335c1c2680eb8f2f31",
   "handling.js": "70878058cc5b36d6058298ce0f940442c4c1a5a814a256607792a0ebbf30e3a5"
 };
 export function validateSources(root=process.cwd()){

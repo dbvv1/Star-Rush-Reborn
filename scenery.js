@@ -334,8 +334,16 @@ function coastalShoreLayers(target,model){
  };
  const foam=new Collector();
  for(const chain of lines){
-  const widths=chain.map(p=>{
-   const near=model.nearest(p[0],p[1]),bay=near.side>0?16*Math.exp(-(((near.r.s-545)/70)**2)):0,wob=.8*Math.sin(near.r.s*.17+p[0]*.06),sandOut=3.6+bay+wob;
+  const nears=chain.map(p=>model.nearest(p[0],p[1])),bays=nears.map(near=>near.side>0?16*Math.exp(-(((near.r.s-545)/70)**2)):0);
+  // The nearest road side can flip between neighbouring contour points at a
+  // headland, which would jump the bay width and fan one quad into a spike.
+  // Let the bay grow by at most 0.6 m per metre of shoreline in either direction.
+  for(let pass=0;pass<2;pass++)for(let j=1;j<chain.length;j++){
+   const i=pass?chain.length-1-j:j,k=pass?i+1:i-1,d=Math.hypot(chain[i][0]-chain[k][0],chain[i][1]-chain[k][1]);
+   bays[i]=Math.min(bays[i],bays[k]+d*.6);
+  }
+  const widths=chain.map((p,j)=>{
+   const near=nears[j],bay=bays[j],wob=.8*Math.sin(near.r.s*.17+p[0]*.06),sandOut=3.6+bay+wob;
    return {sandOut,lightOut:sandOut+6+bay*.42,deepOut:sandOut+17+bay*.92,foamOut:3.4+bay*.42};
   });
   for(let j=0;j<chain.length-1;j++){
