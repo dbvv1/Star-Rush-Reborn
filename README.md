@@ -4,7 +4,7 @@
 
 ## 海岸公路
 
-[开始比赛](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/road/)：汐见海岸默认使用连续地形、道路承接与 320–680 m 街屋。菜单仍可选择三条闭环赛道、比赛或计时；原道路场景可用 `?environment=baseline` 回退。
+[开始比赛](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/road/)：汐见海岸默认使用连续地形、道路承接与 320–680 m 街屋。菜单仍可选择三条闭环赛道、比赛或计时；原道路场景可用 `?environment=baseline` 回退。加 `?scene=baseline` 可回到无海岛外观的上一版默认。
 
 ## 运行
 

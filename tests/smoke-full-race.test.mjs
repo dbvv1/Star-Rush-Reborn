@@ -36,23 +36,26 @@ test('actual serialized observer captures every scheduled interval through resul
 });
 test('timeout retains partial receipt and never marks completion',async()=>{
  const report={}, partial={started:true,finished:false,frames:[]};
- const page={locator:()=>({click:async()=>{},selectOption:async()=>{}}),evaluate:async fn=>fn===installRaceObserver?undefined:fn.toString().includes('starSideStatus')?{space:true,power:false,backend:'webgl2',warnings:[],ticks:0}:partial,waitForFunction:async()=>{throw Error('timeout')}};
+ const page={locator:()=>({click:async()=>{},selectOption:async()=>{}}),evaluate:async fn=>fn===installRaceObserver?undefined:fn.toString().includes('starSideStatus')?{space:true,island:true,power:false,backend:'webgl2',warnings:[],ticks:0}:partial,waitForFunction:async()=>{throw Error('timeout')}};
  await assert.rejects(runFullRace(page,{timeoutMs:1000},report),/timeout/);
  assert.equal(report.fullRace,partial);assert.equal(report.frameCadence,undefined);
 });
 
 test('candidate activation and fallback are verified against the requested path',()=>{
- const status={space:true,power:false,backend:'webgl2',warnings:[],ticks:0};
+ const status={space:true,island:true,power:false,backend:'webgl2',warnings:[],ticks:0};
  validateRaceCandidate(status,'/');
- validateRaceCandidate({...status,space:true},'/road?environment=coast-space-v1');
- validateRaceCandidate({...status,space:true,island:true},'/road?scene=coast-island-v1');
- assert.throws(()=>validateRaceCandidate({...status,space:true},'/road?scene=coast-island-v1'));
- assert.throws(()=>validateRaceCandidate({...status,space:true,island:true},'/road'));
+ validateRaceCandidate(status,'/road?environment=coast-space-v1');
+ validateRaceCandidate(status,'/road?scene=coast-island-v1');
+ validateRaceCandidate({...status,island:false},'/road?scene=baseline');
+ assert.throws(()=>validateRaceCandidate({...status,island:false},'/road?scene=coast-island-v1'));
+ assert.throws(()=>validateRaceCandidate(status,'/road?scene=baseline'));
+ assert.throws(()=>validateRaceCandidate({...status,island:false},'/road'));
  assert.equal(parseSmokeArgs(['--path','/road?scene=coast-island-v1']).path,'/road?scene=coast-island-v1');
+ assert.equal(parseSmokeArgs(['--path','/road?scene=baseline']).path,'/road?scene=baseline');
  for(const bad of [undefined,{...status,space:false},{...status,power:true},{...status,backend:'canvas2d'},{...status,warnings:['fallback']}]) assert.throws(()=>validateRaceCandidate(bad,'/'));
- validateRaceCandidate({...status,space:false},'/road?environment=baseline');
- assert.throws(()=>validateRaceCandidate({...status,space:false},'/?environment=coast-space-v1'));
- for(const path of ['/?environment=unknown','/?environment=coast-space-v1&environment=coast-space-v1','/?handling=power-tires-v1','/?ignored=true']) assert.throws(()=>parseSmokeArgs(['--path',path]));
+ validateRaceCandidate({...status,space:false,island:false},'/road?environment=baseline');
+ assert.throws(()=>validateRaceCandidate({...status,space:false,island:false},'/?environment=coast-space-v1'));
+ for(const path of ['/?environment=unknown','/?scene=unknown','/?environment=coast-space-v1&environment=coast-space-v1','/?scene=coast-island-v1&scene=coast-island-v1','/?handling=power-tires-v1','/?ignored=true']) assert.throws(()=>parseSmokeArgs(['--path',path]));
 });
 
 test('restart requires movement and changing time, and releases input on failure',async()=>{
@@ -109,7 +112,7 @@ test('full-race setup selects high quality through the hidden real settings cont
      demoStarted=true;
     }
    }}),
-   evaluate:async fn=>fn===installRaceObserver?undefined:fn.toString().includes('starSideStatus')?{space:true,power:false,backend:'webgl2',warnings:[],ticks:0}:partial,
+   evaluate:async fn=>fn===installRaceObserver?undefined:fn.toString().includes('starSideStatus')?{space:true,island:true,power:false,backend:'webgl2',warnings:[],ticks:0}:partial,
    waitForFunction:async()=>{throw Error('stop before browser race')}
   };
   await assert.rejects(runFullRace(page,{timeoutMs:1000},report),/stop before browser race/);
