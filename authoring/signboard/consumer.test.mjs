@@ -26,3 +26,9 @@ test('consumer source drift is rejected before scene execution',t=>{
   writeFileSync(join(root,'scenery.js'),readFileSync(join(root,'scenery.js'),'utf8')+'\nthrow Error("must not execute")');
   assert.throws(()=>mapConsumers(root),/Pinned source mismatch: scenery.js/);
 });
+
+test('missing fixed source is rejected before scene execution',t=>{
+  const root=mkdtempSync(join(tmpdir(),'signboard-consumer-missing-'));
+  t.after(()=>rmSync(root,{recursive:true,force:true}));
+  assert.throws(()=>mapConsumers(root),error=>error.code==='ENOENT'&&error.path===join(root,'engine.js'));
+});

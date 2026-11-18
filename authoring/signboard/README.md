@@ -18,7 +18,7 @@ CPU 作者图采用固定相机与粗糙材质近似，不是游戏截图，也�
 
 ## 定位真实场景消费者
 
-`node authoring/signboard/consumer.mjs` 在离线 Node VM 执行摘要锁定的正式 `chunkMesh → decorateChunk → scenicProp`，只追加对象身份，不修改几何或放置规则；沿正式固定种子遍历三条赛道。每块牌的实际 Float32 网格与原始 `signBoard` 逐项比对，世界矩阵、左右方向和赛道距离写到忽略提交的 `outputs/signboard-author/consumers.json`。回归：`node --test authoring/signboard/consumer.test.mjs`。
+`node authoring/signboard/consumer.mjs` 在离线 Node VM 执行摘要锁定的旧场景 `chunkMesh → decorateChunk → scenicProp`，使用 `roadDriving=false`、`coastFlowCandidate=false` 与固定时钟，不代表当前 `/road/` 默认配置。它只追加对象身份，不修改几何或放置规则，沿原固定种子遍历三条赛道。每块牌的实际 Float32 网格与原始 `signBoard` 逐项比对，世界矩阵、左右方向和赛道距离写到忽略提交的 `outputs/signboard-author/consumers.json`。回归：`node --test authoring/signboard/consumer.test.mjs`（也随 `npm test` 运行）。
 
 | 赛道 | 左／右数量 | 第一块牌的赛道距离 |
 |---|---|---|

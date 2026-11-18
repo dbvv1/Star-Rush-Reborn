@@ -9,7 +9,8 @@ import {validateSources,SOURCE_HASHES} from '../../tests/scene-authoring.mjs';
 export function mapConsumers(root=process.cwd()) {
   validateSources(root);
   const read=f=>readFileSync(join(root,f),'utf8');
-  let source='';
+  // Match the fixed legacy scene-authoring fixture, not the current road default.
+  let source='const coastFlowCandidate=false,roadDriving=false;\n';
   for(const file of ['engine.js','racer.js','circuit.js','scenery.js','race.js']) {
     let code=read(file);
     if(file==='race.js')code=code.slice(0,code.indexOf('function stream()'));
@@ -38,7 +39,7 @@ export function mapConsumers(root=process.cwd()) {
     }
     tracks.push({id,seed:routeSeed,length:CIRCUIT_LENGTH,boards});
   }result=tracks;`;
-  const scope={document:{getElementById:()=>({})},localStorage:{getItem:()=>null},performance:{now:()=>0},console,result:null};
+  const scope={document:{getElementById:()=>({})},localStorage:{getItem:()=>null},performance:{now:()=>0},gameClock:{now:()=>0,wallNow:()=>1700000000000},console,result:null};
   vm.runInNewContext(source,scope,{timeout:60000});
   const tracks=JSON.parse(JSON.stringify(scope.result));
   for(const track of tracks) {
