@@ -1,0 +1,687 @@
+{
+  "task": "B-STAR-COAST-READ-TURN-20261117",
+  "scope": "Hardware WebGL2 headless fixed-camera A/B of the first coast block corner (turn sign at s=405 m)",
+  "source": {
+    "commit": "1796e9fc65c1af64415ecbf151432f0e273c1c3c",
+    "baseRef": "1796e9fc65c1af64415ecbf151432f0e273c1c3c",
+    "resultBranch": "relay/b-star-coast-read-turn-20261117"
+  },
+  "buildSwitches": {
+    "STAR_RUSH_SIGNBOARD_VARIANT": {
+      "default": "baseline (unset)",
+      "navy": "navy-v1"
+    },
+    "other": "build defaults (DRIVING_MODEL=road, COAST_FLOW=baseline, SKY=kenney, COAST_AMBIENCE=off, RAIL_SOURCE=kenney, DRIVING_AUDIO=procedural, CANVAS_HOUSE_ANCHORS=off)"
+  },
+  "builds": {
+    "default": {
+      "exitCode": 0,
+      "roadBundleSha256": "b7780ce70b86f885d920e25767c404b40f703a546dc1ec5577d5e7536a5e26d0",
+      "workerSha256": "ba82a1b5a7820c180f7ae62f8d65f6585b80c447beaee820b8059d41c7a1dae8"
+    },
+    "navy": {
+      "exitCode": 0,
+      "roadBundleSha256": "ccf3d54d9e00aa0b8b5a8dc71e273f5367071cfaf429ec07f41b2c51e28ac7fa",
+      "workerSha256": "adc0804035dcbc5e964ba2751087a95093c8b45c6f487864c9801326c120c16b"
+    }
+  },
+  "bundleDiff": {
+    "file": "dist/client/road/game.js",
+    "lengthEqual": true,
+    "differingBytes": 12,
+    "onlyChange": "two arrow-color literals #bd8faf -> #415873",
+    "workerDifferingBytes": 36,
+    "workerNote": "dist/server/index.js embeds three client bundles (game.js, road/game.js, legacy/game.js); each carries the same two literals, so 3 x 2 x 6 = 36 bytes differ",
+    "note": "physics, camera, placement and all other bundle bytes identical; other client bundles (game.js, legacy/game.js) also differ only by their own two literals (12 bytes each)"
+  },
+  "serving": {
+    "entry": "tests/smoke-server.mjs startSmokeServer; production Worker, in-memory SQLite, loopback only",
+    "default": {
+      "servedBundleStatus": 200,
+      "servedBundleSha256": "b7780ce70b86f885d920e25767c404b40f703a546dc1ec5577d5e7536a5e26d0",
+      "matchesBuild": true
+    },
+    "navy": {
+      "servedBundleStatus": 200,
+      "servedBundleSha256": "ccf3d54d9e00aa0b8b5a8dc71e273f5367071cfaf429ec07f41b2c51e28ac7fa",
+      "matchesBuild": true
+    },
+    "servedBundlesDiffer": true
+  },
+  "capture": {
+    "exitCode": 0,
+    "entry": "/road/?shot=coast-chase&seed=73121&input=road-tour&t=<t>&frames=1",
+    "browser": "156.0.8078.4",
+    "browserChannel": "Playwright full Chromium (chrome-win64), headless, not headless_shell",
+    "headless": true,
+    "actualRenderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 (0x00002F04) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "rendererInfo": {
+      "api": "webgl2",
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 (0x00002F04) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "maskedRenderer": "WebKit WebGL",
+      "vendor": "Google Inc. (NVIDIA)",
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "classification": "unknown"
+    },
+    "gpu": {
+      "devices": [
+        {
+          "name": "NVIDIA GeForce RTX 5070"
+        },
+        {
+          "name": "AMD Radeon(TM) Graphics"
+        },
+        {
+          "name": "NVIDIA GeForce RTX 5070"
+        },
+        {
+          "name": "NVIDIA GeForce RTX 5070"
+        },
+        {
+          "name": "NVIDIA GeForce RTX 5070"
+        },
+        {
+          "name": "Microsoft Basic Render Driver"
+        }
+      ],
+      "aux": {
+        "glRenderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 (0x00002F04) Direct3D11 vs_5_0 ps_5_0, D3D11-32.0.16.2101)",
+        "glVendor": "Google Inc. (NVIDIA)"
+      }
+    },
+    "argvRelevant": [
+      "--enable-unsafe-swiftshader",
+      "--headless",
+      "--no-sandbox",
+      "--enable-automation",
+      "--enable-unsafe-swiftshader"
+    ],
+    "swiftshaderForced": false,
+    "hardwareVerification": {
+      "method": "CDP SystemInfo.getInfo plus the page's raw WEBGL_debug_renderer_info; no --use-angle=swiftshader and no --disable-gpu were passed",
+      "rendererMatchesSystemInfo": true,
+      "systemInfoGlRenderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 (0x00002F04) Direct3D11 vs_5_0 ps_5_0, D3D11-32.0.16.2101)",
+      "note": "The game's own readRendererInfo.classification stays 'unknown' because it had no separate hardware evidence attached; this receipt records the CDP evidence instead and does not relabel the software path."
+    },
+    "fixedReplayAnchor": {
+      "t": 22,
+      "playerS": 381.765,
+      "expectedPlayerS": 381.76,
+      "crossing405": {
+        "tBefore": 23.267,
+        "sBefore": 404.869,
+        "tAfter": 23.283,
+        "sAfter": 405.176,
+        "expectedT": 23.28
+      },
+      "note": "matches the fixed v12 no-picture replay"
+    },
+    "spec": {
+      "width": 1280,
+      "height": 720,
+      "dpr": 1,
+      "quality": "high",
+      "track": "coast-reborn",
+      "seed": 73121,
+      "input": "road-tour",
+      "camera": "gameplay chase, FOV 62",
+      "warmupFrames": 12,
+      "clock": "60 Hz virtual presentation tick / 120 Hz physics"
+    },
+    "gpuConfirmed": true,
+    "gpuConfirmationSource": "CDP SystemInfo.getInfo (NVIDIA GeForce RTX 5070 D3D11) + raw WEBGL_debug_renderer_info match; no software flags forced"
+  },
+  "delivered": [
+    {
+      "variant": "default",
+      "file": "default/coast-chase-t20.80.png",
+      "t": 20.8,
+      "tick": 1248,
+      "player": {
+        "s": 358.98590885565784,
+        "l": 0.9789122390476075,
+        "yaw": -0.005230702376478954,
+        "speed": 22.066204174531922
+      },
+      "camera": {
+        "eye": [
+          -7.618646968527116,
+          4.554654722037828,
+          3.3694843554773684
+        ],
+        "target": [
+          10.055092654451471,
+          1.0546547220378282,
+          -2.094576210074635
+        ],
+        "origin": [
+          132.95883256326792,
+          0.7506884251523738,
+          91.0180160711408
+        ],
+        "fov": 62
+      },
+      "entry": "/road/?shot=coast-chase&seed=73121&input=road-tour&t=19.5&frames=96",
+      "sequenceFrame": 78,
+      "pngWidth": 1280,
+      "pngHeight": 720,
+      "pngSha256": "3fa87fb562bc47cf8481bebea495fffc492f8dd19b48575d15c614af1c6b9269",
+      "rgbaSha256": "1bf13e9a9bb3e155014ba6b6eb7e81047a5febe8a6c2c525091e9e4d6dce7f50"
+    },
+    {
+      "variant": "navy",
+      "file": "navy/coast-chase-t20.80.png",
+      "t": 20.8,
+      "tick": 1248,
+      "player": {
+        "s": 358.98590885565784,
+        "l": 0.9789122390476075,
+        "yaw": -0.005230702376478954,
+        "speed": 22.066204174531922
+      },
+      "camera": {
+        "eye": [
+          -7.618646968527116,
+          4.554654722037828,
+          3.3694843554773684
+        ],
+        "target": [
+          10.055092654451471,
+          1.0546547220378282,
+          -2.094576210074635
+        ],
+        "origin": [
+          132.95883256326792,
+          0.7506884251523738,
+          91.0180160711408
+        ],
+        "fov": 62
+      },
+      "entry": "/road/?shot=coast-chase&seed=73121&input=road-tour&t=19.5&frames=96",
+      "sequenceFrame": 78,
+      "pngWidth": 1280,
+      "pngHeight": 720,
+      "pngSha256": "0c00f370771d3dc3dcbbd7527d7789c38b0cbfc6e7be5715b53f8b1182395b73",
+      "rgbaSha256": "26b4a2c6449fb776f138880c65eb2114d1d970c707b67d63a59d70edd9ce2f02"
+    },
+    {
+      "variant": "default",
+      "file": "default/coast-chase-t21.50.png",
+      "t": 21.5,
+      "tick": 1290,
+      "player": {
+        "s": 372.7016317107124,
+        "l": 0.9860963529014736,
+        "yaw": -0.05494476314097061,
+        "speed": 18.228076594139605
+      },
+      "camera": {
+        "eye": [
+          -7.150928270149706,
+          4.5554509685452675,
+          4.427366458960236
+        ],
+        "target": [
+          9.61097161875108,
+          1.055450968545268,
+          -3.3983235219929497
+        ],
+        "origin": [
+          145.629123946755,
+          0.8205687273317658,
+          85.69498537116996
+        ],
+        "fov": 62
+      },
+      "entry": "/road/?shot=coast-chase&seed=73121&input=road-tour&t=21&frames=72",
+      "sequenceFrame": 30,
+      "pngWidth": 1280,
+      "pngHeight": 720,
+      "pngSha256": "4d6ddc00fb264cd5e96546121a866eafbb247d74171fd0ea1bd2ae134fbb5ea0",
+      "rgbaSha256": "2cff742b6f13dcf1a841892843277c6f2a34f88839f676fd6a65b2548644f820"
+    },
+    {
+      "variant": "navy",
+      "file": "navy/coast-chase-t21.50.png",
+      "t": 21.5,
+      "tick": 1290,
+      "player": {
+        "s": 372.7016317107124,
+        "l": 0.9860963529014736,
+        "yaw": -0.05494476314097061,
+        "speed": 18.228076594139605
+      },
+      "camera": {
+        "eye": [
+          -7.150928270149706,
+          4.5554509685452675,
+          4.427366458960236
+        ],
+        "target": [
+          9.61097161875108,
+          1.055450968545268,
+          -3.3983235219929497
+        ],
+        "origin": [
+          145.629123946755,
+          0.8205687273317658,
+          85.69498537116996
+        ],
+        "fov": 62
+      },
+      "entry": "/road/?shot=coast-chase&seed=73121&input=road-tour&t=21&frames=72",
+      "sequenceFrame": 30,
+      "pngWidth": 1280,
+      "pngHeight": 720,
+      "pngSha256": "f5ceed0ebad4c0e6cda94f4b71fa355b410729c6213e746594fe0335c36cfc9b",
+      "rgbaSha256": "7eeea6f72743edb28c2b756934aaef140a8828a500c77954c51a3b717e28355d"
+    },
+    {
+      "variant": "default",
+      "file": "default/coast-chase-t22.00.png",
+      "t": 22,
+      "tick": 1320,
+      "player": {
+        "s": 381.76463591761967,
+        "l": 0.5565559794695463,
+        "yaw": -0.06586496743037373,
+        "speed": 18.18460083651672
+      },
+      "camera": {
+        "eye": [
+          -6.9429032292360375,
+          4.555486500445247,
+          4.712785581139158
+        ],
+        "target": [
+          9.024892265521487,
+          1.0554865004452476,
+          -4.628264121835031
+        ],
+        "origin": [
+          153.70827543360147,
+          0.8678390582371988,
+          81.59110111922718
+        ],
+        "fov": 62
+      },
+      "entry": "/road/?shot=coast-chase&seed=73121&input=road-tour&t=21&frames=72",
+      "sequenceFrame": 60,
+      "pngWidth": 1280,
+      "pngHeight": 720,
+      "pngSha256": "df57ae1a5cb482e177032b4cc0443f685f8b4d49d3c8fd7c3d9716b59a259e8d",
+      "rgbaSha256": "392dd12e26c5ffce002f09d0ca7e259e785ceae6e4a8ca8db19e913706f23e93"
+    },
+    {
+      "variant": "navy",
+      "file": "navy/coast-chase-t22.00.png",
+      "t": 22,
+      "tick": 1320,
+      "player": {
+        "s": 381.76463591761967,
+        "l": 0.5565559794695463,
+        "yaw": -0.06586496743037373,
+        "speed": 18.18460083651672
+      },
+      "camera": {
+        "eye": [
+          -6.9429032292360375,
+          4.555486500445247,
+          4.712785581139158
+        ],
+        "target": [
+          9.024892265521487,
+          1.0554865004452476,
+          -4.628264121835031
+        ],
+        "origin": [
+          153.70827543360147,
+          0.8678390582371988,
+          81.59110111922718
+        ],
+        "fov": 62
+      },
+      "entry": "/road/?shot=coast-chase&seed=73121&input=road-tour&t=21&frames=72",
+      "sequenceFrame": 60,
+      "pngWidth": 1280,
+      "pngHeight": 720,
+      "pngSha256": "a80a8d584408fbfaead3bbf083650376fa4be5e9ceaabf3972b6cfc329487dce",
+      "rgbaSha256": "6ef846685b979aecc4ee29afe87e1b4d56b1d1b58b9e661ba4e60f77439f99a3"
+    },
+    {
+      "variant": "default",
+      "file": "default/coast-chase-t23.00.png",
+      "t": 23,
+      "tick": 1380,
+      "player": {
+        "s": 400.0149239125289,
+        "l": 0.043536217604750585,
+        "yaw": -0.00603848721931581,
+        "speed": 18.135795666913488
+      },
+      "camera": {
+        "eye": [
+          -6.821726405710166,
+          4.555147679723006,
+          4.827205766207101
+        ],
+        "target": [
+          8.334230868697205,
+          1.0551476797230062,
+          -5.781330526818394
+        ],
+        "origin": [
+          169.15016273119934,
+          0.9663874465276505,
+          71.8878153411553
+        ],
+        "fov": 62
+      },
+      "entry": "/road/?shot=coast-chase&seed=73121&input=road-tour&t=22&frames=90",
+      "sequenceFrame": 60,
+      "pngWidth": 1280,
+      "pngHeight": 720,
+      "pngSha256": "b439a2b56941fc17015a6fd5cebe010431eb9076dbe3dd5e1f4dbd0802e33d6b",
+      "rgbaSha256": "89a5542ddd0bfd4a3ff1629b3666e1c74a61eff0fef6f2dc6134784de580b7f2"
+    },
+    {
+      "variant": "navy",
+      "file": "navy/coast-chase-t23.00.png",
+      "t": 23,
+      "tick": 1380,
+      "player": {
+        "s": 400.0149239125289,
+        "l": 0.043536217604750585,
+        "yaw": -0.00603848721931581,
+        "speed": 18.135795666913488
+      },
+      "camera": {
+        "eye": [
+          -6.821726405710166,
+          4.555147679723006,
+          4.827205766207101
+        ],
+        "target": [
+          8.334230868697205,
+          1.0551476797230062,
+          -5.781330526818394
+        ],
+        "origin": [
+          169.15016273119934,
+          0.9663874465276505,
+          71.8878153411553
+        ],
+        "fov": 62
+      },
+      "entry": "/road/?shot=coast-chase&seed=73121&input=road-tour&t=22&frames=90",
+      "sequenceFrame": 60,
+      "pngWidth": 1280,
+      "pngHeight": 720,
+      "pngSha256": "eb524d315fa70ada6001b1e3e5f061bc89a0e7cb9303d43df6279881a679bf0a",
+      "rgbaSha256": "dcb22b4efc0a0affe2720296a5ba369fffe95e6fe4b1eed3828b79203255e9f8"
+    }
+  ],
+  "allSamples": {
+    "default": [
+      {
+        "tRequested": 19,
+        "t": 19,
+        "tick": 1140,
+        "playerS": 312.32043281097305,
+        "playerSpeed": 26.646380143384317,
+        "pngSha256": "192983a0db0b2ea7b2bc8ffc7dd498308fc4806beb550b8148f47096b280b2b6"
+      },
+      {
+        "tRequested": 19.5,
+        "t": 19.5,
+        "tick": 1170,
+        "playerS": 325.64704956124876,
+        "playerSpeed": 26.715404352774403,
+        "pngSha256": "21e609b431789d0b87bf56eb6b76d6d3b9e01f7be982644c0c4477417b5a5c21"
+      },
+      {
+        "tRequested": 20,
+        "t": 20,
+        "tick": 1200,
+        "playerS": 338.9823797583655,
+        "playerSpeed": 26.744664181076455,
+        "pngSha256": "99a86d65d59c73bc1a123ed2ed83f0b742f3e451edb6a00b141ed88e6019f44e"
+      },
+      {
+        "tRequested": 20.5,
+        "t": 20.5,
+        "tick": 1230,
+        "playerS": 352.0295450816631,
+        "playerSpeed": 24.637487642614204,
+        "pngSha256": "e2cdc590398a7fa6b93984226257ed0c759655e43c502e700857246ed412382c"
+      },
+      {
+        "tRequested": 21,
+        "t": 21,
+        "tick": 1260,
+        "playerS": 363.20755192110875,
+        "playerSpeed": 20.46565561230469,
+        "pngSha256": "24370dbd0d3c7527c6b225dca14eb198accf4a94d164a0e091715d3355af33c9"
+      },
+      {
+        "tRequested": 21.5,
+        "t": 21.5,
+        "tick": 1290,
+        "playerS": 372.7016317107124,
+        "playerSpeed": 18.228076594139605,
+        "pngSha256": "4d6ddc00fb264cd5e96546121a866eafbb247d74171fd0ea1bd2ae134fbb5ea0"
+      },
+      {
+        "tRequested": 22,
+        "t": 22,
+        "tick": 1320,
+        "playerS": 381.76463591761967,
+        "playerSpeed": 18.18460083651672,
+        "pngSha256": "df57ae1a5cb482e177032b4cc0443f685f8b4d49d3c8fd7c3d9716b59a259e8d"
+      },
+      {
+        "tRequested": 22.5,
+        "t": 22.5,
+        "tick": 1350,
+        "playerS": 390.8456732541929,
+        "playerSpeed": 18.36679677381047,
+        "pngSha256": "108231800d5269707c138398c8205afbc701cf7d7bce640170cafcd13e7389c9"
+      },
+      {
+        "tRequested": 23,
+        "t": 23,
+        "tick": 1380,
+        "playerS": 400.0149239125289,
+        "playerSpeed": 18.135795666913488,
+        "pngSha256": "b439a2b56941fc17015a6fd5cebe010431eb9076dbe3dd5e1f4dbd0802e33d6b"
+      },
+      {
+        "tRequested": 23.5,
+        "t": 23.5,
+        "tick": 1410,
+        "playerS": 409.1158006711973,
+        "playerSpeed": 18.108915476055966,
+        "pngSha256": "ef4c7296c49bd2e36433784592005add859d3180784a9663dfd68697533e6bb4"
+      }
+    ],
+    "navy": [
+      {
+        "tRequested": 19,
+        "t": 19,
+        "tick": 1140,
+        "playerS": 312.32043281097305,
+        "playerSpeed": 26.646380143384317,
+        "pngSha256": "54e9d4a7c81f72d90e115a1d920a8bedac38e1f62ab63a1bc40bf1de3532dfa4"
+      },
+      {
+        "tRequested": 19.5,
+        "t": 19.5,
+        "tick": 1170,
+        "playerS": 325.64704956124876,
+        "playerSpeed": 26.715404352774403,
+        "pngSha256": "67945b68182fcca8b77a54bfb2cb1cdba686471f86da45717ab1d4eac493c8c9"
+      },
+      {
+        "tRequested": 20,
+        "t": 20,
+        "tick": 1200,
+        "playerS": 338.9823797583655,
+        "playerSpeed": 26.744664181076455,
+        "pngSha256": "8b6f24f947ea83b273e4c07c0a494cb9632fb07fbfe9cd71d9a924ae4132146e"
+      },
+      {
+        "tRequested": 20.5,
+        "t": 20.5,
+        "tick": 1230,
+        "playerS": 352.0295450816631,
+        "playerSpeed": 24.637487642614204,
+        "pngSha256": "ac075f9e39c0ba783746ebf24cb0badde02be5dbc64b272fc09179021d1d82f0"
+      },
+      {
+        "tRequested": 21,
+        "t": 21,
+        "tick": 1260,
+        "playerS": 363.20755192110875,
+        "playerSpeed": 20.46565561230469,
+        "pngSha256": "7cfa38df74324330526bdd712d9604cb8bb73611f05f4830d7453798889caac4"
+      },
+      {
+        "tRequested": 21.5,
+        "t": 21.5,
+        "tick": 1290,
+        "playerS": 372.7016317107124,
+        "playerSpeed": 18.228076594139605,
+        "pngSha256": "f5ceed0ebad4c0e6cda94f4b71fa355b410729c6213e746594fe0335c36cfc9b"
+      },
+      {
+        "tRequested": 22,
+        "t": 22,
+        "tick": 1320,
+        "playerS": 381.76463591761967,
+        "playerSpeed": 18.18460083651672,
+        "pngSha256": "a80a8d584408fbfaead3bbf083650376fa4be5e9ceaabf3972b6cfc329487dce"
+      },
+      {
+        "tRequested": 22.5,
+        "t": 22.5,
+        "tick": 1350,
+        "playerS": 390.8456732541929,
+        "playerSpeed": 18.36679677381047,
+        "pngSha256": "032a8db7ab5802ba7063f9dbe541f09128930f1af0dfece8861638cf3b81003b"
+      },
+      {
+        "tRequested": 23,
+        "t": 23,
+        "tick": 1380,
+        "playerS": 400.0149239125289,
+        "playerSpeed": 18.135795666913488,
+        "pngSha256": "eb524d315fa70ada6001b1e3e5f061bc89a0e7cb9303d43df6279881a679bf0a"
+      },
+      {
+        "tRequested": 23.5,
+        "t": 23.5,
+        "tick": 1410,
+        "playerS": 409.1158006711973,
+        "playerSpeed": 18.108915476055966,
+        "pngSha256": "ae3b9de5c96cc50ab1093ea21116f1740905a1532bb839dffdab7c66e9a492c1"
+      }
+    ]
+  },
+  "sequenceDeltas": {
+    "evidence": "two-build continuous sequences: 19.5-21.1 s (96 frames), 21.0-22.2 s (72 frames), 22.0-23.5 s (90 frames); all frames same tick and player.s across variants",
+    "determinism": "independent page loads at t=22.0, 22.5, 23.0 produced byte-identical PNGs (scene pixel SHA-256)",
+    "approach": {
+      "frames": 96,
+      "first": 19.5,
+      "last": 21.1,
+      "exitCode": 0
+    },
+    "early": {
+      "frames": 72,
+      "first": 21,
+      "last": 22.18,
+      "exitCode": 0
+    },
+    "main": {
+      "frames": 90,
+      "first": 22,
+      "last": 23.48,
+      "exitCode": 0
+    }
+  },
+  "sign": {
+    "distanceAlongTrack": 405,
+    "lateral": 9.4,
+    "side": "right shoulder",
+    "direction": "left",
+    "geometry": "original signBoard, cream panel #f3eacb, three chevrons; only arrow color differs"
+  },
+  "contrast": {
+    "threshold": null,
+    "criterion": "No fixed external threshold (for example WCAG non-text 3:1) was applied. The ratios are a relative comparison between the two builds only; readability was judged by the author at 1x, not by a pass/fail standard.",
+    "t22_00": {
+      "panelBackgroundRgb": [
+        198,
+        193,
+        160
+      ],
+      "defaultArrowRgb": [
+        152,
+        109,
+        129
+      ],
+      "defaultContrastRatio": 2.38,
+      "navyArrowRgb": [
+        25,
+        57,
+        78
+      ],
+      "navyContrastRatio": 6.64,
+      "method": "sRGB relative-luminance ratio between the modal panel colour and the modal chevron colour inside the projected panel quad"
+    }
+  },
+  "exits": {
+    "buildDefault": 0,
+    "buildNavy": 0,
+    "samplesCapture": 0,
+    "approachSequence": 0,
+    "earlySequence": 0,
+    "mainSequence": 0
+  },
+  "authorRead": {
+    "defaultReadableBy": "about t=22.0 s (23 m of road before the sign, ~33 m camera depth) in the author view at 1x",
+    "navyReadableBy": "about t=21.0 s (42 m before the sign, ~52 m camera depth); at t=20.8 the three chevrons are already separable in the author view",
+    "confidence": "author visual inspection, not a blind non-author test",
+    "frameEvidence": {
+      "navy": {
+        "sequence": "capture-approach t=19.5 frames=96",
+        "frame": 90,
+        "t": 21,
+        "tick": 1260,
+        "s": 363.208
+      },
+      "default": {
+        "sequence": "capture-early t=21 frames=72",
+        "frame": 60,
+        "t": 22,
+        "tick": 1320,
+        "s": 381.765
+      }
+    }
+  },
+  "limits": [
+    "Only the single coast-chase camera and the first block corner sign at s=405 m were checked.",
+    "Author visual judgment only; no blind non-author viewer was used.",
+    "No full-race real-GPU run or frame-cost measurement was performed.",
+    "Software rendering was not used; renderer is raw NVIDIA D3D11 ANGLE, headless full Chromium.",
+    "No default change, deploy or commit was made by the implementer."
+  ],
+  "errors": [],
+  "pixelDiff": {
+    "note": "RGB pixel differences between the default and navy delivered pairs; all changing pixels are signBoard chevrons (the same asset is reused elsewhere in the scene, so a few distant edge-on instances also differ)",
+    "t20_80": 101,
+    "t21_50": 118,
+    "t22_00": 180,
+    "t23_00": 761
+  }
+}

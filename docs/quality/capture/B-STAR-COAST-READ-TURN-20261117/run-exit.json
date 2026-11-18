@@ -1,0 +1,72 @@
+{
+  "task": "B-STAR-COAST-READ-TURN-20261117",
+  "note": "Only actual process exit codes are recorded. Browser sessions were closed by the capture scripts and reported no page errors; no PID or local path is included.",
+  "runs": [
+    {
+      "step": "dependency-prep",
+      "command": "npm ci (repository root, then experiments/rapier-road-comparison)",
+      "exitCode": 0
+    },
+    {
+      "step": "build-default-first-attempt",
+      "command": "node build.mjs (before experiments/rapier-road-comparison npm ci)",
+      "exitCode": 1,
+      "note": "failed because the experiment-local deps were not installed; the complete rerun after npm ci replaced all outputs and is the recorded build"
+    },
+    {
+      "step": "build-default",
+      "command": "node build.mjs (STAR_RUSH_SIGNBOARD_VARIANT unset)",
+      "exitCode": 0
+    },
+    {
+      "step": "build-navy",
+      "command": "STAR_RUSH_SIGNBOARD_VARIANT=navy-v1 node build.mjs",
+      "exitCode": 0
+    },
+    {
+      "step": "preview-servers",
+      "command": "startSmokeServer from tests/smoke-server.mjs, one production Worker per build snapshot; loopback only",
+      "exitCode": 0,
+      "servedBundlesMatchBuild": true,
+      "servedBundlesDiffer": true
+    },
+    {
+      "step": "gpu-single-frames",
+      "command": "unit scratch GPU capture script: Playwright full Chromium headless, ?shot=coast-chase, seed=73121, input=road-tour, 10 times from 19.0 to 23.5, frames=1",
+      "exitCode": 0,
+      "frames": 20,
+      "browserErrors": 0
+    },
+    {
+      "step": "gpu-sequence-approach",
+      "command": "unit scratch GPU capture script: t=19.5, frames=96, both builds",
+      "exitCode": 0,
+      "framesPerBuild": 96,
+      "browserErrors": 0
+    },
+    {
+      "step": "gpu-sequence-early",
+      "command": "unit scratch GPU capture script: t=21, frames=72, both builds",
+      "exitCode": 0,
+      "framesPerBuild": 72,
+      "browserErrors": 0
+    },
+    {
+      "step": "gpu-sequence-main",
+      "command": "unit scratch GPU capture script: t=22, frames=90, both builds",
+      "exitCode": 0,
+      "framesPerBuild": 90,
+      "browserErrors": 0
+    },
+    {
+      "step": "repository-tests",
+      "command": "npm test (the full package.json test entry; Node 22.23.2, --test-concurrency=1 plus all listed scripts)",
+      "exitCode": 0
+    }
+  ],
+  "notRun": [
+    "real-GPU full race at the proposed release entry",
+    "frame-cost / rAF cadence measurement",
+    "non-author visual check"
+  ]
+}
