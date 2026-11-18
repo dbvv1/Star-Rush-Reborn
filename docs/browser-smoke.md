@@ -4,9 +4,12 @@
 
 ```sh
 npm ci
+npm ci --prefix experiments/rapier-road-comparison
 npx playwright install chromium
 npm run smoke
 ```
+
+根构建会同时打包 `/rapier/` 旁置入口，因此新检出也要安装该子包的锁定依赖；只运行第一条 `npm ci` 会在浏览器启动前因缺少 Rapier／Three 依赖而构建失败。
 
 本轮云端软件 WebGL2 配置保留全部 Playwright 默认参数，设 `chromiumSandbox:false`，并要求实际 Chromium argv 同时包含 `--no-sandbox`、`--enable-unsafe-swiftshader`、`--use-angle=swiftshader`。这是专用于三个案例自有页面的浏览器配置，不修改外层执行沙箱，不适合作为通用网页浏览配置。只允许 HTTP loopback 预览或 `smoke-launch.mjs` 列出的三个 HTTPS 网站；每次上下文进一步限制为本次预览的单一源，拒绝重定向、跨源请求和 WebSocket，禁用 service worker。
 
