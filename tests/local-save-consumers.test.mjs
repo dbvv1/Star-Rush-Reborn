@@ -35,6 +35,30 @@ async function environment(model){
  return {w,q,$,data,writes,failRead,failWrite,runsKey,ghostKey,seed,errors,setGetterFail:v=>{getterFails=v}};
 }
 
+for(const model of ['road','legacy'])test(model+' garage reports persistence failures without discarding the current profile',async t=>{
+ const e=await environment(model),{w,$,q,data,failWrite}=e;
+ t.after(()=>w.happyDOM.close());
+ const name='star-rush-name',profile='star-rush-profile';
+ const save=value=>{$('profileName').value=value;$('saveProfile').onclick()};
+ const saved=()=>$('profileStatus').textContent;
+ save('Old driver');assert.equal(saved(),'已保存 · Old driver');
+ failWrite.add(profile);
+ save('Unstored driver');
+ assert.equal(saved(),'本次已应用 · 未完整保存，请重试');
+ assert.equal(q.profileName,'Unstored driver');assert.equal($('roomName').value,'Unstored driver');
+ assert.equal(data.get(name),'Old driver');assert.equal(JSON.parse(data.get(profile)).name,'Old driver');
+ failWrite.clear();failWrite.add(name);
+ $('garageGrid').children[1].onclick();
+ assert.equal($('carName').textContent,'Sakura Bloom');
+ assert.equal(saved(),'本次已应用 · 未完整保存，请重试');
+ assert.equal(q.profileName,'Unstored driver');assert.equal($('racerName').value,'Unstored driver');
+ assert.equal(data.get(name),'Old driver');assert.equal(JSON.parse(data.get(profile)).car,'Sakura Bloom');
+ failWrite.clear();save('Unstored driver');
+ assert.equal(saved(),'已保存 · Unstored driver');
+ assert.equal(data.get(name),'Unstored driver');assert.equal(JSON.parse(data.get(profile)).name,'Unstored driver');
+ assert.deepEqual(e.errors,[]);
+});
+
 test('adopted module body retains exact fixed source and MIT notice',()=>{
  const source=readFileSync('local-race-save.mjs','utf8'),body=source.slice(source.indexOf('*/\n')+3);
  assert.equal(createHash('sha256').update(body).digest('hex'),'1d53967731cc8b7c8f6d13a22be1a683ae5ae7f87d8ae4b079820539ab4bcd41');
