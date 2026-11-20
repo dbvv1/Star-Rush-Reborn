@@ -34,7 +34,7 @@ async function loadBoard(){if(roadDriving){boardLocal=true;boardMode='circuit';}
   if(request!==boardRequest)return;for(let i=0;i<results.length;i++)rows.appendChild(rankRow(i,results[i]));$('rankStatus').textContent=results.length?(boardLocal?'当前设备 · ':'在线 · ')+(boardMode==='circuit'?TRACKS[boardTrack].name+' / '+TRACKS[boardTrack].laps+' 圈 / 按最快用时':'无尽模式 / 按最远里程'):'还没有成绩，来跑第一圈。';
  }catch(e){if(request!==boardRequest)return;$('rankStatus').textContent='在线榜暂时未能加载，可切换“本机记录”。'}
 }
-function showBoard(){boardTrack=activeTrackId;if($('rankTrack'))$('rankTrack').value=boardTrack;boardMode=raceMode;boardLocal=false;openPanel('rankPanel');loadBoard()}
+function showBoard(){if(roadDriving)$('rankPanel').querySelector('.board-note').textContent='当前赛道独立排名 · 仅显示本机已保存的成绩';boardTrack=activeTrackId;if($('rankTrack'))$('rankTrack').value=boardTrack;boardMode=raceMode;boardLocal=false;openPanel('rankPanel');loadBoard()}
 $('rankBtn').onclick=showBoard;$('closeRank').onclick=()=>closePanel('rankPanel');
 $('boardCircuit').onclick=()=>{boardMode='circuit';boardLocal=false;loadBoard()};$('boardEndless').onclick=()=>{boardMode='endless';boardLocal=false;loadBoard()};$('boardLocal').onclick=()=>{boardLocal=true;loadBoard()};
 function chooseMode(mode){if(roadDriving&&mode!=='circuit')return;raceMode=mode;for(const [id,value] of [['circuitMode','circuit'],['endlessMode','endless']]){$(id).classList.toggle('selected',mode===value);$(id).setAttribute('aria-pressed',String(mode===value))}reset(true);$('trackPicker').hidden=mode!=='circuit';$('trackDescription').hidden=mode!=='circuit'}
