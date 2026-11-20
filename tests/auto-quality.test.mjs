@@ -61,6 +61,44 @@ test('short cadence still downshifts and sustained fast rendering can recover',(
  for(let i=0;i<210;i++)quality=g.update('auto',now+=50);assert.equal(quality,'low');
  for(let i=0;i<1000;i++)quality=g.update('auto',now+=16.7);assert.equal(quality,'high');
 });
+function tierDependentTrace(width=800,height=600,dpr=1){
+ const visibility=new Visibility(),g=policy(visibility),transitions=[];
+ let now=0,tier=g.update('auto',now,width,height,dpr);
+ return {transitions, get tier(){return tier}, viewport(w,h,ratio){width=w;height=h;dpr=ratio},
+  sampleFor(duration,period){const end=now+duration;
+   while(now<end){now+=period[tier];const next=g.update('auto',now,width,height,dpr);
+    if(next!==tier){transitions.push([Number(now.toFixed(1)),next]);tier=next;}
+   }
+  },
+  resume(){visibility.set(true);now+=12000;visibility.set(false);assert.equal(g.update('auto',now,width,height,dpr),tier)},
+  manual(){assert.equal(g.update('high',now,width,height,dpr),'high');assert.equal(g.update('auto',now,width,height,dpr),tier)},
+ };
+}
+const unchangedLoad={high:33.3,medium:33.3,low:16.7};
+test('unchanged tier-dependent load rejects a failed recovery trial, then real cadence re-arms each edge',t=>{
+ const q=tierDependentTrace(),labels=()=>q.transitions.map(r=>r[1]);
+ q.sampleFor(80000,unchangedLoad);
+ assert.deepEqual(labels(),['medium','low','medium','low'],'one Medium trial then stable Low');
+ const baseline=q.transitions.slice();
+ q.resume();q.manual();q.sampleFor(20000,{...unchangedLoad,low:16.2});
+ assert.deepEqual(q.transitions,baseline,'resume, manual override and insignificant improvement do not erase rejection');
+ q.sampleFor(40000,{high:33.3,medium:16.7,low:12.5});
+ assert.deepEqual(labels().slice(4),['medium','high','medium'],'successful Low→Medium is independent of the failed Medium→High trial');
+ q.sampleFor(20000,{high:16.7,medium:16.7,low:12.5});
+ assert.equal(q.tier,'medium','identical lower-tier VSync observations cannot reveal higher-tier headroom');
+ q.sampleFor(12000,{high:16.7,medium:12.5,low:12.5});
+ assert.deepEqual(labels().slice(7),['high'],'recovery succeeds on newly observable Medium headroom');
+ t.diagnostic(JSON.stringify({kind:'controlled tier-dependent cadence, not real performance',unchanged:baseline,recovery:q.transitions.slice(4)}));
+});
+test('reduced next-tier pixel area re-arms a failed trial even when lower-tier cadence is capped',()=>{
+ const q=tierDependentTrace(800,600,2);
+ q.sampleFor(25000,unchangedLoad);assert.equal(q.tier,'low');assert.equal(q.transitions.length,4);
+ const healthy={high:16.7,medium:16.7,low:16.7};
+ q.viewport(0,600,1);q.sampleFor(12000,healthy);assert.equal(q.tier,'low','zero dimensions are not evidence of less work');
+ q.viewport(800,600,1.1);q.sampleFor(12000,healthy);assert.equal(q.tier,'low','16% fewer next-tier pixels is under the material-change threshold');
+ q.viewport(800,600,1);q.sampleFor(14000,healthy);assert.equal(q.tier,'high','31% fewer next-tier pixels admits a fresh trial');
+ assert.deepEqual(q.transitions.slice(4).map(r=>r[1]),['medium','high']);
+});
 test('Auto downshift never increases pixel ratio at tested device DPRs',()=>{
  const g=policy();for(const [dpr,ratios] of [[1,[1,1,1]],[1.25,[1.25,1.2,1]],[2,[1.5,1.2,1]],[.8,[.8,.8,.8]]]){
   assert.deepEqual(['high','medium','low'].map(tier=>g.pixelRatio(tier,dpr)),ratios);

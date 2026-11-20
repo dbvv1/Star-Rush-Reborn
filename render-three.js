@@ -29,7 +29,7 @@ export function createThreeBackend(canvas,{shading='toon',hemisphereIntensity=2.
  }
  function render(list,view,width,height,fov,options={},now=performance.now()){
   let quality;
-  if(qualityGovernor)quality=qualityGovernor.update(options.quality,now);
+  if(qualityGovernor)quality=qualityGovernor.update(options.quality,now,width,height,devicePixelRatio);
   else{if(lastFrame){const frame=now-lastFrame;if(frame<100)frameAverage+=(frame-frameAverage)*.035}lastFrame=now;if(options.quality==='auto'){if(frameAverage>23){slowFrames++;fastFrames=0}else if(frameAverage<16.9){fastFrames++;slowFrames=0}else {slowFrames=0;fastFrames=0}if(slowFrames>90&&autoTier>0){autoTier--;slowFrames=0}if(fastFrames>360&&autoTier<2){autoTier++;fastFrames=0}}quality=options.quality==='auto'?tiers[autoTier]:options.quality;}
   if(capture){width=1280;height=720;}
   const scale=capture?1:qualityGovernor&&options.quality==='auto'?qualityGovernor.pixelRatio(quality,devicePixelRatio):quality==='low'?1:quality==='medium'?1.2:Math.min(devicePixelRatio||1,1.5);if(scale!==lastScale){renderer.setPixelRatio(scale);lastScale=scale}
