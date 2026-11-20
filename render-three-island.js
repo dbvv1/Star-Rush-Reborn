@@ -3,7 +3,7 @@ import {createSkyPanorama} from './sky-panorama.js';
 // Opt-in `scene=coast-island-v1` backend: standard materials with a generated sky
 // environment, a key light that follows the view, and stripe/foam maps for the
 // island shop row and shoreline. The reviewed default keeps render-three.js.
-export function createIslandThreeBackend(canvas,{shading='standard',hemisphereIntensity=1.05,skyPanorama=null,capture=false}={}){
+export function createIslandThreeBackend(canvas,{shading='standard',hemisphereIntensity=1.05,skyPanorama=null,capture=false,makeQualityGovernor=null}={}){
  if(!['toon','lambert','standard'].includes(shading))throw new Error('Unknown shading model: '+shading);
  if(!Number.isFinite(hemisphereIntensity)||hemisphereIntensity<0)throw new Error('Invalid hemisphere intensity');
  let renderer,phase='context';
@@ -78,9 +78,10 @@ export function createIslandThreeBackend(canvas,{shading='standard',hemisphereIn
  }
  const sky=new THREE.Mesh(new THREE.SphereGeometry(650,16,8),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms:{top:{value:new THREE.Color('#8fbee6')},bottom:{value:new THREE.Color('#f0e8f0')}},vertexShader:'varying vec3 vDirection;void main(){vDirection=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',fragmentShader:'varying vec3 vDirection;uniform vec3 top,bottom;void main(){float h=smoothstep(-.05,.8,normalize(vDirection).y);gl_FragColor=vec4(mix(bottom,top,h),1.0);}'}));sky.renderOrder=-100;scene.add(sky);
  const panorama=createSkyPanorama(scene,skyPanorama);
- const releaseSky=()=>{panorama?.dispose();globalThis.removeEventListener?.('pagehide',onPageHide);canvas.removeEventListener?.('webglcontextlost',releaseSky);};
+ const qualityGovernor=capture?null:makeQualityGovernor?.();
+ const releaseSky=()=>{qualityGovernor?.dispose();panorama?.dispose();globalThis.removeEventListener?.('pagehide',onPageHide);canvas.removeEventListener?.('webglcontextlost',releaseSky);};
  const onPageHide=event=>{if(!event.persisted)releaseSky();};
- if(panorama){globalThis.addEventListener?.('pagehide',onPageHide);canvas.addEventListener?.('webglcontextlost',releaseSky);}
+ if(panorama||qualityGovernor){globalThis.addEventListener?.('pagehide',onPageHide);canvas.addEventListener?.('webglcontextlost',releaseSky);}
  let nextId=1,lastW=0,lastH=0,lastScale=0,lastFrame=0,frameAverage=16.7,slowFrames=0,fastFrames=0,autoTier=2;const tiers=['low','medium','high'];
  function geometry(mesh,paint){
   if(!mesh.renderId)mesh.renderId=nextId++;const key=mesh.renderId+':'+(mesh.paintable&&paint?paint:'');if(geometries.has(key))return geometries.get(key);
@@ -89,9 +90,11 @@ export function createIslandThreeBackend(canvas,{shading='standard',hemisphereIn
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(normals,3));g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));if(mesh.stripeTexture||mesh.foamTexture){const uv=[],[su,sv]=mesh.uvScale||[.26,.34];for(let i=0;i<positions.length;i+=3)uv.push((positions[i]+positions[i+2])*su,positions[i+1]*sv);g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2))}g.setIndex(Array.from(mesh.sourceIndices));g.computeBoundingSphere();geometries.set(key,g);mesh.onDispose=()=>{for(const [id,geo] of geometries)if(id.startsWith(mesh.renderId+':')){for(const [bk,batch] of batches)if(batch.geometry===geo){scene.remove(batch);batch.dispose();batches.delete(bk)}geo.dispose();geometries.delete(id)}};return g;
  }
  function render(list,view,width,height,fov,options={},now=performance.now()){
-  if(lastFrame){const frame=now-lastFrame;if(frame<100)frameAverage+=(frame-frameAverage)*.035}lastFrame=now;if(options.quality==='auto'){if(frameAverage>23){slowFrames++;fastFrames=0}else if(frameAverage<16.9){fastFrames++;slowFrames=0}else {slowFrames=0;fastFrames=0}if(slowFrames>90&&autoTier>0){autoTier--;slowFrames=0}if(fastFrames>360&&autoTier<2){autoTier++;fastFrames=0}}const quality=options.quality==='auto'?tiers[autoTier]:options.quality;
+  let quality;
+  if(qualityGovernor)quality=qualityGovernor.update(options.quality,now);
+  else{if(lastFrame){const frame=now-lastFrame;if(frame<100)frameAverage+=(frame-frameAverage)*.035}lastFrame=now;if(options.quality==='auto'){if(frameAverage>23){slowFrames++;fastFrames=0}else if(frameAverage<16.9){fastFrames++;slowFrames=0}else {slowFrames=0;fastFrames=0}if(slowFrames>90&&autoTier>0){autoTier--;slowFrames=0}if(fastFrames>360&&autoTier<2){autoTier++;fastFrames=0}}quality=options.quality==='auto'?tiers[autoTier]:options.quality;}
   if(capture){width=1280;height=720;}
-  const scale=capture?1:quality==='low'?1:quality==='medium'?1.2:Math.min(devicePixelRatio||1,1.5);if(scale!==lastScale){renderer.setPixelRatio(scale);lastScale=scale}
+  const scale=capture?1:qualityGovernor&&options.quality==='auto'?qualityGovernor.pixelRatio(quality,devicePixelRatio):quality==='low'?1:quality==='medium'?1.2:Math.min(devicePixelRatio||1,1.5);if(scale!==lastScale){renderer.setPixelRatio(scale);lastScale=scale}
   if(width!==lastW||height!==lastH){renderer.setSize(width,height,false);lastW=width;lastH=height}camera.aspect=width/height;camera.fov=fov;camera.updateProjectionMatrix();camera.position.fromArray(view.eye);camera.lookAt(new THREE.Vector3(...view.target));
   // The sun rides with the driver view: warm key light from the left front and
   // above. The shadow frustum follows the visible range: tight around the car
