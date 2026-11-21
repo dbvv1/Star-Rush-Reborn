@@ -8,7 +8,7 @@
 
 6路 assembled-client CPU输入各600步：默认、空间、轮胎、组合及空间/轮胎初始化故障；空间不改模拟，两个故障均退回默认且轨迹相同。三赛道轮胎自动驾驶完赛118.8500/191.3167/42.0333秒；比赛41475个机器人载荷样本有限、非负、和为mg。不冒称所有机器人同时完赛或实际人感达标。浏览器与发布结论统一见 [记分卡](quality.md)。
 
-复测命令：`node tests/feel-measure.mjs outputs/before`，`node tests/feel-measure.mjs outputs/after --power-tires`，`node tests/feel-compare.mjs outputs/before outputs/after docs/quality/side-release`。首次目录须不存在。默认对照须使用固定默认源及同脚本/fixture，不能以false对false自比替代。
+复测前先在仓库根创建父目录：`node -e "require('node:fs').mkdirSync('outputs',{recursive:true})"`。测量目录 `outputs/before`、`outputs/after` 必须尚不存在；重跑时换新目录名。依次运行 `node tests/feel-measure.mjs outputs/before`、`node tests/feel-measure.mjs outputs/after --power-tires`、`node tests/feel-compare.mjs outputs/before outputs/after outputs/feel-comparison`。新图留在 `outputs/`，不覆盖仓库内的历史证据。默认对照须使用固定默认源及同脚本/fixture，不能以false对false自比替代。
 
 ---
 
@@ -31,7 +31,7 @@
 
 ## 可复现实测
 
-执行 `node tests/feel-measure.mjs outputs/<新目录>`（先安装根与 `experiments/rapier-road-comparison` 锁定依赖；导入既有 build.mjs 会构建静态产物，不启动浏览器）。fixture 在 `tests/fixtures/feel-inputs.json`，每tick保留输入、位置、速度、yaw、spin、轮角、侧滑角和漂移状态。日志在输出目录 `ticks.jsonl`，汇总及源文件SHA-256在 `summary.json`。摘要存档见 [首测 JSON](quality/feel-baseline/summary.json)。两次独立进程完整逐tick日志与摘要逐字节一致；这不是跨平台确定性保证。
+先安装根与 `experiments/rapier-road-comparison` 的锁定依赖，并按上文创建 `outputs/`，再执行 `node tests/feel-measure.mjs outputs/feel-baseline-run`（该测量目录须尚不存在；重跑时换新目录名）。脚本导入 `build.mjs` 会构建静态产物，不启动浏览器。fixture 在 `tests/fixtures/feel-inputs.json`，每tick保留输入、位置、速度、yaw、spin、轮角、侧滑角和漂移状态。日志在输出目录 `ticks.jsonl`，汇总及源文件SHA-256在 `summary.json`。摘要存档见 [首测 JSON](quality/feel-baseline/summary.json)。两次独立进程完整逐tick日志与摘要逐字节一致；这不是跨平台确定性保证。
 
 - `model-*` 直接调用正式 RoadVehicleModel.step，不复制方程、不固定速度、不改参数；无道路/坡度/碰撞的隔离平面响应。初始60km/h是显式fixture状态，不是油门加速成绩。
 - `client-*` 调用真实 assembled client 的 `physics`，训练场 practice，关闭自动油门/试驾，灵敏度1，初始s=0；真实道路积分、护栏接触保留。绘图为stub，不产生任何屏幕帧证据。
@@ -57,11 +57,12 @@
 
 四图使用同一初始60km/h输入阶跃（满右+油门1秒，回正+油门1秒）。左侧为隔离平面角度，右侧yaw相对道路切线而非世界固定朝向；右侧29.68°侧滑峰值包含护栏接触，不可当轮胎模型自身峰值。曲线未渲染游戏画面，不提供屏幕输入延迟、声音/镜头同帧或恒速90°弯成绩。
 
-确定性重建（从仓库根执行；输出SVG工具只用Node内置模块）：
+确定性重建（从仓库根执行；输出SVG工具只用Node内置模块；每次使用新的测量目录，原始证据不覆盖）：
 
 ```sh
+node -e "require('node:fs').mkdirSync('outputs',{recursive:true})"
 node tests/feel-measure.mjs outputs/feel-chart-source
-node tests/feel-charts.mjs outputs/feel-chart-source docs/quality/feel-baseline
+node tests/feel-charts.mjs outputs/feel-chart-source outputs/feel-charts
 ```
 
 每个SVG的`metadata`保留完整fixture、120Hz、源文件SHA-256、原始ticks/summary哈希与训练场`routeSeed=95276`（来自`race.js`固定赛道reset；隔离模型不使用随机数）。工具先核源码哈希、逐tick连续性和坐标范围，全部采样点进路径，不平滑/拟合/删去接触峰；同一输入日志重复生成字节一致。它不取代仍等待的真实机位与GPU基线。
