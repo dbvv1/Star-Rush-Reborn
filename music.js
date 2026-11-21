@@ -2,7 +2,7 @@
 // classics are played by the external licensed platform's embedded player.
 const musicSettings={enabled:true,volume:.4,sfxVolume:.75};
 try{Object.assign(musicSettings,JSON.parse(localStorage.getItem('star-rush-audio')||'{}'))}catch(e){}
-const music={mode:'synth',bus:null,step:0,next:0,files:[],index:0,url:null,element:null};
+const music={mode:'synth',bus:null,step:0,next:0,files:[],index:0,url:null,element:null,localAttempt:null,localError:null};
 function saveAudioSettings(){try{localStorage.setItem('star-rush-audio',JSON.stringify(musicSettings))}catch(e){}}
 function ensureMusic(){
  audioInit();if(!audio)return false;if(audio.ctx.state==='suspended')audio.ctx.resume().catch(()=>{});if(music.bus)return true;
@@ -29,16 +29,39 @@ function updateMusic(){
  const active=musicSettings.enabled&&sound&&!document.hidden&&music.mode!=='classic',t=audio.ctx.currentTime;
  music.bus.gain.setTargetAtTime(active?musicSettings.volume*.42:0,t,.07);
  if(music.mode==='synth'&&active){if(music.next<t-.15)music.next=t+.05;let count=0;while(music.next<t+.18&&count++<8){scheduleBeat(music.step++,music.next);music.next+=60/148/4}}
- if(music.element){if(active&&music.mode==='local'){if(music.element.paused)music.element.play().catch(()=>{})}else if(!music.element.paused)music.element.pause()}
+ if(active&&music.mode==='local')startLocalMusic();else pauseLocalMusic();
 }
-function setMusicMode(mode){music.mode=mode;ensureMusic();$('synthMusic').classList.toggle('selected',mode==='synth');$('classicMusic').classList.toggle('selected',mode==='classic');$('classicPlayer').hidden=mode!=='classic';$('localMusicControls').hidden=mode!=='local';$('musicToggle').hidden=mode==='classic';if(mode==='classic'){
+function syncMusicToggle(){
+ const error=music.mode==='local'?music.localError:null,toggle=$('musicToggle');
+ toggle.textContent=musicSettings.enabled&&!error?'暂停音乐':'播放音乐';
+ toggle.disabled=error==='file';
+}
+function pauseLocalMusic(){
+ const pending=music.localAttempt;music.localAttempt=null;
+ if(music.element&&(pending||!music.element.paused))music.element.pause();
+}
+function failLocalMusic(error){
+ pauseLocalMusic();music.localError=error;
+ $('nowPlaying').textContent=error==='file'?'此音频无法解码，请换一首 MP3 / OGG / WAV':'点击“播放音乐”后继续';
+ syncMusicToggle();
+}
+function startLocalMusic(){
+ const element=music.element;
+ if(!element||!element.paused||music.localAttempt||music.localError||!musicSettings.enabled||!sound||document.hidden)return;
+ // One pending play per file. A pause, mode switch, or new file invalidates the old outcome.
+ const attempt={};music.localAttempt=attempt;
+ element.play().then(()=>{if(music.localAttempt===attempt)music.localAttempt=null},error=>{
+  if(music.localAttempt===attempt)failLocalMusic(error?.name==='NotSupportedError'?'file':'retry');
+ });
+}
+function setMusicMode(mode){if(mode!=='local')pauseLocalMusic();music.mode=mode;ensureMusic();$('synthMusic').classList.toggle('selected',mode==='synth');$('classicMusic').classList.toggle('selected',mode==='classic');$('classicPlayer').hidden=mode!=='classic';$('localMusicControls').hidden=mode!=='local';$('musicToggle').hidden=mode==='classic';syncMusicToggle();if(mode==='classic'){
  if(!$('spotifyPlayer').src)$('spotifyPlayer').src='https://open.spotify.com/embed/track/'+$('classicTrack').value+'?utm_source=generator&theme=0';$('nowPlaying').textContent='经典外语歌单 · 在下方播放器点击播放';
  }else{$('spotifyPlayer').removeAttribute('src');$('nowPlaying').textContent=mode==='local'?(music.files[music.index]?.name||'请选择音乐文件'):'STARLINE · 原创电子竞速配乐'}
 }
 function playLocal(index){
  if(!music.files.length||!ensureMusic())return;music.index=(index+music.files.length)%music.files.length;
- if(!music.element){music.element=new Audio();music.element.preload='auto';const source=audio.ctx.createMediaElementSource(music.element);source.connect(music.bus);music.element.onended=()=>playLocal(music.index+1);music.element.onerror=()=>{$('nowPlaying').textContent='此音频无法解码，请换一首 MP3 / OGG / WAV'}}
- music.element.pause();if(music.url)URL.revokeObjectURL(music.url);music.url=URL.createObjectURL(music.files[music.index]);music.element.src=music.url;musicSettings.enabled=true;setMusicMode('local');music.element.play().catch(()=>{$('nowPlaying').textContent='点击“播放音乐”后继续'});$('musicToggle').textContent='暂停音乐';
+ if(!music.element){music.element=new Audio();music.element.preload='auto';const source=audio.ctx.createMediaElementSource(music.element);source.connect(music.bus);music.element.onended=()=>playLocal(music.index+1);music.element.onerror=()=>{if(music.mode==='local'&&music.element.error&&music.element.error.code!==1)failLocalMusic('file')}}
+ pauseLocalMusic();music.localError=null;if(music.url)URL.revokeObjectURL(music.url);music.url=URL.createObjectURL(music.files[music.index]);music.element.src=music.url;musicSettings.enabled=true;setMusicMode('local');startLocalMusic();
 }
 let panelResume=false;
 function openPanel(id){const resume=state==='running'&&!(typeof net!=='undefined'&&net.room);panelResume=panelResume||resume;if(resume)pauseGame();for(const other of ['helpPanel','musicPanel','roomPanel','rankPanel','garagePanel','settingsPanel'])if(other!==id)$(other).hidden=true;clearKeys();$(id).hidden=false}
@@ -48,8 +71,16 @@ $('helpBtn').onclick=$('welcomeHelp').onclick=()=>openPanel('helpPanel');$('clos
 $('synthMusic').onclick=()=>setMusicMode('synth');$('classicMusic').onclick=()=>setMusicMode('classic');
 $('musicFiles').onchange=e=>{music.files=Array.from(e.target.files||[]);playLocal(0)};
 $('nextSong').onclick=()=>playLocal(music.index+1);$('previousSong').onclick=()=>playLocal(music.index-1);
-$('musicToggle').onclick=()=>{ensureMusic();musicSettings.enabled=!musicSettings.enabled;$('musicToggle').textContent=musicSettings.enabled?'暂停音乐':'播放音乐';saveAudioSettings()};
-$('musicVolume').value=Math.round(musicSettings.volume*100);$('sfxVolume').value=Math.round(musicSettings.sfxVolume*100);$('musicToggle').textContent=musicSettings.enabled?'暂停音乐':'播放音乐';
+$('musicToggle').onclick=()=>{
+ const local=music.mode==='local';
+ if(local&&music.localError==='file')return;
+ ensureMusic();
+ if(local&&music.localError==='retry'){music.localError=null;musicSettings.enabled=true;$('nowPlaying').textContent=music.files[music.index]?.name||'请选择音乐文件'}
+ else musicSettings.enabled=!musicSettings.enabled;
+ syncMusicToggle();saveAudioSettings();
+ if(local){if(musicSettings.enabled)startLocalMusic();else pauseLocalMusic()}
+};
+$('musicVolume').value=Math.round(musicSettings.volume*100);$('sfxVolume').value=Math.round(musicSettings.sfxVolume*100);syncMusicToggle();
 $('musicVolume').oninput=e=>{musicSettings.volume=Number(e.target.value)/100;saveAudioSettings()};$('sfxVolume').oninput=e=>{musicSettings.sfxVolume=Number(e.target.value)/100;saveAudioSettings()};
 
 $('classicTrack').onchange=()=>{setMusicMode('classic');$('spotifyPlayer').src='https://open.spotify.com/embed/track/'+$('classicTrack').value+'?utm_source=generator&theme=0'};
