@@ -20,7 +20,7 @@ try {
   const resource=await startSmokeServer(worker);resources.push(resource);
   console.log(`${profile}=${resource.origin}`);
  }
- console.log('Same scenery; normal menu/chase camera/keyboard. Road is the default; legacy is the explicit comparison; road has no runner pickups; cones/barriers are decorative beyond rails. Ctrl+C closes both services.');
+ console.log('Road and Legacy differ in driving rules, scenery, and rendering. Use these URLs to try both modes, not as a handling-only A/B. Ctrl+C closes both services.');
 } catch(error){
  for(const resource of resources)await cleanupSmoke(resource);
  throw error;

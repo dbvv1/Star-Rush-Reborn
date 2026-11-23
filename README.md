@@ -94,7 +94,9 @@ STAR_RUSH_COAST_AMBIENCE=off npm run build
 
 公路驾驶只提供本机跑圈、计时与练习，不接在线房间或上传旧版榜单。已有 `road-v2` 记录、最快幽灵与操控设置继续使用；旧街机与 `road-v1` 数据不迁移、不删除。昵称、涂装和音量保持原有共享方式。幽灵是记录的车身位置，不是输入重演，不能跨驾驶规则混用。
 
-`STAR_RUSH_DRIVING_MODEL=legacy npm run build` 可把根入口临时构建为旧街机对照，`/road` 和 `/legacy` 仍明确固定各自规则；取消该变量后重新构建恢复公路默认。`node tests/road-driving-preview.mjs` 提供两个临时本机对照地址，Ctrl+C 关闭。公路驾驶以地平线反馈为方向，原创轻量车体与抓地模型仍在调优。
+`STAR_RUSH_DRIVING_MODEL=legacy npm run build` 可把根入口临时构建为旧街机对照，`/road` 和 `/legacy` 仍明确固定各自规则；取消该变量后重新构建恢复公路默认。公路驾驶以地平线反馈为方向，原创轻量车体与抓地模型仍在调优。
+
+运行 `node tests/road-driving-preview.mjs`，在终端找 `road=` 和 `legacy=` 后面的两个本机地址；按 Ctrl+C 关闭。两个入口除了驾驶规则，默认场景和渲染也不同，适合分别试玩，不适合用来只比较操控。想先去掉公路入口的海岸整景和海岛外观，在 `road=` 地址后加 `?environment=baseline&scene=baseline`；渲染仍和旧街机不同。
 
 ### 海岸环境声候选
 
