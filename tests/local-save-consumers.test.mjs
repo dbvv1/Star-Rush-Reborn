@@ -74,13 +74,30 @@ for(const model of ['road','legacy'])test(model+' garage preserves both nickname
  assert.deepEqual(data,partial,'boot must not rewrite either nickname key');
  assert.match(next.$('profileStatus').textContent,/请确认昵称/);
  assert.doesNotMatch(next.$('profileStatus').textContent,/保存失败|已保存/);
+ const restore=next.$('useGarageNickname'),keep=next.$('useCurrentNickname');
+ assert.ok(restore,'offer the distinct stored garage nickname');assert.ok(keep,'keep the active nickname recoverable');
+ assert.equal(keep.hidden,false);assert.match(keep.textContent,/Old driver/);
+ assert.equal(restore.hidden,false);assert.match(restore.textContent,/New driver/);
+ restore.onclick();
+ assert.equal(next.$('profileName').value,'New driver');assert.equal(next.q.profileName,'Old driver');
+ assert.equal(next.$('roomName').value,'Old driver');assert.deepEqual(data,partial);
+ assert.match(next.$('profileStatus').textContent,/点击保存确认/);
+ next.$('closeGarage').onclick();next.$('garageBtn').onclick();assert.deepEqual(data,partial);
+ assert.match(keep.textContent,/Old driver/);assert.match(restore.textContent,/New driver/);
+ keep.onclick();assert.equal(next.$('profileName').value,'Old driver');assert.deepEqual(data,partial);
+ restore.onclick();assert.equal(next.$('profileName').value,'New driver');assert.deepEqual(data,partial);
+
  next.$('profileName').value='New driver';next.$('garageGrid').children[2].onclick();
  assert.equal(next.$('profileName').value,'New driver','paint preview must not reset the unconfirmed edit');
  assert.equal(next.$('carName').textContent,'Violet Hour');
  assert.match(next.$('profileStatus').textContent,/仅在本次生效/);
+ assert.match(keep.textContent,/Old driver/);assert.match(restore.textContent,/New driver/);
  assert.deepEqual(data,partial,'a paint click must not implicitly resolve competing names');
  next.failWrite.add(name);next.$('saveProfile').onclick();
  assert.equal(next.$('profileName').value,'New driver');assert.match(next.$('profileStatus').textContent,/未完整保存/);
+ assert.equal(restore.hidden,true);assert.doesNotMatch(restore.textContent,/New driver/);
+ assert.equal(keep.hidden,true);assert.equal(keep.textContent,'');
+
  next.failWrite.clear();next.$('saveProfile').onclick();
  assert.equal(data.get(name),'New driver');assert.equal(JSON.parse(data.get(profile)).name,'New driver');
  assert.equal(JSON.parse(data.get(profile)).car,'Violet Hour');assert.match(next.$('profileStatus').textContent,/已保存/);
@@ -91,12 +108,14 @@ for(const model of ['road','legacy'])test(model+' garage boot retains first-run 
  const name='star-rush-name',profile='star-rush-profile';
  const fresh=await environment(model);t.after(()=>fresh.w.happyDOM.close());
  assert.equal(fresh.data.get(name),fresh.q.profileName);assert.equal(JSON.parse(fresh.data.get(profile)).name,fresh.q.profileName);
+ assert.equal(fresh.$('useGarageNickname').hidden,true);assert.equal(fresh.$('useCurrentNickname').hidden,true);
  fresh.q.complete();assert.equal(fresh.q.attempt.input.name,fresh.q.profileName);
  const oldData=new Map([[name,'Legacy driver']]);
  const legacy=await environment(model,{data:oldData});t.after(()=>legacy.w.happyDOM.close());
  assert.equal(legacy.q.profileName,'Legacy driver');assert.equal(legacy.$('roomName').value,'Legacy driver');
  assert.equal(legacy.$('carName').textContent,'Mint Comet');assert.deepEqual(legacy.writes,[]);
  assert.match(legacy.$('profileStatus').textContent,/已载入/);assert.equal(oldData.has(profile),false);
+ assert.equal(legacy.$('useGarageNickname').hidden,true);assert.equal(legacy.$('useCurrentNickname').hidden,true);
  legacy.q.complete();assert.equal(legacy.q.attempt.input.name,'Legacy driver');
  // These bytes can also represent a legitimate legacy leaderboard/room name change,
  // not just a failed garage write. Boot and a paint click must preserve both names.
@@ -106,7 +125,25 @@ for(const model of ['road','legacy'])test(model+' garage boot retains first-run 
  assert.equal(cross.q.profileName,'Room driver');assert.equal(cross.$('roomName').value,'Room driver');
  cross.$('garageGrid').children[0].onclick();
  assert.deepEqual(rosterBytes,retained);
+ const restore=cross.$('useGarageNickname');assert.ok(restore,'offer the stored garage nickname for a legitimate room-name mismatch');assert.equal(restore.hidden,false);assert.match(restore.textContent,/Older garage/);
  cross.q.complete();assert.equal(cross.q.attempt.input.name,'Room driver');
+ // If the first key write fails, the saved garage value is still a valid option.
+ cross.$('profileName').value='Third driver';cross.failWrite.add(profile);cross.$('saveProfile').onclick();
+ assert.equal(restore.hidden,false);assert.match(restore.textContent,/Older garage/);
+ cross.failWrite.delete(profile);cross.failWrite.add(name);cross.$('saveProfile').onclick();
+ assert.equal(JSON.parse(rosterBytes.get(profile)).name,'Third driver');assert.equal(rosterBytes.get(name),'Room driver');
+ assert.equal(restore.hidden,true);assert.doesNotMatch(restore.textContent,/Older garage/);
+ assert.match(cross.$('profileStatus').textContent,/未完整保存/);
+ // A fresh read offers the newly written value; expressly choosing the unchanged
+ // room name still works without the garage record taking precedence on its own.
+ const after=await environment(model,{data:rosterBytes});t.after(()=>after.w.happyDOM.close());
+ assert.equal(after.q.profileName,'Room driver');assert.match(after.$('useGarageNickname').textContent,/Third driver/);
+ after.$('useGarageNickname').onclick();assert.equal(after.$('profileName').value,'Third driver');
+ after.$('useCurrentNickname').onclick();assert.equal(after.$('profileName').value,'Room driver');
+ assert.equal(after.q.profileName,'Room driver');assert.equal(JSON.parse(rosterBytes.get(profile)).name,'Third driver');
+ after.$('saveProfile').onclick();
+ assert.equal(JSON.parse(rosterBytes.get(profile)).name,'Room driver');assert.equal(rosterBytes.get(name),'Room driver');
+ assert.equal(after.$('useGarageNickname').hidden,true);
 });
 
 test('adopted module body retains exact fixed source and MIT notice',()=>{
