@@ -17,9 +17,9 @@ const hooks=`window.saveQA={start,finish,goHome,loadBoard,getBestGhost,
  mutateAfterFinish(){ghostPoints[0][1]=999999;raceSplits[0]=999999;profile.name='Changed after finish';try{localStorage.setItem('star-rush-name','Changed stored name after finish')}catch(e){}},
  localBoard(){boardLocal=true;return loadBoard()}};`;
 const compiled=new Map();
-async function environment(model){
+async function environment(model,{data=new Map(),failRead=new Set()}={}){
  if(!compiled.has(model))compiled.set(model,(await build({stdin:{contents:clientSource(hooks,model),resolveDir:process.cwd()},bundle:true,write:false,format:'iife',target:'es2022',logLevel:'silent'})).outputFiles[0].text);
- const w=new Window({url:'https://save.test/'+(model==='road'?'':'legacy'),settings:{disableIframePageLoading:true,handleDisabledFileLoadingAsSuccess:true}}),errors=[],data=new Map(),writes=[],failRead=new Set(),failWrite=new Set();
+ const w=new Window({url:'https://save.test/'+(model==='road'?'':'legacy'),settings:{disableIframePageLoading:true,handleDisabledFileLoadingAsSuccess:true}}),errors=[],writes=[],failWrite=new Set();
  let getterFails=false;
  const storage={getItem:k=>{if(failRead.has(k))throw Error('unavailable read');return data.get(k)??null},setItem(k,v){if(failWrite.has(k))throw Error('quota');data.set(k,String(v));writes.push(k)}};
  Object.defineProperty(w,'localStorage',{configurable:true,get(){if(getterFails)throw Error('storage unavailable');return storage}});
@@ -57,6 +57,56 @@ for(const model of ['road','legacy'])test(model+' garage reports persistence fai
  assert.equal(saved(),'已保存 · Unstored driver');
  assert.equal(data.get(name),'Unstored driver');assert.equal(JSON.parse(data.get(profile)).name,'Unstored driver');
  assert.deepEqual(e.errors,[]);
+});
+
+for(const model of ['road','legacy'])test(model+' garage preserves both nickname keys through a partial save and fresh startup',async t=>{
+ const name='star-rush-name',profile='star-rush-profile';
+ const data=new Map([[name,'Old driver'],[profile,JSON.stringify({name:'Old driver',car:'Mint Comet',paint:'#83cde4'})]]);
+ const open=async()=>{const e=await environment(model,{data});t.after(()=>e.w.happyDOM.close());return e;};
+ const first=await open();
+ first.failWrite.add(name);first.$('profileName').value='New driver';first.$('garageGrid').children[1].onclick();
+ assert.equal(data.get(name),'Old driver');assert.equal(JSON.parse(data.get(profile)).name,'New driver');
+ assert.equal(JSON.parse(data.get(profile)).car,'Sakura Bloom');
+ const partial=new Map(data);
+ const next=await open();
+ assert.equal(next.q.profileName,'Old driver','standalone nickname remains effective for record and room consumers');
+ assert.equal(next.$('roomName').value,'Old driver');assert.equal(next.$('carName').textContent,'Sakura Bloom');
+ assert.deepEqual(data,partial,'boot must not rewrite either nickname key');
+ assert.match(next.$('profileStatus').textContent,/请确认昵称/);
+ assert.doesNotMatch(next.$('profileStatus').textContent,/保存失败|已保存/);
+ next.$('profileName').value='New driver';next.$('garageGrid').children[2].onclick();
+ assert.equal(next.$('profileName').value,'New driver','paint preview must not reset the unconfirmed edit');
+ assert.equal(next.$('carName').textContent,'Violet Hour');
+ assert.match(next.$('profileStatus').textContent,/仅在本次生效/);
+ assert.deepEqual(data,partial,'a paint click must not implicitly resolve competing names');
+ next.failWrite.add(name);next.$('saveProfile').onclick();
+ assert.equal(next.$('profileName').value,'New driver');assert.match(next.$('profileStatus').textContent,/未完整保存/);
+ next.failWrite.clear();next.$('saveProfile').onclick();
+ assert.equal(data.get(name),'New driver');assert.equal(JSON.parse(data.get(profile)).name,'New driver');
+ assert.equal(JSON.parse(data.get(profile)).car,'Violet Hour');assert.match(next.$('profileStatus').textContent,/已保存/);
+ next.q.complete();assert.equal(next.q.attempt.input.name,'New driver');
+});
+
+for(const model of ['road','legacy'])test(model+' garage boot retains first-run and standalone nickname record behavior',async t=>{
+ const name='star-rush-name',profile='star-rush-profile';
+ const fresh=await environment(model);t.after(()=>fresh.w.happyDOM.close());
+ assert.equal(fresh.data.get(name),fresh.q.profileName);assert.equal(JSON.parse(fresh.data.get(profile)).name,fresh.q.profileName);
+ fresh.q.complete();assert.equal(fresh.q.attempt.input.name,fresh.q.profileName);
+ const oldData=new Map([[name,'Legacy driver']]);
+ const legacy=await environment(model,{data:oldData});t.after(()=>legacy.w.happyDOM.close());
+ assert.equal(legacy.q.profileName,'Legacy driver');assert.equal(legacy.$('roomName').value,'Legacy driver');
+ assert.equal(legacy.$('carName').textContent,'Mint Comet');assert.deepEqual(legacy.writes,[]);
+ assert.match(legacy.$('profileStatus').textContent,/已载入/);assert.equal(oldData.has(profile),false);
+ legacy.q.complete();assert.equal(legacy.q.attempt.input.name,'Legacy driver');
+ // These bytes can also represent a legitimate legacy leaderboard/room name change,
+ // not just a failed garage write. Boot and a paint click must preserve both names.
+ const rosterBytes=new Map([[name,'Room driver'],[profile,JSON.stringify({name:'Older garage',car:'Solar Flare',paint:'#edc784'})]]);
+ const retained=new Map(rosterBytes);
+ const cross=await environment(model,{data:rosterBytes});t.after(()=>cross.w.happyDOM.close());
+ assert.equal(cross.q.profileName,'Room driver');assert.equal(cross.$('roomName').value,'Room driver');
+ cross.$('garageGrid').children[0].onclick();
+ assert.deepEqual(rosterBytes,retained);
+ cross.q.complete();assert.equal(cross.q.attempt.input.name,'Room driver');
 });
 
 test('adopted module body retains exact fixed source and MIT notice',()=>{

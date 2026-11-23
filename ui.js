@@ -1,14 +1,43 @@
 const defaultSettings={quality:'auto',sensitivity:1,fov:62,autoGas:false,line:true,ghost:true};
 let settings={...defaultSettings},profile={name:'车手'+Math.floor(100+captureRuntime.random()*900),paint:'#83cde4',car:'Mint Comet'},eventType='race';
-try{Object.assign(settings,JSON.parse(localStorage.getItem((roadDriving?'star-rush-settings-'+drivingRevision:'star-rush-settings-reborn'))||'{}'));Object.assign(profile,JSON.parse(localStorage.getItem('star-rush-profile')||'{}'));profile.name=localStorage.getItem('star-rush-name')||profile.name}catch(e){}
+try{Object.assign(settings,JSON.parse(localStorage.getItem((roadDriving?'star-rush-settings-'+drivingRevision:'star-rush-settings-reborn'))||'{}'))}catch(e){}
+const profileKey='star-rush-profile',nicknameKey='star-rush-name';
+function readProfile(){
+ try{
+  const name=localStorage.getItem(nicknameKey);if(name)profile.name=name;
+  const raw=localStorage.getItem(profileKey);
+  if(raw===null)return name===null?'empty':name?'loaded':'incomplete';
+  const stored=JSON.parse(raw);
+  if(!stored||typeof stored!=='object'||Array.isArray(stored))return 'unreadable';
+  // Standalone names also come from legitimate leaderboard and room actions.
+  Object.assign(profile,stored,{name:name||(typeof stored.name==='string'&&stored.name)||profile.name});
+  return name&&stored.name===name?'loaded':'incomplete';
+ }catch(e){return 'unreadable';}
+}
+const profileLoad=readProfile();
+let confirmProfileName=profileLoad==='incomplete'||profileLoad==='unreadable';
 const garagePaints=[['Mint Comet','#83cde4','薄荷彗星'],['Sakura Bloom','#efabc8','樱花绽放'],['Violet Hour','#b1a0df','暮色紫'],['Solar Flare','#edc784','日光金']];
 function saveSettings(){try{localStorage.setItem((roadDriving?'star-rush-settings-'+drivingRevision:'star-rush-settings-reborn'),JSON.stringify(settings))}catch(e){}}
-function saveProfile(){profile.name=$('profileName').value.trim().slice(0,16)||profile.name;let saved=false;try{localStorage.setItem('star-rush-profile',JSON.stringify(profile));localStorage.setItem('star-rush-name',profile.name);saved=true}catch(e){}$('carName').textContent=profile.car;for(const id of ['roomName','racerName','profileName'])$(id).value=profile.name;$('profileStatus').textContent=saved?'已保存 · '+profile.name:'本次已应用 · 未完整保存，请重试';car.tint=profile.paint}
+function renderProfile(note,updateNames=true){
+ $('carName').textContent=profile.car;
+ if(updateNames)for(const id of ['roomName','racerName','profileName'])$(id).value=profile.name;
+ $('profileStatus').textContent=note;car.tint=profile.paint;
+}
+function saveProfile(){
+ profile.name=$('profileName').value.trim().slice(0,16)||profile.name;
+ let saved=false;try{localStorage.setItem(profileKey,JSON.stringify(profile));localStorage.setItem(nicknameKey,profile.name);saved=true}catch(e){}
+ if(saved)confirmProfileName=false;
+ renderProfile(saved?'已保存 · '+profile.name:'本次已应用 · 未完整保存，请重试');
+}
 function syncSettingsUI(){for(const [id,key] of [['autoGasSetting','autoGas'],['lineSetting','line'],['ghostSetting','ghost']])$(id).checked=!!settings[key];$('qualitySetting').value=settings.quality;$('steeringSetting').value=settings.sensitivity*100;$('fovSetting').value=settings.fov;$('settingsStatus').textContent=software?'当前浏览器使用兼容显示模式，比赛逻辑和操作保持一致。':'Three.js 3D 渲染 · 设置会自动保存在此设备。'}
 $('settingsBtn').onclick=()=>{syncSettingsUI();openPanel('settingsPanel')};$('closeSettings').onclick=()=>closePanel('settingsPanel');
 for(const [id,key] of [['autoGasSetting','autoGas'],['lineSetting','line'],['ghostSetting','ghost']])$(id).onchange=e=>{settings[key]=e.target.checked;saveSettings()};$('qualitySetting').onchange=e=>{settings.quality=e.target.value;saveSettings()};$('steeringSetting').oninput=e=>{settings.sensitivity=Number(e.target.value)/100;saveSettings()};$('fovSetting').oninput=e=>{settings.fov=Number(e.target.value);saveSettings()};$('resetSettings').onclick=()=>{settings={...defaultSettings};saveSettings();syncSettingsUI()};
-for(const [name,paint,chinese] of garagePaints){const b=document.createElement('button');b.type='button';b.style.setProperty('--paint',paint);b.setAttribute('aria-label',chinese+'涂装');const icon=document.createElement('i'),title=document.createElement('b'),sub=document.createElement('small');title.textContent=name;sub.textContent=chinese;b.append(icon,title,sub);b.onclick=()=>{profile.paint=paint;profile.car=name;for(const el of $('garageGrid').children)el.classList.toggle('selected',el===b);saveProfile()};if(profile.paint===paint)b.classList.add('selected');$('garageGrid').appendChild(b)}
-$('garageBtn').onclick=()=>openPanel('garagePanel');$('closeGarage').onclick=()=>closePanel('garagePanel');$('saveProfile').onclick=saveProfile;$('profileName').value=profile.name;saveProfile();
+for(const [name,paint,chinese] of garagePaints){const b=document.createElement('button');b.type='button';b.style.setProperty('--paint',paint);b.setAttribute('aria-label',chinese+'涂装');const icon=document.createElement('i'),title=document.createElement('b'),sub=document.createElement('small');title.textContent=name;sub.textContent=chinese;b.append(icon,title,sub);b.onclick=()=>{profile.paint=paint;profile.car=name;for(const el of $('garageGrid').children)el.classList.toggle('selected',el===b);if(confirmProfileName)renderProfile('涂装仅在本次生效。请确认昵称后保存。',false);else saveProfile()};if(profile.paint===paint)b.classList.add('selected');$('garageGrid').appendChild(b)}
+$('garageBtn').onclick=()=>openPanel('garagePanel');$('closeGarage').onclick=()=>closePanel('garagePanel');$('saveProfile').onclick=saveProfile;
+if(profileLoad==='empty'){$('profileName').value=profile.name;saveProfile();}
+else if(profileLoad==='incomplete')renderProfile('本机昵称记录不完整或不一致。请确认昵称后保存。');
+else if(profileLoad==='unreadable')renderProfile('未能完整读取本机车库。请确认昵称后保存。');
+else renderProfile('已载入 · '+profile.name);
 $('eventType').onchange=e=>{eventType=e.target.value;if(eventType==='practice')chooseTrack('academy-reborn')};
 function goHome(){if(net.room){showRoom();return}demoDriving=false;state='ready';reset(false);raceBots=[];ghostNode=null;clearKeys();$('welcome').hidden=false;$('paused').hidden=true;$('finished').hidden=true;$('coach').hidden=true;game.classList.add('menu-open');$('countdown').hidden=true}
 $('pauseHome').onclick=goHome;$('newRouteBtn').onclick=goHome;
